@@ -142,7 +142,21 @@ h1 {
   box-shadow: inset 0 0 30px #000;
 }
 
-.glass img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.glass img, .glass .reel, .glass svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.cab.on .stick {
+  transform-origin: center bottom;
+  animation: wag 1.1s ease-in-out infinite;
+}
+
+@keyframes wag {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(14deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cab.on .stick { animation: none; }
+}
 
 .glass.dead {
   background:
