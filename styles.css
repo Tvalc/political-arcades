@@ -242,8 +242,17 @@ h1 {
 
 .prose a { color: var(--amber); }
 
+.floor.has-two .cab.on {
+  width: min(420px, 42vw);
+}
+
+.floor.has-two .cab.on .marquee span {
+  font-size: clamp(18px, 2.2vw, 28px);
+}
+
 @media (max-width: 800px) {
   .cab.off { display: none; }
-  .cab.on { width: min(460px, 100%); }
+  .cab.on, .floor.has-two .cab.on { width: min(460px, 92vw); }
+  .floor.has-two { flex-direction: column; align-items: center; }
   h1 { font-size: 46px; }
 }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Political Arcades</title>
   <link rel="canonical" href="https://politicalarcades.com/" />
-  <meta name="description" content="Political Arcades is a browser arcade. Capitol Crashers is the first machine on the floor." />
+  <meta name="description" content="Political Arcades is a browser arcade. Capitol Crashers and HORSE are on the floor." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
@@ -17,16 +17,16 @@
     <header class="sign">
       <p class="open"><span class="lamp"></span> Floor open</p>
       <h1>Political<br />Arcades</h1>
-      <p class="lede">One cabinet is powered. The rest of the row is still dark.</p>
+      <p class="lede">Two cabinets are powered. The rest of the row is still dark.</p>
       <a class="patreon" href="https://www.patreon.com/c/PoliticalArcades" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
     </header>
 
     <footer class="site-foot">
-      <p>Capitol Crashers is the first game on this floor. It is an original game, not affiliated with any other publisher.</p>
+      <p>Capitol Crashers and HORSE are on this floor. They are original games, not affiliated with any other publisher.</p>
       <p><a href="privacy.html">Privacy</a></p>
     </footer>
 
-    <main class="floor">
+    <main class="floor has-two">
       <article class="cab off" aria-hidden="true">
         <div class="marquee"><span>····</span></div>
         <div class="glass dead"></div>
@@ -48,11 +48,20 @@
         <p class="plate"><span class="ready"></span> Machine 01 · ready</p>
       </a>
 
-      <article class="cab off" aria-hidden="true">
-        <div class="marquee"><span>····</span></div>
-        <div class="glass dead"></div>
-        <div class="deck"><i></i><i></i><b></b></div>
-      </article>
+      <a class="cab on" href="horse/">
+        <div class="marquee"><span>HORSE</span></div>
+        <div class="glass">
+          <img src="art/horse-screen.jpg" alt="HORSE attract mode, Mamdani and El-Sayed on a New York playground" />
+          <div class="scan"></div>
+          <p class="insert">Press start</p>
+        </div>
+        <div class="deck">
+          <i class="stick"></i>
+          <b class="red"></b>
+          <b class="gold"></b>
+        </div>
+        <p class="plate"><span class="ready"></span> Machine 02 · ready</p>
+      </a>
     </main>
 
   </div>
