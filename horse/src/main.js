@@ -11,8 +11,8 @@
       full: "Zohran Mamdani",
       city: "New York",
       court: "nyc",
-      body: "#3d5a80",
-      trim: "#e2b657",
+      body: "#ffc61a",
+      trim: "#f4efe4",
       skin: "#e4b48a",
       pants: "#1c2430",
       smile: true,
@@ -23,8 +23,8 @@
       full: "Abdul El-Sayed",
       city: "Detroit",
       court: "detroit",
-      body: "#c4493a",
-      trim: "#7ec8e3",
+      body: "#0076b6",
+      trim: "#c8d0d8",
       skin: "#d39a6c",
       pants: "#241c30",
       smile: false,
@@ -931,6 +931,24 @@
     update(dt);
     draw();
     requestAnimationFrame(frame);
+  }
+
+  if (window.mountTouchControls) {
+    window.mountTouchControls(canvas.parentElement, {
+      pad: {
+        left: { key: "ArrowLeft", code: "ArrowLeft" },
+        right: { key: "ArrowRight", code: "ArrowRight" },
+        up: { key: "ArrowUp", code: "ArrowUp" },
+        down: { key: "ArrowDown", code: "ArrowDown" },
+      },
+      buttons: [
+        { label: "Spin", key: "1", code: "Digit1", tone: "pink" },
+        { label: "Dunk", key: "2", code: "Digit2", tone: "gold" },
+        { label: "Fade", key: "3", code: "Digit3", tone: "blue" },
+        { label: "Hook", key: "4", code: "Digit4", tone: "cream" },
+        { label: "Hold to shoot", key: " ", code: "Space", tone: "gold wide" },
+      ],
+    });
   }
 
   canvas.focus();
