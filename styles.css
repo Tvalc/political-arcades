@@ -144,6 +144,8 @@ h1 {
 
 .glass img, .glass .reel, .glass svg { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+.reel.poster { background: url("art/screen.jpg") center / cover no-repeat; }
+
 .cab.on .stick {
   transform-origin: center bottom;
   animation: wag 1.1s ease-in-out infinite;
