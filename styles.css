@@ -135,16 +135,14 @@ h1 {
 .glass {
   position: relative;
   margin-top: 10px;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 8px;
   background: #05060a;
   box-shadow: inset 0 0 30px #000;
 }
 
-.glass img, .glass .reel, .glass svg { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.reel.poster { background: url("art/screen.jpg") center / cover no-repeat; }
+.glass img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .cab.on .stick {
   transform-origin: center bottom;
