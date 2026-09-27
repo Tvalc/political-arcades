@@ -457,7 +457,7 @@
     ctx.fillStyle = "#f6efe4";
     ctx.font = "22px Share Tech Mono, monospace";
     ctx.fillText("Call the spot. Call the flair. Make them copy it.", W / 2, 340);
-    button(W / 2 - 160, 420, 320, 64, "PICK A FIGHTER", () => {
+    button(W / 2 - 160, 420, 320, 64, "PICK A SHOOTER", () => {
       screen = "select";
     }, true);
     ctx.fillStyle = "#f6efe4";
