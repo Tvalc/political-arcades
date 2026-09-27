@@ -933,6 +933,24 @@
     requestAnimationFrame(frame);
   }
 
+  if (window.mountTouchControls) {
+    window.mountTouchControls(canvas.parentElement, {
+      pad: {
+        left: { key: "ArrowLeft", code: "ArrowLeft" },
+        right: { key: "ArrowRight", code: "ArrowRight" },
+        up: { key: "ArrowUp", code: "ArrowUp" },
+        down: { key: "ArrowDown", code: "ArrowDown" },
+      },
+      buttons: [
+        { label: "Spin", key: "1", code: "Digit1", tone: "pink" },
+        { label: "Dunk", key: "2", code: "Digit2", tone: "gold" },
+        { label: "Fade", key: "3", code: "Digit3", tone: "blue" },
+        { label: "Hook", key: "4", code: "Digit4", tone: "cream" },
+        { label: "Hold to shoot", key: " ", code: "Space", tone: "gold wide" },
+      ],
+    });
+  }
+
   canvas.focus();
   requestAnimationFrame(frame);
 })();
