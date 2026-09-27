@@ -10,6 +10,7 @@ if (screen && window.lottie) {
     path: "art/attract.json?v=arcade7",
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   });
+  anim.addEventListener("DOMLoaded", () => screen.classList.remove("poster"));
   if (reduce) {
     anim.addEventListener("DOMLoaded", () => anim.goToAndStop(40, true));
   }
