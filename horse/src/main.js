@@ -67,6 +67,7 @@
   loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
   loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
   loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
+  loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
 
   const CLIPS = {
     mamdani: {
@@ -75,8 +76,9 @@
       dunk: { frames: 8, fw: 354, fh: 640 },
     },
     sayed: {
-      idle: { frames: 6, fw: 479, fh: 620 },
-      shot: { frames: 8, fw: 319, fh: 640, gather: 4 },
+      idle: { frames: 8, fw: 484, fh: 640 },
+      shot: { frames: 8, fw: 322, fh: 640, gather: 4 },
+      dunk: { frames: 8, fw: 390, fh: 640 },
     },
   };
 
