@@ -744,7 +744,10 @@
       const c = project(0.94, Math.max(0.05, ny - 0.028));
       const d = project(0.06, Math.max(0.05, ny - 0.028));
       const stripe = Math.floor(ny * 36) % 2;
-      ctx.fillStyle = stripe ? "#d39252" : "#c47c40";
+      const grain = 0.5 + 0.5 * Math.sin(ny * 90);
+      ctx.fillStyle = stripe
+        ? `rgb(${214 + grain * 18}, ${146 + grain * 10}, ${72})`
+        : `rgb(${168 + grain * 8}, ${98}, ${46})`;
       quad(d, c, b, a);
       ctx.fill();
     }
@@ -1142,14 +1145,14 @@
         ctx.textAlign = "left";
         if (on) {
           ctx.shadowColor = "#ff4d8d";
-          ctx.shadowBlur = 16;
-          ctx.fillStyle = "#ffd0e4";
+          ctx.shadowBlur = 18;
+          ctx.fillStyle = "#fff1a8";
         } else {
-          ctx.fillStyle = "#3a342c";
+          ctx.fillStyle = "#3a2418";
         }
         ctx.fillText(letter, 0, 0);
         ctx.shadowBlur = 0;
-        ctx.fillStyle = on ? "#ff4d8d" : "#6a6258";
+        ctx.fillStyle = on ? "#ffe14a" : "#6a4030";
         ctx.fillText(letter, 0, 0);
         ctx.restore();
       });
