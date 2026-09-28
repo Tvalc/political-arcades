@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src;
+    img.src = src.includes("sprites/") ? `${src}?v=4` : src;
     images[key] = img;
   }
 
@@ -77,20 +77,20 @@
 
   const CLIPS = {
     mamdani: {
-      idle: { frames: 8, fw: 500, fh: 620 },
-      shot: { frames: 8, fw: 302, fh: 640, gather: 5 },
-      dunk: { frames: 8, fw: 354, fh: 640 },
-      spin: { frames: 8, fw: 390, fh: 640 },
-      fade: { frames: 8, fw: 372, fh: 640 },
-      hook: { frames: 8, fw: 380, fh: 640 },
+      idle: { frames: 2, fw: 512, fh: 661, body: 640 },
+      shot: { frames: 8, fw: 295, fh: 864, body: 640, gather: 2 },
+      dunk: { frames: 8, fw: 391, fh: 836, body: 640 },
+      spin: { frames: 8, fw: 415, fh: 917, body: 640 },
+      fade: { frames: 8, fw: 438, fh: 922, body: 640 },
+      hook: { frames: 8, fw: 417, fh: 914, body: 640 },
     },
     sayed: {
-      idle: { frames: 8, fw: 484, fh: 640 },
-      shot: { frames: 8, fw: 322, fh: 640, gather: 4 },
-      dunk: { frames: 8, fw: 390, fh: 640 },
-      spin: { frames: 8, fw: 347, fh: 640 },
-      fade: { frames: 8, fw: 389, fh: 640 },
-      hook: { frames: 8, fw: 342, fh: 640 },
+      idle: { frames: 2, fw: 491, fh: 663, body: 640 },
+      shot: { frames: 8, fw: 391, fh: 868, body: 640, gather: 2 },
+      dunk: { frames: 8, fw: 419, fh: 848, body: 640 },
+      spin: { frames: 8, fw: 399, fh: 881, body: 640 },
+      fade: { frames: 8, fw: 455, fh: 912, body: 640 },
+      hook: { frames: 8, fw: 350, fh: 883, body: 640 },
     },
   };
 
@@ -975,7 +975,6 @@
     const pose = match.pose[id];
     const jumping = match.jump[id];
     const moving = pose === "move";
-    const bob = pose === "idle" || moving ? Math.abs(Math.sin(match.t * (moving ? 11 : 7))) * 4 : 0;
     const lift = jumping * 46 * at.s;
     const sprite = spriteFor(id, pose);
     ctx.save();
@@ -988,25 +987,32 @@
       const { img, clip, key } = sprite;
       const gather = clip.gather || 4;
       let frame;
+      let dip = 0;
       if (match.hold && match.active === id && key === "shot") {
         frame = Math.min(gather - 1, Math.floor(match.power * gather));
       } else if (match.ball && match.ball.id === id && key === "shot") {
         const releaseAt = gather;
         frame = Math.min(clip.frames - 1, releaseAt + Math.floor(match.ball.t * (clip.frames - releaseAt)));
-      } else if (key === "idle" || key === "move") {
-        frame = Math.floor(match.t * (key === "move" ? 12 : 8)) % clip.frames;
+      } else if (key === "idle") {
+        const bounce = (match.t * 2.6) % 1;
+        dip = Math.sin(bounce * Math.PI);
+        frame = dip > 0.5 ? Math.min(1, clip.frames - 1) : 0;
+      } else if (key === "move") {
+        frame = Math.floor(match.t * 8) % clip.frames;
       } else {
         frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
       }
-      const height = playerHeight(at);
+      const span = playerHeight(at);
+      const height = span * (clip.fh / (clip.body || clip.fh));
       const width = height * (clip.fw / clip.fh);
-      ctx.translate(0, -lift);
+      ctx.translate(0, -lift + dip * span * 0.05);
       ctx.scale(match.face[id] || 1, 1);
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height + bob, width, height);
+      if (dip) ctx.scale(1 + dip * 0.06, 1 - dip * 0.12);
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
       ctx.save();
       ctx.globalAlpha = 0.2;
       ctx.scale(1, -0.28);
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height + bob, width, height);
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
       ctx.restore();
       ctx.restore();
       return;
@@ -1014,7 +1020,7 @@
     const stride = moving ? Math.sin(match.t * 11) * 10 : 0;
     const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
     ctx.scale(at.s, at.s);
-    ctx.translate(0, -lift + bob);
+    ctx.translate(0, -lift);
     if (pose === "spin") ctx.rotate(Math.sin(match.t * 18) * 0.9);
     if (pose === "fade") ctx.rotate(-0.45);
     if (pose === "hook") ctx.rotate(0.35);
