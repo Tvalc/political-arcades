@@ -229,6 +229,15 @@
     return { x, y, s };
   }
 
+  function playerHeight(at) {
+    return 110 * at.s;
+  }
+
+  function hoopLayout() {
+    const h = project(HOOP.x, HOOP.y);
+    return { x: h.x, floor: h.y, rim: h.y - 84 };
+  }
+
   function courtPoint(px, py) {
     if (py < 200 || py > 620) return null;
     let best = null;
@@ -373,12 +382,12 @@
     const window = flair === "none" ? 0.082 : 0.046;
     const made = Math.abs(match.power - need) <= window;
     const from = project(p.x, p.y);
-    const to = project(HOOP.x, HOOP.y);
+    const hoop = hoopLayout();
     match.ball = {
-      x0: from.x,
-      y0: from.y - 80,
-      x1: to.x,
-      y1: to.y - 46,
+      x0: from.x + (match.face[id] || 1) * 8,
+      y0: from.y - playerHeight(from) * 0.72,
+      x1: hoop.x,
+      y1: hoop.rim + 8,
       t: 0,
       made,
       flair,
@@ -892,48 +901,52 @@
   }
 
   function drawHoop() {
-    const h = project(HOOP.x, HOOP.y);
+    const hoop = hoopLayout();
     const hit = match.basket && match.basket.life > 0 ? match.basket : null;
     const incoming = match.ball && match.ball.t > 0.78;
-    const sway = hit ? Math.sin(match.t * 30) * hit.life * 12 : incoming ? 5 : Math.sin(match.t * 2) * 1.2;
+    const sway = hit ? Math.sin(match.t * 30) * hit.life * 14 : incoming ? 6 : Math.sin(match.t * 2) * 1.4;
+    const rim = hoop.rim;
+    const bw = 136;
+    const bh = 78;
+    const top = rim - 16 - bh;
     ctx.save();
     ctx.translate(sway * 0.35, 0);
     ctx.fillStyle = "#5c5348";
-    ctx.fillRect(h.x - 7, h.y - 8, 14, 150);
+    ctx.fillRect(hoop.x - 9, top + bh - 8, 18, hoop.floor - (top + bh - 8));
     ctx.fillStyle = hit && hit.made ? "rgba(255, 246, 214, 0.82)" : "rgba(214, 232, 242, 0.55)";
-    roundRect(h.x - 52, h.y - 118, 104, 72, 4);
+    roundRect(hoop.x - bw / 2, top, bw, bh, 6);
     ctx.fill();
     ctx.strokeStyle = "#f4efe4";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 6;
     ctx.stroke();
     ctx.strokeStyle = "rgba(20, 16, 12, 0.55)";
     ctx.lineWidth = 3;
-    ctx.strokeRect(h.x - 22, h.y - 96, 44, 32);
+    ctx.strokeRect(hoop.x - 28, top + 22, 56, 40);
     if (hit && hit.dunk && hit.made) {
       ctx.strokeStyle = `rgba(255,255,255,${0.35 + hit.life * 0.5})`;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(h.x - 8, h.y - 110);
-      ctx.lineTo(h.x + 6, h.y - 88);
-      ctx.lineTo(h.x - 14, h.y - 70);
-      ctx.moveTo(h.x + 10, h.y - 100);
-      ctx.lineTo(h.x + 28, h.y - 78);
+      ctx.moveTo(hoop.x - 18, top + 16);
+      ctx.lineTo(hoop.x + 8, top + 48);
+      ctx.lineTo(hoop.x - 24, top + 78);
+      ctx.moveTo(hoop.x + 16, top + 28);
+      ctx.lineTo(hoop.x + 42, top + 62);
       ctx.stroke();
     }
     ctx.restore();
     ctx.fillStyle = "#f08a24";
-    ctx.fillRect(h.x - 5 + sway * 0.2, h.y - 46, 10, 22);
+    ctx.fillRect(hoop.x - 6 + sway * 0.2, rim - 34, 12, 28);
     ctx.strokeStyle = hit && !hit.made ? "#fff1c9" : "#ff4a2a";
-    ctx.lineWidth = hit ? 9 : 7;
+    ctx.lineWidth = hit ? 12 : 10;
     ctx.beginPath();
-    ctx.ellipse(h.x + sway * 0.15, h.y - 18, 32, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(hoop.x + sway * 0.15, rim, 48, 15, 0, 0, Math.PI * 2);
     ctx.stroke();
     ctx.strokeStyle = "rgba(255,255,255,0.9)";
-    ctx.lineWidth = 1.5;
-    for (let i = -3; i <= 3; i += 1) {
+    ctx.lineWidth = 2;
+    for (let i = -4; i <= 4; i += 1) {
       ctx.beginPath();
-      ctx.moveTo(h.x + i * 9, h.y - 16);
-      ctx.quadraticCurveTo(h.x + i * 6 + sway, h.y + 10, h.x + i * 4 + sway * 0.4, h.y + 30);
+      ctx.moveTo(hoop.x + i * 10, rim + 2);
+      ctx.quadraticCurveTo(hoop.x + i * 7 + sway, rim + 28, hoop.x + i * 4 + sway * 0.4, rim + 52);
       ctx.stroke();
     }
   }
@@ -963,13 +976,13 @@
     const jumping = match.jump[id];
     const moving = pose === "move";
     const bob = pose === "idle" || moving ? Math.abs(Math.sin(match.t * (moving ? 11 : 7))) * 4 : 0;
-    const lift = jumping * 70 * at.s;
+    const lift = jumping * 46 * at.s;
     const sprite = spriteFor(id, pose);
     ctx.save();
     ctx.translate(at.x, at.y);
     ctx.fillStyle = "rgba(0,0,0,0.38)";
     ctx.beginPath();
-    ctx.ellipse(0, 6, 46 * at.s, 12 * at.s, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 4, 22 * at.s, 7 * at.s, 0, 0, Math.PI * 2);
     ctx.fill();
     if (sprite) {
       const { img, clip, key } = sprite;
@@ -985,7 +998,7 @@
       } else {
         frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
       }
-      const height = 340 + at.s * 70;
+      const height = playerHeight(at);
       const width = height * (clip.fw / clip.fh);
       ctx.translate(0, -lift);
       ctx.scale(match.face[id] || 1, 1);
@@ -1061,10 +1074,10 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(spin || 0);
-    const glow = ctx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.2, 0, 0, r);
-    glow.addColorStop(0, "#ffb15a");
-    glow.addColorStop(0.6, "#e07a2f");
-    glow.addColorStop(1, "#9a3e12");
+    const glow = ctx.createRadialGradient(-r * 0.32, -r * 0.36, r * 0.12, 0, 0, r);
+    glow.addColorStop(0, "#e39a62");
+    glow.addColorStop(0.55, "#c86438");
+    glow.addColorStop(1, "#8a3a1c");
     ctx.fillStyle = glow;
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
@@ -1084,14 +1097,14 @@
   function drawFlight() {
     match.trail.forEach((p, i) => {
       const a = (i + 1) / match.trail.length;
-      ctx.fillStyle = `rgba(255, 176, 32, ${a * 0.45})`;
+      ctx.fillStyle = `rgba(200, 100, 56, ${a * 0.4})`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, 4 + a * 8, 0, Math.PI * 2);
       ctx.fill();
     });
     const b = match.ball;
     const p = ballPoint(b);
-    const squash = b.flair === "dunk" && p.t > 0.75 ? 22 : 20;
+    const squash = b.flair === "dunk" && p.t > 0.75 ? 13 : 11;
     drawBall(p.x, p.y, squash, match.t * 14);
   }
 
@@ -1162,12 +1175,12 @@
     ctx.textAlign = "center";
     const city = match.court === "nyc" ? "New York playground" : "Detroit playground";
     ctx.fillStyle = "rgba(8, 10, 16, 0.88)";
-    roundRect(240, 128, 800, 52, 10);
+    roundRect(160, 578, 960, 52, 10);
     ctx.fill();
     ctx.fillStyle = "#ffb020";
-    ctx.font = "15px Bungee, sans-serif";
-    ctx.fillText(city.toUpperCase(), W / 2, 148);
-    wrapCall(match.call, W / 2, 168);
+    ctx.font = "13px Bungee, sans-serif";
+    ctx.fillText(city.toUpperCase(), W / 2, 598);
+    wrapCall(match.call, W / 2, 618);
 
     if (!match.over && match.active === match.humanId && !match.ball) {
       const labels = [
@@ -1228,7 +1241,7 @@
       } else line = next;
     });
     if (line) lines.push(line);
-    lines.slice(0, 2).forEach((row, i) => ctx.fillText(row, x, y + i * 22));
+    if (lines[0]) ctx.fillText(lines[0], x, y);
   }
 
   function draw() {
@@ -1238,10 +1251,10 @@
     ctx.save();
     if (screen === "play" && match && match.zoom > 0) {
       const z = 1 + match.zoom * 0.34;
-      const h = project(HOOP.x, HOOP.y);
-      ctx.translate(h.x, h.y);
+      const hoop = hoopLayout();
+      ctx.translate(hoop.x, hoop.rim);
       ctx.scale(z, z);
-      ctx.translate(-h.x, -h.y);
+      ctx.translate(-hoop.x, -hoop.rim);
     }
     if (screen === "play" && match && match.shake > 0) {
       const s = match.shake * 10;
@@ -1259,7 +1272,7 @@
       }
       else if (match.trail.length) {
         match.trail.forEach((p, i) => {
-          ctx.fillStyle = `rgba(255, 176, 32, ${(i + 1) / match.trail.length * 0.25})`;
+          ctx.fillStyle = `rgba(200, 100, 56, ${(i + 1) / match.trail.length * 0.25})`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
           ctx.fill();
