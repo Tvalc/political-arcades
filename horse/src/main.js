@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.includes("sprites/") ? `${src}?v=5` : src;
+    img.src = src.includes("sprites/") ? `${src}?v=6` : src;
     images[key] = img;
   }
 
@@ -61,6 +61,7 @@
   loadImage("detroit", "assets/detroit.webp");
   loadImage("face-mamdani", "assets/face-mamdani.webp");
   loadImage("face-sayed", "assets/face-sayed.webp");
+  loadImage("ball", "assets/sprites/ball.webp");
   loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
   loadImage("mamdani-move", "assets/sprites/mamdani-move.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
@@ -78,19 +79,19 @@
   const CLIPS = {
     mamdani: {
       idle: { frames: 2, fw: 366, fh: 706, body: 706 },
-      shot: { frames: 8, fw: 295, fh: 864, body: 640, air: 4 },
-      dunk: { frames: 8, fw: 391, fh: 836, body: 640, wind: 4, air: 7 },
-      spin: { frames: 8, fw: 415, fh: 917, body: 640, wind: 2, air: 3 },
-      fade: { frames: 8, fw: 438, fh: 922, body: 640, wind: 4, air: 6 },
-      hook: { frames: 8, fw: 417, fh: 914, body: 640, wind: 4, air: 5 },
+      shot: { frames: 8, fw: 295, fh: 864, body: 640, play: 4 },
+      dunk: { frames: 8, fw: 391, fh: 836, body: 640, play: 4 },
+      spin: { frames: 8, fw: 415, fh: 917, body: 640, play: 4 },
+      fade: { frames: 8, fw: 438, fh: 922, body: 640, play: 5 },
+      hook: { frames: 8, fw: 417, fh: 914, body: 640, play: 5 },
     },
     sayed: {
       idle: { frames: 2, fw: 267, fh: 733, body: 733 },
-      shot: { frames: 8, fw: 391, fh: 868, body: 640, air: 4 },
-      dunk: { frames: 8, fw: 419, fh: 848, body: 640, wind: 4, air: 7 },
-      spin: { frames: 8, fw: 399, fh: 881, body: 640, wind: 4, air: 5 },
-      fade: { frames: 8, fw: 455, fh: 912, body: 640, wind: 4, air: 5 },
-      hook: { frames: 8, fw: 350, fh: 883, body: 640, wind: 3, air: 4 },
+      shot: { frames: 8, fw: 391, fh: 868, body: 640, play: 4 },
+      dunk: { frames: 8, fw: 419, fh: 848, body: 640, play: 4 },
+      spin: { frames: 8, fw: 399, fh: 881, body: 640, play: 5 },
+      fade: { frames: 8, fw: 455, fh: 912, body: 640, play: 5 },
+      hook: { frames: 8, fw: 350, fh: 883, body: 640, play: 4 },
     },
   };
 
@@ -334,18 +335,14 @@
   }
 
   function holdFor(flair) {
-    if (flair === "dunk") return 0.68;
-    if (flair === "none") return 0;
-    return 0.42;
+    if (flair === "dunk") return 1.2;
+    if (flair === "none") return 0.58;
+    return 0.5;
   }
 
   function dribbleBeat() {
-    const bounce = (match.t * 2.6) % 1;
-    const carried = bounce < 0.68;
-    const dip = carried
-      ? Math.sin((bounce / 0.68) * Math.PI)
-      : Math.sin(((1 - bounce) / 0.32) * Math.PI) * 0.35;
-    return { bounce, carried, dip };
+    const bounce = (match.t * 1.65) % 1;
+    return { bounce, dip: Math.sin(bounce * Math.PI) };
   }
 
   function ownedBall(id) {
@@ -353,22 +350,12 @@
     const span = playerHeight(at);
     const face = match.face[id] || 1;
     const lift = match.jump[id] * 46 * at.s;
-    const r = Math.max(8, span * 0.085);
+    const r = Math.max(8, span * 0.09);
     const beat = dribbleBeat();
-    let x = at.x + face * span * 0.22;
-    let y = at.y - lift - span * 0.46 + beat.dip * span * 0.2;
-    if (match.hold && match.active === id) {
-      const up = match.power;
-      y = at.y - lift - span * (0.42 + up * 0.5);
-      x = at.x + face * span * (0.16 + up * 0.04);
-    } else if (!beat.carried) {
-      const u = (beat.bounce - 0.68) / 0.32;
-      const drop = Math.sin(u * Math.PI);
-      const hand = at.y - lift - span * 0.28;
-      const floor = at.y - r;
-      y = hand + (floor - hand) * drop;
-    }
-    return { x, y, r };
+    const x = at.x + face * span * 0.2;
+    const hand = at.y - lift - span * 0.4;
+    const y = hand + Math.sin(beat.bounce * Math.PI) * span * 0.28;
+    return { x, y, r, spin: beat.bounce * 1.1 };
   }
 
   function beginCatch() {
@@ -637,7 +624,7 @@
         match.power = 0;
         match.powerDir = 1;
       }
-      match.pose[id] = "idle";
+      match.pose[id] = match.flair === "none" ? "shot" : match.flair;
     }
   }
 
@@ -661,12 +648,13 @@
         match.power = 0;
         match.powerDir = 1;
         match.flair = "none";
+        match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
       }
       return;
     }
     match.hold = true;
     match.power += dt * 0.72;
-    match.pose[cpu.id] = "idle";
+    match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
     if (match.power >= cpu.aim) {
       match.power = cpu.aim;
       release(cpu.id);
@@ -1061,16 +1049,14 @@
     if (sprite) {
       const { img, clip, key } = sprite;
       let frame;
-      let dip = 0;
-      if (match.ball && match.ball.id === id) {
+      const dribbling = key === "idle" && match.owner === id && !match.hold && !match.pass;
+      const beat = dribbling ? dribbleBeat() : null;
+      if (match.hold && match.active === id && key !== "idle") {
+        frame = Math.min(2, Math.floor(match.power * 3));
+      } else if (match.ball && match.ball.id === id) {
         frame = poseFrame(clip, match.ball);
       } else if (key === "idle") {
-        const dribbling = match.owner === id && !match.hold && !match.pass;
-        if (dribbling) {
-          const beat = dribbleBeat();
-          dip = beat.dip;
-          frame = beat.bounce > 0.5 ? Math.min(1, clip.frames - 1) : 0;
-        } else frame = 0;
+        frame = 0;
       } else if (key === "move") {
         frame = Math.floor(match.t * 8) % clip.frames;
       } else {
@@ -1079,9 +1065,8 @@
       const span = playerHeight(at);
       const height = span * (clip.fh / (clip.body || clip.fh));
       const width = height * (clip.fw / clip.fh);
-      ctx.translate(0, -lift + dip * span * 0.05);
+      ctx.translate(0, -lift + (beat ? beat.dip * span * 0.015 : 0));
       ctx.scale(match.face[id] || 1, 1);
-      if (dip) ctx.scale(1 + dip * 0.06, 1 - dip * 0.12);
       ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
       ctx.save();
       ctx.globalAlpha = 0.2;
@@ -1151,50 +1136,40 @@
   }
 
   function poseFrame(clip, ball) {
-    const air = clip.air != null ? clip.air : clip.frames - 1;
-    const wind = clip.wind != null ? clip.wind : air;
-    const hold = holdFor(ball.flair);
-    if (hold === 0 || ball.t >= hold) return Math.min(air, clip.frames - 1);
-    const u = ball.t / hold;
-    return Math.min(wind, Math.floor(u * (wind + 1)));
+    const last = clip.play != null ? clip.play : clip.frames - 1;
+    const u = Math.min(1, ball.t / 0.78);
+    if (u >= 1) return last;
+    return Math.min(last, Math.floor(u * (last + 1)));
   }
 
   function drawBall(x, y, r, spin) {
+    const img = images.ball;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(spin || 0);
-    const glow = ctx.createRadialGradient(-r * 0.32, -r * 0.36, r * 0.12, 0, 0, r);
-    glow.addColorStop(0, "#e39a62");
-    glow.addColorStop(0.55, "#c86438");
-    glow.addColorStop(1, "#8a3a1c");
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#1a120c";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(-r, 0);
-    ctx.lineTo(r, 0);
-    ctx.moveTo(0, -r);
-    ctx.lineTo(0, r);
-    ctx.stroke();
+    if (img && img.complete && img.naturalWidth) {
+      const d = r * 2.2;
+      ctx.drawImage(img, -d / 2, -d / 2, d, d);
+    } else {
+      ctx.fillStyle = "#c86438";
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
   function drawFlight() {
     match.trail.forEach((p, i) => {
       const a = (i + 1) / match.trail.length;
-      ctx.fillStyle = `rgba(200, 100, 56, ${a * 0.4})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 4 + a * 8, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.save();
+      ctx.globalAlpha = a * 0.28;
+      drawBall(p.x, p.y, 7 + a * 3, 0);
+      ctx.restore();
     });
     const b = match.ball;
     const p = ballPoint(b);
-    const squash = b.flair === "dunk" && p.t > 0.75 ? 13 : 11;
-    drawBall(p.x, p.y, squash, match.t * 14);
+    drawBall(p.x, p.y, b.flair === "dunk" && p.t > 0.75 ? 13 : 11, p.t * 1.6);
   }
 
   function drawLoose(ball, spin) {
@@ -1363,10 +1338,10 @@
       if (match.ball) {
         if (match.ball.t >= holdFor(match.ball.flair)) drawFlight();
       } else if (match.pass) {
-        drawLoose(match.pass, match.t * 10);
-      } else if (match.owner) {
+        drawLoose(match.pass, match.pass.t * 1.4);
+      } else if (match.owner && !match.hold) {
         const held = ownedBall(match.owner);
-        drawBall(held.x, held.y, held.r, match.t * 5);
+        drawBall(held.x, held.y, held.r, held.spin);
       } else if (match.trail.length) {
         match.trail.forEach((p, i) => {
           ctx.fillStyle = `rgba(200, 100, 56, ${(i + 1) / match.trail.length * 0.25})`;
