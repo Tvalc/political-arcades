@@ -11,8 +11,8 @@
       full: "Zohran Mamdani",
       city: "New York",
       court: "nyc",
-      body: "#ffc61a",
-      trim: "#f4efe4",
+      body: "#243e73",
+      trim: "#e2b657",
       skin: "#e4b48a",
       pants: "#1c2430",
       smile: true,
@@ -23,8 +23,8 @@
       full: "Abdul El-Sayed",
       city: "Detroit",
       court: "detroit",
-      body: "#0076b6",
-      trim: "#c8d0d8",
+      body: "#d6453a",
+      trim: "#7ec8e3",
       skin: "#d39a6c",
       pants: "#241c30",
       smile: false,
@@ -61,6 +61,22 @@
   loadImage("detroit", "assets/detroit.webp");
   loadImage("face-mamdani", "assets/face-mamdani.webp");
   loadImage("face-sayed", "assets/face-sayed.webp");
+  loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
+  loadImage("mamdani-move", "assets/sprites/mamdani-move.webp");
+  loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
+  loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
+
+  const CLIPS = {
+    mamdani: {
+      idle: { frames: 8, fw: 500, fh: 620 },
+      shot: { frames: 8, fw: 302, fh: 640, gather: 5 },
+    },
+    sayed: {
+      idle: { frames: 6, fw: 479, fh: 620 },
+    },
+  };
+
+  let crowdGain = null;
 
   function tone(freq, dur, type, gain) {
     if (!audioCtx) return;
@@ -76,9 +92,111 @@
     osc.stop(audioCtx.currentTime + dur);
   }
 
+  function noiseBurst(seconds, freq, peak) {
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime;
+    const len = Math.floor(audioCtx.sampleRate * seconds);
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i += 1) data[i] = Math.random() * 2 - 1;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.value = freq;
+    const amp = audioCtx.createGain();
+    amp.gain.setValueAtTime(peak, t);
+    amp.gain.exponentialRampToValueAtTime(0.0001, t + seconds);
+    src.connect(filter);
+    filter.connect(amp);
+    amp.connect(audioCtx.destination);
+    src.start(t);
+    src.stop(t + seconds);
+  }
+
+  function ensureMix() {
+    if (!audioCtx || crowdGain) return;
+    const len = audioCtx.sampleRate * 2;
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i += 1) data[i] = Math.random() * 2 - 1;
+    const crowd = audioCtx.createBufferSource();
+    crowd.buffer = buf;
+    crowd.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = 700;
+    filter.Q.value = 0.7;
+    crowdGain = audioCtx.createGain();
+    crowdGain.gain.value = 0.015;
+    crowd.connect(filter);
+    filter.connect(crowdGain);
+    crowdGain.connect(audioCtx.destination);
+    crowd.start();
+
+    const bass = audioCtx.createOscillator();
+    const bassFilter = audioCtx.createBiquadFilter();
+    const bassGain = audioCtx.createGain();
+    bass.type = "sawtooth";
+    bass.frequency.value = 49;
+    bassFilter.type = "lowpass";
+    bassFilter.frequency.value = 200;
+    bassGain.gain.value = 0.0001;
+    bass.connect(bassFilter);
+    bassFilter.connect(bassGain);
+    bassGain.connect(audioCtx.destination);
+    bass.start();
+    const notes = [49, 49, 73, 49, 55, 49, 65, 49];
+    let step = 0;
+    setInterval(() => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      bass.frequency.setValueAtTime(notes[step % notes.length], now);
+      bassGain.gain.cancelScheduledValues(now);
+      bassGain.gain.setValueAtTime(0.0001, now);
+      bassGain.gain.exponentialRampToValueAtTime(0.07, now + 0.015);
+      bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+      if (step % 2 === 0) {
+        const stab = audioCtx.createOscillator();
+        const stabGain = audioCtx.createGain();
+        stab.type = "square";
+        stab.frequency.value = step % 4 === 0 ? 196 : 247;
+        stabGain.gain.setValueAtTime(0.0001, now);
+        stabGain.gain.exponentialRampToValueAtTime(0.025, now + 0.01);
+        stabGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+        stab.connect(stabGain);
+        stabGain.connect(audioCtx.destination);
+        stab.start(now);
+        stab.stop(now + 0.11);
+      }
+      step += 1;
+    }, 260);
+  }
+
+  function roar() {
+    if (!audioCtx || !crowdGain) return;
+    const t = audioCtx.currentTime;
+    crowdGain.gain.cancelScheduledValues(t);
+    crowdGain.gain.setValueAtTime(0.07, t);
+    crowdGain.gain.exponentialRampToValueAtTime(0.015, t + 1.6);
+    if (match) match.roar = 1;
+  }
+
+  function swish() {
+    noiseBurst(0.22, 1800, 0.16);
+    tone(880, 0.08, "sine", 0.03);
+  }
+
+  function clank() {
+    tone(160, 0.14, "triangle", 0.07);
+    tone(96, 0.22, "sine", 0.05);
+    noiseBurst(0.08, 400, 0.08);
+  }
+
   function unlockAudio() {
     if (!audioCtx) audioCtx = new AudioContext();
     if (audioCtx.state === "suspended") audioCtx.resume();
+    ensureMix();
   }
 
   function clamp(v, a, b) {
@@ -153,7 +271,27 @@
       over: null,
       cpu: null,
       t: 0,
+      shake: 0,
+      zoom: 0,
+      banner: null,
+      trail: [],
+      basket: null,
+      roar: 0,
+      pop: { mamdani: 0, sayed: 0 },
     };
+  }
+
+  function punch(text, hot) {
+    match.banner = { text, life: 2.4 };
+    if (hot) roar();
+  }
+
+  function ballPoint(b) {
+    const t = clamp(b.t, 0, 1);
+    const x = b.x0 + (b.x1 - b.x0) * t;
+    const arc = Math.sin(t * Math.PI) * (b.flair === "dunk" ? 40 : 170);
+    const y = b.y0 + (b.y1 - b.y0) * t - arc;
+    return { x, y, t };
   }
 
   function say(text) {
@@ -224,7 +362,12 @@
     match.pose[id] = flair === "none" ? "shot" : flair;
     match.jump[id] = 1;
     match.cpu = null;
-    tone(made ? 620 : 180, 0.12, "square", 0.05);
+    match.trail = [];
+    if (flair === "dunk") {
+      match.shake = 1;
+      match.zoom = 1;
+    }
+    noiseBurst(0.12, 900, 0.05);
   }
 
   function addLetter(id) {
@@ -235,6 +378,8 @@
       const winner = otherId(id);
       match.over = winner;
       say(`${FIGHTERS[id].full} spells HORSE. ${FIGHTERS[winner].full} takes the court.`);
+      punch("HORSE", true);
+      match.pop[id] = 1;
       return;
     }
     return word;
@@ -246,6 +391,9 @@
     const name = FIGHTERS[id].name;
     match.ball = null;
     match.pose[id] = "idle";
+    match.basket = { life: 1.2, made: ball.made };
+    if (ball.made) swish();
+    else clank();
     if (match.phase === "set") {
       if (ball.made) {
         match.challenge = { x: ball.sx, y: ball.sy, flair: ball.flair };
@@ -253,14 +401,18 @@
         match.active = otherId(id);
         const trick = FLAIR_NAME[ball.flair];
         say(`${name} sinks the ${trick}. ${FIGHTERS[match.active].name} has to copy the spot and the flair.`);
-        tone(740, 0.08, "square", 0.04);
-        setTimeout(() => tone(880, 0.1, "square", 0.04), 90);
+        const shouts = { none: "SWISH", spin: "SPIN CYCLE", dunk: "HE GOT UP", fade: "FADEAWAY", hook: "SKY HOOK" };
+        punch(shouts[ball.flair] || "SWISH", true);
+        if (ball.flair === "dunk") {
+          match.shake = 1;
+          match.zoom = 1;
+        }
       } else {
         match.challenge = null;
         match.phase = "set";
         match.active = otherId(id);
         say(`Off the iron. ${name}'s shot does not count. ${FIGHTERS[match.active].name} calls the next one.`);
-        tone(140, 0.16, "triangle", 0.05);
+        punch("OFF THE IRON");
       }
     } else {
       const spotOk = Math.hypot(ball.sx - match.challenge.x, ball.sy - match.challenge.y) < 0.11;
@@ -270,7 +422,7 @@
         match.challenge = null;
         match.active = otherId(id);
         say(`Copied. ${FIGHTERS[match.active].name} calls a new shot.`);
-        tone(760, 0.1, "square", 0.045);
+        punch("COPIED", true);
       } else {
         const why = !spotOk
           ? "Wrong spot."
@@ -278,11 +430,13 @@
             ? `That was a ${FLAIR_NAME[ball.flair]}. Copy the ${FLAIR_NAME[match.challenge.flair]}.`
             : "Off the rim.";
         const word = addLetter(id);
+        match.pop[id] = 1;
         if (!match.over) {
           match.phase = "set";
           match.challenge = null;
           match.active = otherId(id);
           say(`${why} ${name} picks up ${word}. ${FIGHTERS[match.active].name} calls the next one.`);
+          punch(word);
         }
       }
     }
@@ -297,8 +451,27 @@
   function update(dt) {
     if (!match || screen !== "play") return;
     match.t += dt;
+    if (match.shake > 0) match.shake = Math.max(0, match.shake - dt * 1.4);
+    if (match.zoom > 0) match.zoom = Math.max(0, match.zoom - dt * 0.7);
+    if (match.roar > 0) match.roar = Math.max(0, match.roar - dt * 0.55);
+    if (match.basket) {
+      match.basket.life -= dt;
+      if (match.basket.life <= 0) match.basket = null;
+    }
+    match.pop.mamdani = Math.max(0, match.pop.mamdani - dt * 1.4);
+    match.pop.sayed = Math.max(0, match.pop.sayed - dt * 1.4);
+    if (match.banner) {
+      match.banner.life -= dt;
+      if (match.banner.life <= 0) match.banner = null;
+    }
     for (const id of ["mamdani", "sayed"]) {
       if (match.jump[id] > 0) match.jump[id] = Math.max(0, match.jump[id] - dt * 0.85);
+    }
+    if (match.ball) {
+      match.trail.push(ballPoint(match.ball));
+      if (match.trail.length > 14) match.trail.shift();
+    } else if (match.trail.length) {
+      match.trail.shift();
     }
     if (match.ball) {
       match.ball.t += dt / 0.72;
@@ -349,7 +522,7 @@
         match.power = 0;
         match.powerDir = 1;
       }
-      match.pose[id] = "shot";
+      match.pose[id] = "idle";
     }
   }
 
@@ -378,7 +551,7 @@
     }
     match.hold = true;
     match.power += dt * 0.72;
-    match.pose[cpu.id] = "shot";
+    match.pose[cpu.id] = "idle";
     if (match.power >= cpu.aim) {
       match.power = cpu.aim;
       release(cpu.id);
@@ -512,64 +685,113 @@
     canvas.focus();
   }
 
+  function quad(p0, p1, p2, p3) {
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.lineTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.closePath();
+  }
+
   function drawCourt() {
     const nyc = match.court === "nyc";
-    const sky = ctx.createLinearGradient(0, 0, 0, H);
-    if (nyc) {
-      sky.addColorStop(0, "#1b2456");
-      sky.addColorStop(0.45, "#c46a3a");
-      sky.addColorStop(1, "#2a2118");
-    } else {
-      sky.addColorStop(0, "#2a1848");
-      sky.addColorStop(0.42, "#e07a3a");
-      sky.addColorStop(1, "#241810");
-    }
+    const sky = ctx.createLinearGradient(0, 0, 0, 280);
+    sky.addColorStop(0, nyc ? "#141a38" : "#1a1030");
+    sky.addColorStop(0.55, nyc ? "#c45a32" : "#d86a28");
+    sky.addColorStop(1, nyc ? "#f0b56a" : "#e8924a");
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
+    drawLights();
     if (nyc) drawBricks();
     else drawSkyline();
+    drawCrowd(nyc);
     drawFence();
-    const near = project(0.5, 0.02);
-    const far = project(0.5, 0.78);
-    ctx.beginPath();
-    const a = project(0.08, 0.74);
-    const b = project(0.92, 0.74);
-    const c = project(0.78, 0.08);
-    const d = project(0.22, 0.08);
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(c.x, c.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.lineTo(a.x, a.y);
-    ctx.closePath();
-    ctx.fillStyle = "#c4552a";
+    for (let ny = 0.76; ny > 0.06; ny -= 0.028) {
+      const a = project(0.06, ny);
+      const b = project(0.94, ny);
+      const c = project(0.94, Math.max(0.05, ny - 0.028));
+      const d = project(0.06, Math.max(0.05, ny - 0.028));
+      const stripe = Math.floor(ny * 36) % 2;
+      ctx.fillStyle = stripe ? "#d39252" : "#c47c40";
+      quad(d, c, b, a);
+      ctx.fill();
+    }
+    const paint = nyc ? "rgba(36, 62, 115, 0.72)" : "rgba(214, 69, 58, 0.72)";
+    const key = [project(0.36, 0.76), project(0.64, 0.76), project(0.58, 0.48), project(0.42, 0.48)];
+    quad(key[0], key[1], key[2], key[3]);
+    ctx.fillStyle = paint;
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.55)";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "rgba(255,255,255,0.92)";
+    ctx.lineWidth = 4;
+    ctx.lineJoin = "round";
+    const edge = [project(0.08, 0.74), project(0.92, 0.74), project(0.78, 0.08), project(0.22, 0.08)];
+    quad(edge[3], edge[2], edge[1], edge[0]);
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(project(0.5, 0.08).x, project(0.5, 0.08).y);
     ctx.lineTo(project(0.5, 0.74).x, project(0.5, 0.74).y);
     ctx.stroke();
-    const key = [project(0.38, 0.74), project(0.62, 0.74), project(0.58, 0.5), project(0.42, 0.5)];
-    ctx.beginPath();
-    ctx.moveTo(key[0].x, key[0].y);
-    key.slice(1).forEach((p) => ctx.lineTo(p.x, p.y));
-    ctx.closePath();
+    quad(key[0], key[1], key[2], key[3]);
     ctx.stroke();
-    void near;
-    void far;
+    ctx.beginPath();
+    for (let i = 0; i <= 16; i += 1) {
+      const a = (Math.PI * i) / 16;
+      const nx = 0.5 + Math.cos(a) * 0.2;
+      const ny = 0.5 + Math.sin(a) * 0.16;
+      const p = project(nx, ny);
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+    const gloss = ctx.createLinearGradient(0, 220, 0, 640);
+    gloss.addColorStop(0, "rgba(255,255,255,0.16)");
+    gloss.addColorStop(0.4, "rgba(255,255,255,0)");
+    ctx.fillStyle = gloss;
+    quad(edge[3], edge[2], edge[1], edge[0]);
+    ctx.fill();
     drawHoop();
     if (match.challenge && match.phase === "copy") {
       const g = project(match.challenge.x, match.challenge.y);
       ctx.strokeStyle = "#ffb020";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(g.x, g.y, 28 + Math.sin(match.t * 5) * 4, 0, Math.PI * 2);
+      ctx.arc(g.x, g.y, 34 + Math.sin(match.t * 5) * 5, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.fillStyle = "#1a120c";
+      ctx.fillRect(g.x - 70, g.y - 58, 140, 22);
       ctx.fillStyle = "#ffb020";
       ctx.font = "14px Bungee, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(FLAIR_NAME[match.challenge.flair].toUpperCase(), g.x, g.y - 36);
+      ctx.fillText(FLAIR_NAME[match.challenge.flair].toUpperCase(), g.x, g.y - 42);
+    }
+  }
+
+  function drawCrowd(nyc) {
+    for (let i = 0; i < 42; i += 1) {
+      const x = 16 + i * 31;
+      const hop = match.roar > 0 ? Math.abs(Math.sin(match.t * 9 + i)) * 16 * match.roar : 0;
+      const bob = Math.sin(match.t * 3 + i) * 3 - hop;
+      ctx.fillStyle = i % 2 ? (nyc ? "#1c2438" : "#2a1830") : "#3a241c";
+      ctx.beginPath();
+      ctx.ellipse(x, 168 + bob, 14, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = i % 3 ? "#e4b48a" : "#d39a6c";
+      ctx.beginPath();
+      ctx.arc(x, 154 + bob, 8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawLights() {
+    for (const x of [220, 640, 1060]) {
+      const glow = ctx.createRadialGradient(x, 36, 4, x, 80, 180);
+      glow.addColorStop(0, "rgba(255, 236, 190, 0.55)");
+      glow.addColorStop(1, "rgba(255, 236, 190, 0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(x - 180, 0, 360, 220);
+      ctx.fillStyle = "#f4efe4";
+      ctx.fillRect(x - 28, 18, 56, 10);
     }
   }
 
@@ -617,26 +839,54 @@
 
   function drawHoop() {
     const h = project(HOOP.x, HOOP.y);
-    ctx.fillStyle = "#d7d2c8";
-    ctx.fillRect(h.x - 36, h.y - 78, 72, 48);
-    ctx.strokeStyle = "#222";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(h.x - 36, h.y - 78, 72, 48);
-    ctx.fillStyle = "#f08a24";
-    ctx.fillRect(h.x - 4, h.y - 30, 8, 28);
-    ctx.strokeStyle = "#e23b3b";
+    const hit = match.basket && match.basket.life > 0 ? match.basket : null;
+    const incoming = match.ball && match.ball.t > 0.78;
+    const sway = hit ? Math.sin(match.t * 30) * hit.life * 12 : incoming ? 5 : Math.sin(match.t * 2) * 1.2;
+    ctx.save();
+    ctx.translate(sway * 0.35, 0);
+    ctx.fillStyle = "#5c5348";
+    ctx.fillRect(h.x - 7, h.y - 8, 14, 150);
+    ctx.fillStyle = hit && hit.made ? "rgba(255, 246, 214, 0.82)" : "rgba(214, 232, 242, 0.55)";
+    roundRect(h.x - 52, h.y - 118, 104, 72, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#f4efe4";
     ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.ellipse(h.x, h.y - 8, 26, 8, 0, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.strokeStyle = "rgba(255,255,255,0.7)";
-    ctx.lineWidth = 1;
-    for (let i = -2; i <= 2; i += 1) {
+    ctx.strokeStyle = "rgba(20, 16, 12, 0.55)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(h.x - 22, h.y - 96, 44, 32);
+    ctx.restore();
+    ctx.fillStyle = "#f08a24";
+    ctx.fillRect(h.x - 5 + sway * 0.2, h.y - 46, 10, 22);
+    ctx.strokeStyle = hit && !hit.made ? "#fff1c9" : "#ff4a2a";
+    ctx.lineWidth = hit ? 9 : 7;
+    ctx.beginPath();
+    ctx.ellipse(h.x + sway * 0.15, h.y - 18, 32, 10, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.9)";
+    ctx.lineWidth = 1.5;
+    for (let i = -3; i <= 3; i += 1) {
       ctx.beginPath();
-      ctx.moveTo(h.x + i * 8, h.y - 6);
-      ctx.lineTo(h.x + i * 5, h.y + 22);
+      ctx.moveTo(h.x + i * 9, h.y - 16);
+      ctx.quadraticCurveTo(h.x + i * 6 + sway, h.y + 10, h.x + i * 4 + sway * 0.4, h.y + 30);
       ctx.stroke();
     }
+  }
+
+  function spriteFor(id, pose) {
+    const set = CLIPS[id];
+    if (!set) return null;
+    let key = null;
+    const shooting = (match.ball && match.ball.id === id) || (match.hold && match.active === id);
+    if (shooting && set.shot) key = "shot";
+    else if (set[pose]) key = pose;
+    else if (pose === "move" && set.move) key = "move";
+    else if ((pose === "fade" || pose === "spin" || pose === "hook" || pose === "dunk") && set.shot) key = "shot";
+    else if (set.idle) key = "idle";
+    if (!key) return null;
+    const img = images[`${id}-${key}`];
+    if (!img || !img.complete || !img.naturalWidth) return null;
+    return { img, clip: set[key], key };
   }
 
   function drawPlayer(id) {
@@ -646,16 +896,39 @@
     const pose = match.pose[id];
     const jumping = match.jump[id];
     const moving = pose === "move";
-    const bob = pose === "idle" || moving ? Math.abs(Math.sin(match.t * (moving ? 11 : 7))) * 5 : 0;
-    const stride = moving ? Math.sin(match.t * 11) * 10 : 0;
-    const lift = jumping * 54 * at.s;
-    const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
+    const bob = pose === "idle" || moving ? Math.abs(Math.sin(match.t * (moving ? 11 : 7))) * 4 : 0;
+    const lift = jumping * 70 * at.s;
+    const sprite = spriteFor(id, pose);
     ctx.save();
     ctx.translate(at.x, at.y);
-    ctx.fillStyle = "rgba(0,0,0,0.35)";
+    ctx.fillStyle = "rgba(0,0,0,0.38)";
     ctx.beginPath();
-    ctx.ellipse(0, 4, 28 * at.s, 8 * at.s, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 6, 46 * at.s, 12 * at.s, 0, 0, Math.PI * 2);
     ctx.fill();
+    if (sprite) {
+      const { img, clip, key } = sprite;
+      const gather = clip.gather || 4;
+      let frame;
+      if (match.hold && match.active === id && key === "shot") {
+        frame = Math.min(gather - 1, Math.floor(match.power * gather));
+      } else if (match.ball && match.ball.id === id && key === "shot") {
+        const releaseAt = gather;
+        frame = Math.min(clip.frames - 1, releaseAt + Math.floor(match.ball.t * (clip.frames - releaseAt)));
+      } else if (key === "idle" || key === "move") {
+        frame = Math.floor(match.t * (key === "move" ? 12 : 8)) % clip.frames;
+      } else {
+        frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
+      }
+      const height = 250 + at.s * 55;
+      const width = height * (clip.fw / clip.fh);
+      ctx.translate(0, -lift);
+      ctx.scale(match.face[id] || 1, 1);
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height + bob, width, height);
+      ctx.restore();
+      return;
+    }
+    const stride = moving ? Math.sin(match.t * 11) * 10 : 0;
+    const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
     ctx.scale(at.s, at.s);
     ctx.translate(0, -lift + bob);
     if (pose === "spin") ctx.rotate(Math.sin(match.t * 18) * 0.9);
@@ -713,29 +986,61 @@
     ctx.restore();
   }
 
-  function drawBall(x, y, r) {
-    ctx.fillStyle = "#e07a2f";
+  function drawBall(x, y, r, spin) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(spin || 0);
+    const glow = ctx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.2, 0, 0, r);
+    glow.addColorStop(0, "#ffb15a");
+    glow.addColorStop(0.6, "#e07a2f");
+    glow.addColorStop(1, "#9a3e12");
+    ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = "#1a120c";
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(x - r, y);
-    ctx.lineTo(x + r, y);
-    ctx.moveTo(x, y - r);
-    ctx.lineTo(x, y + r);
+    ctx.moveTo(-r, 0);
+    ctx.lineTo(r, 0);
+    ctx.moveTo(0, -r);
+    ctx.lineTo(0, r);
     ctx.stroke();
+    ctx.restore();
   }
 
   function drawFlight() {
+    match.trail.forEach((p, i) => {
+      const a = (i + 1) / match.trail.length;
+      ctx.fillStyle = `rgba(255, 176, 32, ${a * 0.45})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4 + a * 8, 0, Math.PI * 2);
+      ctx.fill();
+    });
     const b = match.ball;
-    const t = clamp(b.t, 0, 1);
-    const x = b.x0 + (b.x1 - b.x0) * t;
-    const arc = Math.sin(t * Math.PI) * (b.flair === "dunk" ? 40 : 160);
-    const y = b.y0 + (b.y1 - b.y0) * t - arc;
-    drawBall(x, y, b.flair === "dunk" && t > 0.75 ? 12 : 14);
+    const p = ballPoint(b);
+    const squash = b.flair === "dunk" && p.t > 0.75 ? 16 : 18;
+    drawBall(p.x, p.y, squash, match.t * 10);
+  }
+
+  function drawBanner() {
+    if (!match.banner) return;
+    const life = match.banner.life;
+    const popIn = Math.min(1, (2.4 - life) * 8);
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, life * 3);
+    ctx.translate(W / 2, 250);
+    ctx.scale(0.78 + popIn * 0.28, 0.78 + popIn * 0.28);
+    ctx.font = "78px Bungee, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = "#14080c";
+    ctx.strokeText(match.banner.text, 0, 0);
+    ctx.fillStyle = "#ffb020";
+    ctx.fillText(match.banner.text, 0, 0);
+    ctx.restore();
   }
 
   function drawHud() {
@@ -760,9 +1065,16 @@
       ctx.fillText(f.name.toUpperCase(), x + 76, 48);
       LETTERS.forEach((letter, n) => {
         const on = n < match.letters[id];
+        const fresh = on && n === match.letters[id] - 1 && match.pop[id] > 0;
+        const s = fresh ? 1 + match.pop[id] * 0.55 : 1;
+        ctx.save();
+        ctx.translate(x + 76 + n * 36, 86);
+        ctx.scale(s, s);
         ctx.fillStyle = on ? "#ff4d8d" : "#efe6da";
         ctx.font = "28px Bungee, sans-serif";
-        ctx.fillText(letter, x + 76 + n * 36, 86);
+        ctx.textAlign = "left";
+        ctx.fillText(letter, 0, 0);
+        ctx.restore();
       });
     });
     ctx.fillStyle = "#f6efe4";
@@ -843,6 +1155,18 @@
     buttons.length = 0;
     ctx.textBaseline = "alphabetic";
     ctx.textAlign = "left";
+    ctx.save();
+    if (screen === "play" && match && match.zoom > 0) {
+      const z = 1 + match.zoom * 0.14;
+      const h = project(HOOP.x, HOOP.y);
+      ctx.translate(h.x, h.y);
+      ctx.scale(z, z);
+      ctx.translate(-h.x, -h.y);
+    }
+    if (screen === "play" && match && match.shake > 0) {
+      const s = match.shake * 10;
+      ctx.translate((Math.random() - 0.5) * s, (Math.random() - 0.5) * s);
+    }
     if (screen === "title") drawTitle();
     else if (screen === "select") drawSelect();
     else {
@@ -850,8 +1174,18 @@
       const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
       if (match.ball) drawFlight();
+      else if (match.trail.length) {
+        match.trail.forEach((p, i) => {
+          ctx.fillStyle = `rgba(255, 176, 32, ${(i + 1) / match.trail.length * 0.25})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      drawBanner();
       drawHud();
     }
+    ctx.restore();
   }
 
   function hit(px, py) {
