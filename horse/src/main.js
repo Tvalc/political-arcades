@@ -65,6 +65,8 @@
   loadImage("mamdani-move", "assets/sprites/mamdani-move.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
   loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
+  loadImage("mamdani-spin", "assets/sprites/mamdani-spin.webp");
+  loadImage("mamdani-fade", "assets/sprites/mamdani-fade.webp");
   loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
   loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
   loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
@@ -74,6 +76,8 @@
       idle: { frames: 8, fw: 500, fh: 620 },
       shot: { frames: 8, fw: 302, fh: 640, gather: 5 },
       dunk: { frames: 8, fw: 354, fh: 640 },
+      spin: { frames: 8, fw: 390, fh: 640 },
+      fade: { frames: 8, fw: 372, fh: 640 },
     },
     sayed: {
       idle: { frames: 8, fw: 484, fh: 640 },
