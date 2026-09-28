@@ -71,6 +71,7 @@
   loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
   loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
   loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
+  loadImage("sayed-spin", "assets/sprites/sayed-spin.webp");
 
   const CLIPS = {
     mamdani: {
@@ -85,6 +86,7 @@
       idle: { frames: 8, fw: 484, fh: 640 },
       shot: { frames: 8, fw: 322, fh: 640, gather: 4 },
       dunk: { frames: 8, fw: 390, fh: 640 },
+      spin: { frames: 8, fw: 347, fh: 640 },
     },
   };
 
