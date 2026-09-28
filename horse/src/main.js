@@ -72,6 +72,8 @@
   loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
   loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
   loadImage("sayed-spin", "assets/sprites/sayed-spin.webp");
+  loadImage("sayed-fade", "assets/sprites/sayed-fade.webp");
+  loadImage("sayed-hook", "assets/sprites/sayed-hook.webp");
 
   const CLIPS = {
     mamdani: {
@@ -87,6 +89,8 @@
       shot: { frames: 8, fw: 322, fh: 640, gather: 4 },
       dunk: { frames: 8, fw: 390, fh: 640 },
       spin: { frames: 8, fw: 347, fh: 640 },
+      fade: { frames: 8, fw: 389, fh: 640 },
+      hook: { frames: 8, fw: 342, fh: 640 },
     },
   };
 
@@ -1246,7 +1250,10 @@
       drawCourt();
       const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
-      if (match.ball && !(match.ball.flair === "dunk" && match.ball.t < 0.7)) drawFlight();
+      if (match.ball) {
+        const holdBall = match.ball.flair === "dunk" ? 0.7 : match.ball.flair === "none" ? 0 : 0.42;
+        if (match.ball.t >= holdBall) drawFlight();
+      }
       else if (match.trail.length) {
         match.trail.forEach((p, i) => {
           ctx.fillStyle = `rgba(255, 176, 32, ${(i + 1) / match.trail.length * 0.25})`;
