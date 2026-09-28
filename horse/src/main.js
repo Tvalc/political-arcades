@@ -64,15 +64,19 @@
   loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
   loadImage("mamdani-move", "assets/sprites/mamdani-move.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
+  loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
   loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
+  loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
 
   const CLIPS = {
     mamdani: {
       idle: { frames: 8, fw: 500, fh: 620 },
       shot: { frames: 8, fw: 302, fh: 640, gather: 5 },
+      dunk: { frames: 8, fw: 354, fh: 640 },
     },
     sayed: {
       idle: { frames: 6, fw: 479, fh: 620 },
+      shot: { frames: 8, fw: 319, fh: 640, gather: 4 },
     },
   };
 
@@ -277,13 +281,23 @@
       trail: [],
       basket: null,
       roar: 0,
+      flash: 0,
       pop: { mamdani: 0, sayed: 0 },
     };
   }
 
   function punch(text, hot) {
     match.banner = { text, life: 2.4 };
-    if (hot) roar();
+    if (hot) {
+      roar();
+      stinger();
+    }
+  }
+
+  function stinger() {
+    [392, 494, 587, 784].forEach((freq, i) => {
+      setTimeout(() => tone(freq, 0.16, "square", 0.05), i * 80);
+    });
   }
 
   function ballPoint(b) {
@@ -364,8 +378,9 @@
     match.cpu = null;
     match.trail = [];
     if (flair === "dunk") {
-      match.shake = 1;
+      match.shake = 1.6;
       match.zoom = 1;
+      match.flash = 0.35;
     }
     noiseBurst(0.12, 900, 0.05);
   }
@@ -391,7 +406,7 @@
     const name = FIGHTERS[id].name;
     match.ball = null;
     match.pose[id] = "idle";
-    match.basket = { life: 1.2, made: ball.made };
+    match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     if (ball.made) swish();
     else clank();
     if (match.phase === "set") {
@@ -404,8 +419,9 @@
         const shouts = { none: "SWISH", spin: "SPIN CYCLE", dunk: "HE GOT UP", fade: "FADEAWAY", hook: "SKY HOOK" };
         punch(shouts[ball.flair] || "SWISH", true);
         if (ball.flair === "dunk") {
-          match.shake = 1;
+          match.shake = 1.8;
           match.zoom = 1;
+          match.flash = 1;
         }
       } else {
         match.challenge = null;
@@ -452,7 +468,8 @@
     if (!match || screen !== "play") return;
     match.t += dt;
     if (match.shake > 0) match.shake = Math.max(0, match.shake - dt * 1.4);
-    if (match.zoom > 0) match.zoom = Math.max(0, match.zoom - dt * 0.7);
+    if (match.zoom > 0) match.zoom = Math.max(0, match.zoom - dt * 0.42);
+    if (match.flash > 0) match.flash = Math.max(0, match.flash - dt * 1.8);
     if (match.roar > 0) match.roar = Math.max(0, match.roar - dt * 0.55);
     if (match.basket) {
       match.basket.life -= dt;
@@ -750,6 +767,16 @@
     ctx.fillStyle = gloss;
     quad(edge[3], edge[2], edge[1], edge[0]);
     ctx.fill();
+    const mid = project(0.5, 0.4);
+    ctx.strokeStyle = "rgba(255,255,255,0.85)";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(mid.x, mid.y, 78, 28, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255, 176, 32, 0.9)";
+    ctx.font = "22px Bungee, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("HORSE", mid.x, mid.y + 8);
     drawHoop();
     if (match.challenge && match.phase === "copy") {
       const g = project(match.challenge.x, match.challenge.y);
@@ -780,6 +807,16 @@
       ctx.beginPath();
       ctx.arc(x, 154 + bob, 8, 0, Math.PI * 2);
       ctx.fill();
+      if (match.roar > 0.2) {
+        ctx.strokeStyle = i % 2 ? "#f6efe4" : "#ffb020";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x - 8, 168 + bob);
+        ctx.lineTo(x - 16, 148 + bob - hop);
+        ctx.moveTo(x + 8, 168 + bob);
+        ctx.lineTo(x + 16, 148 + bob - hop);
+        ctx.stroke();
+      }
     }
   }
 
@@ -855,6 +892,17 @@
     ctx.strokeStyle = "rgba(20, 16, 12, 0.55)";
     ctx.lineWidth = 3;
     ctx.strokeRect(h.x - 22, h.y - 96, 44, 32);
+    if (hit && hit.dunk && hit.made) {
+      ctx.strokeStyle = `rgba(255,255,255,${0.35 + hit.life * 0.5})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(h.x - 8, h.y - 110);
+      ctx.lineTo(h.x + 6, h.y - 88);
+      ctx.lineTo(h.x - 14, h.y - 70);
+      ctx.moveTo(h.x + 10, h.y - 100);
+      ctx.lineTo(h.x + 28, h.y - 78);
+      ctx.stroke();
+    }
     ctx.restore();
     ctx.fillStyle = "#f08a24";
     ctx.fillRect(h.x - 5 + sway * 0.2, h.y - 46, 10, 22);
@@ -878,10 +926,11 @@
     if (!set) return null;
     let key = null;
     const shooting = (match.ball && match.ball.id === id) || (match.hold && match.active === id);
-    if (shooting && set.shot) key = "shot";
+    const flairPose = pose === "dunk" || pose === "spin" || pose === "fade" || pose === "hook" || pose === "shot";
+    if (flairPose && set[pose]) key = pose;
+    else if (shooting && set.shot) key = "shot";
     else if (set[pose]) key = pose;
     else if (pose === "move" && set.move) key = "move";
-    else if ((pose === "fade" || pose === "spin" || pose === "hook" || pose === "dunk") && set.shot) key = "shot";
     else if (set.idle) key = "idle";
     if (!key) return null;
     const img = images[`${id}-${key}`];
@@ -919,11 +968,16 @@
       } else {
         frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
       }
-      const height = 250 + at.s * 55;
+      const height = 340 + at.s * 70;
       const width = height * (clip.fw / clip.fh);
       ctx.translate(0, -lift);
       ctx.scale(match.face[id] || 1, 1);
       ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height + bob, width, height);
+      ctx.save();
+      ctx.globalAlpha = 0.2;
+      ctx.scale(1, -0.28);
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height + bob, width, height);
+      ctx.restore();
       ctx.restore();
       return;
     }
@@ -1020,8 +1074,8 @@
     });
     const b = match.ball;
     const p = ballPoint(b);
-    const squash = b.flair === "dunk" && p.t > 0.75 ? 16 : 18;
-    drawBall(p.x, p.y, squash, match.t * 10);
+    const squash = b.flair === "dunk" && p.t > 0.75 ? 22 : 20;
+    drawBall(p.x, p.y, squash, match.t * 14);
   }
 
   function drawBanner() {
@@ -1070,9 +1124,18 @@
         ctx.save();
         ctx.translate(x + 76 + n * 36, 86);
         ctx.scale(s, s);
-        ctx.fillStyle = on ? "#ff4d8d" : "#efe6da";
         ctx.font = "28px Bungee, sans-serif";
         ctx.textAlign = "left";
+        if (on) {
+          ctx.shadowColor = "#ff4d8d";
+          ctx.shadowBlur = 16;
+          ctx.fillStyle = "#ffd0e4";
+        } else {
+          ctx.fillStyle = "#3a342c";
+        }
+        ctx.fillText(letter, 0, 0);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = on ? "#ff4d8d" : "#6a6258";
         ctx.fillText(letter, 0, 0);
         ctx.restore();
       });
@@ -1157,7 +1220,7 @@
     ctx.textAlign = "left";
     ctx.save();
     if (screen === "play" && match && match.zoom > 0) {
-      const z = 1 + match.zoom * 0.14;
+      const z = 1 + match.zoom * 0.34;
       const h = project(HOOP.x, HOOP.y);
       ctx.translate(h.x, h.y);
       ctx.scale(z, z);
@@ -1173,7 +1236,7 @@
       drawCourt();
       const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
-      if (match.ball) drawFlight();
+      if (match.ball && !(match.ball.flair === "dunk" && match.ball.t < 0.7)) drawFlight();
       else if (match.trail.length) {
         match.trail.forEach((p, i) => {
           ctx.fillStyle = `rgba(255, 176, 32, ${(i + 1) / match.trail.length * 0.25})`;
@@ -1183,9 +1246,15 @@
         });
       }
       drawBanner();
-      drawHud();
     }
     ctx.restore();
+    if (screen === "play" && match) {
+      drawHud();
+      if (match.flash > 0) {
+        ctx.fillStyle = `rgba(255, 246, 220, ${match.flash * 0.55})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
   }
 
   function hit(px, py) {
