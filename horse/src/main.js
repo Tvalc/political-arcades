@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=26` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=28` : src;
     images[key] = img;
   }
 
@@ -110,11 +110,12 @@
       move: {
         frames: 4,
         fw: 384,
-        fh: 1024,
+        fh: 839,
         body: 640,
         fps: 8,
-        feet: [0.878, 0.878, 0.878, 0.877],
-        hands: [[0.173, 0.538], [0.114, 0.537], [0.16, 0.538], [0.14, 0.54]],
+        feet: [0.976, 0.976, 0.976, 0.975],
+        fill: 0.952,
+        hands: [[0.173, 0.561], [0.114, 0.56], [0.16, 0.561], [0.14, 0.563]],
       },
     },
     sayed: {
@@ -285,6 +286,12 @@
     return 110 * at.s;
   }
 
+  function drawnSprite(clip, at) {
+    const span = playerHeight(at);
+    const height = span / (clip.fill || 1);
+    return { span, height, width: height * (clip.fw / clip.fh) };
+  }
+
   function spriteLayout(clip, frame) {
     const foot = clip.feet ? clip.feet[Math.min(frame, clip.feet.length - 1)] : 1;
     const crop = clip.cropTop || 0;
@@ -451,8 +458,9 @@
     if (clip) {
       const frame = dribbleIndex(clip);
       const layout = spriteLayout(clip, frame);
-      const height = span;
-      const width = height * (clip.fw / clip.fh);
+      const drawn = drawnSprite(clip, at);
+      const height = drawn.height;
+      const width = drawn.width;
       const hand = clip.hands[frame];
       const x = at.x + face * (hand[0] - 0.5) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
@@ -1189,8 +1197,9 @@
       }
       const span = playerHeight(at);
       const layout = spriteLayout(clip, frame);
-      const height = span;
-      const width = height * (clip.fw / clip.fh);
+      const drawn = drawnSprite(clip, at);
+      const height = drawn.height;
+      const width = drawn.width;
       ctx.translate(0, -lift);
       const wide = motion.squash < 1 ? 1 + (1 - motion.squash) * 0.65 : 1;
       ctx.scale((match.face[id] || 1) * wide, motion.squash);
