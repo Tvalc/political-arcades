@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=19` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=20` : src;
     images[key] = img;
   }
 
@@ -64,6 +64,7 @@
   loadImage("face-mamdani", "assets/face-mamdani.webp");
   loadImage("face-sayed", "assets/face-sayed.webp");
   loadImage("ball", "assets/sprites/ball.webp");
+  loadImage("hoop", "assets/sprites/hoop.webp");
   loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
   loadImage("mamdani-move", "assets/sprites/mamdani-walk.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
@@ -112,6 +113,7 @@
         fps: 10,
         hop: 0.18,
         bounce: true,
+        feet: [0.924, 0.941, 0.968, 0.982, 0.99, 0.997, 0.996, 0.99, 0.982, 0.974, 0.966, 0.959],
         hands: [
           [0.1, 0.46], [0.11, 0.44], [0.13, 0.47],
           [0.2, 0.6], [0.17, 0.58], [0.15, 0.53],
@@ -460,24 +462,8 @@
     };
   }
 
-  function bodyMotion(id) {
-    const dur = match.jumpDur[id] || 0;
-    const elapsed = match.jump[id] || 0;
-    if (dur <= 0 || elapsed <= 0) return { lift: 0, squash: 1 };
-    const u = Math.min(0.999, elapsed / dur);
-    const dunk = match.ball && match.ball.id === id && match.ball.flair === "dunk";
-    const h = dunk ? 88 : 46;
-    if (u < 0.16) {
-      const dip = Math.sin((u / 0.16) * Math.PI);
-      return { lift: -11 * dip, squash: 1 - 0.07 * dip };
-    }
-    if (u > 0.88) {
-      const dip = Math.sin(((u - 0.88) / 0.12) * Math.PI);
-      return { lift: -6 * dip, squash: 1 - 0.09 * dip };
-    }
-    const k = (u - 0.16) / 0.72;
-    const lift = Math.sin(k * Math.PI) * h;
-    return { lift, squash: 1 };
+  function bodyMotion() {
+    return { lift: 0, squash: 1 };
   }
 
   function say(text) {
@@ -552,8 +538,8 @@
     match.pass = null;
     match.hold = false;
     match.pose[id] = flair === "none" ? "shot" : flair;
-    match.jump[id] = 0.0001;
-    match.jumpDur[id] = flair === "dunk" ? 0.84 : 0.52;
+    match.jump[id] = 0;
+    match.jumpDur[id] = 0;
     match.cpu = null;
     match.trail = [];
     if (flair === "dunk") {
@@ -1079,52 +1065,43 @@
     return { x: hoop.x + kick, rim: hoop.rim + Math.abs(kick) * 0.2, floor: hoop.floor };
   }
 
-  function drawHoopBack() {
+  function hoopSpriteBox() {
     const hoop = hoopPose();
-    const bw = 150;
-    const bh = 96;
-    const top = hoop.rim - 72;
-    ctx.save();
-    ctx.fillStyle = "#6a6258";
-    ctx.fillRect(hoop.x - 7, top + bh - 6, 14, 150);
-    ctx.fillStyle = "rgba(232, 242, 248, 0.96)";
-    roundRect(hoop.x - bw / 2, top, bw, bh, 4);
-    ctx.fill();
-    ctx.strokeStyle = "#f7fbff";
-    ctx.lineWidth = 7;
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(20, 28, 40, 0.55)";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(hoop.x - 30, top + 24, 60, 42);
-    ctx.restore();
+    const img = readyImage("hoop");
+    if (!img) return null;
+    const crop = 0.42;
+    const dw = 176;
+    const dh = dw * ((img.height * crop) / img.width);
+    const rimFrac = 0.236 / crop;
+    return {
+      img,
+      crop,
+      x: hoop.x - dw / 2,
+      y: hoop.rim - dh * rimFrac,
+      w: dw,
+      h: dh,
+    };
+  }
+
+  function drawHoopBack() {
+    const box = hoopSpriteBox();
+    if (!box) return;
+    const srcH = box.img.height * box.crop;
+    ctx.drawImage(box.img, 0, 0, box.img.width, srcH, box.x, box.y, box.w, box.h);
   }
 
   function drawHoopFront() {
-    const hoop = hoopPose();
     const through = match.ball && match.ball.phase === "net";
-    const stretch = through ? match.ball.t : (match.hoopKick || 0) * 0.25;
-    const sway = (match.hoopKick || 0) * Math.sin(match.t * 20) * 12;
-    ctx.save();
-    ctx.strokeStyle = "#ff4a2a";
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.ellipse(hoop.x, hoop.rim, 28, 9, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(255,255,255,0.94)";
-    ctx.lineWidth = 1.6;
-    for (let i = -4; i <= 4; i += 1) {
-      const drop = 18 + stretch * 48 + Math.abs(i);
-      ctx.beginPath();
-      ctx.moveTo(hoop.x + i * 6.2, hoop.rim + 3);
-      ctx.quadraticCurveTo(
-        hoop.x + i * 4 + sway * 0.35,
-        hoop.rim + drop * 0.55,
-        hoop.x + i * 2.2 + sway * (0.15 + Math.abs(i) * 0.04),
-        hoop.rim + drop,
-      );
-      ctx.stroke();
-    }
-    ctx.restore();
+    if (!through) return;
+    const box = hoopSpriteBox();
+    if (!box) return;
+    const y0 = 0.29;
+    const y1 = 0.4;
+    const srcY = box.img.height * y0;
+    const srcH = box.img.height * (y1 - y0);
+    const destY = box.y + box.h * (y0 / box.crop);
+    const destH = box.h * ((y1 - y0) / box.crop) * (1 + match.ball.t * 0.45);
+    ctx.drawImage(box.img, 0, srcY, box.img.width, srcH, box.x, destY, box.w, destH);
   }
 
   function spriteFor(id, pose) {
@@ -1183,11 +1160,12 @@
       ctx.translate(0, -lift);
       const wide = motion.squash < 1 ? 1 + (1 - motion.squash) * 0.65 : 1;
       ctx.scale((match.face[id] || 1) * wide, motion.squash);
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
+      const foot = clip.feet ? clip.feet[frame] : 1;
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height * foot, width, height);
       ctx.save();
       ctx.globalAlpha = 0.2;
       ctx.scale(1, -0.28);
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
+      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height * foot, width, height);
       ctx.restore();
       ctx.restore();
       return;
