@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.includes("sprites/") ? `${src}?v=6` : src;
+    img.src = src.includes("sprites/") ? `${src}?v=9` : src;
     images[key] = img;
   }
 
@@ -63,12 +63,13 @@
   loadImage("face-sayed", "assets/face-sayed.webp");
   loadImage("ball", "assets/sprites/ball.webp");
   loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
-  loadImage("mamdani-move", "assets/sprites/mamdani-move.webp");
+  loadImage("mamdani-move", "assets/sprites/mamdani-walk.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
   loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
   loadImage("mamdani-spin", "assets/sprites/mamdani-spin.webp");
   loadImage("mamdani-fade", "assets/sprites/mamdani-fade.webp");
   loadImage("mamdani-hook", "assets/sprites/mamdani-hook.webp");
+  loadImage("mamdani-dribble", "assets/sprites/mamdani-dribble.webp");
   loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
   loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
   loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
@@ -84,6 +85,30 @@
       spin: { frames: 8, fw: 415, fh: 917, body: 640, play: 4 },
       fade: { frames: 8, fw: 438, fh: 922, body: 640, play: 5 },
       hook: { frames: 8, fw: 417, fh: 914, body: 640, play: 5 },
+      dribble: {
+        frames: 4,
+        fw: 410,
+        fh: 652,
+        body: 640,
+        fps: 8,
+        yFree: 1,
+        hop: 0.1,
+        hands: [[0.52, 0.54], [0.49, 0.60], [0.48, 0.59], [0.48, 0.57]],
+      },
+      move: {
+        frames: 12,
+        fw: 322,
+        fh: 676,
+        body: 640,
+        fps: 12,
+        yFree: 10,
+        hop: 0.08,
+        hands: [
+          [0.71, 0.54], [0.71, 0.54], [0.68, 0.52], [0.64, 0.52],
+          [0.65, 0.54], [0.70, 0.56], [0.71, 0.57], [0.71, 0.59],
+          [0.71, 0.58], [0.70, 0.63], [0.64, 0.67], [0.71, 0.55],
+        ],
+      },
     },
     sayed: {
       idle: { frames: 2, fw: 267, fh: 733, body: 733 },
@@ -345,12 +370,38 @@
     return { bounce, dip: Math.sin(bounce * Math.PI) };
   }
 
+  function dribbleIndex(clip) {
+    return Math.floor(match.t * (clip.fps || 8)) % clip.frames;
+  }
+
+  function handClip(id) {
+    const set = CLIPS[id];
+    if (!set) return null;
+    if (match.pose[id] === "move" && set.move && set.move.hands) return set.move;
+    if (set.dribble && set.dribble.hands) return set.dribble;
+    return null;
+  }
+
   function ownedBall(id) {
     const at = project(match.pos[id].x, match.pos[id].y);
     const span = playerHeight(at);
     const face = match.face[id] || 1;
     const lift = match.jump[id] * 46 * at.s;
     const r = Math.max(8, span * 0.09);
+    const clip = handClip(id);
+    if (clip) {
+      const frame = dribbleIndex(clip);
+      const height = span * (clip.fh / (clip.body || clip.fh));
+      const width = height * (clip.fw / clip.fh);
+      const hand = clip.hands[frame];
+      const x = at.x + face * (hand[0] - 0.5) * width;
+      let y = at.y - lift + (hand[1] - 1) * height;
+      if (frame === clip.yFree) {
+        const u = (match.t * (clip.fps || 8)) % 1;
+        y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
+      }
+      return { x, y, r, spin: frame * 0.4 };
+    }
     const beat = dribbleBeat();
     const x = at.x + face * span * 0.2;
     const hand = at.y - lift - span * 0.4;
@@ -1020,10 +1071,12 @@
     let key = null;
     const shooting = match.ball && match.ball.id === id;
     const flairPose = pose === "dunk" || pose === "spin" || pose === "fade" || pose === "hook" || pose === "shot";
+    const dribbling = match.owner === id && !match.hold && !match.ball && !match.pass;
     if (flairPose && set[pose]) key = pose;
     else if (shooting && set.shot) key = "shot";
-    else if (set[pose]) key = pose;
-    else if (pose === "move" && set.move) key = "move";
+    else if (dribbling && pose === "move" && set.move) key = "move";
+    else if (dribbling && set.dribble) key = "dribble";
+    else if (set[pose] && pose !== "move") key = pose;
     else if (set.idle) key = "idle";
     if (!key) return null;
     const img = images[`${id}-${key}`];
@@ -1049,23 +1102,21 @@
     if (sprite) {
       const { img, clip, key } = sprite;
       let frame;
-      const dribbling = key === "idle" && match.owner === id && !match.hold && !match.pass;
-      const beat = dribbling ? dribbleBeat() : null;
-      if (match.hold && match.active === id && key !== "idle") {
+      if (match.hold && match.active === id && key !== "idle" && key !== "dribble") {
         frame = Math.min(2, Math.floor(match.power * 3));
       } else if (match.ball && match.ball.id === id) {
         frame = poseFrame(clip, match.ball);
+      } else if (key === "dribble" || key === "move") {
+        frame = dribbleIndex(clip);
       } else if (key === "idle") {
         frame = 0;
-      } else if (key === "move") {
-        frame = Math.floor(match.t * 8) % clip.frames;
       } else {
         frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
       }
       const span = playerHeight(at);
       const height = span * (clip.fh / (clip.body || clip.fh));
       const width = height * (clip.fw / clip.fh);
-      ctx.translate(0, -lift + (beat ? beat.dip * span * 0.015 : 0));
+      ctx.translate(0, -lift);
       ctx.scale(match.face[id] || 1, 1);
       ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
       ctx.save();
