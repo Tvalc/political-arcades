@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=25` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=26` : src;
     images[key] = img;
   }
 
@@ -66,7 +66,7 @@
   loadImage("ball", "assets/sprites/ball.webp");
   loadImage("hoop", "assets/sprites/hoop.webp");
   loadImage("mamdani-idle", "assets/sprites/mamdani-idle.webp");
-  loadImage("mamdani-move", "assets/sprites/mamdani-walk.webp");
+  loadImage("mamdani-move", "assets/sprites/mamdani-stride.webp");
   loadImage("mamdani-shot", "assets/sprites/mamdani-shot.webp");
   loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
   loadImage("mamdani-spin", "assets/sprites/mamdani-spin.webp");
@@ -108,20 +108,13 @@
         hands: [[0.52, 0.70], [0.49, 0.80], [0.48, 0.78], [0.48, 0.74]],
       },
       move: {
-        frames: 12,
-        fw: 448,
-        fh: 680,
+        frames: 4,
+        fw: 384,
+        fh: 1024,
         body: 640,
-        fps: 6,
-        hop: 0.14,
-        pace: 2,
-        feet: [0.924, 0.941, 0.968, 0.982, 0.99, 0.997, 0.996, 0.99, 0.982, 0.974, 0.966, 0.959],
-        hands: [
-          [0.12, 0.68], [0.13, 0.68], [0.14, 0.68],
-          [0.18, 0.68], [0.16, 0.68], [0.15, 0.68],
-          [0.15, 0.68], [0.17, 0.68], [0.2, 0.68],
-          [0.17, 0.68], [0.15, 0.68], [0.18, 0.68],
-        ],
+        fps: 8,
+        feet: [0.878, 0.878, 0.878, 0.877],
+        hands: [[0.173, 0.538], [0.114, 0.537], [0.16, 0.538], [0.14, 0.54]],
       },
     },
     sayed: {
