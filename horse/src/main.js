@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.includes("sprites/") ? `${src}?v=10` : src;
+    img.src = src.includes("sprites/") ? `${src}?v=11` : src;
     images[key] = img;
   }
 
@@ -286,6 +286,13 @@
 
   function requiredPower(x, y) {
     return clamp(0.26 + distToHoop(x, y) * 0.95, 0.28, 0.93);
+  }
+
+  function shotNeed() {
+    const p = match.pos[match.humanId];
+    const span = match.flair === "none" ? 0.082 : 0.046;
+    const need = requiredPower(p.x, p.y);
+    return { need, span, hit: Math.abs(match.power - need) <= span };
   }
 
   function canDunk(x, y) {
@@ -676,6 +683,11 @@
         match.powerDir = 1;
       }
       match.pose[id] = match.flair === "none" ? "shot" : match.flair;
+      const ready = shotNeed().hit;
+      if (ready && !match.zone) tone(740, 0.05, "square", 0.04);
+      match.zone = ready;
+    } else {
+      match.zone = false;
     }
   }
 
@@ -789,7 +801,7 @@
     }, true);
     ctx.fillStyle = "#f6efe4";
     ctx.font = "16px Share Tech Mono, monospace";
-    ctx.fillText("Arrows move. Hold Space to set power. 1 spin  2 dunk  3 fade  4 hook.", W / 2, 530);
+    ctx.fillText("Arrows move. Space starts the meter. Tap again in the box. 1 spin  2 dunk  3 fade  4 hook.", W / 2, 530);
   }
 
   function drawSelect() {
@@ -1313,26 +1325,46 @@
         const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y);
         button(40 + i * 180, 640, 168, 52, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
-      button(780, 640, 460, 52, match.hold ? "RELEASE TO SHOOT" : "HOLD TO SET POWER", () => {
+      const aiming = match.hold && shotNeed();
+      const label = !match.hold ? "START THE SHOT" : aiming.hit ? "TAP" : "TAP IN THE BOX";
+      button(780, 640, 460, 52, label, () => {
         if (!match.hold) {
           match.hold = true;
           match.power = 0;
           match.powerDir = 1;
+          match.zone = false;
+        } else {
+          humanRelease();
         }
-      }, match.hold, true);
+      }, !!(aiming && aiming.hit), true);
     }
 
-    if (match.hold) {
-      ctx.fillStyle = "#1a120c";
-      roundRect(1010, 180, 36, 280, 8);
+    if (match.hold && match.active === match.humanId && !match.ball) {
+      const aim = shotNeed();
+      const x = 390;
+      const y = 128;
+      const w = 500;
+      const h = 36;
+      ctx.fillStyle = "rgba(8, 10, 16, 0.92)";
+      roundRect(x, y, w, h, 8);
       ctx.fill();
-      const fill = match.power * 268;
-      ctx.fillStyle = match.flair === "none" ? "#ffb020" : "#ff4d8d";
-      ctx.fillRect(1016, 454 - fill, 24, fill);
-      ctx.fillStyle = "#f6efe4";
-      ctx.font = "14px Bungee, sans-serif";
+      ctx.strokeStyle = aim.hit ? "#ffe14a" : "#ffb020";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      const inner = w - 16;
+      const z0 = x + 8 + (aim.need - aim.span) * inner;
+      const zw = aim.span * 2 * inner;
+      const left = Math.max(x + 8, z0);
+      const right = Math.min(x + 8 + inner, z0 + zw);
+      ctx.fillStyle = aim.hit ? "#ffe14a" : "#3ecf6e";
+      ctx.fillRect(left, y + 8, Math.max(8, right - left), h - 16);
+      const nx = x + 8 + match.power * inner;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(nx - 3, y + 3, 6, h - 6);
+      ctx.fillStyle = aim.hit ? "#ffe14a" : "#f6efe4";
+      ctx.font = "16px Bungee, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("POWER", 1028, 486);
+      ctx.fillText(aim.hit ? "TAP" : "HIT THE BOX", x + w / 2, y - 10);
     }
 
     if (match.over) {
@@ -1436,7 +1468,7 @@
     const b = hit(p.x, p.y);
     if (b) {
       b.action();
-      pointer = { shoot: !!b.shoot };
+      pointer = null;
       return;
     }
     if (screen === "play" && match && match.active === match.humanId && !match.ball && !match.pass && !match.over) {
@@ -1467,10 +1499,15 @@
       return;
     }
     if (!match || match.over) return;
-    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0 && !match.hold) {
-      match.hold = true;
-      match.power = 0;
-      match.powerDir = 1;
+    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0) {
+      if (!match.hold) {
+        match.hold = true;
+        match.power = 0;
+        match.powerDir = 1;
+        match.zone = false;
+      } else {
+        humanRelease();
+      }
     }
     if (k === "1" || k === "q") setFlair("spin");
     if (k === "2" || k === "e") setFlair("dunk");
@@ -1481,7 +1518,6 @@
   window.addEventListener("keyup", (ev) => {
     const k = ev.key.toLowerCase();
     keys.delete(k);
-    if ((k === " " || k === "j") && match && match.hold) humanRelease();
   });
 
   function frame(now) {
@@ -1505,7 +1541,7 @@
         { label: "Dunk", key: "2", code: "Digit2", tone: "gold" },
         { label: "Fade", key: "3", code: "Digit3", tone: "blue" },
         { label: "Hook", key: "4", code: "Digit4", tone: "cream" },
-        { label: "Hold to shoot", key: " ", code: "Space", tone: "gold wide" },
+        { label: "Shoot", key: " ", code: "Space", tone: "gold wide" },
       ],
     });
   }
