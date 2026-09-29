@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.includes("sprites/") ? `${src}?v=11` : src;
+    img.src = src.includes("sprites/") || src.includes("ui/") ? `${src}?v=13` : src;
     images[key] = img;
   }
 
@@ -76,6 +76,13 @@
   loadImage("sayed-spin", "assets/sprites/sayed-spin.webp");
   loadImage("sayed-fade", "assets/sprites/sayed-fade.webp");
   loadImage("sayed-hook", "assets/sprites/sayed-hook.webp");
+  loadImage("ui-board", "assets/ui/ui-board.webp");
+  loadImage("ui-banner", "assets/ui/ui-banner.webp");
+  loadImage("ui-button", "assets/ui/ui-button.webp");
+  loadImage("ui-hot", "assets/ui/ui-hot.webp");
+  loadImage("ui-meter", "assets/ui/ui-meter.webp");
+  loadImage("ui-bracket", "assets/ui/ui-bracket.webp");
+  loadImage("ui-needle", "assets/ui/ui-needle.webp");
 
   const CLIPS = {
     mamdani: {
@@ -288,11 +295,20 @@
     return clamp(0.26 + distToHoop(x, y) * 0.95, 0.28, 0.93);
   }
 
+  function zoneFor(x, y, flair) {
+    const hard = flair !== "none";
+    const span = hard ? 0.05 : 0.082;
+    let need = requiredPower(x, y);
+    if (hard) {
+      const slide = Math.sin(match.t * 3.1) * 0.22 + Math.sin(match.t * 5.4) * 0.08;
+      need = clamp(need + slide, span + 0.04, 1 - span - 0.04);
+    }
+    return { need, span, hit: Math.abs(match.power - need) <= span, hard };
+  }
+
   function shotNeed() {
     const p = match.pos[match.humanId];
-    const span = match.flair === "none" ? 0.082 : 0.046;
-    const need = requiredPower(p.x, p.y);
-    return { need, span, hit: Math.abs(match.power - need) <= span };
+    return zoneFor(p.x, p.y, match.flair);
   }
 
   function canDunk(x, y) {
@@ -456,6 +472,7 @@
       spot,
       flair,
       aim: clamp(need + error, 0.08, 0.98),
+      makeIt: Math.random() < (flair === "none" ? 0.78 : 0.55),
       stage: "walk",
     };
     match.flair = "none";
@@ -484,9 +501,7 @@
       flair = "none";
       if (id === match.humanId) say("Too far to dunk. That one stays a jumper.");
     }
-    const need = requiredPower(p.x, p.y);
-    const window = flair === "none" ? 0.082 : 0.046;
-    const made = Math.abs(match.power - need) <= window;
+    const made = zoneFor(p.x, p.y, flair).hit;
     const hand = ownedBall(id);
     const hoop = hoopLayout();
     match.ball = {
@@ -717,11 +732,18 @@
     }
     match.hold = true;
     match.power += dt * 0.72;
+    if (match.power > 1) match.power = 1;
     match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
-    if (match.power >= cpu.aim) {
-      match.power = cpu.aim;
-      release(cpu.id);
+    if (cpu.flair === "none") {
+      if (match.power >= cpu.aim) {
+        match.power = cpu.aim;
+        release(cpu.id);
+      }
+      return;
     }
+    const zone = zoneFor(p.x, p.y, cpu.flair);
+    if (cpu.makeIt && zone.hit) release(cpu.id);
+    else if (!cpu.makeIt && match.power >= 0.97) release(cpu.id);
   }
 
   function humanRelease() {
@@ -760,14 +782,46 @@
     ctx.closePath();
   }
 
+  function readyImage(key) {
+    const img = images[key];
+    return img && img.complete && img.naturalWidth ? img : null;
+  }
+
+  function draw9(img, x, y, w, h) {
+    const sw = img.naturalWidth;
+    const sh = img.naturalHeight;
+    const cutX = Math.max(8, Math.round(sw * 0.2));
+    const cutY = Math.max(8, Math.round(sh * 0.2));
+    const dw = Math.min(Math.round(w * 0.14), Math.floor(w / 2) - 2);
+    const dh = Math.min(Math.round(h * 0.32), Math.floor(h / 2) - 2);
+    const cols = [0, cutX, sw - cutX];
+    const rows = [0, cutY, sh - cutY];
+    const sws = [cutX, Math.max(1, sw - cutX * 2), cutX];
+    const shs = [cutY, Math.max(1, sh - cutY * 2), cutY];
+    const dx = [x, x + dw, x + w - dw];
+    const dy = [y, y + dh, y + h - dh];
+    const dws = [dw, Math.max(1, w - dw * 2), dw];
+    const dhs = [dh, Math.max(1, h - dh * 2), dh];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        ctx.drawImage(img, cols[col], rows[row], sws[col], shs[row], dx[col], dy[row], dws[col], dhs[row]);
+      }
+    }
+  }
+
   function button(x, y, w, h, label, action, hot, shoot) {
     buttons.push({ x, y, w, h, action, shoot: !!shoot });
-    ctx.fillStyle = hot ? "#ffb020" : "#1a120c";
-    ctx.strokeStyle = hot ? "#ffe1a0" : "#ff4d8d";
-    ctx.lineWidth = 3;
-    roundRect(x, y, w, h, 10);
-    ctx.fill();
-    ctx.stroke();
+    const plate = readyImage(hot ? "ui-hot" : "ui-button");
+    if (plate) {
+      draw9(plate, x, y, w, h);
+    } else {
+      ctx.fillStyle = hot ? "#ffb020" : "#1a120c";
+      ctx.strokeStyle = hot ? "#ffe1a0" : "#ff4d8d";
+      ctx.lineWidth = 3;
+      roundRect(x, y, w, h, 10);
+      ctx.fill();
+      ctx.stroke();
+    }
     ctx.fillStyle = hot ? "#1a120c" : "#f6efe4";
     ctx.font = "20px Bungee, sans-serif";
     ctx.textAlign = "center";
@@ -1261,9 +1315,13 @@
 
   function drawHud() {
     buttons.length = 0;
-    ctx.fillStyle = "rgba(8, 10, 16, 0.82)";
-    roundRect(24, 16, 1232, 92, 12);
-    ctx.fill();
+    const board = readyImage("ui-board");
+    if (board) draw9(board, 12, 6, 1256, 114);
+    else {
+      ctx.fillStyle = "rgba(8, 10, 16, 0.82)";
+      roundRect(24, 16, 1232, 92, 12);
+      ctx.fill();
+    }
     ["mamdani", "sayed"].forEach((id, i) => {
       const x = 48 + i * 640;
       const f = FIGHTERS[id];
@@ -1306,9 +1364,13 @@
     ctx.font = "16px Share Tech Mono, monospace";
     ctx.textAlign = "center";
     const city = match.court === "nyc" ? "New York playground" : "Detroit playground";
-    ctx.fillStyle = "rgba(8, 10, 16, 0.88)";
-    roundRect(160, 578, 960, 52, 10);
-    ctx.fill();
+    const banner = readyImage("ui-banner");
+    if (banner) draw9(banner, 120, 564, 1040, 72);
+    else {
+      ctx.fillStyle = "rgba(8, 10, 16, 0.88)";
+      roundRect(160, 578, 960, 52, 10);
+      ctx.fill();
+    }
     ctx.fillStyle = "#ffb020";
     ctx.font = "13px Bungee, sans-serif";
     ctx.fillText(city.toUpperCase(), W / 2, 598);
@@ -1326,7 +1388,7 @@
         button(40 + i * 180, 640, 168, 52, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
       const aiming = match.hold && shotNeed();
-      const label = !match.hold ? "START THE SHOT" : aiming.hit ? "TAP" : "TAP IN THE BOX";
+      const label = !match.hold ? "START THE SHOT" : aiming.hit ? "TAP" : aiming.hard ? "CHASE THE BOX" : "TAP IN THE BOX";
       button(780, 640, 460, 52, label, () => {
         if (!match.hold) {
           match.hold = true;
@@ -1341,30 +1403,48 @@
 
     if (match.hold && match.active === match.humanId && !match.ball) {
       const aim = shotNeed();
-      const x = 390;
-      const y = 128;
-      const w = 500;
-      const h = 36;
-      ctx.fillStyle = "rgba(8, 10, 16, 0.92)";
-      roundRect(x, y, w, h, 8);
-      ctx.fill();
-      ctx.strokeStyle = aim.hit ? "#ffe14a" : "#ffb020";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      const inner = w - 16;
-      const z0 = x + 8 + (aim.need - aim.span) * inner;
-      const zw = aim.span * 2 * inner;
-      const left = Math.max(x + 8, z0);
-      const right = Math.min(x + 8 + inner, z0 + zw);
-      ctx.fillStyle = aim.hit ? "#ffe14a" : "#3ecf6e";
-      ctx.fillRect(left, y + 8, Math.max(8, right - left), h - 16);
-      const nx = x + 8 + match.power * inner;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(nx - 3, y + 3, 6, h - 6);
+      const x = 340;
+      const y = 122;
+      const w = 600;
+      const h = 54;
+      const meter = readyImage("ui-meter");
+      const bracket = readyImage("ui-bracket");
+      const needle = readyImage("ui-needle");
+      if (meter) ctx.drawImage(meter, x, y, w, h);
+      else {
+        ctx.fillStyle = "rgba(8, 10, 16, 0.92)";
+        roundRect(x, y, w, h, 8);
+        ctx.fill();
+      }
+      const pad = w * 0.07;
+      const inner = w - pad * 2;
+      const left = x + pad + (aim.need - aim.span) * inner;
+      const right = x + pad + (aim.need + aim.span) * inner;
+      if (bracket) {
+        const bh = h * 0.92;
+        const bw = bh * (bracket.naturalWidth / bracket.naturalHeight);
+        const by = y + (h - bh) / 2;
+        ctx.drawImage(bracket, left - bw * 0.15, by, bw, bh);
+        ctx.save();
+        ctx.translate(right + bw * 0.15, by);
+        ctx.scale(-1, 1);
+        ctx.drawImage(bracket, 0, 0, bw, bh);
+        ctx.restore();
+      }
+      const nx = x + pad + match.power * inner;
+      if (needle) {
+        const nh = h * 1.45;
+        const nw = nh * (needle.naturalWidth / needle.naturalHeight);
+        ctx.drawImage(needle, nx - nw / 2, y + h / 2 - nh / 2, nw, nh);
+      } else {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(nx - 3, y + 4, 6, h - 8);
+      }
       ctx.fillStyle = aim.hit ? "#ffe14a" : "#f6efe4";
       ctx.font = "16px Bungee, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(aim.hit ? "TAP" : "HIT THE BOX", x + w / 2, y - 10);
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(aim.hit ? "TAP" : aim.hard ? "CHASE THE BOX" : "HIT THE BOX", x + w / 2, y - 8);
     }
 
     if (match.over) {
