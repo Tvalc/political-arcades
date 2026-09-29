@@ -53,12 +53,14 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.includes("sprites/") || src.includes("ui/") ? `${src}?v=13` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=17` : src;
     images[key] = img;
   }
 
   loadImage("nyc", "assets/nyc.webp");
   loadImage("detroit", "assets/detroit.webp");
+  loadImage("nyc-future", "assets/nyc-future.webp");
+  loadImage("detroit-future", "assets/detroit-future.webp");
   loadImage("face-mamdani", "assets/face-mamdani.webp");
   loadImage("face-sayed", "assets/face-sayed.webp");
   loadImage("ball", "assets/sprites/ball.webp");
@@ -267,8 +269,9 @@
   }
 
   function hoopLayout() {
-    const h = project(HOOP.x, HOOP.y);
-    return { x: h.x, floor: h.y, rim: h.y - 84 };
+    const nyc = !match || match.court === "nyc";
+    const rim = nyc ? { x: 639, y: 229 } : { x: 640, y: 214 };
+    return { x: rim.x, floor: rim.y + 78, rim: rim.y };
   }
 
   function courtPoint(px, py) {
@@ -787,42 +790,23 @@
     return img && img.complete && img.naturalWidth ? img : null;
   }
 
-  function draw9(img, x, y, w, h) {
-    const sw = img.naturalWidth;
-    const sh = img.naturalHeight;
-    const cutX = Math.max(8, Math.round(sw * 0.2));
-    const cutY = Math.max(8, Math.round(sh * 0.2));
-    const dw = Math.min(Math.round(w * 0.14), Math.floor(w / 2) - 2);
-    const dh = Math.min(Math.round(h * 0.32), Math.floor(h / 2) - 2);
-    const cols = [0, cutX, sw - cutX];
-    const rows = [0, cutY, sh - cutY];
-    const sws = [cutX, Math.max(1, sw - cutX * 2), cutX];
-    const shs = [cutY, Math.max(1, sh - cutY * 2), cutY];
-    const dx = [x, x + dw, x + w - dw];
-    const dy = [y, y + dh, y + h - dh];
-    const dws = [dw, Math.max(1, w - dw * 2), dw];
-    const dhs = [dh, Math.max(1, h - dh * 2), dh];
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
-        ctx.drawImage(img, cols[col], rows[row], sws[col], shs[row], dx[col], dy[row], dws[col], dhs[row]);
-      }
-    }
+  function glassPanel(x, y, w, h, hot) {
+    ctx.save();
+    ctx.shadowColor = hot ? "rgba(255, 246, 216, 0.85)" : "rgba(140, 210, 255, 0.55)";
+    ctx.shadowBlur = hot ? 18 : 10;
+    ctx.fillStyle = hot ? "rgba(255, 246, 216, 0.14)" : "rgba(2, 8, 16, 0.42)";
+    roundRect(x, y, w, h, 4);
+    ctx.fill();
+    ctx.strokeStyle = hot ? "#fff6d8" : "rgba(186, 226, 255, 0.9)";
+    ctx.lineWidth = hot ? 2 : 1.25;
+    ctx.stroke();
+    ctx.restore();
   }
 
   function button(x, y, w, h, label, action, hot, shoot) {
     buttons.push({ x, y, w, h, action, shoot: !!shoot });
-    const plate = readyImage(hot ? "ui-hot" : "ui-button");
-    if (plate) {
-      draw9(plate, x, y, w, h);
-    } else {
-      ctx.fillStyle = hot ? "#ffb020" : "#1a120c";
-      ctx.strokeStyle = hot ? "#ffe1a0" : "#ff4d8d";
-      ctx.lineWidth = 3;
-      roundRect(x, y, w, h, 10);
-      ctx.fill();
-      ctx.stroke();
-    }
-    ctx.fillStyle = hot ? "#1a120c" : "#f6efe4";
+    glassPanel(x, y, w, h, hot);
+    ctx.fillStyle = hot ? "#fff6d8" : "#f4efe4";
     ctx.font = "20px Bungee, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -838,11 +822,11 @@
     ctx.fillStyle = "rgba(6, 8, 14, 0.45)";
     ctx.fillRect(0, 0, W, H);
     ctx.textAlign = "center";
-    ctx.fillStyle = "#ff4d8d";
+    ctx.fillStyle = "#9fd4ff";
     ctx.font = "22px Share Tech Mono, monospace";
     ctx.fillText("POLITICAL ARCADES", W / 2, 150);
-    ctx.fillStyle = "#ffb020";
-    ctx.strokeStyle = "#1a0a10";
+    ctx.fillStyle = "#f4efe4";
+    ctx.strokeStyle = "#061018";
     ctx.lineWidth = 10;
     ctx.font = "120px Bungee, sans-serif";
     ctx.strokeText("HORSE", W / 2, 280);
@@ -879,11 +863,11 @@
         ctx.drawImage(img, x, 70, 580, 326);
       }
       const on = i === selectIndex;
-      ctx.strokeStyle = on ? "#ffb020" : "rgba(255,255,255,0.2)";
-      ctx.lineWidth = on ? 6 : 2;
+      ctx.strokeStyle = on ? "#fff6d8" : "rgba(186, 226, 255, 0.35)";
+      ctx.lineWidth = on ? 3 : 1;
       ctx.strokeRect(x, 70, 580, 326);
       const f = FIGHTERS[id];
-      ctx.fillStyle = on ? "#ffb020" : "#f6efe4";
+      ctx.fillStyle = on ? "#fff6d8" : "#f6efe4";
       ctx.font = "32px Bungee, sans-serif";
       ctx.textAlign = "left";
       ctx.fillText(f.full, x + 8, 450);
@@ -892,7 +876,7 @@
       ctx.fillText(`${f.city} court. CPU takes the other side.`, x + 8, 486);
     });
     ctx.textAlign = "center";
-    ctx.fillStyle = "#ff4d8d";
+    ctx.fillStyle = "#9fd4ff";
     ctx.font = "18px Share Tech Mono, monospace";
     ctx.fillText("LEFT AND RIGHT TO CHOOSE", W / 2, 48);
     button(W / 2 - 150, 560, 300, 64, "STEP ON THE COURT", () => startGame(), true);
@@ -916,87 +900,30 @@
 
   function drawCourt() {
     const nyc = match.court === "nyc";
-    const sky = ctx.createLinearGradient(0, 0, 0, 280);
-    sky.addColorStop(0, nyc ? "#141a38" : "#1a1030");
-    sky.addColorStop(0.55, nyc ? "#c45a32" : "#d86a28");
-    sky.addColorStop(1, nyc ? "#f0b56a" : "#e8924a");
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, W, H);
-    drawLights();
-    if (nyc) drawBricks();
-    else drawSkyline();
-    drawCrowd(nyc);
-    drawFence();
-    for (let ny = 0.76; ny > 0.06; ny -= 0.028) {
-      const a = project(0.06, ny);
-      const b = project(0.94, ny);
-      const c = project(0.94, Math.max(0.05, ny - 0.028));
-      const d = project(0.06, Math.max(0.05, ny - 0.028));
-      const stripe = Math.floor(ny * 36) % 2;
-      const grain = 0.5 + 0.5 * Math.sin(ny * 90);
-      ctx.fillStyle = stripe
-        ? `rgb(${214 + grain * 18}, ${146 + grain * 10}, ${72})`
-        : `rgb(${168 + grain * 8}, ${98}, ${46})`;
-      quad(d, c, b, a);
-      ctx.fill();
+    const bg = readyImage(nyc ? "nyc-future" : "detroit-future");
+    if (bg) ctx.drawImage(bg, 0, 0, W, H);
+    else {
+      const sky = ctx.createLinearGradient(0, 0, 0, 280);
+      sky.addColorStop(0, nyc ? "#070b18" : "#120818");
+      sky.addColorStop(1, nyc ? "#1a2744" : "#2a1830");
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, W, H);
     }
-    const paint = nyc ? "rgba(36, 62, 115, 0.72)" : "rgba(214, 69, 58, 0.72)";
-    const key = [project(0.36, 0.76), project(0.64, 0.76), project(0.58, 0.48), project(0.42, 0.48)];
-    quad(key[0], key[1], key[2], key[3]);
-    ctx.fillStyle = paint;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.92)";
-    ctx.lineWidth = 4;
-    ctx.lineJoin = "round";
-    const edge = [project(0.08, 0.74), project(0.92, 0.74), project(0.78, 0.08), project(0.22, 0.08)];
-    quad(edge[3], edge[2], edge[1], edge[0]);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(project(0.5, 0.08).x, project(0.5, 0.08).y);
-    ctx.lineTo(project(0.5, 0.74).x, project(0.5, 0.74).y);
-    ctx.stroke();
-    quad(key[0], key[1], key[2], key[3]);
-    ctx.stroke();
-    ctx.beginPath();
-    for (let i = 0; i <= 16; i += 1) {
-      const a = (Math.PI * i) / 16;
-      const nx = 0.5 + Math.cos(a) * 0.2;
-      const ny = 0.5 + Math.sin(a) * 0.16;
-      const p = project(nx, ny);
-      if (i === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
-    }
-    ctx.stroke();
-    const gloss = ctx.createLinearGradient(0, 220, 0, 640);
-    gloss.addColorStop(0, "rgba(255,255,255,0.16)");
-    gloss.addColorStop(0.4, "rgba(255,255,255,0)");
-    ctx.fillStyle = gloss;
-    quad(edge[3], edge[2], edge[1], edge[0]);
-    ctx.fill();
-    const mid = project(0.5, 0.4);
-    ctx.strokeStyle = "rgba(255,255,255,0.85)";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.ellipse(mid.x, mid.y, 78, 28, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.fillStyle = "rgba(255, 176, 32, 0.9)";
-    ctx.font = "22px Bungee, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("HORSE", mid.x, mid.y + 8);
     drawHoop();
     if (match.challenge && match.phase === "copy") {
       const g = project(match.challenge.x, match.challenge.y);
-      ctx.strokeStyle = "#ffb020";
-      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#fff6d8";
+      ctx.shadowColor = "#fff6d8";
+      ctx.shadowBlur = 12;
+      ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.arc(g.x, g.y, 34 + Math.sin(match.t * 5) * 5, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.fillStyle = "#1a120c";
-      ctx.fillRect(g.x - 70, g.y - 58, 140, 22);
-      ctx.fillStyle = "#ffb020";
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "#fff6d8";
       ctx.font = "14px Bungee, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(FLAIR_NAME[match.challenge.flair].toUpperCase(), g.x, g.y - 42);
+      ctx.fillText(FLAIR_NAME[match.challenge.flair].toUpperCase(), g.x, g.y - 46);
     }
   }
 
@@ -1081,54 +1008,19 @@
   }
 
   function drawHoop() {
-    const hoop = hoopLayout();
     const hit = match.basket && match.basket.life > 0 ? match.basket : null;
-    const incoming = match.ball && match.ball.t > 0.78;
-    const sway = hit ? Math.sin(match.t * 30) * hit.life * 14 : incoming ? 6 : Math.sin(match.t * 2) * 1.4;
-    const rim = hoop.rim;
-    const bw = 136;
-    const bh = 78;
-    const top = rim - 16 - bh;
+    if (!hit) return;
+    const hoop = hoopLayout();
     ctx.save();
-    ctx.translate(sway * 0.35, 0);
-    ctx.fillStyle = "#5c5348";
-    ctx.fillRect(hoop.x - 9, top + bh - 8, 18, hoop.floor - (top + bh - 8));
-    ctx.fillStyle = hit && hit.made ? "rgba(255, 246, 214, 0.82)" : "rgba(214, 232, 242, 0.55)";
-    roundRect(hoop.x - bw / 2, top, bw, bh, 6);
-    ctx.fill();
-    ctx.strokeStyle = "#f4efe4";
-    ctx.lineWidth = 6;
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(20, 16, 12, 0.55)";
+    ctx.globalAlpha = Math.min(1, hit.life * 1.4);
+    ctx.strokeStyle = hit.made ? "#fff6d8" : "#ffb0a0";
+    ctx.shadowColor = ctx.strokeStyle;
+    ctx.shadowBlur = 18;
     ctx.lineWidth = 3;
-    ctx.strokeRect(hoop.x - 28, top + 22, 56, 40);
-    if (hit && hit.dunk && hit.made) {
-      ctx.strokeStyle = `rgba(255,255,255,${0.35 + hit.life * 0.5})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(hoop.x - 18, top + 16);
-      ctx.lineTo(hoop.x + 8, top + 48);
-      ctx.lineTo(hoop.x - 24, top + 78);
-      ctx.moveTo(hoop.x + 16, top + 28);
-      ctx.lineTo(hoop.x + 42, top + 62);
-      ctx.stroke();
-    }
-    ctx.restore();
-    ctx.fillStyle = "#f08a24";
-    ctx.fillRect(hoop.x - 6 + sway * 0.2, rim - 34, 12, 28);
-    ctx.strokeStyle = hit && !hit.made ? "#fff1c9" : "#ff4a2a";
-    ctx.lineWidth = hit ? 12 : 10;
     ctx.beginPath();
-    ctx.ellipse(hoop.x + sway * 0.15, rim, 48, 15, 0, 0, Math.PI * 2);
+    ctx.ellipse(hoop.x, hoop.rim, 34, 10, 0, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.strokeStyle = "rgba(255,255,255,0.9)";
-    ctx.lineWidth = 2;
-    for (let i = -4; i <= 4; i += 1) {
-      ctx.beginPath();
-      ctx.moveTo(hoop.x + i * 10, rim + 2);
-      ctx.quadraticCurveTo(hoop.x + i * 7 + sway, rim + 28, hoop.x + i * 4 + sway * 0.4, rim + 52);
-      ctx.stroke();
-    }
+    ctx.restore();
   }
 
   function spriteFor(id, pose) {
@@ -1308,73 +1200,78 @@
     ctx.lineWidth = 12;
     ctx.strokeStyle = "#14080c";
     ctx.strokeText(match.banner.text, 0, 0);
-    ctx.fillStyle = "#ffb020";
+    ctx.fillStyle = "#fff6d8";
     ctx.fillText(match.banner.text, 0, 0);
     ctx.restore();
   }
 
   function drawHud() {
     buttons.length = 0;
-    const board = readyImage("ui-board");
-    if (board) draw9(board, 12, 6, 1256, 114);
-    else {
-      ctx.fillStyle = "rgba(8, 10, 16, 0.82)";
-      roundRect(24, 16, 1232, 92, 12);
-      ctx.fill();
-    }
+    const aiming = match.hold && match.active === match.humanId && !match.ball ? shotNeed() : null;
+    glassPanel(16, 8, 1248, 84, false);
     ["mamdani", "sayed"].forEach((id, i) => {
-      const x = 48 + i * 640;
+      const right = i === 1;
+      const faceX = right ? 1188 : 32;
       const f = FIGHTERS[id];
       const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
       if (face && face.complete && face.naturalWidth) {
         ctx.save();
-        roundRect(x, 28, 64, 64, 8);
+        roundRect(faceX, 20, 60, 60, 4);
         ctx.clip();
-        ctx.drawImage(face, x, 28, 64, 64);
+        ctx.drawImage(face, faceX, 20, 60, 60);
         ctx.restore();
+        ctx.strokeStyle = "rgba(186, 226, 255, 0.8)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(faceX, 20, 60, 60);
       }
-      ctx.fillStyle = f.trim;
-      ctx.font = "20px Bungee, sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText(f.name.toUpperCase(), x + 76, 48);
+      ctx.fillStyle = "#f4efe4";
+      ctx.font = "16px Bungee, sans-serif";
+      ctx.textAlign = right ? "right" : "left";
+      ctx.fillText(f.name.toUpperCase(), right ? faceX - 12 : faceX + 70, 40);
       LETTERS.forEach((letter, n) => {
         const on = n < match.letters[id];
         const fresh = on && n === match.letters[id] - 1 && match.pop[id] > 0;
         const s = fresh ? 1 + match.pop[id] * 0.55 : 1;
+        const lx = right ? faceX - 16 - (5 - n) * 26 : faceX + 70 + n * 26;
         ctx.save();
-        ctx.translate(x + 76 + n * 36, 86);
+        ctx.translate(lx, 76);
         ctx.scale(s, s);
-        ctx.font = "28px Bungee, sans-serif";
+        ctx.font = "22px Bungee, sans-serif";
         ctx.textAlign = "left";
-        if (on) {
-          ctx.shadowColor = "#ff4d8d";
-          ctx.shadowBlur = 18;
-          ctx.fillStyle = "#fff1a8";
-        } else {
-          ctx.fillStyle = "#3a2418";
-        }
-        ctx.fillText(letter, 0, 0);
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = on ? "#ffe14a" : "#6a4030";
+        ctx.shadowColor = on ? "#fff6d8" : "transparent";
+        ctx.shadowBlur = on ? 12 : 0;
+        ctx.fillStyle = on ? "#fff6d8" : "rgba(170, 200, 230, 0.28)";
         ctx.fillText(letter, 0, 0);
         ctx.restore();
       });
     });
-    ctx.fillStyle = "#f6efe4";
-    ctx.font = "16px Share Tech Mono, monospace";
+    const city = match.court === "nyc" ? "NEW YORK" : "DETROIT";
     ctx.textAlign = "center";
-    const city = match.court === "nyc" ? "New York playground" : "Detroit playground";
-    const banner = readyImage("ui-banner");
-    if (banner) draw9(banner, 120, 564, 1040, 72);
-    else {
-      ctx.fillStyle = "rgba(8, 10, 16, 0.88)";
-      roundRect(160, 578, 960, 52, 10);
-      ctx.fill();
+    ctx.textBaseline = "alphabetic";
+    if (aiming) {
+      const x = 430;
+      const y = 36;
+      const w = 420;
+      const h = 22;
+      glassPanel(x, y, w, h, aiming.hit);
+      const pad = 8;
+      const inner = w - pad * 2;
+      const left = x + pad + (aiming.need - aiming.span) * inner;
+      const zoneW = Math.max(8, aiming.span * 2 * inner);
+      ctx.shadowColor = aiming.hit ? "#fff6d8" : "#dceaff";
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = aiming.hit ? "rgba(255, 246, 216, 0.95)" : "rgba(255, 255, 255, 0.9)";
+      ctx.fillRect(left, y + 5, zoneW, h - 10);
+      const nx = x + pad + match.power * inner;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(nx - 1.5, y + 2, 3, h - 4);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = "#9fd4ff";
+      ctx.font = "12px Bungee, sans-serif";
+      ctx.fillText(city, W / 2, 34);
+      wrapCall(match.call, W / 2, 58);
     }
-    ctx.fillStyle = "#ffb020";
-    ctx.font = "13px Bungee, sans-serif";
-    ctx.fillText(city.toUpperCase(), W / 2, 598);
-    wrapCall(match.call, W / 2, 618);
 
     if (!match.over && match.active === match.humanId && !match.ball && !match.pass) {
       const labels = [
@@ -1385,11 +1282,10 @@
       ];
       labels.forEach((item, i) => {
         const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y);
-        button(40 + i * 180, 640, 168, 52, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
+        button(24 + i * 168, 662, 156, 44, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
-      const aiming = match.hold && shotNeed();
-      const label = !match.hold ? "START THE SHOT" : aiming.hit ? "TAP" : aiming.hard ? "CHASE THE BOX" : "TAP IN THE BOX";
-      button(780, 640, 460, 52, label, () => {
+      const label = !match.hold ? "START THE SHOT" : aiming && aiming.hit ? "TAP" : aiming && aiming.hard ? "CHASE THE LIGHT" : "HIT THE LIGHT";
+      button(708, 662, 548, 44, label, () => {
         if (!match.hold) {
           match.hold = true;
           match.power = 0;
@@ -1399,52 +1295,6 @@
           humanRelease();
         }
       }, !!(aiming && aiming.hit), true);
-    }
-
-    if (match.hold && match.active === match.humanId && !match.ball) {
-      const aim = shotNeed();
-      const x = 340;
-      const y = 122;
-      const w = 600;
-      const h = 54;
-      const meter = readyImage("ui-meter");
-      const bracket = readyImage("ui-bracket");
-      const needle = readyImage("ui-needle");
-      if (meter) ctx.drawImage(meter, x, y, w, h);
-      else {
-        ctx.fillStyle = "rgba(8, 10, 16, 0.92)";
-        roundRect(x, y, w, h, 8);
-        ctx.fill();
-      }
-      const pad = w * 0.07;
-      const inner = w - pad * 2;
-      const left = x + pad + (aim.need - aim.span) * inner;
-      const right = x + pad + (aim.need + aim.span) * inner;
-      if (bracket) {
-        const bh = h * 0.92;
-        const bw = bh * (bracket.naturalWidth / bracket.naturalHeight);
-        const by = y + (h - bh) / 2;
-        ctx.drawImage(bracket, left - bw * 0.15, by, bw, bh);
-        ctx.save();
-        ctx.translate(right + bw * 0.15, by);
-        ctx.scale(-1, 1);
-        ctx.drawImage(bracket, 0, 0, bw, bh);
-        ctx.restore();
-      }
-      const nx = x + pad + match.power * inner;
-      if (needle) {
-        const nh = h * 1.45;
-        const nw = nh * (needle.naturalWidth / needle.naturalHeight);
-        ctx.drawImage(needle, nx - nw / 2, y + h / 2 - nh / 2, nw, nh);
-      } else {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(nx - 3, y + 4, 6, h - 8);
-      }
-      ctx.fillStyle = aim.hit ? "#ffe14a" : "#f6efe4";
-      ctx.font = "16px Bungee, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "alphabetic";
-      ctx.fillText(aim.hit ? "TAP" : aim.hard ? "CHASE THE BOX" : "HIT THE BOX", x + w / 2, y - 8);
     }
 
     if (match.over) {
@@ -1467,7 +1317,7 @@
     const lines = [];
     words.forEach((word) => {
       const next = line ? `${line} ${word}` : word;
-      if (ctx.measureText(next).width > 760) {
+      if (ctx.measureText(next).width > 380) {
         lines.push(line);
         line = word;
       } else line = next;
