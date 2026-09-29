@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=20` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=22` : src;
     images[key] = img;
   }
 
@@ -91,7 +91,7 @@
     mamdani: {
       idle: { frames: 2, fw: 366, fh: 706, body: 706 },
       shot: { frames: 8, fw: 295, fh: 864, body: 640, play: 4 },
-      dunk: { frames: 8, fw: 391, fh: 836, body: 640, play: 4 },
+      dunk: { frames: 8, fw: 391, fh: 836, body: 640, play: 4, cropTop: 0.22 },
       spin: { frames: 8, fw: 415, fh: 917, body: 640, play: 4 },
       fade: { frames: 8, fw: 438, fh: 922, body: 640, play: 5 },
       hook: { frames: 8, fw: 417, fh: 914, body: 640, play: 5 },
@@ -125,7 +125,7 @@
     sayed: {
       idle: { frames: 2, fw: 267, fh: 733, body: 733 },
       shot: { frames: 8, fw: 391, fh: 868, body: 640, play: 4 },
-      dunk: { frames: 8, fw: 419, fh: 848, body: 640, play: 4 },
+      dunk: { frames: 8, fw: 419, fh: 848, body: 640, play: 4, cropTop: 0.22 },
       spin: { frames: 8, fw: 399, fh: 881, body: 640, play: 5 },
       fade: { frames: 8, fw: 455, fh: 912, body: 640, play: 5 },
       hook: { frames: 8, fw: 350, fh: 883, body: 640, play: 4 },
@@ -260,15 +260,25 @@
   }
 
   function project(nx, ny) {
-    const y = 210 + (1 - ny) * 390;
-    const span = 340 + (1 - ny) * 560;
+    const depth = 0.72 - ny;
+    const y = 508 + depth * 210;
+    const span = 380 + depth * 540;
     const x = W * 0.5 + (nx - 0.5) * span;
-    const s = 0.95 + (1 - ny) * 0.4;
-    return { x, y, s };
+    const s = 0.8 + depth * 0.75;
+    return { x, y, s, span };
   }
 
   function playerHeight(at) {
     return 110 * at.s;
+  }
+
+  function spriteLayout(clip, frame) {
+    const foot = clip.feet ? clip.feet[Math.min(frame, clip.feet.length - 1)] : 1;
+    const crop = clip.cropTop || 0;
+    const sy = crop * clip.fh;
+    const sh = clip.fh * (1 - crop);
+    const footInSlice = (foot * clip.fh - sy) / sh;
+    return { sy, sh, footInSlice };
   }
 
   function hoopLayout() {
@@ -278,16 +288,15 @@
   }
 
   function courtPoint(px, py) {
-    if (py < 200 || py > 620) return null;
+    if (py < 490 || py > 660) return null;
     let best = null;
     let bestDy = 1e9;
     for (let ny = 0.08; ny <= 0.7; ny += 0.008) {
       const row = project(0.5, ny);
       const dy = Math.abs(row.y - py);
       if (dy < bestDy) {
-        const span = 280 + (1 - ny) * 520;
         bestDy = dy;
-        best = { x: clamp(0.5 + (px - W * 0.5) / span, 0.08, 0.92), y: ny };
+        best = { x: clamp(0.5 + (px - W * 0.5) / row.span, 0.08, 0.92), y: ny };
       }
     }
     return bestDy < 28 ? best : null;
@@ -422,11 +431,12 @@
     const clip = handClip(id);
     if (clip) {
       const frame = dribbleIndex(clip);
-      const height = span * (clip.fh / (clip.body || clip.fh));
+      const layout = spriteLayout(clip, frame);
+      const height = span;
       const width = height * (clip.fw / clip.fh);
       const hand = clip.hands[frame];
       const x = at.x + face * (hand[0] - 0.5) * width;
-      let y = at.y - lift + (hand[1] - 1) * height;
+      let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
       const u = (match.t * (clip.fps || 8)) % 1;
       if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
       else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
@@ -1155,17 +1165,18 @@
         frame = Math.min(clip.frames - 1, Math.floor(air * clip.frames));
       }
       const span = playerHeight(at);
-      const height = span * (clip.fh / (clip.body || clip.fh));
+      const layout = spriteLayout(clip, frame);
+      const height = span;
       const width = height * (clip.fw / clip.fh);
       ctx.translate(0, -lift);
       const wide = motion.squash < 1 ? 1 + (1 - motion.squash) * 0.65 : 1;
       ctx.scale((match.face[id] || 1) * wide, motion.squash);
-      const foot = clip.feet ? clip.feet[frame] : 1;
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height * foot, width, height);
+      const top = -height * layout.footInSlice;
+      ctx.drawImage(img, frame * clip.fw, layout.sy, clip.fw, layout.sh, -width / 2, top, width, height);
       ctx.save();
       ctx.globalAlpha = 0.2;
       ctx.scale(1, -0.28);
-      ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height * foot, width, height);
+      ctx.drawImage(img, frame * clip.fw, layout.sy, clip.fw, layout.sh, -width / 2, top, width, height);
       ctx.restore();
       ctx.restore();
       return;
