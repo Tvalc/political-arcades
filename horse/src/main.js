@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=17` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=19` : src;
     images[key] = img;
   }
 
@@ -110,12 +110,13 @@
         fh: 680,
         body: 640,
         fps: 10,
-        yFree: 6,
-        hop: 0.08,
+        hop: 0.18,
+        bounce: true,
         hands: [
-          [0.74, 0.60], [0.73, 0.60], [0.73, 0.61], [0.74, 0.62],
-          [0.76, 0.62], [0.76, 0.63], [0.77, 0.64], [0.77, 0.63],
-          [0.78, 0.63], [0.80, 0.62], [0.78, 0.62], [0.78, 0.63],
+          [0.1, 0.46], [0.11, 0.44], [0.13, 0.47],
+          [0.2, 0.6], [0.17, 0.58], [0.15, 0.53],
+          [0.15, 0.52], [0.18, 0.57], [0.24, 0.59],
+          [0.18, 0.55], [0.16, 0.53], [0.2, 0.59],
         ],
       },
     },
@@ -347,6 +348,8 @@
       pass: null,
       pose: { mamdani: "idle", sayed: "idle" },
       jump: { mamdani: 0, sayed: 0 },
+      jumpDur: { mamdani: 0, sayed: 0 },
+      hoopKick: 0,
       lock: 0.2,
       call: `${home.full} calls the first shot.`,
       over: null,
@@ -412,7 +415,7 @@
     const at = project(match.pos[id].x, match.pos[id].y);
     const span = playerHeight(at);
     const face = match.face[id] || 1;
-    const lift = match.jump[id] * 46 * at.s;
+    const lift = bodyMotion(id).lift * at.s;
     const r = Math.max(8, span * 0.09);
     const clip = handClip(id);
     if (clip) {
@@ -422,10 +425,9 @@
       const hand = clip.hands[frame];
       const x = at.x + face * (hand[0] - 0.5) * width;
       let y = at.y - lift + (hand[1] - 1) * height;
-      if (frame === clip.yFree) {
-        const u = (match.t * (clip.fps || 8)) % 1;
-        y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
-      }
+      const u = (match.t * (clip.fps || 8)) % 1;
+      if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
+      else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
       return { x, y, r, spin: frame * 0.4 };
     }
     const beat = dribbleBeat();
@@ -435,7 +437,7 @@
     return { x, y, r, spin: beat.bounce * 1.1 };
   }
 
-  function beginCatch() {
+  function beginCatch(from) {
     if (!match || match.over) {
       match.owner = null;
       match.pass = null;
@@ -444,16 +446,38 @@
     const hoop = hoopLayout();
     const to = match.active;
     const dest = ownedBall(to);
+    const origin = from || { x: hoop.x, y: hoop.rim + 8 };
     match.owner = null;
     match.pass = {
-      x0: hoop.x,
-      y0: hoop.rim + 8,
+      x0: origin.x,
+      y0: origin.y,
       x1: dest.x,
       y1: dest.y,
       arc: 70,
       t: 0,
+      dur: 0.48,
       to,
     };
+  }
+
+  function bodyMotion(id) {
+    const dur = match.jumpDur[id] || 0;
+    const elapsed = match.jump[id] || 0;
+    if (dur <= 0 || elapsed <= 0) return { lift: 0, squash: 1 };
+    const u = Math.min(0.999, elapsed / dur);
+    const dunk = match.ball && match.ball.id === id && match.ball.flair === "dunk";
+    const h = dunk ? 88 : 46;
+    if (u < 0.16) {
+      const dip = Math.sin((u / 0.16) * Math.PI);
+      return { lift: -11 * dip, squash: 1 - 0.07 * dip };
+    }
+    if (u > 0.88) {
+      const dip = Math.sin(((u - 0.88) / 0.12) * Math.PI);
+      return { lift: -6 * dip, squash: 1 - 0.09 * dip };
+    }
+    const k = (u - 0.16) / 0.72;
+    const lift = Math.sin(k * Math.PI) * h;
+    return { lift, squash: 1 };
   }
 
   function say(text) {
@@ -507,12 +531,17 @@
     const made = zoneFor(p.x, p.y, flair).hit;
     const hand = ownedBall(id);
     const hoop = hoopLayout();
+    const side = Math.sign(hand.x - hoop.x) || 1;
     match.ball = {
       x0: hand.x,
       y0: hand.y,
-      x1: hoop.x,
-      y1: hoop.rim + 8,
+      x1: made ? hoop.x : hoop.x + side * 24,
+      y1: hoop.rim - (made ? 4 : 0),
       t: 0,
+      dur: flair === "dunk" ? 0.92 : 0.64,
+      show: flair === "dunk" ? 0.46 : 0.26,
+      phase: "arc",
+      arc: flair === "dunk" ? 36 : 168,
       made,
       flair,
       id,
@@ -523,7 +552,8 @@
     match.pass = null;
     match.hold = false;
     match.pose[id] = flair === "none" ? "shot" : flair;
-    match.jump[id] = 1;
+    match.jump[id] = 0.0001;
+    match.jumpDur[id] = flair === "dunk" ? 0.84 : 0.52;
     match.cpu = null;
     match.trail = [];
     if (flair === "dunk") {
@@ -553,11 +583,10 @@
     const ball = match.ball;
     const id = ball.id;
     const name = FIGHTERS[id].name;
+    const from = { x: ball.x1, y: ball.y1 };
     match.ball = null;
     match.pose[id] = "idle";
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
-    if (ball.made) swish();
-    else clank();
     if (match.phase === "set") {
       if (ball.made) {
         match.challenge = { x: ball.sx, y: ball.sy, flair: ball.flair };
@@ -611,7 +640,35 @@
     if (match.active === match.cpuId && !match.over) {
       match.cpu = null;
     }
-    beginCatch();
+    beginCatch(from);
+  }
+
+  function advanceBall(ball) {
+    const hoop = hoopLayout();
+    if (ball.made) {
+      swish();
+      ball.phase = "net";
+      ball.t = 0;
+      ball.dur = ball.flair === "dunk" ? 0.18 : 0.26;
+      ball.arc = 0;
+      ball.x0 = hoop.x;
+      ball.y0 = hoop.rim + 2;
+      ball.x1 = hoop.x;
+      ball.y1 = hoop.rim + (ball.flair === "dunk" ? 74 : 58);
+      match.hoopKick = ball.flair === "dunk" ? 1.35 : 0.8;
+      return;
+    }
+    clank();
+    const side = Math.sign(ball.x0 - hoop.x) || 1;
+    ball.phase = "brick";
+    ball.t = 0;
+    ball.dur = 0.3;
+    ball.arc = 26;
+    ball.x0 = hoop.x + side * 18;
+    ball.y0 = hoop.rim - 2;
+    ball.x1 = hoop.x + side * 92;
+    ball.y1 = hoop.rim + 48;
+    match.hoopKick = 0.4;
   }
 
   function update(dt) {
@@ -632,8 +689,15 @@
       if (match.banner.life <= 0) match.banner = null;
     }
     for (const id of ["mamdani", "sayed"]) {
-      if (match.jump[id] > 0) match.jump[id] = Math.max(0, match.jump[id] - dt * 0.85);
+      if (match.jump[id] > 0) {
+        match.jump[id] += dt;
+        if (match.jump[id] >= (match.jumpDur[id] || 0)) {
+          match.jump[id] = 0;
+          match.jumpDur[id] = 0;
+        }
+      }
     }
+    if (match.hoopKick > 0) match.hoopKick = Math.max(0, match.hoopKick - dt * 1.15);
     if (match.ball) {
       match.trail.push(ballPoint(match.ball));
       if (match.trail.length > 14) match.trail.shift();
@@ -641,15 +705,18 @@
       match.trail.shift();
     }
     if (match.ball) {
-      match.ball.t += dt / 0.72;
-      if (match.ball.t >= 1) resolveBall();
+      match.ball.t += dt / (match.ball.dur || 0.72);
+      if (match.ball.t >= 1) {
+        if (!match.ball.phase || match.ball.phase === "arc") advanceBall(match.ball);
+        else resolveBall();
+      }
       return;
     }
     if (match.pass) {
       const dest = ownedBall(match.pass.to);
       match.pass.x1 = dest.x;
       match.pass.y1 = dest.y;
-      match.pass.t += dt / 0.48;
+      match.pass.t += dt / (match.pass.dur || 0.48);
       if (match.pass.t >= 1) {
         match.owner = match.pass.to;
         match.pass = null;
@@ -909,7 +976,6 @@
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, W, H);
     }
-    drawHoop();
     if (match.challenge && match.phase === "copy") {
       const g = project(match.challenge.x, match.challenge.y);
       ctx.strokeStyle = "#fff6d8";
@@ -1007,19 +1073,57 @@
     ctx.stroke();
   }
 
-  function drawHoop() {
-    const hit = match.basket && match.basket.life > 0 ? match.basket : null;
-    if (!hit) return;
+  function hoopPose() {
     const hoop = hoopLayout();
+    const kick = (match.hoopKick || 0) * Math.sin(match.t * 34) * 7;
+    return { x: hoop.x + kick, rim: hoop.rim + Math.abs(kick) * 0.2, floor: hoop.floor };
+  }
+
+  function drawHoopBack() {
+    const hoop = hoopPose();
+    const bw = 150;
+    const bh = 96;
+    const top = hoop.rim - 72;
     ctx.save();
-    ctx.globalAlpha = Math.min(1, hit.life * 1.4);
-    ctx.strokeStyle = hit.made ? "#fff6d8" : "#ffb0a0";
-    ctx.shadowColor = ctx.strokeStyle;
-    ctx.shadowBlur = 18;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(hoop.x, hoop.rim, 34, 10, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#6a6258";
+    ctx.fillRect(hoop.x - 7, top + bh - 6, 14, 150);
+    ctx.fillStyle = "rgba(232, 242, 248, 0.96)";
+    roundRect(hoop.x - bw / 2, top, bw, bh, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#f7fbff";
+    ctx.lineWidth = 7;
     ctx.stroke();
+    ctx.strokeStyle = "rgba(20, 28, 40, 0.55)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(hoop.x - 30, top + 24, 60, 42);
+    ctx.restore();
+  }
+
+  function drawHoopFront() {
+    const hoop = hoopPose();
+    const through = match.ball && match.ball.phase === "net";
+    const stretch = through ? match.ball.t : (match.hoopKick || 0) * 0.25;
+    const sway = (match.hoopKick || 0) * Math.sin(match.t * 20) * 12;
+    ctx.save();
+    ctx.strokeStyle = "#ff4a2a";
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.ellipse(hoop.x, hoop.rim, 28, 9, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.94)";
+    ctx.lineWidth = 1.6;
+    for (let i = -4; i <= 4; i += 1) {
+      const drop = 18 + stretch * 48 + Math.abs(i);
+      ctx.beginPath();
+      ctx.moveTo(hoop.x + i * 6.2, hoop.rim + 3);
+      ctx.quadraticCurveTo(
+        hoop.x + i * 4 + sway * 0.35,
+        hoop.rim + drop * 0.55,
+        hoop.x + i * 2.2 + sway * (0.15 + Math.abs(i) * 0.04),
+        hoop.rim + drop,
+      );
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
@@ -1047,15 +1151,16 @@
     const p = match.pos[id];
     const at = project(p.x, p.y);
     const pose = match.pose[id];
-    const jumping = match.jump[id];
     const moving = pose === "move";
-    const lift = jumping * 46 * at.s;
+    const motion = bodyMotion(id);
+    const lift = motion.lift * at.s;
     const sprite = spriteFor(id, pose);
     ctx.save();
     ctx.translate(at.x, at.y);
-    ctx.fillStyle = "rgba(0,0,0,0.38)";
+    const shadow = 1 - Math.min(0.55, Math.max(0, lift) / 130);
+    ctx.fillStyle = `rgba(0,0,0,${0.38 * (0.45 + shadow * 0.55)})`;
     ctx.beginPath();
-    ctx.ellipse(0, 4, 22 * at.s, 7 * at.s, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 4, 22 * at.s * shadow, 7 * at.s * shadow, 0, 0, Math.PI * 2);
     ctx.fill();
     if (sprite) {
       const { img, clip, key } = sprite;
@@ -1069,13 +1174,15 @@
       } else if (key === "idle") {
         frame = 0;
       } else {
-        frame = Math.min(clip.frames - 1, Math.floor((1 - jumping) * clip.frames));
+        const air = Math.min(1, (match.jump[id] || 0) / (match.jumpDur[id] || 1));
+        frame = Math.min(clip.frames - 1, Math.floor(air * clip.frames));
       }
       const span = playerHeight(at);
       const height = span * (clip.fh / (clip.body || clip.fh));
       const width = height * (clip.fw / clip.fh);
       ctx.translate(0, -lift);
-      ctx.scale(match.face[id] || 1, 1);
+      const wide = motion.squash < 1 ? 1 + (1 - motion.squash) * 0.65 : 1;
+      ctx.scale((match.face[id] || 1) * wide, motion.squash);
       ctx.drawImage(img, frame * clip.fw, 0, clip.fw, clip.fh, -width / 2, -height, width, height);
       ctx.save();
       ctx.globalAlpha = 0.2;
@@ -1088,7 +1195,7 @@
     const stride = moving ? Math.sin(match.t * 11) * 10 : 0;
     const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
     ctx.scale(at.s, at.s);
-    ctx.translate(0, -lift);
+    ctx.translate(0, -lift / Math.max(0.4, at.s));
     if (pose === "spin") ctx.rotate(Math.sin(match.t * 18) * 0.9);
     if (pose === "fade") ctx.rotate(-0.45);
     if (pose === "hook") ctx.rotate(0.35);
@@ -1146,7 +1253,8 @@
 
   function poseFrame(clip, ball) {
     const last = clip.play != null ? clip.play : clip.frames - 1;
-    const u = Math.min(1, ball.t / 0.78);
+    if (ball.phase && ball.phase !== "arc") return last;
+    const u = Math.min(1, ball.t / (ball.show || 0.35));
     if (u >= 1) return last;
     return Math.min(last, Math.floor(u * (last + 1)));
   }
@@ -1346,10 +1454,13 @@
     else if (screen === "select") drawSelect();
     else {
       drawCourt();
+      drawHoopBack();
       const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
+      const through = match.ball && match.ball.phase === "net";
+      if (!through) drawHoopFront();
       if (match.ball) {
-        if (match.ball.t >= holdFor(match.ball.flair)) drawFlight();
+        if (match.ball.phase !== "arc" || match.ball.t >= (match.ball.show || 0)) drawFlight();
       } else if (match.pass) {
         drawLoose(match.pass, match.pass.t * 1.4);
       } else if (match.owner && !match.hold) {
@@ -1363,6 +1474,7 @@
           ctx.fill();
         });
       }
+      if (through) drawHoopFront();
       drawBanner();
     }
     ctx.restore();
