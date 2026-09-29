@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=30` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=31` : src;
     images[key] = img;
   }
 
@@ -92,20 +92,35 @@
   const CLIPS = {
     mamdani: {
       idle: { frames: 2, fw: 366, fh: 706, body: 706 },
-      shot: { frames: 8, fw: 295, fh: 864, body: 640, play: 4 },
-      dunk: { frames: 8, fw: 391, fh: 836, body: 640, play: 4, cropTop: 0.22 },
-      spin: { frames: 8, fw: 415, fh: 917, body: 640, play: 4 },
-      fade: { frames: 8, fw: 438, fh: 922, body: 640, play: 5 },
-      hook: { frames: 8, fw: 417, fh: 914, body: 640, play: 5 },
+      shot: {
+        frames: 8, fw: 295, fh: 864, body: 640, play: 4,
+        fills: [0.713, 0.808, 0.991, 0.991, 0.887, 0.741, 0.741, 0.741],
+      },
+      dunk: {
+        frames: 8, fw: 391, fh: 836, body: 640, play: 4,
+        fills: [0.744, 0.763, 0.99, 0.995, 0.993, 0.993, 0.993, 0.993],
+      },
+      spin: {
+        frames: 8, fw: 415, fh: 917, body: 640, play: 4,
+        fills: [0.696, 0.722, 0.99, 0.864, 0.966, 0.68, 0.814, 0.851],
+      },
+      fade: {
+        frames: 8, fw: 438, fh: 922, body: 640, play: 5,
+        fills: [0.705, 0.692, 0.993, 0.98, 0.785, 0.668, 0.777, 0.792],
+      },
+      hook: {
+        frames: 8, fw: 417, fh: 914, body: 640, play: 5,
+        fills: [0.7, 0.678, 0.91, 0.926, 0.996, 0.768, 0.757, 0.742],
+      },
       dribble: {
-        frames: 4,
+        frames: 1,
         fw: 410,
         fh: 652,
         body: 640,
         fps: 8,
-        yFree: 1,
-        hop: 0.1,
-        hands: [[0.52, 0.70], [0.49, 0.80], [0.48, 0.78], [0.48, 0.74]],
+        pace: 2.4,
+        hop: 0.18,
+        hands: [[0.52, 0.76]],
       },
       move: {
         frames: 4,
@@ -115,25 +130,44 @@
         fps: 8,
         feet: [0.976, 0.976, 0.976, 0.975],
         fill: 0.952,
-        hands: [[0.173, 0.561], [0.114, 0.56], [0.16, 0.561], [0.14, 0.563]],
+        pace: 2.4,
+        hop: 0.28,
+        hands: [[0.173, 0.64], [0.114, 0.64], [0.16, 0.64], [0.14, 0.64]],
       },
     },
     sayed: {
       idle: { frames: 2, fw: 267, fh: 733, body: 733 },
-      shot: { frames: 8, fw: 391, fh: 868, body: 640, play: 4 },
-      dunk: { frames: 8, fw: 419, fh: 848, body: 640, play: 4, cropTop: 0.22 },
-      spin: { frames: 8, fw: 399, fh: 881, body: 640, play: 5 },
-      fade: { frames: 8, fw: 455, fh: 912, body: 640, play: 5 },
-      hook: { frames: 8, fw: 350, fh: 883, body: 640, play: 4 },
+      shot: {
+        frames: 8, fw: 391, fh: 868, body: 640, play: 4,
+        fills: [0.712, 0.737, 0.931, 0.995, 0.956, 0.995, 0.843, 0.843],
+      },
+      dunk: {
+        frames: 8, fw: 419, fh: 848, body: 640, play: 4,
+        fills: [0.71, 0.752, 0.976, 0.995, 0.995, 0.995, 0.995, 0.802],
+      },
+      spin: {
+        frames: 8, fw: 399, fh: 881, body: 640, play: 5,
+        fills: [0.67, 0.726, 0.985, 0.983, 0.994, 0.747, 0.779, 0.795],
+      },
+      fade: {
+        frames: 8, fw: 455, fh: 912, body: 640, play: 5,
+        fills: [0.719, 0.669, 0.7, 0.917, 0.996, 0.882, 0.792, 0.787],
+      },
+      hook: {
+        frames: 8, fw: 350, fh: 883, body: 640, play: 4,
+        fills: [0.725, 0.682, 0.947, 0.942, 0.994, 0.879, 0.732, 0.734],
+      },
       dribble: {
-        frames: 4,
+        frames: 1,
         fw: 384,
         fh: 1024,
         body: 640,
         fps: 8,
-        feet: [0.857, 0.858, 0.86, 0.86],
+        feet: [0.857],
         fill: 0.756,
-        hands: [[0.452, 0.666], [0.478, 0.619], [0.43, 0.731], [0.477, 0.595]],
+        pace: 2.4,
+        hop: 0.2,
+        hands: [[0.452, 0.74]],
       },
       move: {
         frames: 4,
@@ -143,7 +177,9 @@
         fps: 8,
         feet: [0.991, 0.992, 0.993, 0.993],
         fill: 0.976,
-        hands: [[0.188, 0.489], [0.198, 0.491], [0.178, 0.492], [0.185, 0.503]],
+        pace: 2.4,
+        hop: 0.3,
+        hands: [[0.188, 0.58], [0.198, 0.58], [0.178, 0.58], [0.185, 0.58]],
       },
     },
   };
@@ -294,9 +330,13 @@
     return 110 * at.s;
   }
 
-  function drawnSprite(clip, at) {
+  function drawnSprite(clip, at, frame) {
     const span = playerHeight(at);
-    const height = span / (clip.fill || 1);
+    let fill = clip.fill || 1;
+    if (clip.fills && clip.fills.length) {
+      fill = clip.fills[Math.min(frame || 0, clip.fills.length - 1)] || fill;
+    }
+    const height = span / fill;
     return { span, height, width: height * (clip.fw / clip.fh) };
   }
 
@@ -506,10 +546,10 @@
     if (clip) {
       const frame = dribbleIndex(clip);
       const layout = spriteLayout(clip, frame);
-      const drawn = drawnSprite(clip, at);
+      const drawn = drawnSprite(clip, at, frame);
       const height = drawn.height;
       const width = drawn.width;
-      const hand = clip.hands[frame];
+      const hand = clip.hands[Math.min(frame, clip.hands.length - 1)];
       const x = at.x + face * (hand[0] - 0.5) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
       if (clip.pace) {
@@ -520,7 +560,7 @@
         if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
         else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
       }
-      return { x, y, r, spin: frame * 0.4 };
+      return { x, y, r, spin: match.t * 7 };
     }
     const beat = dribbleBeat();
     const x = at.x + face * span * 0.12;
@@ -1250,7 +1290,7 @@
       }
       const span = playerHeight(at);
       const layout = spriteLayout(clip, frame);
-      const drawn = drawnSprite(clip, at);
+      const drawn = drawnSprite(clip, at, frame);
       const height = drawn.height;
       const width = drawn.width;
       ctx.translate(0, -lift);
