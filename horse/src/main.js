@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=28` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=30` : src;
     images[key] = img;
   }
 
@@ -80,7 +80,7 @@
   loadImage("sayed-fade", "assets/sprites/sayed-fade.webp");
   loadImage("sayed-hook", "assets/sprites/sayed-hook.webp");
   loadImage("sayed-dribble", "assets/sprites/sayed-dribble.webp");
-  loadImage("sayed-move", "assets/sprites/sayed-dribble.webp");
+  loadImage("sayed-move", "assets/sprites/sayed-stride.webp");
   loadImage("ui-board", "assets/ui/ui-board.webp");
   loadImage("ui-banner", "assets/ui/ui-banner.webp");
   loadImage("ui-button", "assets/ui/ui-button.webp");
@@ -132,16 +132,18 @@
         body: 640,
         fps: 8,
         feet: [0.857, 0.858, 0.86, 0.86],
+        fill: 0.756,
         hands: [[0.452, 0.666], [0.478, 0.619], [0.43, 0.731], [0.477, 0.595]],
       },
       move: {
         frames: 4,
         fw: 384,
-        fh: 1024,
+        fh: 881,
         body: 640,
         fps: 8,
-        feet: [0.857, 0.858, 0.86, 0.86],
-        hands: [[0.452, 0.666], [0.478, 0.619], [0.43, 0.731], [0.477, 0.595]],
+        feet: [0.991, 0.992, 0.993, 0.993],
+        fill: 0.976,
+        hands: [[0.188, 0.489], [0.198, 0.491], [0.178, 0.492], [0.185, 0.503]],
       },
     },
   };
@@ -258,9 +260,15 @@
   }
 
   function clank() {
-    tone(160, 0.14, "triangle", 0.07);
-    tone(96, 0.22, "sine", 0.05);
-    noiseBurst(0.08, 400, 0.08);
+    tone(220, 0.07, "square", 0.06);
+    tone(140, 0.16, "triangle", 0.09);
+    tone(70, 0.2, "sine", 0.06);
+    noiseBurst(0.12, 280, 0.18);
+  }
+
+  function dribbleThump() {
+    noiseBurst(0.04, 160, 0.16);
+    tone(72, 0.045, "sine", 0.07);
   }
 
   function unlockAudio() {
@@ -393,6 +401,7 @@
       basket: null,
       roar: 0,
       flash: 0,
+      dribU: null,
       pop: { mamdani: 0, sayed: 0 },
     };
   }
@@ -438,6 +447,45 @@
 
   function dribbleIndex(clip) {
     return Math.floor(match.t * (clip.fps || 8)) % clip.frames;
+  }
+
+  function tickDribble() {
+    if (!match.owner || match.hold || match.ball || match.pass) {
+      match.dribU = null;
+      return;
+    }
+    const clip = handClip(match.owner);
+    if (clip && clip.pace) {
+      const phase = (match.t * clip.pace) % 1;
+      if (match.dribU != null && match.dribU < 0.5 && phase >= 0.5) dribbleThump();
+      match.dribU = phase;
+      return;
+    }
+    if (clip && clip.yFree != null) {
+      const fps = clip.fps || 8;
+      const frame = Math.floor(match.t * fps) % clip.frames;
+      if (frame !== clip.yFree) {
+        match.dribU = null;
+        return;
+      }
+      const phase = (match.t * fps) % 1;
+      if (match.dribU != null && match.dribU < 0.5 && phase >= 0.5) dribbleThump();
+      match.dribU = phase;
+      return;
+    }
+    if (clip && clip.hands) {
+      const frame = dribbleIndex(clip);
+      let low = 0;
+      clip.hands.forEach((hand, i) => {
+        if (hand[1] > clip.hands[low][1]) low = i;
+      });
+      if (frame === low && match.dribU !== low) dribbleThump();
+      match.dribU = frame;
+      return;
+    }
+    const phase = (match.t * 2) % 1;
+    if (match.dribU != null && match.dribU < 0.5 && phase >= 0.5) dribbleThump();
+    match.dribU = phase;
   }
 
   function handClip(id) {
@@ -674,6 +722,9 @@
     const hoop = hoopLayout();
     if (ball.made) {
       swish();
+      roar();
+      match.shake = Math.max(match.shake || 0, ball.flair === "dunk" ? 2.1 : 0.85);
+      match.zoom = Math.max(match.zoom || 0, ball.flair === "dunk" ? 1 : 0.4);
       ball.phase = "net";
       ball.t = 0;
       ball.dur = ball.flair === "dunk" ? 0.18 : 0.26;
@@ -686,6 +737,7 @@
       return;
     }
     clank();
+    match.shake = Math.max(match.shake || 0, 0.45);
     const side = Math.sign(ball.x0 - hoop.x) || 1;
     ball.phase = "brick";
     ball.t = 0;
@@ -725,6 +777,7 @@
       }
     }
     if (match.hoopKick > 0) match.hoopKick = Math.max(0, match.hoopKick - dt * 1.15);
+    tickDribble();
     if (match.ball) {
       match.trail.push(ballPoint(match.ball));
       if (match.trail.length > 14) match.trail.shift();
@@ -1486,6 +1539,15 @@
         drawLoose(match.pass, match.pass.t * 1.4);
       } else if (match.owner && !match.hold) {
         const held = ownedBall(match.owner);
+        const feet = project(match.pos[match.owner].x, match.pos[match.owner].y);
+        const rise = Math.max(0, feet.y - held.y);
+        const contact = clamp(1 - rise / 150, 0.2, 0.7);
+        ctx.save();
+        ctx.fillStyle = `rgba(0, 0, 0, ${0.28 + contact * 0.35})`;
+        ctx.beginPath();
+        ctx.ellipse(held.x, feet.y + 3, held.r * (0.45 + contact * 0.7), held.r * 0.24, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
         drawBall(held.x, held.y, held.r, held.spin);
       } else if (match.trail.length) {
         match.trail.forEach((p, i) => {
