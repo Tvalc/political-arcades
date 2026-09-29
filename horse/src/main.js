@@ -53,7 +53,7 @@
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=22` : src;
+    img.src = src.startsWith("assets/") ? `${src}?v=25` : src;
     images[key] = img;
   }
 
@@ -79,6 +79,8 @@
   loadImage("sayed-spin", "assets/sprites/sayed-spin.webp");
   loadImage("sayed-fade", "assets/sprites/sayed-fade.webp");
   loadImage("sayed-hook", "assets/sprites/sayed-hook.webp");
+  loadImage("sayed-dribble", "assets/sprites/sayed-dribble.webp");
+  loadImage("sayed-move", "assets/sprites/sayed-dribble.webp");
   loadImage("ui-board", "assets/ui/ui-board.webp");
   loadImage("ui-banner", "assets/ui/ui-banner.webp");
   loadImage("ui-button", "assets/ui/ui-button.webp");
@@ -103,22 +105,22 @@
         fps: 8,
         yFree: 1,
         hop: 0.1,
-        hands: [[0.52, 0.54], [0.49, 0.60], [0.48, 0.59], [0.48, 0.57]],
+        hands: [[0.52, 0.70], [0.49, 0.80], [0.48, 0.78], [0.48, 0.74]],
       },
       move: {
         frames: 12,
         fw: 448,
         fh: 680,
         body: 640,
-        fps: 10,
-        hop: 0.18,
-        bounce: true,
+        fps: 6,
+        hop: 0.14,
+        pace: 2,
         feet: [0.924, 0.941, 0.968, 0.982, 0.99, 0.997, 0.996, 0.99, 0.982, 0.974, 0.966, 0.959],
         hands: [
-          [0.1, 0.46], [0.11, 0.44], [0.13, 0.47],
-          [0.2, 0.6], [0.17, 0.58], [0.15, 0.53],
-          [0.15, 0.52], [0.18, 0.57], [0.24, 0.59],
-          [0.18, 0.55], [0.16, 0.53], [0.2, 0.59],
+          [0.12, 0.68], [0.13, 0.68], [0.14, 0.68],
+          [0.18, 0.68], [0.16, 0.68], [0.15, 0.68],
+          [0.15, 0.68], [0.17, 0.68], [0.2, 0.68],
+          [0.17, 0.68], [0.15, 0.68], [0.18, 0.68],
         ],
       },
     },
@@ -129,6 +131,24 @@
       spin: { frames: 8, fw: 399, fh: 881, body: 640, play: 5 },
       fade: { frames: 8, fw: 455, fh: 912, body: 640, play: 5 },
       hook: { frames: 8, fw: 350, fh: 883, body: 640, play: 4 },
+      dribble: {
+        frames: 4,
+        fw: 384,
+        fh: 1024,
+        body: 640,
+        fps: 8,
+        feet: [0.857, 0.858, 0.86, 0.86],
+        hands: [[0.452, 0.666], [0.478, 0.619], [0.43, 0.731], [0.477, 0.595]],
+      },
+      move: {
+        frames: 4,
+        fw: 384,
+        fh: 1024,
+        body: 640,
+        fps: 8,
+        feet: [0.857, 0.858, 0.86, 0.86],
+        hands: [[0.452, 0.666], [0.478, 0.619], [0.43, 0.731], [0.477, 0.595]],
+      },
     },
   };
 
@@ -260,11 +280,11 @@
   }
 
   function project(nx, ny) {
-    const depth = 0.72 - ny;
-    const y = 508 + depth * 210;
-    const span = 380 + depth * 540;
+    const depth = 0.96 - ny;
+    const y = 436 + depth * 230;
+    const span = 260 + depth * 560;
     const x = W * 0.5 + (nx - 0.5) * span;
-    const s = 0.8 + depth * 0.75;
+    const s = 0.62 + depth * 0.75;
     return { x, y, s, span };
   }
 
@@ -288,10 +308,10 @@
   }
 
   function courtPoint(px, py) {
-    if (py < 490 || py > 660) return null;
+    if (py < 420 || py > 660) return null;
     let best = null;
     let bestDy = 1e9;
-    for (let ny = 0.08; ny <= 0.7; ny += 0.008) {
+    for (let ny = 0.08; ny <= 0.94; ny += 0.008) {
       const row = project(0.5, ny);
       const dy = Math.abs(row.y - py);
       if (dy < bestDy) {
@@ -406,8 +426,14 @@
   }
 
   function dribbleBeat() {
-    const bounce = (match.t * 1.65) % 1;
+    const bounce = (match.t * 2) % 1;
     return { bounce, dip: Math.sin(bounce * Math.PI) };
+  }
+
+  function aimFace(id, vx, vy) {
+    if (Math.abs(vx) < 0.18) return;
+    if (Math.abs(vx) < Math.abs(vy) * 0.45) return;
+    match.face[id] = vx < 0 ? -1 : 1;
   }
 
   function dribbleIndex(clip) {
@@ -437,15 +463,19 @@
       const hand = clip.hands[frame];
       const x = at.x + face * (hand[0] - 0.5) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
-      const u = (match.t * (clip.fps || 8)) % 1;
-      if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
-      else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
+      if (clip.pace) {
+        const u = (match.t * clip.pace) % 1;
+        y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
+      } else {
+        const u = (match.t * (clip.fps || 8)) % 1;
+        if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
+        else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
+      }
       return { x, y, r, spin: frame * 0.4 };
     }
     const beat = dribbleBeat();
-    const x = at.x + face * span * 0.2;
-    const hand = at.y - lift - span * 0.4;
-    const y = hand + Math.sin(beat.bounce * Math.PI) * span * 0.28;
+    const x = at.x + face * span * 0.12;
+    const y = at.y - span * 0.28 + Math.sin(beat.bounce * Math.PI) * span * 0.1;
     return { x, y, r, spin: beat.bounce * 1.1 };
   }
 
@@ -748,8 +778,8 @@
     const mag = Math.hypot(vx, vy) || 1;
     if (vx || vy) {
       p.x = clamp(p.x + (vx / mag) * dt * 0.34, 0.08, 0.92);
-      p.y = clamp(p.y + (vy / mag) * dt * 0.28, 0.08, 0.7);
-      match.face[id] = vx < -0.05 ? -1 : vx > 0.05 ? 1 : match.face[id];
+      p.y = clamp(p.y + (vy / mag) * dt * 0.28, 0.08, 0.94);
+      aimFace(id, vx, vy);
       match.pose[id] = "move";
     } else if (!match.hold) {
       match.pose[id] = "idle";
@@ -781,8 +811,8 @@
       const dy = cpu.spot.y - p.y;
       if (Math.hypot(dx, dy) > 0.025) {
         p.x = clamp(p.x + Math.sign(dx) * dt * 0.32, 0.08, 0.92);
-        p.y = clamp(p.y + Math.sign(dy) * dt * 0.26, 0.08, 0.7);
-        match.face[cpu.id] = dx < 0 ? -1 : 1;
+        p.y = clamp(p.y + Math.sign(dy) * dt * 0.26, 0.08, 0.94);
+        aimFace(cpu.id, dx, dy);
         match.pose[cpu.id] = "move";
       } else {
         p.x = cpu.spot.x;
