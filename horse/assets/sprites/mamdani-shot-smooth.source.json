@@ -1,0 +1,18 @@
+{
+  "source": "Makko",
+  "animationId": "38c47d72-718c-4860-9f76-32d2caca784c",
+  "collectionId": "2c56322d-3443-4e2b-b7b2-f0a6b06e1a3d",
+  "export": "horse_mamdani-jumpshot-review-v2",
+  "artworkModified": false,
+  "sha256": "bc5c82958f9153f059d78ccef82c019284d4d9ae37c169a7a0d97debb25e4641",
+  "frames": 96,
+  "columns": 10,
+  "padding": 2,
+  "cell": [
+    89,
+    256
+  ],
+  "runtimeLastFrame": 56,
+  "releaseFrame": 26,
+  "notes": "Native existing Makko export. Runtime frame selection excludes the second-ball recovery tail; no generated replacement character."
+}

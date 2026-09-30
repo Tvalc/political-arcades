@@ -1,0 +1,15 @@
+{
+  "mamdani-moving-dribble-v2.webp": {
+    "collection": "HORSE",
+    "source": "https://www.makko.ai/studio/collection/2c56322d-3443-4e2b-b7b2-f0a6b06e1a3d/animation/25ff34a4-facc-4521-911e-55f65a596c44",
+    "bake": "horse_mamdani-moving-dribble-v2",
+    "exported": "2026-09-29",
+    "frames": 96,
+    "frameDurationMs": 42,
+    "columns": 10,
+    "padding": 2,
+    "containsBall": true,
+    "sourceFacing": "left",
+    "note": "Unmodified native Makko WebP export. Grid rendering and facing correction happen at runtime. Original export atlas accompanies image."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "source": "Makko",
+  "animationId": "d2326771-e52b-4a44-a052-299cc386818c",
+  "export": "horse_mamdani-stationary-dribble-review",
+  "artworkModified": false,
+  "frames": 96,
+  "columns": 10,
+  "cell": [
+    200,
+    256
+  ],
+  "padding": 2,
+  "runtimeRange": [
+    0,
+    18
+  ]
+}

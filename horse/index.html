@@ -30,13 +30,16 @@
     <a class="brand" href="./">HORSE</a>
     <a class="brand-side" href="../">Political Arcades</a>
   </header>
+  <div class="session-controls" id="session-controls" hidden><button type="button" id="pause-toggle">Pause · Esc</button><button type="button" id="rematch">Restart match</button><button type="button" id="pick-again">Choose player</button><button type="button" id="practice">Practice jumper</button><label id="practice-speed" hidden><input type="checkbox" id="slow-motion"> Slow motion</label></div>
+  <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
   <main class="stage">
+    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>The next shot can wait.</p><button type="button" id="resume">Resume</button></section>
     <canvas id="game" width="1280" height="720" tabindex="0" aria-label="HORSE, a playground shooting game"></canvas>
   </main>
   <footer class="site-foot">
     <p>HORSE is an unofficial cartoon from <a href="../">Political Arcades</a>. It is not authorized by Zohran Mamdani, Abdul El-Sayed, or any candidate or candidate's committee.</p>
   </footer>
   <script src="touch.js"></script>
-  <script src="src/main.js?v=31"></script>
+  <script src="src/main.js?v=32"></script>
 </body>
 </html>
