@@ -1352,44 +1352,6 @@
     crowdGain.connect(audioCtx.destination);
     crowd.start();
 
-    const bass = audioCtx.createOscillator();
-    const bassFilter = audioCtx.createBiquadFilter();
-    const bassGain = audioCtx.createGain();
-    bass.type = "sawtooth";
-    bass.frequency.value = 49;
-    bassFilter.type = "lowpass";
-    bassFilter.frequency.value = 200;
-    bassGain.gain.value = 0.0001;
-    bass.connect(bassFilter);
-    bassFilter.connect(bassGain);
-    bassGain.connect(audioCtx.destination);
-    bass.start();
-    const notes = [49, 49, 73, 49, 55, 49, 65, 49];
-    let step = 0;
-    setInterval(() => {
-      // Do not queue new notes at a frozen audio clock while the game is paused.
-      if (!audioCtx || audioCtx.state !== "running") return;
-      const now = audioCtx.currentTime;
-      bass.frequency.setValueAtTime(notes[step % notes.length], now);
-      bassGain.gain.cancelScheduledValues(now);
-      bassGain.gain.setValueAtTime(0.0001, now);
-      bassGain.gain.exponentialRampToValueAtTime(0.07, now + 0.015);
-      bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-      if (step % 2 === 0) {
-        const stab = audioCtx.createOscillator();
-        const stabGain = audioCtx.createGain();
-        stab.type = "square";
-        stab.frequency.value = step % 4 === 0 ? 196 : 247;
-        stabGain.gain.setValueAtTime(0.0001, now);
-        stabGain.gain.exponentialRampToValueAtTime(0.025, now + 0.01);
-        stabGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
-        stab.connect(stabGain);
-        stabGain.connect(audioCtx.destination);
-        stab.start(now);
-        stab.stop(now + 0.11);
-      }
-      step += 1;
-    }, 260);
   }
 
   function roar() {
@@ -1413,10 +1375,7 @@
     noiseBurst(0.12, 280, 0.18);
   }
 
-  function dribbleThump() {
-    noiseBurst(0.04, 160, 0.16);
-    tone(72, 0.045, "sine", 0.07);
-  }
+  function dribbleThump() { /* Dribble audio intentionally disabled. */ }
 
   function unlockAudio() {
     if (muted || paused) return;
