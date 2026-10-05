@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HORSE</title>
+  <title>VOTE</title>
   <link rel="canonical" href="https://politicalarcades.com/horse/" />
   <meta
     name="description"
-    content="HORSE is a Political Arcades playground game. Call a shot as Zohran Mamdani or Abdul El-Sayed. The other player has to copy the spot and the flair."
+    content="VOTE is a Political Arcades playground game. Call a shot as Zohran Mamdani or Abdul El-Sayed. The other player has to copy the spot and the flair."
   />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Political Arcades" />
-  <meta property="og:title" content="HORSE" />
+  <meta property="og:title" content="VOTE" />
   <meta property="og:description" content="Call a shot as Zohran Mamdani or Abdul El-Sayed. The other player has to copy the spot and the flair." />
   <meta property="og:url" content="https://politicalarcades.com/horse/" />
   <meta property="og:image" content="https://politicalarcades.com/art/horse-screen.jpg" />
@@ -22,25 +22,36 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="touch.css" />
+  <link rel="stylesheet" href="styles.css?v=courts1" />
+  <link rel="stylesheet" href="touch.css?v=launch1" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./">HORSE</a>
+    <a class="brand" href="./"><img src="assets/ui/makko/logo.webp" alt="VOTE" width="110" height="37"></a>
+    <button type="button" id="sound-toggle" aria-pressed="false">Sound off · Enable</button>
     <a class="brand-side" href="../">Political Arcades</a>
   </header>
-  <div class="session-controls" id="session-controls" hidden><button type="button" id="pause-toggle">Pause · Esc</button><button type="button" id="rematch">Restart match</button><button type="button" id="pick-again">Choose player</button><button type="button" id="practice">Practice jumper</button><label id="practice-speed" hidden><input type="checkbox" id="slow-motion"> Slow motion</label></div>
+  <div class="session-controls" id="session-controls" hidden><button type="button" id="pause-toggle">Pause · Esc</button><button type="button" id="rematch" hidden>Restart match</button><button type="button" id="pick-again" hidden>Choose player</button><button type="button" id="practice">Practice shots</button><label id="practice-speed" hidden><input type="checkbox" id="slow-motion"> Slow motion</label></div>
   <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
   <main class="stage">
-    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>The next shot can wait.</p><button type="button" id="resume">Resume</button></section>
-    <canvas id="game" width="1280" height="720" tabindex="0" aria-label="HORSE, a playground shooting game"></canvas>
+    <section class="launch-panel" id="asset-loading" role="status" aria-live="polite"><h2>Getting ready</h2><p id="asset-progress">Loading the court...</p><button id="asset-retry" type="button" hidden>Retry loading</button></section>
+    <section class="launch-panel" id="first-play" hidden aria-labelledby="guide-title"><h2 id="guide-title">Make them match it.</h2><p>Make a shot. Your opponent must copy the spot and the shot.</p><p>Miss a copy? Earn a letter. Spell VOTE and you lose.</p><p><strong>Shooting takes two presses:</strong> one to aim, one to shoot in the gold zone.</p><button id="guide-learn" type="button">Try a guided shot</button><button id="guide-skip" type="button">I know the rules. Play!</button></section>
+    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>Take a breath. Your court is waiting.</p><button type="button" id="resume">Resume</button><button type="button" id="pause-restart">Restart game</button><button type="button" id="pause-choose">Change player</button></section>
+    <section id="court-select" class="court-select" hidden aria-labelledby="court-title"><header><h2 id="court-title">Choose your court</h2><p id="court-progress"></p></header><div id="court-grid" class="court-grid"></div><nav><button type="button" id="court-back">Back to players</button><button type="button" id="court-play">Play</button></nav></section>
+    <canvas id="game" width="1280" height="720" tabindex="0" aria-label="VOTE, a playground shooting game"></canvas>
   </main>
+  <details class="how-to"><summary>How to play</summary><div>
+    <p><strong>Make them copy you.</strong> Pick a spot and a shot. If you make it, your opponent must match both. Miss a copy and you earn a letter. Spell VOTE and you lose.</p>
+    <p><strong>Move:</strong> arrows / WASD, or the touch stick. <strong>Shoot:</strong> press Space or tap Aim, then press again when the needle reaches the gold zone.</p>
+    <p><strong>Add flair:</strong> 1 Spin · 2 Dunk (near the rim) · 3 Fade · 4 Hook. Choose the active trick again to return to a regular shot. Practice has no letters.</p>
+    <p><strong>Unlock courts:</strong> win three matches to unlock the next court. Wins are saved in this browser; practice does not count.</p>
+    <p><strong>Pause:</strong> Esc or Pause. Restart and change shooter from the pause menu.</p>
+  </div></details>
   <footer class="site-foot">
-    <p>HORSE is an unofficial cartoon from <a href="../">Political Arcades</a>. It is not authorized by Zohran Mamdani, Abdul El-Sayed, or any candidate or candidate's committee.</p>
+    <p>VOTE is an unofficial cartoon from <a href="../">Political Arcades</a>. It is not authorized by Zohran Mamdani, Abdul El-Sayed, or any candidate or candidate's committee.</p>
   </footer>
-  <script src="touch.js"></script>
-  <script src="src/main.js?v=32"></script>
+  <script src="touch.js?v=3"></script>
+  <script src="src/main.js?v=vote-courts1"></script>
 </body>
 </html>

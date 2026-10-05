@@ -40,17 +40,91 @@
   };
 
   const HOOP = { x: 0.5, y: 0.8 };
-  const LETTERS = ["H", "O", "R", "S", "E"];
+  const LETTERS = ["V", "O", "T", "E"];
   const keys = new Set();
   const buttons = [];
   const images = {};
+  const assetStates = new Map();
+  let guideSeen = false;
+  let guideOpen = false;
+  function assetProgress() {
+    const states = [...assetStates.values()];
+    return { total: states.length, loaded: states.filter(a => a.state === "ready").length,
+      failed: states.filter(a => a.state === "failed").length };
+  }
+  function assetsReady() { const p = assetProgress(); return p.total > 0 && p.loaded === p.total; }
+  function retryAssets() {
+    for (const [key, asset] of assetStates) if (asset.state === "failed") loadImage(key, asset.src);
+  }
+  document.getElementById("asset-retry").addEventListener("click", retryAssets);
+  document.getElementById("guide-skip").addEventListener("click", () => finishGuide(false));
+  document.getElementById("guide-learn").addEventListener("click", () => finishGuide(true));
+  function finishGuide(learn) {
+    guideOpen = false; guideSeen = true;
+    document.getElementById("first-play").hidden = true;
+    if (learn) {
+      startPractice();
+      match.tutorial = { x: match.pos[match.humanId].x, y: match.pos[match.humanId].y, moved: false, shot: false };
+    } else startGame();
+  }
   let audioCtx = null;
+  let muted = true;
   let screen = "title";
   let selectIndex = 0;
   let match = null;
+
+  const COURTS = [{"id": "nyc", "name": "New York Playground", "wins": 0, "src": "assets/nyc-playground.webp", "thumb": "assets/nyc-playground.webp", "rim": [640, 134]}, {"id": "detroit", "name": "Detroit Playground", "wins": 0, "src": "assets/detroit-playground.webp", "thumb": "assets/detroit-playground.webp", "rim": [634, 160]}, {"id": "court-01", "name": "Rent Freeze Schoolyard", "wins": 3, "src": "assets/courts/01.webp", "thumb": "assets/courts/01-thumb.webp", "rim": [636, 117]}, {"id": "court-02", "name": "Motor City Union Hall", "wins": 6, "src": "assets/courts/02.webp", "thumb": "assets/courts/02-thumb.webp", "rim": [640, 149]}, {"id": "court-03", "name": "Free Bus Fast Break", "wins": 9, "src": "assets/courts/03.webp", "thumb": "assets/courts/03-thumb.webp", "rim": [640, 108]}, {"id": "court-04", "name": "Public Health Playground", "wins": 12, "src": "assets/courts/04.webp", "thumb": "assets/courts/04-thumb.webp", "rim": [640, 113]}, {"id": "court-05", "name": "Grocery Co-op Corner", "wins": 15, "src": "assets/courts/05.webp", "thumb": "assets/courts/05-thumb.webp", "rim": [640, 158]}, {"id": "court-06", "name": "Rooftop Housing Boom", "wins": 18, "src": "assets/courts/06.webp", "thumb": "assets/courts/06-thumb.webp", "rim": [639, 176]}, {"id": "court-07", "name": "Library After Dark", "wins": 21, "src": "assets/courts/07.webp", "thumb": "assets/courts/07-thumb.webp", "rim": [634, 133]}, {"id": "court-08", "name": "Great Lakes Green Deal", "wins": 24, "src": "assets/courts/08.webp", "thumb": "assets/courts/08-thumb.webp", "rim": [637, 156]}, {"id": "court-09", "name": "Childcare Block Party", "wins": 27, "src": "assets/courts/09.webp", "thumb": "assets/courts/09-thumb.webp", "rim": [636, 162]}, {"id": "court-10", "name": "Ballot Box Boulevard", "wins": 30, "src": "assets/courts/10.webp", "thumb": "assets/courts/10-thumb.webp", "rim": [639, 128]}, {"id": "court-11", "name": "Trickle Down Country Club", "wins": 33, "src": "assets/courts/11.webp", "thumb": "assets/courts/11-thumb.webp", "rim": [640, 93]}, {"id": "court-12", "name": "Infrastructure Week Forever", "wins": 36, "src": "assets/courts/12.webp", "thumb": "assets/courts/12-thumb.webp", "rim": [640, 119]}, {"id": "court-13", "name": "Emergency Vacation Resort", "wins": 39, "src": "assets/courts/13.webp", "thumb": "assets/courts/13-thumb.webp", "rim": [638, 98]}, {"id": "court-14", "name": "Filibuster Falls", "wins": 42, "src": "assets/courts/14.webp", "thumb": "assets/courts/14-thumb.webp", "rim": [640, 137]}, {"id": "court-15", "name": "Border Wall Gift Shop", "wins": 45, "src": "assets/courts/15.webp", "thumb": "assets/courts/15-thumb.webp", "rim": [640, 158]}, {"id": "court-16", "name": "Stone Age Senate", "wins": 48, "src": "assets/courts/16.webp", "thumb": "assets/courts/16-thumb.webp", "rim": [637, 129]}, {"id": "court-17", "name": "Trickle Down Tar Pit", "wins": 51, "src": "assets/courts/17.webp", "thumb": "assets/courts/17-thumb.webp", "rim": [640, 121]}, {"id": "court-18", "name": "Mammoth Healthcare Maze", "wins": 54, "src": "assets/courts/18.webp", "thumb": "assets/courts/18-thumb.webp", "rim": [631, 130]}, {"id": "court-19", "name": "Fossil Fuel Fan Club", "wins": 57, "src": "assets/courts/19.webp", "thumb": "assets/courts/19-thumb.webp", "rim": [640, 171]}, {"id": "court-20", "name": "Cave Condo Crisis", "wins": 60, "src": "assets/courts/20.webp", "thumb": "assets/courts/20-thumb.webp", "rim": [640, 174]}, {"id": "court-21", "name": "Neon Public Option", "wins": 63, "src": "assets/courts/21.webp", "thumb": "assets/courts/21-thumb.webp", "rim": [640, 98]}, {"id": "court-22", "name": "Robo Landlord 3000", "wins": 66, "src": "assets/courts/22.webp", "thumb": "assets/courts/22-thumb.webp", "rim": [640, 143]}, {"id": "court-23", "name": "Solar Punk Commons", "wins": 69, "src": "assets/courts/23.webp", "thumb": "assets/courts/23-thumb.webp", "rim": [640, 109]}, {"id": "court-24", "name": "Algorithmic Gerrymander", "wins": 72, "src": "assets/courts/24.webp", "thumb": "assets/courts/24-thumb.webp", "rim": [640, 119]}, {"id": "court-25", "name": "Billionaire Bunker League", "wins": 75, "src": "assets/courts/25.webp", "thumb": "assets/courts/25-thumb.webp", "rim": [640, 121]}, {"id": "court-26", "name": "Lunar Tax Haven", "wins": 78, "src": "assets/courts/26.webp", "thumb": "assets/courts/26-thumb.webp", "rim": [640, 191]}, {"id": "court-27", "name": "Mars Infrastructure Week", "wins": 81, "src": "assets/courts/27.webp", "thumb": "assets/courts/27-thumb.webp", "rim": [635, 152]}, {"id": "court-28", "name": "Galactic Public Transit", "wins": 84, "src": "assets/courts/28.webp", "thumb": "assets/courts/28-thumb.webp", "rim": [640, 101]}, {"id": "court-29", "name": "Orbital Lobbyist Lounge", "wins": 87, "src": "assets/courts/29.webp", "thumb": "assets/courts/29-thumb.webp", "rim": [640, 114]}, {"id": "court-30", "name": "Democracy Block Party 2099", "wins": 90, "src": "assets/courts/30.webp", "thumb": "assets/courts/30-thumb.webp", "rim": [640, 93]}];
+  let selectedCourt = null, courtOpen = false, pendingCourtStart = false;
+  let careerWins = 0, progressSaved = true, marketingUnlock = false;
+  try { const saved = JSON.parse(localStorage.getItem('vote-court-progress-v1') || '{}');
+    careerWins = Number.isSafeInteger(saved.wins) && saved.wins >= 0 ? Math.min(saved.wins, 1000000) : 0;
+  } catch (_) { progressSaved = false; }
+  function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
+  function courtUnlocked(id) { return marketingUnlock || courtById(id).wins <= careerWins; }
+  function recordCourtWin() {
+    if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
+    match.winRecorded = true;
+    careerWins++;
+    try { localStorage.setItem('vote-court-progress-v1', JSON.stringify({wins:careerWins})); }
+    catch (_) { progressSaved = false; }
+    const unlocked = COURTS.find(c => c.wins === careerWins);
+    match.unlockMessage = unlocked ? `COURT UNLOCKED: ${unlocked.name}` : `${careerWins} career wins`;
+  }
+  function openCourtSelect() {
+    courtOpen = true; keys.clear(); pointer = null;
+    if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = selectIndex === 0 ? 'nyc' : 'detroit';
+    const panel = document.getElementById('court-select');
+    panel.hidden = false;
+    document.getElementById('court-progress').textContent = `${careerWins} wins · ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
+      (marketingUnlock ? 'Marketing preview: all courts open; wins do not count. ' : '') + (progressSaved ? 'Progress is saved in this browser. Practice does not count.' : 'Browser storage is unavailable. Progress lasts for this session.');
+    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></button>`).join('');
+    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    document.getElementById('court-play').focus();
+  }
+  document.getElementById('court-grid').addEventListener('click', ev => {
+    const card = ev.target.closest?.('[data-court]');
+    if (!card || !courtUnlocked(card.dataset.court)) return;
+    selectedCourt = card.dataset.court;
+    document.querySelectorAll?.('[data-court]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.court===selectedCourt)));
+    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+  });
+  document.getElementById('court-back').addEventListener('click',()=>{
+    courtOpen=false; document.getElementById('court-select').hidden=true; chooseAgain();
+  });
+  document.getElementById('court-play').addEventListener('click',()=>{
+    if (!courtUnlocked(selectedCourt)) return;
+    const court=courtById(selectedCourt);
+    if (court.wins>0) loadImage('selected-court',court.src);
+    courtOpen=false; document.getElementById('court-select').hidden=true;
+    pendingCourtStart=true;
+  });
+
   let last = performance.now();
   let pointer = null;
   let paused = false;
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+  const menuMotion = { x: 0, y: 0, targetX: 0, targetY: 0, hover: null, pressUntil: 0, pressKey: "", dt: 0, screen: "title" };
+  const buttonMotion = new Map();
   const pausePanel = document.getElementById("pause-panel");
   const controls = document.getElementById("session-controls");
   const status = document.getElementById("game-status");
@@ -59,14 +133,15 @@
     paused = value; keys.clear(); pointer = null;
     pausePanel.hidden = !paused;
     document.getElementById("pause-toggle").textContent = paused ? "Resume · Esc" : "Pause · Esc";
-    if (audioCtx) { const operation = paused ? audioCtx.suspend() : audioCtx.resume(); operation?.catch(() => {}); }
+    if (audioCtx) { const operation = paused || muted ? audioCtx.suspend() : audioCtx.resume(); operation?.catch(() => {}); }
     if (paused) document.getElementById("resume").focus();
     else canvas.focus({ preventScroll: true });
   }
   function startPractice() {
     setPaused(false); keys.clear(); pointer = null;
-    match = freshMatch("mamdani"); match.practice = true; screen = "play";
-    match.call = "Jumper practice: move with arrows / WASD, then Space to aim and Space to shoot.";
+    const id = match?.humanId || (selectIndex === 1 ? "sayed" : "mamdani");
+    match = freshMatch(id); match.practice = true; screen = "play";
+    match.call = "Practice: move with arrows / WASD. Choose a shot with 1–4; Space to aim and shoot.";
     canvas.focus({ preventScroll: true });
   }
   document.getElementById("practice").addEventListener("click", startPractice);
@@ -84,188 +159,1146 @@
   document.getElementById("resume").addEventListener("click", () => setPaused(false));
   document.getElementById("rematch").addEventListener("click", restartMatch);
   document.getElementById("pick-again").addEventListener("click", chooseAgain);
+  document.getElementById("pause-restart").addEventListener("click", restartMatch);
+  document.getElementById("pause-choose").addEventListener("click", chooseAgain);
+  function setMuted(value) {
+    muted = value;
+    const toggle = document.getElementById("sound-toggle");
+    toggle.textContent = muted ? "Sound off · Enable" : "Sound on · Mute";
+    toggle.setAttribute?.("aria-pressed", String(!muted));
+    if (muted) audioCtx?.suspend()?.catch(() => {});
+    else if (!paused) unlockAudio();
+  }
+  document.getElementById("sound-toggle").addEventListener("click", () => setMuted(!muted));
   window.addEventListener("blur", () => setPaused(true));
   document.addEventListener("visibilitychange", () => { if (document.hidden) setPaused(true); });
 
   function loadImage(key, src) {
     const img = new Image();
-    img.src = src.startsWith("assets/") ? `${src}?v=32` : src;
+    const asset = { src, state: "loading" };
+    assetStates.set(key, asset);
+    img.onload = () => { asset.state = "ready"; };
+    img.onerror = () => { asset.state = "failed"; };
+    setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
+    img.src = src.startsWith("assets/") ? `${src}?v=42` : src;
     images[key] = img;
   }
 
-  loadImage("nyc", "assets/nyc.webp");
-  loadImage("detroit", "assets/detroit.webp");
-  loadImage("nyc-future", "assets/nyc-future.webp");
-  loadImage("detroit-future", "assets/detroit-future.webp");
-  loadImage("face-mamdani", "assets/face-mamdani.webp");
-  loadImage("face-sayed", "assets/face-sayed.webp");
+  loadImage("nyc-future", "assets/nyc-playground.webp");
+  loadImage("detroit-future", "assets/detroit-playground.webp");
   loadImage("ball", "assets/sprites/ball.webp");
   loadImage("hoop", "assets/sprites/hoop.webp");
-  loadImage("mamdani-idle", "assets/sprites/mamdani-idle-clean-v1.webp");
-  loadImage("mamdani-move", "assets/sprites/mamdani-move-clean-v1.webp");
-  loadImage("mamdani-shot", "assets/sprites/mamdani-shot-clean-v1.webp");
-  loadImage("mamdani-dunk", "assets/sprites/mamdani-dunk.webp");
-  loadImage("mamdani-spin", "assets/sprites/mamdani-spin.webp");
-  loadImage("mamdani-fade", "assets/sprites/mamdani-fade.webp");
-  loadImage("mamdani-hook", "assets/sprites/mamdani-hook.webp");
-  loadImage("mamdani-dribble", "assets/sprites/mamdani-dribble-clean-v1.webp");
-  loadImage("sayed-idle", "assets/sprites/sayed-idle.webp");
-  loadImage("sayed-shot", "assets/sprites/sayed-shot.webp");
-  loadImage("sayed-dunk", "assets/sprites/sayed-dunk.webp");
-  loadImage("sayed-spin", "assets/sprites/sayed-spin.webp");
-  loadImage("sayed-fade", "assets/sprites/sayed-fade.webp");
-  loadImage("sayed-hook", "assets/sprites/sayed-hook.webp");
-  loadImage("sayed-dribble", "assets/sprites/sayed-dribble.webp");
-  loadImage("sayed-move", "assets/sprites/sayed-stride.webp");
-  loadImage("ui-board", "assets/ui/ui-board.webp");
-  loadImage("ui-banner", "assets/ui/ui-banner.webp");
-  loadImage("ui-button", "assets/ui/ui-button.webp");
-  loadImage("ui-hot", "assets/ui/ui-hot.webp");
-  loadImage("ui-meter", "assets/ui/ui-meter.webp");
-  loadImage("ui-bracket", "assets/ui/ui-bracket.webp");
-  loadImage("ui-needle", "assets/ui/ui-needle.webp");
+  loadImage("mamdani-idle", "assets/sprites/chibi/mamdani-idle.webp");
+  loadImage("mamdani-move", "assets/sprites/chibi/mamdani-move.webp");
+  loadImage("mamdani-shot", "assets/sprites/chibi/mamdani-shot.webp");
+  loadImage("mamdani-dunk", "assets/sprites/chibi/mamdani-dunk.webp");
+  loadImage("mamdani-spin", "assets/sprites/chibi/mamdani-spin.webp");
+  loadImage("mamdani-fade", "assets/sprites/chibi/mamdani-fade.webp");
+  loadImage("mamdani-hook", "assets/sprites/chibi/mamdani-hook.webp");
+  loadImage("mamdani-dribble", "assets/sprites/chibi/mamdani-dribble.webp");
+  loadImage("sayed-idle", "assets/sprites/chibi/sayed-idle.webp");
+  loadImage("sayed-shot", "assets/sprites/chibi/sayed-shot.webp");
+  loadImage("sayed-dunk", "assets/sprites/chibi/sayed-dunk.webp");
+  loadImage("sayed-spin", "assets/sprites/chibi/sayed-spin.webp");
+  loadImage("sayed-fade", "assets/sprites/chibi/sayed-fade.webp");
+  loadImage("sayed-hook", "assets/sprites/chibi/sayed-hook.webp");
+  loadImage("sayed-dribble", "assets/sprites/chibi/sayed-dribble.webp");
+  loadImage("sayed-move", "assets/sprites/chibi/sayed-move.webp");
+  loadImage("skin-board", "assets/ui/makko/board.webp");
+  ["score-left", "score-right", "score-center", "score-mamdani", "score-sayed"].forEach(name => loadImage(`skin-${name}`, `assets/ui/makko/${name}.webp`));
+  loadImage("skin-primary", "assets/ui/makko/primary.webp");
+  loadImage("skin-secondary", "assets/ui/makko/secondary.webp");
+  loadImage("skin-meter", "assets/ui/makko/meter.webp");
+  loadImage("skin-title", "assets/ui/makko/title.webp");
+  loadImage("skin-select", "assets/ui/makko/select.webp");
+  loadImage("skin-portrait-mamdani", "assets/ui/makko/portrait-mamdani.webp");
+  loadImage("skin-portrait-sayed", "assets/ui/makko/portrait-sayed.webp");
+  loadImage("skin-logo", "assets/ui/makko/logo.webp");
+  loadImage("skin-banner", "assets/ui/makko/banner.webp");
+  loadImage("skin-needle", "assets/ui/makko/needle.webp");
+  loadImage("skin-target", "assets/ui/makko/target.webp");
+
 
   const CLIPS = {
-    mamdani: {
-      idle: {
-        originX: 0.5542168674698795,
-        frames: 22,
-        fw: 160,
-        fh: 256,
-        cols: 8,
-        padding: 2,
-        body: 262,
-        fill: 1.0240963855421688,
-        feet: [0.9924698795180723],
-        fps: 18,
-        sourceFacing: 1,
-      },
-      shot: {
-        originX: 0.3816793893129771,
-        frames: 47,
-        fw: 96,
-        fh: 256,
-        cols: 8,
-        padding: 2,
-        body: 210,
-        fill: 0.8189655172413793,
-        feet: [0.9971264367816092],
-        play: 46,
-        releaseFrame: 16,
-        releaseHand: [0.87, 0.02],
-        duration: 1.05,
-        releaseTime: 0.3,
-        authoredLift: true,
-        emptyHands: true,
-        sourceFacing: 1,
-        handKeys: [[0, 0.67, 0.575], [4, 0.8, 0.46], [8, 0.78, 0.2], [12, 0.72, 0.085], [15, 0.64, 0.02], [16, 0.87, 0.02]],
-      },
-      dunk: {
-        frames: 8, fw: 391, fh: 836, body: 640, play: 4,
-        fills: [0.744, 0.763, 0.99, 0.995, 0.993, 0.993, 0.993, 0.993],
-      },
-      spin: {
-        frames: 8, fw: 415, fh: 917, body: 640, play: 4,
-        fills: [0.696, 0.722, 0.99, 0.864, 0.966, 0.68, 0.814, 0.851],
-      },
-      fade: {
-        frames: 8, fw: 438, fh: 922, body: 640, play: 5,
-        fills: [0.705, 0.692, 0.993, 0.98, 0.785, 0.668, 0.777, 0.792],
-      },
-      hook: {
-        frames: 8, fw: 417, fh: 914, body: 640, play: 5,
-        fills: [0.7, 0.678, 0.91, 0.926, 0.996, 0.768, 0.757, 0.742],
-      },
-      dribble: {
-        originX: 0.5681818181818182,
-        frames: 18,
-        fw: 205,
-        fh: 256,
-        cols: 8,
-        padding: 2,
-        body: 277,
-        fill: 1.0833333333333333,
-        feet: [0.9924242424242424],
-        fps: 24,
-        loopStart: 0,
-        loopEnd: 17,
-        sourceFacing: -1,
-        bounceFrames: [6],
-        hands: [[0.15, 0.53]],
-        bounceCycle: true,
-      },
-      move: {
-        originX: 0.49586776859504134,
-        frames: 32,
-        fw: 134,
-        fh: 256,
-        cols: 8,
-        padding: 2,
-        body: 247,
-        fill: 0.9640287769784173,
-        feet: [0.9928057553956835],
-        fps: 24,
-        loopStart: 0,
-        loopEnd: 31,
-        sourceFacing: 1,
-        carried: true,
-        hands: [[0.12, 0.57]],
-      },
+  "mamdani": {
+    "idle": {
+      "frames": 12,
+      "fw": 110,
+      "fh": 256,
+      "cols": 4,
+      "body": 255,
+      "fill": 0.99609375,
+      "feet": [
+        0.9921875
+      ],
+      "originX": 0.5,
+      "fps": 6,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        25,
+        33,
+        45,
+        57,
+        65,
+        81,
+        89
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 1.25
     },
-    sayed: {
-      idle: { frames: 2, fw: 267, fh: 733, body: 733 },
-      shot: {
-        frames: 8, fw: 391, fh: 868, body: 640, play: 4,
-        releaseFrame: 3, releaseHand: [0.64, 0.045],
-        fills: [0.712, 0.737, 0.931, 0.995, 0.956, 0.995, 0.843, 0.843],
-      },
-      dunk: {
-        frames: 8, fw: 419, fh: 848, body: 640, play: 4,
-        fills: [0.71, 0.752, 0.976, 0.995, 0.995, 0.995, 0.995, 0.802],
-      },
-      spin: {
-        frames: 8, fw: 399, fh: 881, body: 640, play: 5,
-        fills: [0.67, 0.726, 0.985, 0.983, 0.994, 0.747, 0.779, 0.795],
-      },
-      fade: {
-        frames: 8, fw: 455, fh: 912, body: 640, play: 5,
-        fills: [0.719, 0.669, 0.7, 0.917, 0.996, 0.882, 0.792, 0.787],
-      },
-      hook: {
-        frames: 8, fw: 350, fh: 883, body: 640, play: 4,
-        fills: [0.725, 0.682, 0.947, 0.942, 0.994, 0.879, 0.732, 0.734],
-      },
-      dribble: {
-        frames: 1,
-        fw: 384,
-        fh: 1024,
-        body: 640,
-        fps: 8,
-        feet: [0.857],
-        fill: 0.756,
-        pace: 2.4,
-        hop: 0.2,
-        hands: [[0.452, 0.74]],
-      },
-      move: {
-        frames: 4,
-        fw: 384,
-        fh: 881,
-        body: 640,
-        fps: 8,
-        feet: [0.991, 0.992, 0.993, 0.993],
-        fill: 0.976,
-        pace: 2.4,
-        hop: 0.3,
-        hands: [[0.188, 0.58], [0.198, 0.58], [0.178, 0.58], [0.185, 0.58]],
-      },
+    "dribble": {
+      "frames": 12,
+      "fw": 166,
+      "fh": 256,
+      "cols": 4,
+      "body": 250,
+      "fill": 0.9765625,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5,
+      "fps": 12,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 0.9135472370766489,
+      "hands": [
+        [
+          0.9096385542168675,
+          0.48828125
+        ],
+        [
+          0.9096385542168675,
+          0.46875
+        ],
+        [
+          0.9096385542168675,
+          0.48828125
+        ],
+        [
+          0.9337349397590361,
+          0.5390625
+        ],
+        [
+          0.9036144578313253,
+          0.60546875
+        ],
+        [
+          0.9036144578313253,
+          0.64453125
+        ],
+        [
+          0.8373493975903614,
+          0.71875
+        ],
+        [
+          0.8373493975903614,
+          0.72265625
+        ],
+        [
+          0.8373493975903614,
+          0.71484375
+        ],
+        [
+          0.8614457831325302,
+          0.6875
+        ],
+        [
+          0.8975903614457831,
+          0.625
+        ],
+        [
+          0.9156626506024096,
+          0.55078125
+        ]
+      ],
+      "bounceCycle": true,
+      "bounceFrames": [
+        6
+      ],
+      "pace": 1.0,
+      "ballPath": {
+        "hand": [
+          0.9096385542168675,
+          0.48828125
+        ],
+        "floorPhase": 0.5,
+        "releasePhase": 0.08333333333333333,
+        "catchPhase": 0.9166666666666666
+      }
     },
-  };
+    "move": {
+      "frames": 12,
+      "fw": 151,
+      "fh": 256,
+      "cols": 4,
+      "body": 247,
+      "fill": 0.96484375,
+      "feet": [
+        0.9765625
+      ],
+      "originX": 0.5033112582781457,
+      "fps": 12,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "strideDistance": 0.9,
+      "bodyScale": 1.0235496260359813,
+      "hands": [
+        [
+          0.9072847682119205,
+          0.52734375
+        ],
+        [
+          0.9072847682119205,
+          0.48828125
+        ],
+        [
+          0.9072847682119205,
+          0.52734375
+        ],
+        [
+          0.8675496688741722,
+          0.60546875
+        ],
+        [
+          0.7152317880794702,
+          0.6953125
+        ],
+        [
+          0.6821192052980133,
+          0.6796875
+        ],
+        [
+          0.6887417218543046,
+          0.66796875
+        ],
+        [
+          0.7152317880794702,
+          0.66015625
+        ],
+        [
+          0.7152317880794702,
+          0.6640625
+        ],
+        [
+          0.6821192052980133,
+          0.68359375
+        ],
+        [
+          0.8609271523178808,
+          0.6484375
+        ],
+        [
+          0.9006622516556292,
+          0.53125
+        ]
+      ],
+      "bounceCycle": true,
+      "bounceFrames": [
+        6
+      ],
+      "pace": 1.0,
+      "ballPath": {
+        "hand": [
+          0.9072847682119205,
+          0.52734375
+        ],
+        "floorPhase": 0.5,
+        "releasePhase": 0.08333333333333333,
+        "catchPhase": 0.9166666666666666
+      }
+    },
+    "dunk": {
+      "frames": 12,
+      "fw": 168,
+      "fh": 256,
+      "cols": 4,
+      "body": 189,
+      "fill": 0.73828125,
+      "feet": [
+        0.98828125
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        25,
+        29,
+        33,
+        37,
+        41,
+        89,
+        96
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.23809523809523808,
+        0.0390625
+      ],
+      "handKeys": [
+        [
+          0,
+          0.17261904761904762,
+          0.63671875
+        ],
+        [
+          1,
+          0.1130952380952381,
+          0.515625
+        ],
+        [
+          2,
+          0.1488095238095238,
+          0.23828125
+        ],
+        [
+          3,
+          0.23809523809523808,
+          0.0390625
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 0.8732251521298174
+    },
+    "spin": {
+      "frames": 12,
+      "fw": 133,
+      "fh": 256,
+      "cols": 4,
+      "body": 253,
+      "fill": 0.98828125,
+      "feet": [
+        0.984375
+      ],
+      "originX": 0.5037593984962406,
+      "fps": 24,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        9,
+        17,
+        25,
+        33,
+        41,
+        49,
+        57,
+        65,
+        69,
+        73,
+        77,
+        81
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.45,
+      "releaseTime": 0.52,
+      "releaseFrame": 11,
+      "releaseHand": [
+        0.8120300751879699,
+        0.6015625
+      ],
+      "handKeys": [
+        [
+          0,
+          0.8120300751879699,
+          0.6015625
+        ],
+        [
+          4,
+          0.2706766917293233,
+          0.6171875
+        ],
+        [
+          8,
+          0.41353383458646614,
+          0.63671875
+        ],
+        [
+          11,
+          0.8120300751879699,
+          0.6015625
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 1.0377150860344138,
+      "turnOnly": true
+    },
+    "fade": {
+      "frames": 12,
+      "fw": 168,
+      "fh": 256,
+      "cols": 4,
+      "body": 220,
+      "fill": 0.859375,
+      "feet": [
+        0.9921875
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        25,
+        29,
+        33,
+        61,
+        73,
+        77,
+        85
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.75,
+        0.01953125
+      ],
+      "handKeys": [
+        [
+          0,
+          0.6964285714285714,
+          0.2578125
+        ],
+        [
+          1,
+          0.7261904761904762,
+          0.21875
+        ],
+        [
+          2,
+          0.7678571428571429,
+          0.09375
+        ],
+        [
+          3,
+          0.75,
+          0.01953125
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 1.0784313725490198
+    },
+    "hook": {
+      "frames": 12,
+      "fw": 156,
+      "fh": 256,
+      "cols": 4,
+      "body": 215,
+      "fill": 0.83984375,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        25,
+        29,
+        33,
+        57,
+        61,
+        65,
+        73,
+        85
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.3333333333333333,
+        0.03515625
+      ],
+      "handKeys": [
+        [
+          0,
+          0.3076923076923077,
+          0.67578125
+        ],
+        [
+          1,
+          0.14743589743589744,
+          0.5
+        ],
+        [
+          2,
+          0.14102564102564102,
+          0.125
+        ],
+        [
+          3,
+          0.3333333333333333,
+          0.03515625
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 0.9602396514161221
+    },
+    "shot": {
+      "frames": 12,
+      "fw": 168,
+      "fh": 256,
+      "cols": 4,
+      "body": 220,
+      "fill": 0.859375,
+      "feet": [
+        0.9921875
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        25,
+        29,
+        33,
+        61,
+        73,
+        77,
+        85
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.75,
+        0.01953125
+      ],
+      "handKeys": [
+        [
+          0,
+          0.6964285714285714,
+          0.2578125
+        ],
+        [
+          1,
+          0.7261904761904762,
+          0.21875
+        ],
+        [
+          2,
+          0.7678571428571429,
+          0.09375
+        ],
+        [
+          3,
+          0.75,
+          0.01953125
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 1.0784313725490198
+    }
+  },
+  "sayed": {
+    "dribble": {
+      "frames": 12,
+      "fw": 184,
+      "fh": 256,
+      "cols": 4,
+      "body": 251,
+      "fill": 0.98046875,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5,
+      "fps": 16,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "bodyScale": 1.03,
+      "hands": [
+        [
+          0.8695652173913043,
+          0.4375
+        ],
+        [
+          0.8695652173913043,
+          0.40234375
+        ],
+        [
+          0.8695652173913043,
+          0.40234375
+        ],
+        [
+          0.8695652173913043,
+          0.43359375
+        ],
+        [
+          0.8695652173913043,
+          0.4921875
+        ],
+        [
+          0.8641304347826086,
+          0.54296875
+        ],
+        [
+          0.8641304347826086,
+          0.578125
+        ],
+        [
+          0.875,
+          0.60546875
+        ],
+        [
+          0.8586956521739131,
+          0.58984375
+        ],
+        [
+          0.8586956521739131,
+          0.55859375
+        ],
+        [
+          0.8641304347826086,
+          0.48046875
+        ],
+        [
+          0.8695652173913043,
+          0.4296875
+        ]
+      ],
+      "bounceCycle": true,
+      "bounceFrames": [
+        6
+      ],
+      "pace": 1.3333333333333333,
+      "ballPath": {
+        "hand": [
+          0.8695652173913043,
+          0.4375
+        ],
+        "floorPhase": 0.5,
+        "releasePhase": 0.08333333333333333,
+        "catchPhase": 0.9166666666666666
+      }
+    },
+    "move": {
+      "frames": 10,
+      "fw": 159,
+      "fh": 256,
+      "cols": 4,
+      "body": 233,
+      "fill": 0.91015625,
+      "feet": [
+        0.91015625
+      ],
+      "originX": 0.5031446540880503,
+      "fps": 12,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19
+      ],
+      "loopStart": 0,
+      "loopEnd": 9,
+      "strideDistance": 0.9,
+      "hands": [
+        [
+          0.8679245283018868,
+          0.55859375
+        ],
+        [
+          0.9119496855345912,
+          0.58203125
+        ],
+        [
+          0.8616352201257862,
+          0.63671875
+        ],
+        [
+          0.6981132075471698,
+          0.66796875
+        ],
+        [
+          0.6729559748427673,
+          0.67578125
+        ],
+        [
+          0.6729559748427673,
+          0.68359375
+        ],
+        [
+          0.6729559748427673,
+          0.6953125
+        ],
+        [
+          0.6981132075471698,
+          0.70703125
+        ],
+        [
+          0.7484276729559748,
+          0.65625
+        ],
+        [
+          0.8553459119496856,
+          0.5625
+        ]
+      ],
+      "bounceCycle": true,
+      "bounceFrames": [
+        5
+      ],
+      "pace": 1.2,
+      "ballPath": {
+        "hand": [
+          0.8679245283018868,
+          0.55859375
+        ],
+        "floorPhase": 0.5,
+        "releasePhase": 0.1,
+        "catchPhase": 0.9
+      }
+    },
+    "idle": {
+      "frames": 12,
+      "fw": 115,
+      "fh": 256,
+      "cols": 4,
+      "body": 256,
+      "fill": 1.0,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5043478260869565,
+      "fps": 6,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        25,
+        33,
+        45,
+        57,
+        65,
+        81,
+        89
+      ],
+      "loopStart": 0,
+      "loopEnd": 11
+    },
+    "spin": {
+      "frames": 12,
+      "fw": 131,
+      "fh": 256,
+      "cols": 4,
+      "body": 249,
+      "fill": 0.97265625,
+      "feet": [
+        0.98828125
+      ],
+      "originX": 0.5038167938931297,
+      "fps": 24,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        9,
+        17,
+        25,
+        33,
+        41,
+        49,
+        57,
+        65,
+        73,
+        85,
+        93
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.45,
+      "releaseTime": 0.52,
+      "releaseFrame": 11,
+      "releaseHand": [
+        0.8015267175572519,
+        0.57421875
+      ],
+      "handKeys": [
+        [
+          0,
+          0.8015267175572519,
+          0.57421875
+        ],
+        [
+          4,
+          0.2900763358778626,
+          0.59765625
+        ],
+        [
+          8,
+          0.44274809160305345,
+          0.609375
+        ],
+        [
+          11,
+          0.8015267175572519,
+          0.57421875
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11,
+      "turnOnly": true
+    },
+    "fade": {
+      "frames": 12,
+      "fw": 171,
+      "fh": 256,
+      "cols": 4,
+      "body": 213,
+      "fill": 0.83203125,
+      "feet": [
+        0.9921875
+      ],
+      "originX": 0.5029239766081871,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21,
+        25,
+        33,
+        49,
+        53,
+        61,
+        65
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 4,
+      "releaseHand": [
+        0.6783625730994152,
+        0.015625
+      ],
+      "handKeys": [
+        [
+          0,
+          0.6842105263157895,
+          0.28125
+        ],
+        [
+          1,
+          0.7192982456140351,
+          0.37109375
+        ],
+        [
+          2,
+          0.7719298245614035,
+          0.265625
+        ],
+        [
+          3,
+          0.7192982456140351,
+          0.06640625
+        ],
+        [
+          4,
+          0.6783625730994152,
+          0.015625
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11
+    },
+    "hook": {
+      "frames": 12,
+      "fw": 140,
+      "fh": 256,
+      "cols": 4,
+      "body": 170,
+      "fill": 0.6640625,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        11,
+        13,
+        17,
+        21,
+        25,
+        29,
+        53,
+        57,
+        61,
+        69
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.19285714285714287,
+        0.0
+      ],
+      "handKeys": [
+        [
+          0,
+          0.18571428571428572,
+          0.671875
+        ],
+        [
+          1,
+          0.19285714285714287,
+          0.66015625
+        ],
+        [
+          2,
+          0.1,
+          0.2578125
+        ],
+        [
+          3,
+          0.19285714285714287,
+          0.0
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11
+    },
+    "shot": {
+      "frames": 12,
+      "fw": 171,
+      "fh": 256,
+      "cols": 4,
+      "body": 213,
+      "fill": 0.83203125,
+      "feet": [
+        0.9921875
+      ],
+      "originX": 0.5029239766081871,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21,
+        25,
+        33,
+        49,
+        53,
+        61,
+        65
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 4,
+      "releaseHand": [
+        0.6783625730994152,
+        0.015625
+      ],
+      "handKeys": [
+        [
+          0,
+          0.6842105263157895,
+          0.28125
+        ],
+        [
+          1,
+          0.7192982456140351,
+          0.37109375
+        ],
+        [
+          2,
+          0.7719298245614035,
+          0.265625
+        ],
+        [
+          3,
+          0.7192982456140351,
+          0.06640625
+        ],
+        [
+          4,
+          0.6783625730994152,
+          0.015625
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11
+    },
+    "dunk": {
+      "frames": 12,
+      "fw": 140,
+      "fh": 256,
+      "cols": 4,
+      "body": 170,
+      "fill": 0.6640625,
+      "feet": [
+        0.99609375
+      ],
+      "originX": 0.5,
+      "fps": 18,
+      "sourceFacing": 1,
+      "sourceFrames": [
+        1,
+        5,
+        11,
+        13,
+        17,
+        21,
+        25,
+        29,
+        53,
+        57,
+        61,
+        69
+      ],
+      "play": 11,
+      "authoredLift": true,
+      "emptyHands": true,
+      "duration": 1.05,
+      "releaseTime": 0.3,
+      "releaseFrame": 3,
+      "releaseHand": [
+        0.19285714285714287,
+        0.0
+      ],
+      "handKeys": [
+        [
+          0,
+          0.18571428571428572,
+          0.671875
+        ],
+        [
+          1,
+          0.19285714285714287,
+          0.66015625
+        ],
+        [
+          2,
+          0.1,
+          0.2578125
+        ],
+        [
+          3,
+          0.19285714285714287,
+          0.0
+        ]
+      ],
+      "loopStart": 0,
+      "loopEnd": 11
+    }
+  }
+};
 
   let crowdGain = null;
 
   function tone(freq, dur, type, gain) {
-    if (!audioCtx) return;
+    if (!audioCtx || muted || paused) return;
     const osc = audioCtx.createOscillator();
     const amp = audioCtx.createGain();
     osc.type = type || "square";
@@ -279,7 +1312,7 @@
   }
 
   function noiseBurst(seconds, freq, peak) {
-    if (!audioCtx) return;
+    if (!audioCtx || muted || paused) return;
     const t = audioCtx.currentTime;
     const len = Math.floor(audioCtx.sampleRate * seconds);
     const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
@@ -361,7 +1394,7 @@
   }
 
   function roar() {
-    if (!audioCtx || !crowdGain) return;
+    if (!audioCtx || !crowdGain || muted || paused) return;
     const t = audioCtx.currentTime;
     crowdGain.gain.cancelScheduledValues(t);
     crowdGain.gain.setValueAtTime(0.07, t);
@@ -387,6 +1420,7 @@
   }
 
   function unlockAudio() {
+    if (muted || paused) return;
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) return;
     if (!audioCtx) audioCtx = new Audio();
@@ -408,14 +1442,16 @@
   }
 
   function playerHeight(at) {
-    return 110 * at.s;
+    return 152 * at.s;
   }
 
   function drawnSprite(clip, at, frame) {
     const span = playerHeight(at);
     // Action sheets share a fixed body reference. Raised hands must add height,
     // not shrink the torso from one frame to the next.
-    const height = clip.fills ? span * clip.fh / clip.body : span / (clip.fill || 1);
+    // Cross-clip anatomy calibration: a crouch is shorter, not a larger person.
+    // Keep this transform shared by the sprite, ball, release hand and dunk reach.
+    const height = (clip.fills ? span * clip.fh / clip.body : span / (clip.fill || 1)) * (clip.bodyScale || 1);
     return { span, height, width: height * (clip.fw / clip.fh) };
   }
 
@@ -440,7 +1476,8 @@
   function hoopLayout() {
     const nyc = !match || match.court === "nyc";
     // Match the rim painted into each original Makko court background.
-    const rim = nyc ? { x: 639, y: 229 } : { x: 637, y: 172 };
+    const coords = courtById(match?.court || "nyc").rim;
+    const rim = {x:coords[0], y:coords[1]};
     return { x: rim.x, floor: rim.y + 78, rim: rim.y };
   }
 
@@ -497,7 +1534,8 @@
     return {
       humanId,
       cpuId,
-      court: home.court,
+      court: selectedCourt || home.court,
+      marketingSession: marketingUnlock,
       letters: { mamdani: 0, sayed: 0 },
       pos: {
         mamdani: { x: 0.32, y: 0.28 },
@@ -582,7 +1620,20 @@
       const key = match.pose[id] === "move" ? "move" : "dribble";
       const clock = match.dribbleClock[id];
       if (!clock || clock.key !== key) match.dribbleClock[id] = { key, time: 0 };
-      else if (match.owner === id && !match.hold && !match.ball) clock.time += dt;
+      else if (match.owner === id && !match.hold && !match.ball) {
+        const clip = CLIPS[id][key];
+        if (key === "move" && clip?.strideDistance && clock.pos) {
+          const at = project(match.pos[id].x, match.pos[id].y);
+          const before = project(clock.pos.x, clock.pos.y);
+          const distance = Math.hypot(at.x - before.x, at.y - before.y);
+          // Perspective compresses up/down travel. Do not let a real stride
+          // become a four-frame-per-second slideshow at the back of the court.
+          if (distance > .00001) clock.time += Math.max(
+            distance / (playerHeight(at) * clip.strideDistance) * clip.frames / clip.fps,
+            dt * .75);
+        } else if (key !== "move" || !clip?.strideDistance) clock.time += dt;
+      }
+      match.dribbleClock[id].pos = { ...match.pos[id] };
     }
   }
 
@@ -607,7 +1658,7 @@
     }
     if (clip?.carried) { match.dribU = null; return; }
     if (clip && clip.pace) {
-      const phase = (match.t * clip.pace) % 1;
+      const phase = ((match.dribbleClock?.[match.owner]?.time || 0) * clip.pace) % 1;
       if (match.dribU != null && match.dribU < 0.5 && phase >= 0.5) dribbleThump();
       match.dribU = phase;
       return;
@@ -660,23 +1711,58 @@
       const drawn = drawnSprite(clip, at, frame);
       const height = drawn.height;
       const width = drawn.width;
-      const hand = clip.hands[Math.min(frame, clip.hands.length - 1)];
-      const x = at.x + face * (clip.sourceFacing || 1) * (hand[0] - (clip.originX ?? .5)) * width;
+      const handA = clip.hands[Math.min(frame, clip.hands.length - 1)];
+      const handB = clip.hands[(frame + 1) % clip.hands.length];
+      const fraction = ((match.dribbleClock?.[id]?.time || 0) * clip.fps) % 1;
+      const hand = clip.ballPath?.hand || handA.map((v, i) => v + (handB[i] - v) * fraction);
+      let x = at.x + face * (clip.sourceFacing || 1) * (hand[0] - (clip.originX ?? .5)) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
-      if (clip.bounceCycle) {
+      if (clip.ballPath?.releasePhase) {
+        const u = ((match.dribbleClock?.[id]?.time || 0) * clip.fps % clip.frames) / clip.frames;
+        const release = clip.ballPath.releasePhase, floorPhase = clip.ballPath.floorPhase;
+        const catchPhase = clip.ballPath.catchPhase ?? 1;
+        const palm = phase => {
+          const f = phase * clip.frames, a = Math.floor(f) % clip.frames, blend = f % 1;
+          const h = clip.hands[a].map((v, i) => v + (clip.hands[(a + 1) % clip.frames][i] - v) * blend);
+          return {
+            x: at.x + face * (clip.sourceFacing || 1) * (h[0] - (clip.originX ?? .5)) * width,
+            y: Math.min(at.y - r, at.y - lift - height * layout.footInSlice + ((h[1] * clip.fh - layout.sy) / layout.sh) * height + r)
+          };
+        };
+        // Receive and push for one authored frame. The ball's top touches the
+        // palm; once released, arm sweeps cannot steer the free-flight ball.
+        if (u <= release || u >= catchPhase) ({x, y} = palm(u));
+        else {
+          const start = palm(release), end = palm(catchPhase), floor = at.y - r;
+          const flight = (u - release) / (catchPhase - release);
+          const lateral = flight * flight * (3 - 2 * flight);
+          x = start.x + (end.x - start.x) * lateral;
+          y = u < floorPhase
+            ? start.y + (floor - start.y) * Math.pow((u - release) / (floorPhase - release), 2)
+            : end.y + (floor - end.y) * Math.pow((catchPhase - u) / (catchPhase - floorPhase), 2);
+        }
+      } else if (clip.bounceCycle) {
         const u = ((match.dribbleClock?.[id]?.time || 0) * clip.fps % clip.frames) / clip.frames;
         // Push, floor contact, return: one bounce per authored hand cycle.
-        const low = 6 / clip.frames;
+        const low = clip.ballPath?.floorPhase ?? .5;
         const travel = u < low ? u / low : (1 - u) / (1 - low);
-        const top = at.y - height * .48;
-        y = top + (at.y - r - top) * Math.pow(Math.max(0, travel), .8);
+        const top = Math.min(at.y - r, y + r * 0.65);
+        y = top + (at.y - r - top) * Math.pow(Math.max(0, travel), 2);
       } else if (clip.pace) {
-        const u = (match.t * clip.pace) % 1;
-        y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
+        const u = ((match.dribbleClock?.[id]?.time || 0) * clip.pace) % 1;
+        const travel = u < 0.5 ? u * 2 : (1 - u) * 2;
+        const floor = at.y - r;
+        const top = Math.min(floor, y + r * 0.65);
+        y = top + (floor - top) * travel * travel;
       } else {
         const u = (match.t * (clip.fps || 8)) % 1;
         if (clip.bounce) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.12);
         else if (frame === clip.yFree) y += Math.sin(u * Math.PI) * height * (clip.hop || 0.08);
+      }
+      const blend = match.ballBlend;
+      if (blend?.id === id && blend.t < .10) {
+        const u = clamp(blend.t / .10, 0, 1), mix = u * u * (3 - 2 * u);
+        return { x: blend.x + (x - blend.x) * mix, y: Math.min(at.y - r, blend.y + (y - blend.y) * mix), r, spin: match.t * 7 };
       }
       return { x, y, r, spin: match.t * 7 };
     }
@@ -715,7 +1801,12 @@
 
   function bodyMotion(id) {
     if (match?.ball?.id === id && match.ball.syncRelease && match.ball.phase === "arc") {
-      if (CLIPS[id].shot.authoredLift) return { lift: 0, squash: 1 };
+      const offset = shotDisplacement(id, match.ball.t, match.ball.flair, match.ball.show);
+      if (offset.lift || offset.x) {
+        const at = project(match.pos[id].x, match.pos[id].y);
+        return { lift: offset.lift / at.s, shift: offset.x / at.s, squash: 1 };
+      }
+      if (CLIPS[id][match.ball.flair === "none" ? "shot" : match.ball.flair].authoredLift) return { lift: 0, squash: 1 };
       const t = match.ball.t;
       const landing = t > 0.72 && t < 0.98 ? Math.sin((t - 0.72) / 0.26 * Math.PI) : 0;
       return { lift: shotLift(t), squash: 1 - landing * 0.08 };
@@ -723,8 +1814,21 @@
     return { lift: 0, squash: 1 };
   }
 
+  function shotDisplacement(id, t, flair, show) {
+    const at = project(match.pos[id].x, match.pos[id].y);
+    if (flair === "fade") return { x: -(match.face[id] || 1) * at.s * 28 * Math.sin(Math.PI * clamp(t, 0, 1)), lift: 0 };
+    if (flair !== "dunk") return { x: 0, lift: 0 };
+    const clip = CLIPS[id].dunk, drawn = drawnSprite(clip, at, clip.releaseFrame), hoop = hoopLayout();
+    const handX = at.x + (match.face[id] || 1) * (clip.releaseHand[0] - clip.originX) * drawn.width;
+    const handY = at.y + (clip.releaseHand[1] - clip.feet[0]) * drawn.height;
+    const amount = t <= show ? Math.sin(clamp(t / show, 0, 1) * Math.PI / 2)
+      : Math.cos(clamp((t - show) / (.85 - show), 0, 1) * Math.PI / 2);
+    return { x: (hoop.x - handX) * amount, lift: Math.max(0, handY - (hoop.rim - 9)) * amount };
+  }
+
   function say(text) {
     match.call = text;
+    match.notice = { text, until: match.t + 4.5 };
   }
 
   function beginCpu() {
@@ -775,13 +1879,18 @@
       flair = "none";
       if (id === match.humanId) say("Too far to dunk. That one stays a jumper.");
     }
-    const made = zoneFor(p.x, p.y, flair).hit;
+    const zone = zoneFor(p.x, p.y, flair);
+    const error = match.power - zone.need;
+    const made = zone.hit;
+    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT" : "TOO STRONG";
     const hand = ownedBall(id);
     const hoop = hoopLayout();
     const side = Math.sign(hand.x - hoop.x) || 1;
     match.ball = {
       x0: hand.x,
       y0: hand.y,
+      releaseRadius: hand.r,
+      grade,
       x1: made ? hoop.x : hoop.x + side * 24,
       y1: hoop.rim - (made ? 4 : 0),
       t: 0,
@@ -795,18 +1904,31 @@
       sx: p.x,
       sy: p.y,
     };
-    const shotClip = CLIPS[id].shot;
-    if (flair === "none" && shotClip.duration) {
+    const actionClip = CLIPS[id][flair === "none" ? "shot" : flair];
+    const shotClip = actionClip.turnOnly ? CLIPS[id].shot : actionClip;
+    if (shotClip.duration) {
       match.ball.dur = shotClip.duration;
       match.ball.show = shotClip.releaseTime;
     }
-    if (flair === "none" && shotClip.releaseFrame != null) {
+    if (actionClip.turnOnly) {
+      match.ball.turnUntil = .30;
+      match.ball.dur = actionClip.duration;
+      match.ball.show = actionClip.releaseTime;
+    }
+    if (shotClip.releaseFrame != null) {
       const at = project(p.x, p.y), drawn = drawnSprite(shotClip, at, shotClip.releaseFrame);
       match.ball.syncRelease = true;
       match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
       match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[0] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shotLift(match.ball.show)) * at.s;
+      const offset = shotDisplacement(id, match.ball.show, flair, match.ball.show);
+      match.ball.x0 += offset.x; match.ball.y0 -= offset.lift;
+      if (flair === "dunk") match.ball.arc = 8;
     }
-    if (match.practice) say("Mamdani takes the jumper.");
+    if (id === match.humanId) {
+      match.releaseFeedback = { text: grade, life: .9, perfect: grade === "PERFECT", made };
+      if (grade === "PERFECT") tone(1046, .09, "triangle", .05);
+    }
+    if (match.practice) say(grade === "PERFECT" ? "Perfect release." : `${FIGHTERS[id].name} takes the ${FLAIR_NAME[flair]}.`);
     match.owner = null;
     match.pass = null;
     match.hold = false;
@@ -827,11 +1949,12 @@
     match.letters[id] += 1;
     const word = LETTERS.slice(0, match.letters[id]).join("");
     tone(220, 0.18, "sawtooth", 0.05);
-    if (match.letters[id] >= 5) {
+    if (match.letters[id] >= LETTERS.length) {
       const winner = otherId(id);
       match.over = winner;
-      say(`${FIGHTERS[id].full} spells HORSE. ${FIGHTERS[winner].full} takes the court.`);
-      punch("HORSE", true);
+      recordCourtWin();
+      say(`${FIGHTERS[id].full} spells VOTE. ${FIGHTERS[winner].full} takes the court.${match.unlockMessage ? " " + match.unlockMessage : ""}`);
+      punch("VOTE", true);
       match.pop[id] = 1;
       return;
     }
@@ -842,15 +1965,19 @@
     const ball = match.ball;
     const id = ball.id;
     const name = FIGHTERS[id].name;
+    const signature = id === "sayed"
+      ? { none: "DOCTOR'S ORDERS", spin: "SPIN DOCTOR", dunk: "HOUSE CALL", fade: "SMOOTH OPERATOR", hook: "THE REMEDY" }
+      : { none: "SWISH", spin: "SPIN CYCLE", dunk: "HE GOT UP", fade: "FADEAWAY", hook: "SKY HOOK" };
     const from = { x: ball.x1, y: ball.y1 };
     match.ball = null;
     match.pose[id] = "idle";
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     if (match.practice) {
+      if (match.tutorial) match.tutorial.shot = true;
       match.active = match.humanId; match.phase = "set"; match.challenge = null;
       match.flair = "none"; match.power = 0; match.lock = 0.35;
-      say(ball.made ? "Swish. Move to a new spot and try again." : "Miss. Stop the needle in the gold zone and try again.");
-      punch(ball.made ? "SWISH" : "TRY AGAIN", ball.made);
+      say(ball.made ? "Buckets. Pick a new spot and run it back." : "No good. Hit the gold zone and run it back.");
+      punch(ball.made ? signature[ball.flair] || "SWISH" : "TRY AGAIN", ball.made);
       beginCatch(from);
       return;
     }
@@ -861,8 +1988,7 @@
         match.active = otherId(id);
         const trick = FLAIR_NAME[ball.flair];
         say(`${name} sinks the ${trick}. ${FIGHTERS[match.active].name} has to copy the spot and the flair.`);
-        const shouts = { none: "SWISH", spin: "SPIN CYCLE", dunk: "HE GOT UP", fade: "FADEAWAY", hook: "SKY HOOK" };
-        punch(shouts[ball.flair] || "SWISH", true);
+        punch(signature[ball.flair] || "SWISH", true);
         if (ball.flair === "dunk") {
           match.shake = 1.8;
           match.zoom = 1;
@@ -872,8 +1998,8 @@
         match.challenge = null;
         match.phase = "set";
         match.active = otherId(id);
-        say(`Off the iron. ${name}'s shot does not count. ${FIGHTERS[match.active].name} calls the next one.`);
-        punch("OFF THE IRON");
+        say(`No good. ${FIGHTERS[match.active].name}, your rock. Set the next shot.`);
+        punch("NO GOOD!");
       }
     } else {
       const spotOk = Math.hypot(ball.sx - match.challenge.x, ball.sy - match.challenge.y) < 0.11;
@@ -882,16 +2008,17 @@
         match.phase = "set";
         match.challenge = null;
         match.active = otherId(id);
-        say(`Copied. ${FIGHTERS[match.active].name} calls a new shot.`);
-        punch("COPIED", true);
+        say(`Matched it. ${FIGHTERS[match.active].name}, your rock.`);
+        punch("MATCHED IT", true);
       } else {
         const why = !spotOk
           ? "Wrong spot."
           : !flairOk
             ? `That was a ${FLAIR_NAME[ball.flair]}. Copy the ${FLAIR_NAME[match.challenge.flair]}.`
-            : "Off the rim.";
+            : "No good.";
         const word = addLetter(id);
         match.pop[id] = 1;
+        if (match.over) say(`${why} ${name} spells VOTE. ${FIGHTERS[match.over].name} wins.`);
         if (!match.over) {
           match.phase = "set";
           match.challenge = null;
@@ -944,8 +2071,26 @@
 
   function update(dt) {
     if (!match || screen !== "play") return;
-    match.t += dt;
+    const owner = match.owner, previousKey = match.dribbleClock?.[owner]?.key;
+    const previousBall = owner && !match.hold && !match.ball && !match.pass ? ownedBall(owner) : null;
+    if (match.ballBlend) match.ballBlend.t += dt;
+    updateWorld(dt);
+    // Read the new position and pose together; never render a new gait with the previous clock.
     tickDribbleClock(dt);
+    if (previousBall && owner === match.owner && !match.hold && !match.ball && previousKey && previousKey !== match.dribbleClock[owner].key) {
+      match.ballBlend = { id: owner, x: previousBall.x, y: previousBall.y, t: 0 };
+    }
+    tickDribble();
+    if (match.tutorial) {
+      const p = match.pos[match.humanId], t = match.tutorial;
+      if (Math.hypot(p.x - t.x, p.y - t.y) > .035) t.moved = true;
+    }
+  }
+
+  function updateWorld(dt) {
+    if (!match || screen !== "play") return;
+    match.t += dt;
+    if (match.releaseFeedback) match.releaseFeedback.life = Math.max(0, match.releaseFeedback.life - dt);
     if (match.shake > 0) match.shake = Math.max(0, match.shake - dt * 1.4);
     if (match.zoom > 0) match.zoom = Math.max(0, match.zoom - dt * 0.42);
     if (match.flash > 0) match.flash = Math.max(0, match.flash - dt * 1.8);
@@ -970,7 +2115,6 @@
       }
     }
     if (match.hoopKick > 0) match.hoopKick = Math.max(0, match.hoopKick - dt * 1.15);
-    tickDribble();
     if (match.ball) {
       match.trail.push(ballPoint(match.ball));
       if (match.trail.length > 14) match.trail.shift();
@@ -1010,10 +2154,15 @@
     const p = match.pos[id];
     let vx = 0;
     let vy = 0;
-    if (keys.has("arrowleft") || keys.has("a")) vx -= 1;
-    if (keys.has("arrowright") || keys.has("d")) vx += 1;
-    if (keys.has("arrowup") || keys.has("w")) vy += 1;
-    if (keys.has("arrowdown") || keys.has("s")) vy -= 1;
+    // The most recently pressed direction wins while opposing keys overlap.
+    for (const key of keys) {
+      if (key === "arrowleft" || key === "a") vx = -1;
+      if (key === "arrowright" || key === "d") vx = 1;
+      if (key === "arrowup" || key === "w") vy = 1;
+      if (key === "arrowdown" || key === "s") vy = -1;
+    }
+    // Direct steering takes ownership from an earlier click-to-move target.
+    if ((vx || vy) && pointer?.move) pointer.move = null;
     if (pointer && pointer.move) {
       const dx = pointer.move.x - p.x;
       const dy = pointer.move.y - p.y;
@@ -1022,11 +2171,18 @@
         vy = dy;
       } else pointer.move = null;
     }
+    if ((p.x <= .08 && vx < 0) || (p.x >= .92 && vx > 0)) vx = 0;
+    if ((p.y <= .08 && vy < 0) || (p.y >= .94 && vy > 0)) vy = 0;
     const mag = Math.hypot(vx, vy) || 1;
     if (match.hold) { vx = 0; vy = 0; }
     if (vx || vy) {
-      p.x = clamp(p.x + (vx / mag) * dt * 0.34, 0.08, 0.92);
-      p.y = clamp(p.y + (vy / mag) * dt * 0.28, 0.08, 0.94);
+      let dx = (vx / mag) * dt * .34, dy = (vy / mag) * dt * .28;
+      if (pointer?.move) {
+        dx = Math.sign(dx) * Math.min(Math.abs(dx), Math.abs(pointer.move.x - p.x));
+        dy = Math.sign(dy) * Math.min(Math.abs(dy), Math.abs(pointer.move.y - p.y));
+      }
+      p.x = clamp(p.x + dx, 0.08, 0.92);
+      p.y = clamp(p.y + dy, 0.08, 0.94);
       aimFace(id, vx, vy);
       match.pose[id] = "move";
     } else if (!match.hold) {
@@ -1037,10 +2193,10 @@
       pointer = null;
       match.power += match.powerDir * dt * 0.72;
       if (match.power >= 1) {
-        match.power = 1;
+        match.power = 2 - match.power;
         match.powerDir = -1;
       } else if (match.power <= 0) {
-        match.power = 0;
+        match.power = -match.power;
         match.powerDir = 1;
       }
       match.pose[id] = match.flair === "none" ? "shot" : match.flair;
@@ -1077,6 +2233,7 @@
       return;
     }
     match.hold = true;
+    match.face[cpu.id] = Math.sign(HOOP.x - p.x) || match.face[cpu.id] || 1;
     match.power += dt * 0.72;
     if (match.power > 1) match.power = 1;
     match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
@@ -1099,7 +2256,6 @@
   }
 
   function setFlair(id) {
-    if (match?.practice) return;
     if (!match || match.ball || match.pass || match.active !== match.humanId) return;
     if (id === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y)) {
       say("Get closer to the rim to dunk.");
@@ -1134,108 +2290,130 @@
     return img && img.complete && img.naturalWidth ? img : null;
   }
 
+  // All decorative interface skins are exported Makko artwork. Code only lays them out.
+  function skin(name, x, y, w, h) {
+    const img = readyImage(`skin-${name}`);
+    if (!img) return;
+    // Paper controls use nine-slice layout: corners retain their proportions.
+    // Portraits, wordmarks and other illustrations always fit without distortion.
+    if (["primary", "secondary", "score-left", "score-right", "score-center", "target"].includes(name)) {
+      const sw = img.naturalWidth, sh = img.naturalHeight;
+      const edge = 40, corner = Math.min(10, w / 4, h / 4);
+      const sx = [0, edge, sw - edge, sw], sy = [0, edge, sh - edge, sh];
+      const dx = [x, x + corner, x + w - corner, x + w];
+      const dy = [y, y + corner, y + h - corner, y + h];
+      for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) {
+        ctx.drawImage(img, sx[col], sy[row], sx[col+1]-sx[col], sy[row+1]-sy[row],
+          dx[col], dy[row], dx[col+1]-dx[col], dy[row+1]-dy[row]);
+      }
+      return;
+    }
+    const scale = Math.min(w / img.naturalWidth, h / img.naturalHeight);
+    const width = img.naturalWidth * scale, height = img.naturalHeight * scale;
+    ctx.drawImage(img, x + (w - width) / 2, y + (h - height) / 2, width, height);
+  }
+
+  function menuBackdrop(name) {
+    const img = readyImage(`skin-${name}`);
+    if (!img) return;
+    const still = reducedMotion?.matches;
+    // Overscan leaves room for a separate background plane without exposing edges.
+    const extra = still ? 0 : 20;
+    ctx.drawImage(img, -extra + (still ? 0 : menuMotion.x * 12), -extra + (still ? 0 : menuMotion.y * 8), W + extra * 2, H + extra * 2);
+  }
+
   function glassPanel(x, y, w, h, hot) {
-    ctx.save();
-    ctx.shadowColor = hot ? "rgba(255, 246, 216, 0.85)" : "rgba(140, 210, 255, 0.55)";
-    ctx.shadowBlur = hot ? 18 : 10;
-    ctx.fillStyle = hot ? "rgba(255, 246, 216, 0.14)" : "rgba(2, 8, 16, 0.42)";
-    roundRect(x, y, w, h, 4);
-    ctx.fill();
-    ctx.strokeStyle = hot ? "#fff6d8" : "rgba(186, 226, 255, 0.9)";
-    ctx.lineWidth = hot ? 2 : 1.25;
-    ctx.stroke();
-    ctx.restore();
+    skin(hot ? "primary" : "board", x, y, w, h);
   }
 
   function button(x, y, w, h, label, action, hot, shoot) {
     buttons.push({ x, y, w, h, action, shoot: !!shoot });
-    glassPanel(x, y, w, h, hot);
-    ctx.fillStyle = hot ? "#fff6d8" : "#f4efe4";
+    const key = `${screen}:${x}:${y}`;
+    const p = menuMotion.hover;
+    const over = !!p && p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h;
+    const previous = buttonMotion.get(key) || 0;
+    const hover = reducedMotion?.matches ? Number(over) : previous + (Number(over) - previous) * (1 - Math.exp(-18 * menuMotion.dt));
+    buttonMotion.set(key, hover);
+    const pressed = menuMotion.pressKey === key && performance.now() < menuMotion.pressUntil;
+    ctx.save();
+    if (!reducedMotion?.matches) {
+      ctx.translate(x + w / 2, y + h / 2 + (pressed ? 2 : -3 * hover));
+      const scale = pressed ? 0.97 : 1 + hover * 0.025;
+      ctx.scale(scale, scale);
+      ctx.translate(-x - w / 2, -y - h / 2);
+    }
+    ctx.filter = `brightness(${1 + hover * 0.16})`;
+    ctx.shadowColor = "rgba(0,0,0,.3)";
+    ctx.shadowBlur = hover * 4;
+    skin(hot ? "primary" : "secondary", x, y, w, h);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = hot ? "#10182b" : "#fff6d8";
     ctx.font = "20px Bungee, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(label, x + w / 2, y + h / 2 + 1);
+    ctx.restore();
   }
 
   function drawTitle() {
     buttons.length = 0;
-    if (!drawCover(images.nyc)) {
-      ctx.fillStyle = "#10141c";
-      ctx.fillRect(0, 0, W, H);
-    }
-    ctx.fillStyle = "rgba(6, 8, 14, 0.45)";
-    ctx.fillRect(0, 0, W, H);
+    menuBackdrop("title");
     ctx.textAlign = "center";
-    ctx.fillStyle = "#9fd4ff";
-    ctx.font = "22px Share Tech Mono, monospace";
-    ctx.fillText("POLITICAL ARCADES", W / 2, 150);
-    ctx.fillStyle = "#f4efe4";
-    ctx.strokeStyle = "#061018";
-    ctx.lineWidth = 10;
-    ctx.font = "120px Bungee, sans-serif";
-    ctx.strokeText("HORSE", W / 2, 280);
-    ctx.fillText("HORSE", W / 2, 280);
-    ctx.fillStyle = "#f6efe4";
-    ctx.font = "22px Share Tech Mono, monospace";
-    ctx.fillText("Call the spot. Call the flair. Make them copy it.", W / 2, 340);
-    button(W / 2 - 160, 420, 320, 64, "PICK A SHOOTER", () => {
-      screen = "select";
-    }, true);
-    ctx.fillStyle = "#f6efe4";
-    ctx.font = "16px Share Tech Mono, monospace";
-    ctx.fillText("Arrows move. Space starts the meter. Tap again in the box. 1 spin  2 dunk  3 fade  4 hook.", W / 2, 530);
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#fff6d8";
+    ctx.font = "18px Bungee, sans-serif";
+    ctx.fillText("NEW YORK  /  DETROIT", W / 2, 126);
+    skin("logo", 412, 175, 456, 152);
+    skin("banner", 432, 349, 416, 66);
+    ctx.font = "18px Bungee, sans-serif";
+    ctx.fillText("TWO CITIES. ONE COURT.", W / 2, 389);
+    button(465, 464, 350, 76, "RUN THE COURT", () => { screen = "select"; }, true);
+    ctx.font = "17px Share Tech Mono, monospace";
+    ctx.fillStyle = "#fff6d8";
+    ctx.fillText("Make your shot. Make them match it.", W / 2, 584);
+    ctx.fillText("PRESS ENTER OR TAP TO START", W / 2, 644);
   }
 
   function drawSelect() {
     buttons.length = 0;
-    ctx.fillStyle = "#07080c";
-    ctx.fillRect(0, 0, W, H);
+    menuBackdrop("select");
     const ids = ["mamdani", "sayed"];
-    ids.forEach((id, i) => {
-      const x = 40 + i * 620;
-      buttons.push({
-        x,
-        y: 70,
-        w: 580,
-        h: 420,
-        action: () => {
-          selectIndex = i;
-        },
-      });
-      const img = images[id === "mamdani" ? "nyc-future" : "detroit-future"];
-      if (img && img.complete && img.naturalWidth) {
-        ctx.drawImage(img, x, 70, 580, 326);
-      }
-      ctx.fillStyle = "rgba(7,8,12,0.55)";
-      ctx.fillRect(x, 70, 580, 326);
-      const portrait = images[`${id}-idle`];
-      if (portrait?.complete && portrait.naturalWidth) {
-        const clip = CLIPS[id].idle;
-        const height = 304, width = height * clip.fw / clip.fh;
-        ctx.drawImage(portrait, 0, 0, clip.fw, clip.fh, x + (580 - width) / 2, 82, width, height);
-      }
-      const on = i === selectIndex;
-      ctx.strokeStyle = on ? "#fff6d8" : "rgba(186, 226, 255, 0.35)";
-      ctx.lineWidth = on ? 3 : 1;
-      ctx.strokeRect(x, 70, 580, 326);
-      const f = FIGHTERS[id];
-      ctx.fillStyle = on ? "#fff6d8" : "#f6efe4";
-      ctx.font = "32px Bungee, sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText(f.full, x + 8, 450);
-      ctx.font = "18px Share Tech Mono, monospace";
-      ctx.fillStyle = "#b7aea0";
-      ctx.fillText(`${f.city} court. CPU takes the other side.`, x + 8, 486);
-    });
     ctx.textAlign = "center";
-    ctx.fillStyle = "#9fd4ff";
-    ctx.font = "18px Share Tech Mono, monospace";
-    ctx.fillText("LEFT AND RIGHT TO CHOOSE", W / 2, 48);
-    button(W / 2 - 150, 560, 300, 64, "STEP ON THE COURT", () => startGame(), true);
+    ctx.textBaseline = "alphabetic";
+    skin("banner", 390, 14, 500, 64);
+    ctx.fillStyle = "#fff6d8";
+    ctx.font = "24px Bungee, sans-serif";
+    ctx.fillText("WHO'S GOT NEXT?", 640, 55);
+    ids.forEach((id, i) => {
+      const x = i * 640;
+      const on = i === selectIndex;
+      buttons.push({x, y:90, w:640, h:430, action:()=>{selectIndex=i;}});
+      skin(on ? "primary" : "secondary", x + 100, 435, 440, 74);
+      ctx.fillStyle = on ? "#10182b" : "#fff6d8";
+      ctx.font = "28px Bungee, sans-serif";
+      ctx.fillText(FIGHTERS[id].full, x + 320, 480);
+      ctx.fillStyle = "#fff6d8";
+      ctx.font = "18px Share Tech Mono, monospace";
+      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on ? "YOUR PICK" : "TAP TO SELECT"}`, x + 320, 538);
+    });
+    button(306, 585, 324, 64, "CHOOSE COURT", () => openCourtSelect(), true);
+    button(650, 585, 324, 64, "PRACTICE", () => startPractice(), false);
+    ctx.fillStyle = "#fff6d8";
+    ctx.font = "16px Share Tech Mono, monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT · SAME MOVES, YOUR STYLE", 640, 688);
   }
 
   function startGame() {
+    if (!assetsReady()) return;
+    if (!guideSeen) {
+      guideOpen = true;
+      document.getElementById("first-play").hidden = false;
+      document.getElementById("guide-learn").focus();
+      return;
+    }
     const id = selectIndex === 0 ? "mamdani" : "sayed";
+    paused = false; pausePanel.hidden = true; keys.clear(); pointer = null;
     match = freshMatch(id);
     screen = "play";
     canvas.focus();
@@ -1252,7 +2430,7 @@
 
   function drawCourt() {
     const nyc = match.court === "nyc";
-    const bg = readyImage(nyc ? "nyc-future" : "detroit-future");
+    const bg = readyImage(match.court.startsWith("court-") ? "selected-court" : nyc ? "nyc-future" : "detroit-future");
     if (bg) ctx.drawImage(bg, 0, 0, W, H);
     else {
       const sky = ctx.createLinearGradient(0, 0, 0, 280);
@@ -1383,6 +2561,7 @@
   }
 
   function drawHoopBack() {
+    if (match.court.startsWith("court-")) return;
     const box = hoopSpriteBox();
     if (!box) return;
     const srcH = box.img.height * box.crop;
@@ -1390,6 +2569,7 @@
   }
 
   function drawHoopFront() {
+    if (match.court.startsWith("court-")) return;
     const through = match.ball && match.ball.phase === "net";
     if (!through) return;
     const box = hoopSpriteBox();
@@ -1417,6 +2597,7 @@
     else if (set[pose] && pose !== "move") key = pose;
     else if (set.idle) key = "idle";
     if (!key) return null;
+    if (key === "spin" && set.spin.turnOnly && shooting && match.ball.t >= match.ball.turnUntil) key = "shot";
     const img = images[`${id}-${key}`];
     if (!img || !img.complete || !img.naturalWidth) return null;
     return { img, clip: set[key], key };
@@ -1459,22 +2640,17 @@
       const drawn = drawnSprite(clip, at, frame);
       const height = drawn.height;
       const width = drawn.width;
-      ctx.translate(0, -lift);
+      ctx.translate((motion.shift || 0) * at.s, -lift);
       const wide = motion.squash < 1 ? 1 + (1 - motion.squash) * 0.65 : 1;
       ctx.scale((match.face[id] || 1) * (clip.sourceFacing || 1) * wide, motion.squash);
       const top = -height * layout.footInSlice;
       const cell = spriteCell(clip, frame, layout);
       ctx.drawImage(img, cell.x, cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
-      ctx.save();
-      ctx.globalAlpha = 0.2;
-      ctx.scale(1, -0.28);
-      ctx.drawImage(img, cell.x, cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
-      ctx.restore();
       ctx.restore();
       return;
     }
     const stride = moving ? Math.sin(match.t * 11) * 10 : 0;
-    const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
+    const face = readyImage(`skin-portrait-${id}`);
     ctx.scale(at.s, at.s);
     ctx.translate(0, -lift / Math.max(0.4, at.s));
     if (pose === "spin") ctx.rotate(Math.sin(match.t * 18) * 0.9);
@@ -1535,8 +2711,9 @@
   function poseFrame(clip, ball) {
     const last = clip.play != null ? clip.play : clip.frames - 1;
     if (ball.phase && ball.phase !== "arc") return last;
+    if (clip.turnOnly) return Math.min(last, Math.floor(ball.t / (ball.turnUntil || .30) * clip.frames));
     if (ball.syncRelease && clip.releaseFrame != null) {
-      if (ball.t < ball.show) return Math.min(clip.releaseFrame - 1, Math.floor(ball.t / ball.show * clip.releaseFrame));
+      if (ball.t < ball.show) return Math.min(clip.releaseFrame - 1, Math.floor(Math.max(0, ball.t - (ball.turnUntil || 0)) / (ball.show - (ball.turnUntil || 0)) * clip.releaseFrame));
       const recovery = clamp((ball.t - ball.show) / (1 - ball.show), 0, 1);
       return Math.min(last, clip.releaseFrame + Math.floor(recovery * (last - clip.releaseFrame + 1)));
     }
@@ -1545,20 +2722,22 @@
     return Math.min(last, Math.floor(u * (last + 1)));
   }
 
-  function drawGatherBall(id, frame) {
-    const clip = CLIPS[id].shot;
+  function drawGatherBall(id, frame, action = "shot") {
+    const clip = CLIPS[id][action];
     if (!clip.emptyHands) return;
     const at = project(match.pos[id].x, match.pos[id].y);
     const drawn = drawnSprite(clip, at, frame);
     const keys = clip.handKeys;
+    if (clip.turnOnly && frame > 2 && frame < 7) return; // Possession passes behind the torso during the turn.
     let a = keys[0], b = keys[keys.length - 1];
     for (let i = 1; i < keys.length; i++) {
       if (frame <= keys[i][0]) { a = keys[i - 1]; b = keys[i]; break; }
     }
     const t = clamp((frame - a[0]) / Math.max(1, b[0] - a[0]), 0, 1);
     const hx = a[1] + (b[1] - a[1]) * t, hy = a[2] + (b[2] - a[2]) * t;
-    drawBall(at.x + (match.face[id] || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
-      at.y + (hy - clip.feet[0]) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
+    const motion = bodyMotion(id);
+    drawBall(at.x + (motion.shift || 0) * at.s + (match.face[id] || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
+      at.y - motion.lift * at.s + (hy - clip.feet[0]) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
   }
 
   function drawBall(x, y, r, spin) {
@@ -1590,13 +2769,27 @@
     ctx.restore();
     const b = match.ball;
     const p = ballPoint(b);
-    const radius = b.id === "mamdani" && b.syncRelease ? 7 : 11;
+    const radius = (b.releaseRadius || 11) + (7 - (b.releaseRadius || 11)) * clamp(p.t, 0, 1);
     drawBall(p.x, p.y, b.flair === "dunk" && p.t > 0.75 ? 13 : radius, p.t * 1.6);
   }
 
   function drawLoose(ball, spin) {
     const p = ballPoint(ball);
     drawBall(p.x, p.y, 11, spin);
+  }
+
+  function drawReleaseFeedback() {
+    const feedback = match.releaseFeedback;
+    if (!feedback || feedback.life <= 0) return;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, feedback.life * 5);
+    ctx.font = "26px Bungee, sans-serif";
+    ctx.textAlign = "center";
+    ctx.strokeStyle = "#071020"; ctx.lineWidth = 6;
+    ctx.fillStyle = feedback.perfect ? "#8cffe0" : feedback.made ? "#ffcf52" : "#ffffff";
+    ctx.strokeText(feedback.text, W / 2, 645);
+    ctx.fillText(feedback.text, W / 2, 645);
+    ctx.restore();
   }
 
   function drawBanner() {
@@ -1621,82 +2814,79 @@
   function drawHud() {
     buttons.length = 0;
     const aiming = match.hold && match.active === match.humanId && !match.ball ? shotNeed() : null;
-    glassPanel(16, 8, 1248, 114, false);
+    // Keep the center display above y=92: Detroit's backboard begins below it.
+    skin("score-mamdani", 16, 8, 96, 100);
+    skin("score-left", 112, 12, 248, 100);
+    skin("score-center", 400, 3, 480, 57);
+    skin("score-right", 920, 12, 248, 100);
+    skin("score-sayed", 1168, 8, 96, 100);
     ["mamdani", "sayed"].forEach((id, i) => {
       const right = i === 1;
-      const faceX = right ? 1188 : 32;
       const f = FIGHTERS[id];
-      const face = images[id === "mamdani" ? "face-mamdani" : "face-sayed"];
-      if (face && face.complete && face.naturalWidth) {
-        ctx.save();
-        roundRect(faceX, 20, 60, 60, 4);
-        ctx.clip();
-        ctx.drawImage(face, faceX, 20, 60, 60);
-        ctx.restore();
-        ctx.strokeStyle = "rgba(186, 226, 255, 0.8)";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(faceX, 20, 60, 60);
-      }
       ctx.fillStyle = "#f4efe4";
       ctx.font = "16px Bungee, sans-serif";
-      ctx.textAlign = right ? "right" : "left";
-      ctx.fillText(f.name.toUpperCase(), right ? faceX - 12 : faceX + 70, 40);
+      ctx.textAlign = "center";
+      ctx.fillText(f.name.toUpperCase(), right ? 1044 : 236, 40);
       LETTERS.forEach((letter, n) => {
         const on = n < match.letters[id];
         const fresh = on && n === match.letters[id] - 1 && match.pop[id] > 0;
         const s = fresh ? 1 + match.pop[id] * 0.55 : 1;
-        const lx = right ? faceX - 16 - (5 - n) * 26 : faceX + 70 + n * 26;
+        const lx = (right ? 950 : 142) + n * 61;
         ctx.save();
-        ctx.translate(lx, 76);
+        ctx.translate(lx, 88);
         ctx.scale(s, s);
-        ctx.font = "22px Bungee, sans-serif";
-        ctx.textAlign = "left";
+        ctx.font = "28px Bungee, sans-serif";
+        ctx.textAlign = "center";
         ctx.shadowColor = on ? "#fff6d8" : "transparent";
-        ctx.shadowBlur = on ? 12 : 0;
-        ctx.fillStyle = on ? "#fff6d8" : "rgba(170, 200, 230, 0.28)";
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = on ? "#ff9b40" : "rgba(244, 239, 228, 0.35)";
         ctx.fillText(letter, 0, 0);
         ctx.restore();
       });
     });
-    const city = match.court === "nyc" ? "NEW YORK" : "DETROIT";
+    const city = courtById(match.court).name.toUpperCase();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     if (aiming) {
       ctx.fillStyle = "#fff6d8";
       ctx.font = "20px Bungee, sans-serif";
-      ctx.fillText(aiming.hit ? "RELEASE NOW" : "STOP THE NEEDLE IN THE GOLD ZONE", W / 2, 45);
+      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 26);
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "16px Share Tech Mono, monospace";
-      ctx.fillText("Space or tap the shot button again", W / 2, 76);
-      const at = project(match.pos[match.humanId].x, match.pos[match.humanId].y);
-      const w = 360;
-      const h = 32;
-      const x = clamp(at.x - w / 2, 24, W - w - 24);
-      const y = clamp(at.y + 20, 360, 610);
-      glassPanel(x, y, w, h, aiming.hit);
-      ctx.fillStyle = "#10141c";
-      ctx.fillRect(x + 3, y + 3, w - 6, h - 6);
-      const pad = 8;
-      const inner = w - pad * 2;
+      ctx.fillText("Space or tap the shot button again", W / 2, 48);
+      const w = 440, h = 48, x = (W - w) / 2, y = 596;
+      skin("meter", x, y, w, h);
+      const pad = 32, inner = w - pad * 2;
       const left = x + pad + (aiming.need - aiming.span) * inner;
       const zoneW = Math.max(8, aiming.span * 2 * inner);
-      ctx.shadowColor = "#ffb020";
-      ctx.shadowBlur = aiming.hit ? 12 : 0;
-      ctx.fillStyle = "#ffb020";
-      ctx.fillRect(left, y + 5, zoneW, h - 10);
+      skin("target", left, y + 10, zoneW, h - 20);
       const nx = x + pad + match.power * inner;
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = "#05080e";
-      ctx.fillRect(nx - 4, y + 1, 8, h - 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(nx - 2, y + 1, 4, h - 2);
-      ctx.shadowBlur = 0;
+      skin("needle", nx - 8, y - 5, 16, h + 10);
     } else {
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "12px Bungee, sans-serif";
-      ctx.fillText(city, W / 2, 34);
-      wrapCall(match.call, W / 2, 58);
+      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${city} · ${match.active === match.humanId ? "YOUR TURN" : "OPPONENT TURN"}`, W / 2, 21, 450);
+      const tutorial = match.tutorial;
+      const brief = match.over ? `${FIGHTERS[match.over].name} wins! Run it back?` : tutorial
+        ? tutorial.shot ? "Ready? Start a match." : !tutorial.moved ? "Move: arrows / WASD / stick." : "Press Space / Aim to begin."
+        : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && match.active === match.humanId
+        ? copyHint() : "Set a shot. Make them match it.";
+      wrapCall(brief, W / 2, 43);
     }
+
+    if (match.notice && match.notice.until > match.t && !aiming) {
+      skin("secondary", 230, 564, 820, 62);
+      ctx.fillStyle = "#fff6d8"; ctx.font = "17px Share Tech Mono, monospace";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      const words = match.notice.text.split(" "); let lines = [""];
+      for (const word of words) {
+        const n = lines.length - 1, next = lines[n] ? `${lines[n]} ${word}` : word;
+        if (ctx.measureText(next).width > 770) lines.push(word); else lines[n] = next;
+      }
+      lines.forEach((line, i) => ctx.fillText(line, 640, 595 + (i - (lines.length - 1) / 2) * 20));
+      ctx.textBaseline = "alphabetic";
+    }
+    if (match.tutorial) button(904, 512, 352, 46, match.tutorial.shot ? "START MATCH" : "SKIP LESSON", () => startGame(), true);
 
     if (!match.over && match.active === match.humanId && !match.ball && !match.pass) {
       const labels = [
@@ -1705,16 +2895,12 @@
         ["3  FADE", "fade"],
         ["4  HOOK", "hook"],
       ];
-      if (match.practice) {
-        ctx.fillStyle = "#fff6d8"; ctx.font = "16px Bungee, sans-serif";
-        ctx.fillText("JUMPER PRACTICE / MOVE: ARROWS OR WASD", 350, 690);
-      }
-      (match.practice ? [] : labels).forEach((item, i) => {
+      labels.forEach((item, i) => {
         const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y);
         button(24 + i * 168, 662, 156, 44, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
-      const label = !match.hold ? "AIM: SPACE / TAP" : aiming && aiming.hit ? "SHOOT NOW!" : "SHOOT IN THE GOLD ZONE";
-      button(708, 662, 548, 44, label, () => {
+      const label = !match.hold ? "SPACE / TAP TO AIM" : aiming && aiming.hit ? "SHOOT NOW!" : "SPACE / TAP TO SHOOT";
+      button(904, 654, 352, 54, label, () => {
         if (!match.hold) {
           match.hold = true;
           match.power = 0;
@@ -1723,18 +2909,29 @@
         } else {
           humanRelease();
         }
-      }, !!(aiming && aiming.hit), true);
+      }, !match.hold || !!(aiming && aiming.hit), true);
     }
 
     if (match.over) {
+      if (match.unlockMessage) {
+        skin("secondary", 250, 490, 780, 64);
+        ctx.textAlign = "center"; ctx.fillStyle = "#fff5da";
+        ctx.font = "19px Bungee, sans-serif";
+        ctx.fillText(match.unlockMessage, 640, 529);
+      }
       button(W / 2 - 320, 600, 280, 58, "RUN IT BACK", () => {
         match = freshMatch(match.humanId);
       }, true);
-      button(W / 2 + 40, 600, 280, 58, "PICK AGAIN", () => {
-        screen = "select";
-        match = null;
-      }, false);
+      button(W / 2 + 40, 600, 280, 58, "CHOOSE COURT", openCourtSelect, false);
     }
+  }
+
+  function copyHint() {
+    const p = match.pos[match.humanId], c = match.challenge;
+    if (!c) return "Match the spot and shot.";
+    const spot = Math.hypot(p.x - c.x, p.y - c.y) < .11;
+    const shot = match.flair === c.flair;
+    return `${spot ? "Spot OK" : "Move onto the ring"} / ${shot ? "shot OK" : `choose ${FLAIR_NAME[c.flair]}`}`;
   }
 
   function wrapCall(text, x, y) {
@@ -1778,13 +2975,19 @@
       drawHoopBack();
       const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
+      drawReleaseFeedback();
       const through = match.ball && match.ball.phase === "net";
       if (!through) drawHoopFront();
       if (match.ball) {
         if (match.ball.phase !== "arc" || match.ball.t >= (match.ball.show || 0)) drawFlight();
-        else if (match.ball.flair === "none") drawGatherBall(match.ball.id, poseFrame(CLIPS[match.ball.id].shot, match.ball));
-      } else if (match.hold && match.flair === "none") {
-        drawGatherBall(match.active, 0);
+        else {
+          const action = match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair;
+          const clip = CLIPS[match.ball.id][action];
+          drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
+        }
+      } else if (match.hold) {
+        const flair = match.active === match.cpuId ? match.cpu.flair : match.flair;
+        drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
       } else if (match.pass) {
         drawLoose(match.pass, match.pass.t * 1.4);
       } else if (match.owner && !match.hold && !spriteFor(match.owner, match.pose[match.owner])?.clip.embeddedBall) {
@@ -1836,13 +3039,29 @@
     };
   }
 
+  canvas.addEventListener("pointermove", (ev) => {
+    const p = pointerPos(ev);
+    menuMotion.hover = p;
+    menuMotion.targetX = clamp((p.x / W - 0.5) * 2, -1, 1);
+    menuMotion.targetY = clamp((p.y / H - 0.5) * 2, -1, 1);
+    if (canvas.style) canvas.style.cursor = hit(p.x, p.y) ? "pointer" : "default";
+  });
+  canvas.addEventListener("pointerleave", () => {
+    menuMotion.hover = null;
+    menuMotion.targetX = menuMotion.targetY = 0;
+    if (canvas.style) canvas.style.cursor = "default";
+  });
+
   canvas.addEventListener("pointerdown", (ev) => {
-    if (paused) return;
+    if (paused || guideOpen || !assetsReady()) return;
     unlockAudio();
     canvas.focus();
     const p = pointerPos(ev);
     const b = hit(p.x, p.y);
     if (b) {
+      menuMotion.pressKey = `${screen}:${b.x}:${b.y}`;
+      menuMotion.pressUntil = performance.now() + 140;
+      menuMotion.hover = p;
       b.action();
       pointer = null;
       return;
@@ -1860,21 +3079,32 @@
 
   window.addEventListener("keydown", (ev) => {
     const k = ev.key.toLowerCase();
+    if (k === "u" && ev.ctrlKey && ev.shiftKey && !ev.repeat) {
+      ev.preventDefault(); marketingUnlock = !marketingUnlock;
+      if (match && marketingUnlock) match.marketingSession = true;
+      if (courtOpen || screen === "select") openCourtSelect();
+      else status.textContent = marketingUnlock ? "Marketing unlock on. All courts available; wins do not count." : "Marketing unlock off.";
+      return;
+    }
+    if (courtOpen && k === "escape") { ev.preventDefault(); courtOpen=false; document.getElementById('court-select').hidden=true; chooseAgain(); return; }
     if (k === "escape" && screen === "play") { ev.preventDefault(); if (!ev.repeat) setPaused(!paused); return; }
     if (ev.target?.closest?.("button, a, input, select, textarea, [contenteditable]")) return;
+    if (guideOpen || courtOpen || !assetsReady()) return;
     if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) ev.preventDefault();
     if (paused || ev.repeat) return;
     unlockAudio();
     keys.add(k);
     if (k === " " || k === "arrowup" || k === "arrowdown") ev.preventDefault();
     if (screen === "title" && (k === "enter" || k === " ")) {
+      ev.preventDefault();
       screen = "select";
       return;
     }
     if (screen === "select") {
+      ev.preventDefault();
       if (k === "arrowleft" || k === "a") selectIndex = 0;
       if (k === "arrowright" || k === "d") selectIndex = 1;
-      if (k === "enter" || k === " ") startGame();
+      if (k === "enter" || k === " ") openCourtSelect();
       return;
     }
     if (!match) return;
@@ -1901,9 +3131,23 @@
   });
 
   function frame(now) {
-    const dt = Math.min(0.033, (now - last) / 1000);
+    const dt = Math.max(0, Math.min(0.033, (now - last) / 1000));
     last = now;
-    if (!paused) update(dt * (match?.practice && document.getElementById("slow-motion").checked ? 0.25 : 1));
+    menuMotion.dt = dt;
+    const ease = 1 - Math.exp(-5 * dt);
+    menuMotion.x += (menuMotion.targetX - menuMotion.x) * ease;
+    menuMotion.y += (menuMotion.targetY - menuMotion.y) * ease;
+    if (menuMotion.screen !== screen) {
+      menuMotion.screen = screen;
+      buttonMotion.clear();
+      if (!reducedMotion?.matches) canvas.animate?.([{ opacity: .65, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 220, easing: "ease-out" });
+    }
+    const ready = assetsReady(), progress = assetProgress();
+    document.getElementById("asset-loading").hidden = ready;
+    document.getElementById("asset-progress").textContent = progress.failed ? "Some artwork could not load. Check your connection and retry." : `Getting the court ready: ${progress.loaded} / ${progress.total}`;
+    document.getElementById("asset-retry").hidden = !progress.failed;
+    if (pendingCourtStart && ready) { pendingCourtStart=false; startGame(); }
+    if (!paused && !guideOpen && !courtOpen && ready) update(dt * (match?.practice && document.getElementById("slow-motion").checked ? 0.25 : 1));
     document.getElementById("practice-speed").hidden = !match?.practice;
     draw();
     controls.hidden = screen !== "play";

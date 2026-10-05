@@ -56,7 +56,7 @@
     }
 
     function end(ev) {
-      if (ev.pointerId !== id) return;
+      if (ev && ev.pointerId !== id) return;
       id = null;
       nub.style.transform = "";
       setHeld(new Set());
@@ -74,6 +74,9 @@
     });
     pad.addEventListener("pointerup", end);
     pad.addEventListener("pointercancel", end);
+    pad.addEventListener("lostpointercapture", end);
+    window.addEventListener("blur", () => end());
+    document.addEventListener("visibilitychange", () => { if (document.hidden) end(); });
     return pad;
   }
 
@@ -119,7 +122,7 @@
       bar.hidden = false;
       document.documentElement.classList.add("has-touch");
     };
-    if (coarse.matches) show();
+    if (coarse.matches || new URLSearchParams(location.search).has("touch")) show();
     window.addEventListener("touchstart", show, { once: true, passive: true });
     return bar;
   };

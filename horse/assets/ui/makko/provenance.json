@@ -1,0 +1,26 @@
+{
+  "source": "Makko",
+  "collection": "2901fa24-7d31-44ba-bc37-b46b62f2e2aa",
+  "generation": "asset-gen-b14ca971-c8ee-4b93-9b03-c47f0f6fe480-0_0",
+  "processing": "Grid crops and magenta background removal only; no replacement artwork drawn in code.",
+  "accessoryGeneration": "asset-gen-a265406a-b505-4ffa-88f4-63ea89b65de0-0_0",
+  "excluded": "The generated smiling basketball was not used; the existing game ball is retained.",
+  "titleGeneration": "asset-gen-59b5adae-6ae3-43ea-ac55-28b07ea66ed4-0_0",
+  "selectAndPortraitGeneration": "asset-gen-4d819d91-8993-4810-ad4d-562dbd3c72d4-0_0",
+  "characterReferenceConcepts": [
+    "concept_1790905334652_1790905334657",
+    "concept_1790905344353_1790905344358"
+  ],
+  "scoreboardGeneration": "asset-gen-23cfafa7-184d-4238-8043-64d37cd4f0aa-0_0",
+  "playgroundKit": {
+    "generation": "asset-gen-81b65b91-9096-442d-8afc-cc9ba7812d69-0_0",
+    "processing": "Six isolated crops, magenta removal; flat paper, cloth and rubber artwork from Makko."
+  },
+  "cutoutPortraits": "asset-gen-503f8f7d-248b-4239-b46e-db83ca2d2d1a-0_0",
+  "flatWordmark": "asset-gen-80674ab8-b73b-4865-9e05-02ec74319e9e-0_0",
+  "playgroundCourts": {
+    "nyc": "asset-gen-4757b2de-0d40-4f5e-b600-69730c1e361b-0_0",
+    "detroit": "asset-gen-36e4e06b-d0ad-4c86-afbc-4bde00ba2b10-0_0",
+    "processing": "Makko originals resized to 1600x900 and WebP quality 86. Rim geometry calibrated in game. Rejected earlier NYC draft because playable foreground was too small."
+  }
+}

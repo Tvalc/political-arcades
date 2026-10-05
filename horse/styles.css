@@ -1,71 +1,55 @@
-:root {
-  color-scheme: dark;
-  --ink: #f6efe4;
-  --muted: #b7aea0;
-  --neon: #ff4d8d;
-  --amber: #ffb020;
-}
+:root{color-scheme:dark;--ink:#fff6d8;--muted:#b7c9dd;--amber:#ffbd32}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}body{color:var(--ink);font-family:"Share Tech Mono",monospace;background:#080f1b}
+[hidden]{display:none!important}
+.topbar{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:auto;padding:12px 20px 0;min-height:54px}
+.brand img{display:block;object-fit:contain}.brand-side{font:13px Bungee,sans-serif;color:var(--amber);text-decoration:none}
+.stage{position:relative;width:min(1280px,100%);margin:8px auto 0;padding:0 12px}
+canvas{display:block;width:100%;height:auto;background:#080f1b;touch-action:none}
+.session-controls{max-width:1280px;margin:8px auto 0;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.session-controls button,.pause-panel button{min-height:44px;padding:10px 24px;background:transparent url('assets/ui/makko/secondary.webp') center/contain no-repeat;border:0;color:var(--ink);font:16px "Share Tech Mono",monospace;cursor:pointer}
+.session-controls label{font-size:14px;display:flex;align-items:center;gap:5px}
+.game-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.pause-panel{position:absolute;inset:8% 20%;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;background:url('assets/ui/makko/board.webp') center/contain no-repeat}
+.pause-panel h2{font:32px Bungee,sans-serif;margin:0}.pause-panel p{margin:0 0 8px}.pause-panel button{width:min(260px,80%)}
+.pause-panel #resume{background-image:url('assets/ui/makko/primary.webp');color:#10182b}
+.how-to{max-width:900px;margin:14px auto 0;padding:0 20px;line-height:1.6}.how-to summary{cursor:pointer;color:var(--amber);padding:8px 0}.how-to p{margin:10px 0}.how-to strong{color:#fff6d8}
+.site-foot{max-width:900px;margin:12px auto 20px;padding:0 20px;color:#91a0b4;font-size:12px;line-height:1.5;text-align:center}.site-foot a{color:var(--amber)}
+button:focus-visible,a:focus-visible,summary:focus-visible,canvas:focus-visible{outline:3px solid #7fe9e5;outline-offset:3px}
+@media(min-width:760px) and (hover:hover) and (pointer:fine){.stage{width:min(1280px,100%,calc((100dvh - 155px)*1.7778 + 24px))}}
+@media(max-width:600px){.topbar{padding:8px 12px}.brand img{width:88px;height:auto}.brand-side{font-size:10px}.session-controls{margin-top:4px;gap:6px}.session-controls button{font-size:13px;padding:8px 18px}.stage{padding:0;margin-top:6px}.pause-panel{inset:3% 10%;gap:4px;padding:12px}.pause-panel h2{font-size:22px}.pause-panel p{display:none}.pause-panel button{min-height:36px;padding:6px 16px}.how-to{font-size:14px}}
+/* Motion enhances the Makko art; it does not replace it. */
+.session-controls button,.pause-panel button,.brand img{transition:transform 160ms ease,filter 160ms ease}
+@media(hover:hover){.session-controls button:hover,.pause-panel button:hover{transform:translateY(-2px);filter:brightness(1.16) drop-shadow(0 3px 4px #0005)}.brand:hover img{transform:scale(1.035)}}
+.session-controls button:active,.pause-panel button:active{transform:translateY(1px) scale(.97);filter:brightness(1.08)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}.session-controls button:hover,.pause-panel button:hover,.brand:hover img{transform:none}}
+#sound-toggle{border:0;min-height:40px;padding:8px 22px;font:14px 'Share Tech Mono',monospace;color:#fff6d8;background:transparent url('assets/ui/makko/secondary.webp') center/contain no-repeat;cursor:pointer;transition:filter .16s,transform .16s}
+#sound-toggle:hover{filter:brightness(1.15)}#sound-toggle:active{transform:scale(.97)}
+@media(max-width:600px){#sound-toggle{font-size:11px;padding:8px 14px}.topbar{gap:8px}}
+@media(orientation:landscape) and (max-height:520px){.has-touch .topbar{display:block;position:fixed;right:4px;top:4px;z-index:16;min-height:0;padding:0}.has-touch .topbar>a{display:none}.has-touch #sound-toggle{min-height:34px}}
 
-* { box-sizing: border-box; }
+/* Nine-slice paper edges keep their original shape at every control size. */
+.session-controls button,.pause-panel button,#sound-toggle{background:none;border:9px solid transparent;border-image:url('assets/ui/makko/secondary.webp?v=41') 40 fill / 9px / 0 stretch;padding:4px 16px}
+.pause-panel #resume{background:none;border-image-source:url('assets/ui/makko/primary.webp?v=41')}
+.pause-panel{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,88%);aspect-ratio:1.87;min-height:250px;background:none;border:24px solid transparent;border-image:url('assets/ui/makko/board.webp?v=41') 100 fill / 24px / 0 stretch;padding:20px}
+@media(max-width:600px){.pause-panel{gap:4px;padding:14px;min-height:236px}.pause-panel button{min-height:36px}.pause-panel h2{font-size:22px}}
 
-html, body { margin: 0; min-height: 100%; }
+.launch-panel{position:absolute;z-index:30;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:6% 10%;background:#10151b;color:#fff6d8;text-align:center}
+.launch-panel h2{font:28px Bungee,sans-serif;margin:0}.launch-panel p{font-size:19px;max-width:620px;margin:0;line-height:1.4}
+.launch-panel button{min-height:44px;min-width:240px;font:16px 'Share Tech Mono',monospace;color:#fff6d8;background:none;border:9px solid transparent;border-image:url('assets/ui/makko/secondary.webp?v=42') 40 fill / 9px / 0 stretch;cursor:pointer;padding:8px 20px}
+#guide-learn{border-image-source:url('assets/ui/makko/primary.webp?v=42');color:#10151b}
+@media(max-width:600px){.launch-panel{min-height:330px;padding:18px;gap:8px}.launch-panel h2{font-size:20px}.launch-panel p{font-size:14px}.launch-panel button{padding:4px 12px}}
 
-body {
-  color: var(--ink);
-  font-family: "Share Tech Mono", ui-monospace, monospace;
-  background:
-    radial-gradient(900px 420px at 50% -10%, rgba(255, 77, 141, 0.22), transparent 60%),
-    linear-gradient(180deg, #14161c 0%, #07080c 42%, #100e0c 100%);
-}
+#first-play{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(820px,92%);min-height:430px;padding:36px 44px;background:none;border:24px solid transparent;border-image:url('assets/ui/makko/board.webp?v=42') 100 fill / 24px / 0 stretch} @media(max-width:600px){#first-play{min-height:330px;padding:18px;gap:8px}}
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: min(1280px, 100%);
-  margin: 0 auto;
-  padding: 16px 16px 0;
-}
+@media(max-width:600px){.stage:has(#first-play:not([hidden])),.stage:has(#asset-loading:not([hidden])){min-height:350px}#first-play{top:0;transform:translateX(-50%)}}
 
-.brand, .brand-side {
-  color: var(--ink);
-  text-decoration: none;
-  font-family: Bungee, sans-serif;
-}
-
-.brand { font-size: 22px; letter-spacing: 0.04em; }
-.brand-side { color: var(--amber); font-size: 13px; }
-
-.stage {
-  width: min(1280px, 100%);
-  margin: 12px auto 0;
-  padding: 0 12px;
-}
-
-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #07080c;
-  border-radius: 10px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-  touch-action: none;
-}
-
-.site-foot {
-  width: min(760px, 100%);
-  margin: 18px auto 28px;
-  padding: 0 16px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.45;
-  text-align: center;
-}
-
-.site-foot a { color: var(--amber); }
-
-@media (min-width: 760px) and (hover: hover) and (pointer: fine) {
-  .stage { width: min(1280px, 100%, calc((100dvh - 190px) * 1.7778 + 24px)); }
-}
-
-[hidden]{display:none!important}.stage{position:relative}.session-controls{max-width:1280px;margin:12px auto 0;padding:0 12px;display:flex;gap:8px;flex-wrap:wrap}.session-controls button,.pause-panel button{min-height:44px;padding:10px 16px;background:#252b40;color:#fff;border:1px solid #7886a8;border-radius:6px;font:inherit;cursor:pointer}.game-status{max-width:1000px;margin:12px auto;padding:0 16px;min-height:1.5em;text-align:center;font-size:18px;line-height:1.5}.pause-panel{position:absolute;inset:0 12px;z-index:10;display:grid;align-content:center;justify-items:center;background:#101421ec;border-radius:10px}.pause-panel h2{font-size:36px}.pause-panel button{min-width:160px}button:focus-visible,a:focus-visible{outline:3px solid #79dbff;outline-offset:4px}
+/* Court artwork remains Makko-authored; native controls provide accessible selection. */
+.court-select{position:absolute;inset:0;z-index:25;background:#111c27;display:flex;flex-direction:column;color:#fff5da;padding:18px;overflow:hidden}
+.court-select[hidden]{display:none}.court-select header{flex:none}.court-select h2{font-family:Bungee,sans-serif;margin:0;font-size:24px}.court-select p{margin:6px 0 12px;font-size:14px}
+.court-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;overflow:auto;flex:1;min-height:0;padding:4px}
+.court-card{background:#223443;border:2px solid transparent;padding:0 0 10px;color:#fff5da;text-align:left;border-radius:8px;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s}
+.court-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}.court-card strong,.court-card span{display:block;padding:7px 10px 0}.court-card span{font-size:12px;color:#d4dce0}.court-card[aria-pressed=true]{border-color:#ffbe68}.court-card:disabled{opacity:.55;cursor:default}.court-card:not(:disabled):hover{transform:translateY(-2px)}.court-card:focus-visible{outline:3px solid #fff;outline-offset:1px}
+.court-select nav{display:flex;gap:12px;justify-content:space-between;padding-top:12px}.court-select nav button{background:#f4e4c5;border:0;padding:12px 18px;border-radius:5px;color:#172733;font-weight:bold;cursor:pointer}
+@media(max-width:700px){.stage:has(.court-select:not([hidden])){min-height:560px}.court-select{padding:10px}.court-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.court-select h2{font-size:19px}.court-select p{font-size:12px}.court-select nav button{padding:10px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.court-card{transition:none}}
+.court-grid{grid-auto-rows:max-content;align-content:start}.court-card{min-height:190px}.court-card strong{font-size:14px;line-height:1.3}.court-card img{height:auto}@media(max-width:700px){.court-card{min-height:165px}}

@@ -68,16 +68,23 @@
 
 /* Landscape phones: float the controls over the bottom corners of the game. */
 @media (orientation: landscape) and (max-height: 520px) {
-  .has-touch .stage { position: relative; }
+  .has-touch .stage { position: relative; width:100%; margin:0; padding:0; height:100dvh; display:flex; align-items:center; justify-content:center; }
 
   .has-touch canvas {
     width: auto;
+    height: min(100dvh, 56.25vw);
+    flex: none;
     max-width: 100%;
-    max-height: calc(100dvh - 24px);
+    max-height: 100dvh;
     margin: 0 auto;
   }
 
   .has-touch .topbar { display: none; }
+  .has-touch .game-status,.has-touch .site-foot { display:none; }
+  .has-touch .session-controls { position:fixed; top:4px; left:4px; z-index:15; margin:0; padding:0; }
+  .has-touch .session-controls > :not(#pause-toggle) { display:none; }
+  .has-touch #pause-toggle { min-height:36px; padding:6px; font-size:11px; opacity:.8; }
+  .has-touch .pause-panel { inset:0; z-index:20; gap:6px; }
 
   .touch {
     position: fixed;
@@ -95,3 +102,14 @@
   .touch-buttons { grid-template-columns: repeat(2, 58px); gap: 10px; }
   .touch-btn { width: 58px; height: 58px; font-size: 11px; letter-spacing: 0; }
 }
+
+/* Makko accessory sheet replaces every touch-control decoration. */
+.touch-pad{border:0;border-radius:0;background:transparent url('assets/ui/makko/stick.webp') center/contain no-repeat}
+.touch-nub{border:0;border-radius:0;background:transparent url('assets/ui/makko/thumb.webp') center/contain no-repeat}
+.touch-btn,.touch-btn.pink,.touch-btn.gold,.touch-btn.blue,.touch-btn.cream{border:0;border-radius:0;box-shadow:none;background:transparent url('assets/ui/makko/round.webp') center/contain no-repeat;color:#fff6d8}
+.touch-btn.wide{background-image:url('assets/ui/makko/primary.webp');background-size:100% 100%;border-radius:0;color:#10182b}
+.touch-btn.down{box-shadow:none;filter:brightness(1.2);transform:translateY(2px)}
+@media(orientation:landscape) and (max-height:520px){.has-touch .how-to{display:none}.has-touch .pause-panel{inset:6% 20%}}
+
+.touch-btn.wide{background:none;border:9px solid transparent;border-image:url('assets/ui/makko/primary.webp?v=41') 40 fill / 9px / 0 stretch}
+@media(orientation:landscape) and (max-height:520px){.has-touch .pause-panel{inset:auto;left:50%;top:50%;width:min(560px,70%);min-height:240px}}
