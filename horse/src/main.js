@@ -187,7 +187,7 @@
 
   loadImage("nyc-future", "assets/nyc-playground.webp");
   loadImage("detroit-future", "assets/detroit-playground.webp");
-  loadImage("ball", "assets/sprites/ball.webp");
+  loadImage("ball", "assets/sprites/ball-chibi.webp");
   loadImage("hoop", "assets/sprites/hoop.webp");
   loadImage("mamdani-idle", "assets/sprites/chibi/mamdani-idle.webp");
   loadImage("mamdani-move", "assets/sprites/chibi/mamdani-move.webp");
@@ -3138,4 +3138,3 @@
   canvas.focus();
   requestAnimationFrame(frame);
 })();
-
