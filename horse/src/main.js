@@ -144,7 +144,6 @@
     match.call = "Practice: move with arrows / WASD. Choose a shot with 1–4; Space to aim and shoot.";
     canvas.focus({ preventScroll: true });
   }
-  document.getElementById("practice").addEventListener("click", startPractice);
   function restartMatch() {
     if (!match) return;
     setPaused(false); keys.clear(); pointer = null;
@@ -2396,8 +2395,7 @@
       ctx.font = "18px Share Tech Mono, monospace";
       ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on ? "YOUR PICK" : "TAP TO SELECT"}`, x + 320, 538);
     });
-    button(306, 585, 324, 64, "CHOOSE COURT", () => openCourtSelect(), true);
-    button(650, 585, 324, 64, "PRACTICE", () => startPractice(), false);
+    button(478, 585, 324, 64, "CHOOSE COURT", () => openCourtSelect(), true);
     ctx.fillStyle = "#fff6d8";
     ctx.font = "16px Share Tech Mono, monospace";
     ctx.textAlign = "center";
@@ -3179,3 +3177,4 @@
   canvas.focus();
   requestAnimationFrame(frame);
 })();
+
