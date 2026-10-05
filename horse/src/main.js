@@ -131,6 +131,7 @@
   function setPaused(value) {
     if (screen !== "play" || !match || match.over) return;
     paused = value; keys.clear(); pointer = null;
+    window.VoteMusic?.setState(!muted, paused);
     pausePanel.hidden = !paused;
     document.getElementById("pause-toggle").textContent = paused ? "Resume · Esc" : "Pause · Esc";
     if (audioCtx) { const operation = paused || muted ? audioCtx.suspend() : audioCtx.resume(); operation?.catch(() => {}); }
@@ -162,6 +163,7 @@
   document.getElementById("pause-choose").addEventListener("click", chooseAgain);
   function setMuted(value) {
     muted = value;
+    window.VoteMusic?.setState(!muted, paused);
     const toggle = document.getElementById("sound-toggle");
     toggle.textContent = muted ? "Sound off · Enable" : "Sound on · Mute";
     toggle.setAttribute?.("aria-pressed", String(!muted));
