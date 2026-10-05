@@ -1,0 +1,30 @@
+.court-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.court-card {
+  display: flex; flex-direction: column; min-width: 0; height: 100%;
+  padding: 0 !important; background: transparent !important;
+  white-space: normal; text-align: center;
+}
+.court-card img { flex: none; width: 100%; aspect-ratio: 16/9; }
+.court-card .court-copy {
+  display: flex; flex: 1; flex-direction: column; justify-content: center;
+  gap: 5px; width: 100%; min-height: 110px;
+  padding: 16px 24px 26px;
+  background: url('../art/chibi/button-gold.webp') center / 100% 100% no-repeat;
+}
+.court-card .court-copy strong,
+.court-card .court-copy span {
+  padding: 0; color: #251a0b; white-space: normal; overflow-wrap: anywhere;
+}
+.court-card .court-copy strong { font: 800 15px/1.25 system-ui,sans-serif; }
+.court-card .court-copy span { font: 600 12px/1.4 system-ui,sans-serif; }
+.court-card[aria-pressed=true] { outline: 3px solid #ffe18b; outline-offset: 0; }
+.court-select nav button { white-space: normal; min-width: 0; max-width: 65%; }
+@media(max-width:700px) {
+  .court-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .court-card .court-copy { min-height:130px; padding:16px 18px 28px; }
+  .court-card .court-copy strong { font-size:13px; }
+  .court-card .court-copy span { font-size:11px; }
+}
+
+
+.court-songs{flex:none;max-height:180px;overflow:auto;margin:0 0 10px;padding:8px 12px;background:#182a40;color:#fff5da;font:14px/1.4 system-ui}.court-songs summary{cursor:pointer;font-weight:700}.court-songs li{padding:5px 0}.court-songs li span{display:block;color:#bacde2}.court-songs p{font-size:12px}

@@ -85,10 +85,20 @@
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
     careerWins++;
+    const newSongs = window.VoteSongs?.award(match) || [];
+    match.newSongs = newSongs;
     try { localStorage.setItem('vote-court-progress-v1', JSON.stringify({wins:careerWins})); }
     catch (_) { progressSaved = false; }
     const unlocked = COURTS.find(c => c.wins === careerWins);
     match.unlockMessage = unlocked ? `COURT UNLOCKED: ${unlocked.name}` : `${careerWins} career wins`;
+    if (newSongs.length) match.unlockMessage += ` · ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
+  }
+  function renderCourtSongs() {
+    const slots = window.VoteSongs?.slots(selectedCourt,marketingUnlock) || [];
+    document.getElementById('court-songs-title').textContent = `${courtById(selectedCourt).name} · ${slots.filter(s=>s.unlocked).length}/5 songs`;
+    document.getElementById('court-songs-list').innerHTML = slots.map(s=>`<li><strong>${s.unlocked?'Unlocked':'Locked'} · ${s.title}</strong><span>${s.rule}</span></li>`).join('');
+    document.getElementById('court-songs-note').textContent = marketingUnlock ? 'Marketing preview: all songs available; no progress earned.' : `Starter track: ${window.VoteSongs?.starter(selectedCourt).title || ''} — available now. Enable sound to listen. Earn five more tracks with winning-match challenges; practice does not count.`;
+    if(window.VoteSongs && !window.VoteSongs.persistent()) document.getElementById('court-songs-note').textContent += ' Storage unavailable: unlocks last for this session.';
   }
   function openCourtSelect() {
     courtOpen = true; keys.clear(); pointer = null;
@@ -97,8 +107,9 @@
     panel.hidden = false;
     document.getElementById('court-progress').textContent = `${careerWins} wins · ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
       (marketingUnlock ? 'Marketing preview: all courts open; wins do not count. ' : '') + (progressSaved ? 'Progress is saved in this browser. Practice does not count.' : 'Browser storage is unavailable. Progress lasts for this session.');
-    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></button>`).join('');
+    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
     document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    renderCourtSongs();
     document.getElementById('court-play').focus();
   }
   document.getElementById('court-grid').addEventListener('click', ev => {
@@ -107,6 +118,7 @@
     selectedCourt = card.dataset.court;
     document.querySelectorAll?.('[data-court]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.court===selectedCourt)));
     document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    renderCourtSongs();
   });
   document.getElementById('court-back').addEventListener('click',()=>{
     courtOpen=false; document.getElementById('court-select').hidden=true; chooseAgain();
@@ -131,6 +143,7 @@
   function setPaused(value) {
     if (screen !== "play" || !match || match.over) return;
     paused = value; keys.clear(); pointer = null;
+    window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     pausePanel.hidden = !paused;
     document.getElementById("pause-toggle").textContent = paused ? "Resume · Esc" : "Pause · Esc";
@@ -163,6 +176,7 @@
   document.getElementById("pause-choose").addEventListener("click", chooseAgain);
   function setMuted(value) {
     muted = value;
+    window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     const toggle = document.getElementById("sound-toggle");
     toggle.textContent = muted ? "Sound off · Enable" : "Sound on · Mute";
@@ -251,7 +265,8 @@
       ],
       "loopStart": 0,
       "loopEnd": 11,
-      "bodyScale": 1.25
+      "bodyScale": 1.25,
+      "characterScale": 0.8
     },
     "dribble": {
       "frames": 12,
@@ -346,7 +361,8 @@
         "floorPhase": 0.5,
         "releasePhase": 0.08333333333333333,
         "catchPhase": 0.9166666666666666
-      }
+      },
+      "characterScale": 0.8
     },
     "move": {
       "frames": 12,
@@ -442,7 +458,8 @@
         "floorPhase": 0.5,
         "releasePhase": 0.08333333333333333,
         "catchPhase": 0.9166666666666666
-      }
+      },
+      "characterScale": 0.8
     },
     "dunk": {
       "frames": 12,
@@ -505,7 +522,8 @@
       ],
       "loopStart": 0,
       "loopEnd": 11,
-      "bodyScale": 0.8732251521298174
+      "bodyScale": 0.8732251521298174,
+      "characterScale": 0.8
     },
     "spin": {
       "frames": 12,
@@ -569,7 +587,8 @@
       "loopStart": 0,
       "loopEnd": 11,
       "bodyScale": 1.0377150860344138,
-      "turnOnly": true
+      "turnOnly": true,
+      "characterScale": 0.8
     },
     "fade": {
       "frames": 12,
@@ -632,7 +651,8 @@
       ],
       "loopStart": 0,
       "loopEnd": 11,
-      "bodyScale": 1.0784313725490198
+      "bodyScale": 1.0784313725490198,
+      "characterScale": 0.8
     },
     "hook": {
       "frames": 12,
@@ -695,7 +715,8 @@
       ],
       "loopStart": 0,
       "loopEnd": 11,
-      "bodyScale": 0.9602396514161221
+      "bodyScale": 0.9602396514161221,
+      "characterScale": 0.8
     },
     "shot": {
       "frames": 12,
@@ -758,7 +779,8 @@
       ],
       "loopStart": 0,
       "loopEnd": 11,
-      "bodyScale": 1.0784313725490198
+      "bodyScale": 1.0784313725490198,
+      "characterScale": 0.8
     }
   },
   "sayed": {
@@ -1411,7 +1433,7 @@
     // not shrink the torso from one frame to the next.
     // Cross-clip anatomy calibration: a crouch is shorter, not a larger person.
     // Keep this transform shared by the sprite, ball, release hand and dunk reach.
-    const height = (clip.fills ? span * clip.fh / clip.body : span / (clip.fill || 1)) * (clip.bodyScale || 1);
+    const height = (clip.fills ? span * clip.fh / clip.body : span / (clip.fill || 1)) * (clip.bodyScale || 1) * (clip.characterScale || 1);
     return { span, height, width: height * (clip.fw / clip.fh) };
   }
 
@@ -1495,6 +1517,7 @@
       humanId,
       cpuId,
       court: selectedCourt || home.court,
+      songShots: {},
       marketingSession: marketingUnlock,
       letters: { mamdani: 0, sayed: 0 },
       pos: {
@@ -1800,16 +1823,17 @@
       ? match.challenge.flair
       : pickCpuFlair(spot);
     const need = requiredPower(spot.x, spot.y);
-    const makeIt = Math.random() < (flair === "none" ? 0.78 : 0.55);
-    // Normal misses must be outside the same tolerance used by the meter.
-    const error = makeIt ? (Math.random() - 0.5) * 0.11 :
-      (need > 0.5 ? -1 : 1) * (0.11 + Math.random() * 0.07);
+    // A release error, not a chosen outcome. Both players use zoneFor to score.
+    const spread = (id === "sayed" ? .13 : .15) + distToHoop(spot.x, spot.y) * .045;
+    const error = (Math.random() + Math.random() + Math.random() - 1.5) * spread;
     match.cpu = {
       id,
       spot,
       flair,
       aim: clamp(need + error, 0.08, 0.98),
-      makeIt,
+      error,
+      reaction: 0,
+      settle: .18,
       stage: "walk",
     };
     match.flair = "none";
@@ -1817,7 +1841,7 @@
   }
 
   function pickCpuSpot() {
-    const dunk = Math.random() < 0.22;
+    const dunk = Math.random() < (match.active === "sayed" ? .30 : .16);
     if (dunk) return { x: HOOP.x + (Math.random() - 0.5) * 0.08, y: HOOP.y - 0.12 };
     return {
       x: 0.18 + Math.random() * 0.64,
@@ -1827,7 +1851,9 @@
 
   function pickCpuFlair(spot) {
     if (canDunk(spot.x, spot.y) && Math.random() < 0.7) return "dunk";
-    const bag = ["none", "none", "spin", "fade", "hook"];
+    const bag = match.active === "sayed"
+      ? ["none", "none", "spin", "spin", "hook"]
+      : ["none", "none", "fade", "fade", "hook"];
     return bag[Math.floor(Math.random() * bag.length)];
   }
 
@@ -1842,7 +1868,7 @@
     const zone = zoneFor(p.x, p.y, flair);
     const error = match.power - zone.need;
     const made = zone.hit;
-    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT" : "TOO STRONG";
+    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT — MORE POWER" : "TOO STRONG — LESS POWER";
     const hand = ownedBall(id);
     const hoop = hoopLayout();
     const side = Math.sign(hand.x - hoop.x) || 1;
@@ -1932,6 +1958,10 @@
     match.ball = null;
     match.pose[id] = "idle";
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
+    const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
+    if(id===match.humanId && ball.made && validCopy && !match.practice){
+      match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
+    }
     if (match.practice) {
       if (match.tutorial) match.tutorial.shot = true;
       match.active = match.humanId; match.phase = "set"; match.challenge = null;
@@ -1990,7 +2020,7 @@
     }
     match.flair = "none";
     match.power = 0;
-    match.lock = 1.15;
+    match.lock = .65;
     if (match.active === match.cpuId && !match.over) {
       match.cpu = null;
     }
@@ -2030,6 +2060,7 @@
   }
 
   function update(dt) {
+    window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     if (!match || screen !== "play") return;
     const owner = match.owner, previousKey = match.dribbleClock?.[owner]?.key;
     const previousBall = owner && !match.hold && !match.ball && !match.pass ? ownedBall(owner) : null;
@@ -2176,37 +2207,41 @@
       const dx = cpu.spot.x - p.x;
       const dy = cpu.spot.y - p.y;
       if (Math.hypot(dx, dy) > 0.025) {
-        p.x = clamp(p.x + Math.sign(dx) * dt * 0.32, 0.08, 0.92);
-        p.y = clamp(p.y + Math.sign(dy) * dt * 0.26, 0.08, 0.94);
+        const travel = Math.min(1, dt * .38 / Math.hypot(dx, dy));
+        p.x = clamp(p.x + dx * travel, 0.08, 0.92);
+        p.y = clamp(p.y + dy * travel, 0.08, 0.94);
         aimFace(cpu.id, dx, dy);
         match.pose[cpu.id] = "move";
       } else {
         p.x = cpu.spot.x;
         p.y = cpu.spot.y;
-        cpu.stage = "aim";
-        match.hold = true;
+        cpu.stage = "settle";
+        match.hold = false;
         match.power = 0;
         match.powerDir = 1;
         match.flair = "none";
-        match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
+        match.pose[cpu.id] = "idle";
       }
       return;
+    }
+    if (cpu.stage === "settle") {
+      cpu.settle -= dt;
+      if (cpu.settle > 0) return;
+      cpu.stage = "aim";
     }
     match.hold = true;
     match.face[cpu.id] = Math.sign(HOOP.x - p.x) || match.face[cpu.id] || 1;
     match.power += dt * 0.72;
     if (match.power > 1) match.power = 1;
     match.pose[cpu.id] = cpu.flair === "none" ? "shot" : cpu.flair;
-    if (cpu.flair === "none") {
-      if (match.power >= cpu.aim) {
-        match.power = cpu.aim;
-        release(cpu.id);
-      }
-      return;
+    // Observe the moving target at human-scale intervals, rather than waiting
+    // for zone.hit. Tricks can genuinely miss as the target moves after a read.
+    cpu.reaction -= dt;
+    if (cpu.reaction <= 0) {
+      cpu.aim = clamp(zoneFor(p.x, p.y, cpu.flair).need + cpu.error, .08, .96);
+      cpu.reaction = .12;
     }
-    const zone = zoneFor(p.x, p.y, cpu.flair);
-    if (cpu.makeIt && zone.hit) release(cpu.id);
-    else if (!cpu.makeIt && match.power >= 0.97) release(cpu.id);
+    if (match.power >= cpu.aim || match.power >= .98) release(cpu.id);
   }
 
   function humanRelease() {
