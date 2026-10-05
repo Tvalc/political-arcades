@@ -18,57 +18,49 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="chibi-ui.css?v=2">
+  <link rel="stylesheet" href="chibi-ui.css?v=2" />
+  <link rel="stylesheet" href="home.css?v=3" />
 </head>
 <body>
   <div class="room">
-    <header class="sign">
-      <p class="open"><span class="lamp"></span> Floor open</p>
-      <h1>Political<br />Arcades</h1>
-      <p class="lede">Two games. One political playground. Pick your fight.</p>
+    <header class="topbar">
+      <a class="brand" href="./"><span class="lamp" aria-hidden="true"></span>Political Arcades</a>
+      <p class="open">Floor open</p>
       <a class="patreon" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
-      <img class="mural" src="art/chibi/hero.webp" width="1280" height="720" alt="Chibi versions of Zohran Mamdani and Abdul El-Sayed ready to play." />
     </header>
 
-
+    <section class="hero">
+      <img class="mural" src="art/chibi/rally.webp" width="1600" height="900" alt="" />
+      <div class="hero-copy">
+        <h1>Political<br />Arcades</h1>
+        <p class="lede">Two games. One political playground. Pick your fight.</p>
+      </div>
+    </section>
 
     <main class="floor has-two">
-      <article class="cab off" aria-hidden="true">
-        <div class="marquee"><span>····</span></div>
-        <div class="glass dead"></div>
-        <div class="deck"><i></i><i></i><b></b></div>
-      </article>
-
       <a class="cab on" href="https://capitolcrashers.com/">
-        <div class="marquee"><span>Capitol Crashers</span></div>
         <div class="glass">
-          <img src="art/chibi/hero.webp" width="960" height="540" alt="Capitol Crashers fighter select. Zohran Mamdani and Abdul El-Sayed square up on a rainy street in front of the Capitol." />
-          <div class="scan"></div>
+          <img src="art/chibi/hero.webp" width="1600" height="900" alt="Zohran Mamdani and Abdul El-Sayed square up on a rainy street in front of the Capitol." />
         </div>
-        <div class="deck">
-          <i class="stick"></i>
-          <b class="red"></b>
-          <b class="gold"></b>
+        <div class="copy">
+          <p class="kicker">Machine 01</p>
+          <h2>Capitol Crashers</h2>
+          <p>Two fighters. One street. Three blocks to the Capitol.</p>
         </div>
-        <p class="plate"><span class="ready"></span> Machine 01 · ready</p>
       </a>
 
       <a class="cab on" href="horse/">
-        <div class="marquee"><span>VOTE</span></div>
         <div class="glass">
-          <img src="horse/assets/ui/makko/title.webp" alt="VOTE attract mode, Mamdani and El-Sayed on a New York playground" />
-          <div class="scan"></div>
-          <p class="insert">Press start</p>
+          <img src="horse/assets/ui/makko/title.webp" width="1920" height="1080" alt="Mamdani and El-Sayed on a New York playground at night." />
         </div>
-        <div class="deck">
-          <i class="stick"></i>
-          <b class="red"></b>
-          <b class="gold"></b>
+        <div class="copy">
+          <p class="kicker">Machine 02</p>
+          <h2>VOTE</h2>
+          <p>Make the shot. Make them match it. Spell it and you're out.</p>
         </div>
-        <p class="plate"><span class="ready"></span> Machine 02 · ready</p>
       </a>
     </main>
 
@@ -76,7 +68,6 @@
       <p>Capitol Crashers and VOTE are on this floor. They are original games, not affiliated with any other publisher.</p>
       <p><a href="privacy.html">Privacy</a></p>
     </footer>
-
   </div>
   <script src="soundtrack.js?v=chibi2" data-controls></script>
 </body>
