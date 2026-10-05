@@ -2,7 +2,9 @@
   const tracks = [
     '01-freeze-the-rent', '02-shouldnt-be-this-hard', '03-hope-is-alive',
     '04-this-city-belongs-to-you', '05-turn-the-volume-up', '06-town-hall',
-    '07-never-taken-a-dime', '08-ive-got-receipts', '09-two-hundred'
+    '07-never-taken-a-dime', '08-ive-got-receipts', '09-two-hundred',
+    'freeze-the-rent-block-party', 'this-city-belongs-to-you-after-hours',
+    'shouldnt-be-this-hard-soul-court'
   ];
   const audio = document.createElement('audio');
   audio.id = 'game-music';
