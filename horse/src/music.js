@@ -4,7 +4,8 @@
     '04-this-city-belongs-to-you', '05-turn-the-volume-up', '06-town-hall',
     '07-never-taken-a-dime', '08-ive-got-receipts', '09-two-hundred',
     'freeze-the-rent-block-party', 'this-city-belongs-to-you-after-hours',
-    'shouldnt-be-this-hard-soul-court', '10-drop-bombs', '11-expansively', '12-bosses-get-small', '13-how-you-gonna-pay'
+    'shouldnt-be-this-hard-soul-court', '10-drop-bombs', '11-expansively', '12-bosses-get-small', '13-how-you-gonna-pay',
+    'keep-the-lights-on-love-everyone', 'keep-the-lights-on-neighbors-not-donors', 'fine-print-receipts', 'fine-print-read-the-bill', 'bill-for-breathing-money-in-your-pocket', 'bill-for-breathing-no-copay', 'bill-for-breathing-people-before-paperwork', 'bill-for-breathing-doctor-on-the-block', 'rent-due-rent-freeze', 'rent-due-landlord-sweating', 'rent-due-keys-to-the-city', 'rent-due-stay-on-the-block'
   ];
   let tracks = defaultTracks, poolKey = '';
   const audio = document.createElement('audio');
@@ -44,9 +45,11 @@
   document.addEventListener('visibilitychange', sync);
   window.VoteMusic = { setCourt(court,preview=false) {
     const chosen = court && window.VoteSongs ? [...(window.VoteSongs.starter ? [window.VoteSongs.starter(court).track] : []),...window.VoteSongs.slots(court,preview).filter(s=>s.unlocked).map(s=>s.track)] : defaultTracks;
+    if (court) chosen.push(...defaultTracks.filter(track => /^(rent-due-|bill-for-breathing-|fine-print-|keep-the-lights-on-)/.test(track)));
     const key = `${court || 'menu'}:${chosen.join(',')}`;
     if(key===poolKey)return;poolKey=key;tracks=chosen;bag=[];
     if(!tracks.includes(current)){audio.pause();current=null;audio.removeAttribute?.('src');audio.load?.();}
     sync();
   }, setState(on, stopped) { enabled = on; paused = stopped; sync(); } };
 })();
+

@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Political Arcades" />
   <meta property="og:title" content="Political Arcades" />
-  <meta property="og:description" content="Two free games, sixteen songs, one comic, one platform. Pick your fight." />
+  <meta property="og:description" content="Two free games, twenty-eight songs, one comic, one platform. Pick your fight." />
   <meta property="og:url" content="https://politicalarcades.com/" />
   <meta property="og:image" content="https://politicalarcades.com/art/chibi/hero.webp" />
   <meta property="og:image:width" content="1600" />
@@ -417,7 +417,7 @@ button { font: inherit; }
         </div>
         <div class="theater-caption">
           <span><b>Track 01</b> · Freeze the Rent · from the Political Arcades soundtrack</span>
-          <span><a href="#listen">All sixteen songs below</a></span>
+          <span><a href="#listen">All twenty-eight songs below</a></span>
         </div>
       </div>
     </section>
@@ -429,7 +429,7 @@ button { font: inherit; }
             <p class="kicker">Listen</p>
             <h2>The <em>soundtrack</em></h2>
           </div>
-          <p class="lede">Thirteen originals and three remixes. They play inside VOTE as you unlock courts, and they play here for free.</p>
+          <p class="lede">Thirteen originals, three remixes, and twelve new hip-hop and R&B editions. They play inside VOTE as you unlock courts, and they play here for free.</p>
         </div>
         <div class="jukebox">
           <div class="now" aria-live="polite">
@@ -443,7 +443,7 @@ button { font: inherit; }
             </div>
             <div class="bar" id="bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
             <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
-            <p class="hint">Sixteen tracks, about half an hour. Space bar plays and pauses. The music keeps going while you scroll.</p>
+            <p class="hint">Twenty-eight tracks, over forty minutes. Space bar plays and pauses. The music keeps going while you scroll.</p>
           </div>
           <ol class="tracks" id="tracks"></ol>
         </div>
@@ -619,6 +619,18 @@ button { font: inherit; }
       ["freeze-the-rent-block-party", "Freeze the Rent (Block Party)", "Remix", "2:08"],
       ["shouldnt-be-this-hard-soul-court", "Shouldn't Be This Hard (Soul Court)", "Remix", "2:00"],
       ["this-city-belongs-to-you-after-hours", "This City Belongs to You (After Hours)", "Remix", "1:54"],
+      ["keep-the-lights-on-love-everyone","Keep the Lights On — Love Everyone Edition","Edition","1:00"],
+      ["keep-the-lights-on-neighbors-not-donors","Keep the Lights On — Neighbors Not Donors Edition","Edition","1:00"],
+      ["fine-print-receipts","Fine Print — I’ve Got Receipts Edition","Edition","1:00"],
+      ["fine-print-read-the-bill","Fine Print — Read the Bill Edition","Edition","1:00"],
+      ["bill-for-breathing-money-in-your-pocket","Bill for Breathing — Money in Your Pocket Edition","Edition","1:00"],
+      ["bill-for-breathing-no-copay","Bill for Breathing — No Co-Pay Edition","Edition","1:00"],
+      ["bill-for-breathing-people-before-paperwork","Bill for Breathing — People Before Paperwork Edition","Edition","1:00"],
+      ["bill-for-breathing-doctor-on-the-block","Bill for Breathing — Doctor on the Block Edition","Edition","1:00"],
+      ["rent-due-rent-freeze","Rent Due — Rent Freeze Edition","Edition","1:00"],
+      ["rent-due-landlord-sweating","Rent Due — Landlord Sweating Edition","Edition","1:00"],
+      ["rent-due-keys-to-the-city","Rent Due — Keys to the City Edition","Edition","1:00"],
+      ["rent-due-stay-on-the-block","Rent Due — Stay on the Block Edition","Edition","1:00"],
     ];
     const audio = new Audio(); audio.preload = "none"; audio.volume = 0.8;
     const list = document.getElementById("tracks");
