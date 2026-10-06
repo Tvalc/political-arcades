@@ -42,7 +42,7 @@
       <img class="mural" src="art/chibi/rally.webp" width="1600" height="900" alt="" fetchpriority="high" />
       <div class="wrap">
         <div class="floor-copy">
-          <p class="kicker">Two machines · free · in your browser</p>
+          <p class="kicker">Two machines · free<span class="hide-m"> · in your browser</span></p>
           <h1>Political Arcades</h1>
           <p class="lede">Zohran Mamdani and Abdul El-Sayed, chibi-sized, fighting for the block. Pick a cabinet.</p>
         </div>
@@ -138,6 +138,7 @@
             </div>
             <div class="bar" id="bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
             <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
+            <p class="hint">Sixteen tracks, about half an hour. Space bar plays and pauses. The music keeps going while you scroll.</p>
           </div>
           <ol class="tracks" id="tracks"></ol>
         </div>
@@ -172,23 +173,31 @@
           </div>
           <p class="lede">Two fighters, the neighbors they stop for, and the machine standing in the way. All drawn in Makko, all chibi.</p>
         </div>
-        <div class="cast-tabs" role="tablist" aria-label="Cast groups">
-          <button role="tab" aria-selected="true" data-group="heroes">The fighters</button>
-          <button role="tab" aria-selected="false" data-group="block">The block</button>
-          <button role="tab" aria-selected="false" data-group="machine">The machine</button>
+        <div class="cast-group">
+          <h3>The fighters</h3>
+          <div class="cast">
+          <figure><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
+          <figure><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
+          </div>
         </div>
-        <div class="cast" id="cast-grid">
-          <figure data-group="heroes"><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
-          <figure data-group="heroes"><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
-          <figure data-group="block" hidden><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
-          <figure data-group="block" hidden><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
-          <figure data-group="block" hidden><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
-          <figure data-group="block" hidden><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
-          <figure data-group="block" hidden><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record. A third of the boss, gone.</span></figcaption></figure>
-          <figure class="foe" data-group="machine" hidden><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
-          <figure class="foe" data-group="machine" hidden><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." /><figcaption><span class="role">Boss · The Insurance Exec</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, denies the claim.</span></figcaption></figure>
-          <figure class="foe" data-group="machine" hidden><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you're not looking.</span></figcaption></figure>
-          <figure class="foe" data-group="machine" hidden><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
+        <div class="cast-group">
+          <h3>The block</h3>
+          <div class="cast">
+          <figure><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
+          <figure><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
+          <figure><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record.</span></figcaption></figure>
+          </div>
+        </div>
+        <div class="cast-group">
+          <h3>The machine</h3>
+          <div class="cast">
+          <figure class="foe"><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." /><figcaption><span class="role">Boss · The Insurance Exec</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, denies the claim.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you are not looking.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
+          </div>
         </div>
       </div>
     </section>
@@ -288,22 +297,22 @@
   <script>
     // ---- Jukebox: one audio element, a track list, a seek bar.
     const TRACKS = [
-      ["01-freeze-the-rent", "Freeze the Rent", "Original"],
-      ["02-shouldnt-be-this-hard", "Shouldn't Be This Hard", "Original"],
-      ["03-hope-is-alive", "Hope Is Alive", "Original"],
-      ["04-this-city-belongs-to-you", "This City Belongs to You", "Original"],
-      ["05-turn-the-volume-up", "Turn the Volume Up", "Original"],
-      ["06-town-hall", "Town Hall", "Original"],
-      ["07-never-taken-a-dime", "Never Taken a Dime", "Original"],
-      ["08-ive-got-receipts", "I've Got Receipts", "Original"],
-      ["09-two-hundred", "Two Hundred", "Original"],
-      ["10-drop-bombs", "Drop Bombs", "Original"],
-      ["11-expansively", "Expansively", "Original"],
-      ["12-bosses-get-small", "Bosses Get Small", "Original"],
-      ["13-how-you-gonna-pay", "How You Gonna Pay", "Original"],
-      ["freeze-the-rent-block-party", "Freeze the Rent (Block Party)", "Remix"],
-      ["shouldnt-be-this-hard-soul-court", "Shouldn't Be This Hard (Soul Court)", "Remix"],
-      ["this-city-belongs-to-you-after-hours", "This City Belongs to You (After Hours)", "Remix"],
+      ["01-freeze-the-rent", "Freeze the Rent", "Original", "2:12"],
+      ["02-shouldnt-be-this-hard", "Shouldn't Be This Hard", "Original", "2:04"],
+      ["03-hope-is-alive", "Hope Is Alive", "Original", "2:04"],
+      ["04-this-city-belongs-to-you", "This City Belongs to You", "Original", "1:58"],
+      ["05-turn-the-volume-up", "Turn the Volume Up", "Original", "1:50"],
+      ["06-town-hall", "Town Hall", "Original", "1:56"],
+      ["07-never-taken-a-dime", "Never Taken a Dime", "Original", "1:46"],
+      ["08-ive-got-receipts", "I've Got Receipts", "Original", "1:52"],
+      ["09-two-hundred", "Two Hundred", "Original", "1:58"],
+      ["10-drop-bombs", "Drop Bombs", "Original", "2:04"],
+      ["11-expansively", "Expansively", "Original", "1:38"],
+      ["12-bosses-get-small", "Bosses Get Small", "Original", "1:40"],
+      ["13-how-you-gonna-pay", "How You Gonna Pay", "Original", "0:48"],
+      ["freeze-the-rent-block-party", "Freeze the Rent (Block Party)", "Remix", "2:08"],
+      ["shouldnt-be-this-hard-soul-court", "Shouldn't Be This Hard (Soul Court)", "Remix", "2:00"],
+      ["this-city-belongs-to-you-after-hours", "This City Belongs to You (After Hours)", "Remix", "1:54"],
     ];
     const audio = new Audio(); audio.preload = "none"; audio.volume = 0.8;
     const list = document.getElementById("tracks");
@@ -313,9 +322,9 @@
     const tCur = document.getElementById("t-cur"), tDur = document.getElementById("t-dur");
     let index = -1;
     const fmt = (s) => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
-    TRACKS.forEach(([file, title, tag], i) => {
+    TRACKS.forEach(([file, title, tag, len], i) => {
       const li = document.createElement("li");
-      li.innerHTML = `<button type="button"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${title}</span><span class="tag">${tag}</span></button>`;
+      li.innerHTML = `<button type="button"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${title}</span><span class="tag">${tag === "Remix" ? "Remix" : ""}</span><span class="d">${len}</span></button>`;
       li.querySelector("button").addEventListener("click", () => (i === index ? playPause() : load(i, true)));
       list.append(li);
     });
@@ -341,14 +350,6 @@
     });
     bar.addEventListener("click", (e) => { const r = bar.getBoundingClientRect(); if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
     bar.addEventListener("keydown", (e) => { if (!audio.duration) return; if (e.key === "ArrowRight") audio.currentTime += 5; if (e.key === "ArrowLeft") audio.currentTime -= 5; });
-
-    // ---- Cast tabs
-    const tabs = document.querySelectorAll(".cast-tabs [role=tab]");
-    const figs = document.querySelectorAll("#cast-grid figure");
-    tabs.forEach((tab) => tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
-      figs.forEach((f) => { f.hidden = f.dataset.group !== tab.dataset.group; });
-    }));
 
     // ---- YouTube swap: fill data-youtube with the id and the embed replaces the MP4 (click-to-load, no tracking until played).
     const theater = document.getElementById("theater");
