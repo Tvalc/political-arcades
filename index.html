@@ -5,71 +5,363 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Political Arcades</title>
   <link rel="canonical" href="https://politicalarcades.com/" />
-  <meta name="description" content="Political Arcades is a browser arcade. Capitol Crashers and VOTE are on the floor." />
+  <meta name="description" content="A free browser arcade. Capitol Crashers and VOTE, plus the soundtrack, the music video, the comic and the platform they're fighting for." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Political Arcades" />
   <meta property="og:title" content="Political Arcades" />
-  <meta property="og:description" content="A browser arcade. Capitol Crashers and VOTE are on the floor." />
+  <meta property="og:description" content="Two free games, sixteen songs, one comic, one platform. Pick your fight." />
   <meta property="og:url" content="https://politicalarcades.com/" />
   <meta property="og:image" content="https://politicalarcades.com/art/chibi/hero.webp" />
-  <meta property="og:image:width" content="1280" />
-  <meta property="og:image:height" content="720" />
-  <meta property="og:image:alt" content="Chibi versions of Zohran Mamdani and Abdul El-Sayed ready to play." />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="900" />
+  <meta property="og:image:alt" content="Chibi Zohran Mamdani and Abdul El-Sayed on a rainy street in front of the Capitol." />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07060b" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="arcade.css?v=1" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="chibi-ui.css?v=2" />
-  <link rel="stylesheet" href="home.css?v=3" />
 </head>
 <body>
-  <div class="room">
-    <header class="topbar">
-      <a class="brand" href="./"><span class="lamp" aria-hidden="true"></span>Political Arcades</a>
-      <p class="open">Floor open</p>
-      <a class="patreon" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
-    </header>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="lamp" aria-hidden="true"></span>Political Arcades <span class="sub">· floor open</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#play">Play</a>
+      <a href="#watch">Watch</a>
+      <a href="#listen">Listen</a>
+      <a href="#read">Read</a>
+      <a href="#cast">Cast</a>
+      <a href="#platform">Platform</a>
+    </nav>
+    <a class="btn btn-patreon" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
+  </header>
 
-    <section class="hero">
-      <img class="mural" src="art/chibi/rally.webp" width="1600" height="900" alt="" />
-      <div class="hero-copy">
-        <h1>Political<br />Arcades</h1>
-        <p class="lede">Two games. One political playground. Pick your fight.</p>
+  <main>
+    <section class="floor" id="play">
+      <img class="mural" src="art/chibi/rally.webp" width="1600" height="900" alt="" fetchpriority="high" />
+      <div class="wrap">
+        <div class="floor-copy">
+          <p class="kicker">Two machines · free<span class="hide-m"> · in your browser</span></p>
+          <h1>Political Arcades</h1>
+          <p class="lede">Zohran Mamdani and Abdul El-Sayed, chibi-sized, fighting for the block. Pick a cabinet.</p>
+        </div>
+
+        <div class="cabinets">
+          <a class="cab" href="https://capitolcrashers.com/play/">
+            <div class="marquee">
+              <h2>Capitol Crashers</h2>
+              <span class="machine">Machine 01</span>
+            </div>
+            <div class="screen">
+              <img src="art/chibi/hero.webp" width="1600" height="900" alt="Mamdani and El-Sayed square up on a rainy street in front of the Capitol." />
+              <span class="coin" aria-hidden="true">Insert coin · press start</span>
+            </div>
+            <div class="deck">
+              <p>Belt scroller. Feed the block, freeze the rent, keep the witness standing, and stop the Landlord at the end of the street.</p>
+              <div class="meta"><span>1 player</span><span>Keyboard + touch</span><span>4 streets</span></div>
+              <span class="btn btn-big">Play Capitol Crashers</span>
+            </div>
+          </a>
+
+          <a class="cab" href="horse/">
+            <div class="marquee">
+              <h2>VOTE</h2>
+              <span class="machine">Machine 02</span>
+            </div>
+            <div class="screen">
+              <img src="horse/assets/ui/makko/title.webp" width="1920" height="1080" alt="Mamdani and El-Sayed on a New York playground court at night." />
+              <span class="coin" aria-hidden="true">Insert coin · press start</span>
+            </div>
+            <div class="deck">
+              <p>Playground shoot-out. Call a shot, add the flair, make them match it. Spell V-O-T-E and you're out. Thirty courts to unlock.</p>
+              <div class="meta"><span>You vs. the CPU</span><span>30 courts</span><span>Soundtrack rewards</span></div>
+              <span class="btn btn-big btn-teal">Play VOTE</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="acts" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:22px">
+          <a class="btn btn-ghost" href="#watch">Watch the music video</a>
+          <a class="btn btn-ghost" href="https://capitolcrashers.com/story/">Read the comic</a>
+        </div>
       </div>
     </section>
 
-    <main class="floor has-two">
-      <a class="cab on" href="https://capitolcrashers.com/">
-        <div class="glass">
-          <img src="art/chibi/hero.webp" width="1600" height="900" alt="Zohran Mamdani and Abdul El-Sayed square up on a rainy street in front of the Capitol." />
-        </div>
-        <div class="copy">
-          <p class="kicker">Machine 01</p>
-          <h2>Capitol Crashers</h2>
-          <p>Two fighters. One street. Three blocks to the Capitol.</p>
-        </div>
-      </a>
+    <div class="ticker" aria-hidden="true">
+      <div class="track">
+        <span>Freeze the Rent</span><span>Healthcare for All</span><span>Money Out of Politics</span><span>Money in Your Pocket</span><span>Free Buses</span><span>Town Hall</span><span>I've Got Receipts</span><span>This City Belongs to You</span>
+        <span>Freeze the Rent</span><span>Healthcare for All</span><span>Money Out of Politics</span><span>Money in Your Pocket</span><span>Free Buses</span><span>Town Hall</span><span>I've Got Receipts</span><span>This City Belongs to You</span>
+      </div>
+    </div>
 
-      <a class="cab on" href="horse/">
-        <div class="glass">
-          <img src="horse/assets/ui/makko/title.webp" width="1920" height="1080" alt="Mamdani and El-Sayed on a New York playground at night." />
+    <section class="section" id="watch">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Watch</p>
+            <h2>Freeze the Rent, <em>the video</em></h2>
+          </div>
+          <p class="lede">Cut from real gameplay, the Makko cast, and the comic panels brought to life. Two minutes and ten seconds, one song.</p>
         </div>
-        <div class="copy">
-          <p class="kicker">Machine 02</p>
-          <h2>VOTE</h2>
-          <p>Make the shot. Make them match it. Spell it and you're out.</p>
+        <!-- To switch to YouTube once the video is uploaded: set data-youtube to the video id. The MP4 stays as the fallback. -->
+        <div class="theater" id="theater" data-youtube="">
+          <video controls preload="metadata" playsinline poster="media/freeze-the-rent-poster.jpg">
+            <source src="media/freeze-the-rent.mp4" type="video/mp4" />
+          </video>
         </div>
-      </a>
-    </main>
+        <div class="theater-caption">
+          <span><b>Track 01</b> · Freeze the Rent · from the Political Arcades soundtrack</span>
+          <span><a href="#listen">All sixteen songs below</a></span>
+        </div>
+      </div>
+    </section>
 
-    <footer class="site-foot">
-      <p>Capitol Crashers and VOTE are on this floor. They are original games, not affiliated with any other publisher.</p>
-      <p><a href="privacy.html">Privacy</a></p>
-    </footer>
-  </div>
-  <script src="soundtrack.js?v=chibi2" data-controls></script>
+    <section class="section" id="listen">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Listen</p>
+            <h2>The <em>soundtrack</em></h2>
+          </div>
+          <p class="lede">Thirteen originals and three remixes. They play inside VOTE as you unlock courts, and they play here for free.</p>
+        </div>
+        <div class="jukebox">
+          <div class="now" aria-live="polite">
+            <p class="kicker">Now playing</p>
+            <p class="title" id="now-title">Pick a track</p>
+            <p class="artist">Political Arcades soundtrack</p>
+            <div class="controls">
+              <button class="btn" id="play-toggle" type="button" aria-label="Play">▶ Play</button>
+              <button class="btn btn-ghost" id="prev" type="button" aria-label="Previous track">◀◀</button>
+              <button class="btn btn-ghost" id="next" type="button" aria-label="Next track">▶▶</button>
+            </div>
+            <div class="bar" id="bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
+            <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
+            <p class="hint">Sixteen tracks, about half an hour. Space bar plays and pauses. The music keeps going while you scroll.</p>
+          </div>
+          <ol class="tracks" id="tracks"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="read">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Read</p>
+            <h2>Two Roads <em>to the Capitol</em></h2>
+          </div>
+          <p class="lede">Issue #1. Kampala to Queens, Detroit to Lansing, and the fights that put them on the same street. Every caption is sourced.</p>
+        </div>
+        <div class="comic-strip">
+          <a href="https://capitolcrashers.com/story/#p08"><img loading="lazy" src="art/comic/p08.webp" alt="Mamdani in Queens, early days." /><span class="cap">Queens</span></a>
+          <a href="https://capitolcrashers.com/story/#p09"><img loading="lazy" src="art/comic/p09.webp" alt="El-Sayed in Detroit, early days." /><span class="cap">Detroit</span></a>
+          <a href="https://capitolcrashers.com/story/#p21"><img loading="lazy" src="art/comic/p21.webp" alt="The crowd celebrates the rent freeze." /><span class="cap">Rent frozen</span></a>
+          <a href="https://capitolcrashers.com/story/#p26"><img loading="lazy" src="art/comic/p26.webp" alt="The two walk toward the Capitol at night." /><span class="cap">The road</span></a>
+        </div>
+        <p style="margin-top:20px"><a class="btn" href="https://capitolcrashers.com/story/">Read the whole comic</a></p>
+      </div>
+    </section>
+
+    <section class="section" id="cast">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Cast</p>
+            <h2>Who's on <em>the street</em></h2>
+          </div>
+          <p class="lede">Two fighters, the neighbors they stop for, and the machine standing in the way. All drawn in Makko, all chibi.</p>
+        </div>
+        <div class="cast-group">
+          <h3>The fighters</h3>
+          <div class="cast">
+          <figure><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
+          <figure><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
+          </div>
+        </div>
+        <div class="cast-group">
+          <h3>The block</h3>
+          <div class="cast">
+          <figure><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
+          <figure><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
+          <figure><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record.</span></figcaption></figure>
+          </div>
+        </div>
+        <div class="cast-group">
+          <h3>The machine</h3>
+          <div class="cast">
+          <figure class="foe"><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." /><figcaption><span class="role">Boss · The Insurance Exec</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, denies the claim.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you are not looking.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="platform">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Platform</p>
+            <h2>What they're <em>fighting for</em></h2>
+          </div>
+          <p class="lede">Each street in Capitol Crashers is one fight from the real platforms. Win the street and the policy passes on the block. Planks shortened from their campaign sites, sourced in the comic's back matter.</p>
+        </div>
+        <div class="stages">
+          <article class="stage">
+            <div class="num"><small>Street</small>01</div>
+            <div>
+              <h3>Freeze the Rent</h3>
+              <p class="where">The block · Mamdani</p>
+              <ul>
+                <li>Freeze the rent for every stabilized tenant. More than two million New Yorkers live in those apartments.</li>
+                <li>200,000 permanently affordable, union-built, rent-stabilized homes over ten years. Fully affordable projects get fast-tracked.</li>
+                <li>One office for code enforcement. If the owner won't make the repair, the city does and sends the bill. In the worst cases, the city takes the building.</li>
+              </ul>
+              <span class="boss">Boss · The Landlord</span>
+            </div>
+          </article>
+          <article class="stage">
+            <div class="num"><small>Street</small>02</div>
+            <div>
+              <h3>Healthcare for All</h3>
+              <p class="where">The clinic block · El-Sayed</p>
+              <ul>
+                <li>Medicare for every American, cradle to grave, with vision, dental and hearing. No premiums, copays or deductibles.</li>
+                <li>Medical debt abolished.</li>
+                <li>At least 50 gallons of clean water a person a day, bills capped at 2% of income, every lead pipe in Michigan out by 2030.</li>
+              </ul>
+              <span class="boss">Boss · The Insurance Exec</span>
+            </div>
+          </article>
+          <article class="stage">
+            <div class="num"><small>Street</small>03</div>
+            <div>
+              <h3>Money Out of Politics</h3>
+              <p class="where">The cable studio · El-Sayed</p>
+              <ul>
+                <li>Never taken a dime of corporate money, never will. Overturn Citizens United.</li>
+                <li>Ban outside spending by corporate 501(c)(4)s, super PACs and 527s. Public election funding and spending caps.</li>
+                <li>Tax capital gains over $1 million like wages, tax wealth over $1 billion, exempt the first $50,000. One good job should raise a family.</li>
+              </ul>
+              <span class="boss">Boss · The Lobbyist</span>
+            </div>
+          </article>
+          <article class="stage">
+            <div class="num"><small>Street</small>04</div>
+            <div>
+              <h3>Accountability</h3>
+              <p class="where">The Capitol approach · both</p>
+              <ul>
+                <li>Witnesses with receipts walk the street with you. Keep them standing and the record gets read.</li>
+                <li>Who pays: match New Jersey's 11.5% corporate tax, a 2% city tax on income over $1 million, fines on corrupt landlords.</li>
+                <li>Free childcare from six weeks to five, a $30 minimum wage by 2030, fare-free buses, city-owned groceries.</li>
+              </ul>
+              <span class="boss">Finale · every boss returns</span>
+            </div>
+          </article>
+        </div>
+        <p class="lede" style="margin-top:20px;font-size:15px;color:var(--dim)">Sources and the full plank list: <a href="https://capitolcrashers.com/story/#planks">the comic's back matter</a>. Political Arcades is an unofficial cartoon and is not authorized by any candidate or committee.</p>
+      </div>
+    </section>
+
+    <section class="section" id="support">
+      <div class="wrap">
+        <div class="support">
+          <p class="kicker">Keep the floor open</p>
+          <h2>Free to play. <em>Patreon</em> pays the light bill.</h2>
+          <p class="lede">New streets, new courts, new songs and new issues of the comic ship first to patrons. Everything stays free for everyone.</p>
+          <div class="acts">
+            <a class="btn btn-patreon btn-big" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
+            <a class="btn btn-ghost btn-big" href="#play">Back to the floor</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="row">
+        <span>© Political Arcades · Art and animation made in <a href="https://www.makko.ai/" rel="noopener">Makko</a></span>
+        <span><a href="https://capitolcrashers.com/">capitolcrashers.com</a> · <a href="horse/">VOTE</a> · <a href="privacy.html">Privacy</a></span>
+      </div>
+      <p class="fine">Capitol Crashers and VOTE are original games. They are unofficial cartoons, not authorized, paid for or reviewed by Zohran Mamdani, Abdul El-Sayed, or any candidate or campaign committee. Not affiliated with any other publisher.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Jukebox: one audio element, a track list, a seek bar.
+    const TRACKS = [
+      ["01-freeze-the-rent", "Freeze the Rent", "Original", "2:12"],
+      ["02-shouldnt-be-this-hard", "Shouldn't Be This Hard", "Original", "2:04"],
+      ["03-hope-is-alive", "Hope Is Alive", "Original", "2:04"],
+      ["04-this-city-belongs-to-you", "This City Belongs to You", "Original", "1:58"],
+      ["05-turn-the-volume-up", "Turn the Volume Up", "Original", "1:50"],
+      ["06-town-hall", "Town Hall", "Original", "1:56"],
+      ["07-never-taken-a-dime", "Never Taken a Dime", "Original", "1:46"],
+      ["08-ive-got-receipts", "I've Got Receipts", "Original", "1:52"],
+      ["09-two-hundred", "Two Hundred", "Original", "1:58"],
+      ["10-drop-bombs", "Drop Bombs", "Original", "2:04"],
+      ["11-expansively", "Expansively", "Original", "1:38"],
+      ["12-bosses-get-small", "Bosses Get Small", "Original", "1:40"],
+      ["13-how-you-gonna-pay", "How You Gonna Pay", "Original", "0:48"],
+      ["freeze-the-rent-block-party", "Freeze the Rent (Block Party)", "Remix", "2:08"],
+      ["shouldnt-be-this-hard-soul-court", "Shouldn't Be This Hard (Soul Court)", "Remix", "2:00"],
+      ["this-city-belongs-to-you-after-hours", "This City Belongs to You (After Hours)", "Remix", "1:54"],
+    ];
+    const audio = new Audio(); audio.preload = "none"; audio.volume = 0.8;
+    const list = document.getElementById("tracks");
+    const nowTitle = document.getElementById("now-title");
+    const toggle = document.getElementById("play-toggle");
+    const fill = document.getElementById("fill"), bar = document.getElementById("bar");
+    const tCur = document.getElementById("t-cur"), tDur = document.getElementById("t-dur");
+    let index = -1;
+    const fmt = (s) => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
+    TRACKS.forEach(([file, title, tag, len], i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<button type="button"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${title}</span><span class="tag">${tag === "Remix" ? "Remix" : ""}</span><span class="d">${len}</span></button>`;
+      li.querySelector("button").addEventListener("click", () => (i === index ? playPause() : load(i, true)));
+      list.append(li);
+    });
+    function load(i, autoplay) {
+      index = (i + TRACKS.length) % TRACKS.length;
+      const [file, title] = TRACKS[index];
+      audio.src = `horse/assets/music/${file}.mp3`;
+      nowTitle.textContent = title;
+      [...list.children].forEach((li, k) => li.classList.toggle("on", k === index));
+      if (autoplay) audio.play().catch(() => {});
+    }
+    function playPause() { if (index < 0) return load(0, true); if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }
+    toggle.addEventListener("click", playPause);
+    document.getElementById("next").addEventListener("click", () => load(index + 1, true));
+    document.getElementById("prev").addEventListener("click", () => load(index - 1, true));
+    audio.addEventListener("play", () => { toggle.textContent = "❚❚ Pause"; toggle.setAttribute("aria-label", "Pause"); });
+    audio.addEventListener("pause", () => { toggle.textContent = "▶ Play"; toggle.setAttribute("aria-label", "Play"); });
+    audio.addEventListener("ended", () => load(index + 1, true));
+    audio.addEventListener("timeupdate", () => {
+      const p = audio.duration ? audio.currentTime / audio.duration * 100 : 0;
+      fill.style.width = p + "%"; bar.setAttribute("aria-valuenow", Math.round(p));
+      tCur.textContent = fmt(audio.currentTime); tDur.textContent = fmt(audio.duration);
+    });
+    bar.addEventListener("click", (e) => { const r = bar.getBoundingClientRect(); if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
+    bar.addEventListener("keydown", (e) => { if (!audio.duration) return; if (e.key === "ArrowRight") audio.currentTime += 5; if (e.key === "ArrowLeft") audio.currentTime -= 5; });
+
+    // ---- YouTube swap: fill data-youtube with the id and the embed replaces the MP4 (click-to-load, no tracking until played).
+    const theater = document.getElementById("theater");
+    const yt = theater?.dataset.youtube;
+    if (yt) {
+      theater.innerHTML = `<button type="button" class="yt" style="all:unset;display:block;position:relative;aspect-ratio:16/9;width:100%;cursor:pointer;background:#000 url(media/freeze-the-rent-poster.jpg) center/cover"><span class="btn btn-big" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">▶ Play on YouTube</span></button>`;
+      theater.querySelector(".yt").addEventListener("click", () => { theater.innerHTML = `<iframe style="display:block;width:100%;aspect-ratio:16/9;border:0" src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0" title="Freeze the Rent" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
+    }
+
+    // ---- Pause the video when it scrolls away
+    const video = document.querySelector(".theater video");
+    if (video && "IntersectionObserver" in window) new IntersectionObserver(([en]) => { if (!en.isIntersecting && !video.paused) video.pause(); }, { threshold: 0.2 }).observe(video);
+  </script>
 </body>
 </html>
-
