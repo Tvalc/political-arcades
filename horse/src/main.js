@@ -1314,7 +1314,7 @@
 };
   // Match visible anatomy across the cast; pose height still follows bodyScale.
   // Share the character transform with ball anchors and shot release positions.
-  for (const clip of Object.values(CLIPS.mamdani)) clip.characterScale = 1;
+  for (const clip of Object.values(CLIPS.mamdani)) clip.characterScale = 0.9;
   for (const clip of Object.values(CLIPS.sayed)) clip.characterScale = 0.8;
 
 
