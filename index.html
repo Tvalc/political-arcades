@@ -243,6 +243,8 @@ button { font: inherit; }
 .now .bar { position: relative; height: 10px; margin-top: 16px; border-radius: 999px; background: rgba(246, 239, 228, 0.12); cursor: pointer; overflow: hidden; }
 .now .bar i { position: absolute; inset: 0 auto 0 0; width: 0%; background: linear-gradient(90deg, var(--pink), var(--cyan)); border-radius: 999px; }
 .now .time { display: flex; justify-content: space-between; margin-top: 8px; color: var(--dim); font-family: var(--mono); font-size: 12px; }
+.tracks li[hidden] { display: none; }
+.tracks-more { margin-top: 14px; }
 .tracks { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
 .tracks button {
   display: grid; grid-template-columns: 28px 1fr auto auto; align-items: center; gap: 12px; width: 100%;
@@ -445,7 +447,10 @@ button { font: inherit; }
             <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
             <p class="hint">Twenty-eight tracks, over forty minutes. Space bar plays and pauses. The music keeps going while you scroll.</p>
           </div>
-          <ol class="tracks" id="tracks"></ol>
+          <div>
+            <ol class="tracks" id="tracks"></ol>
+            <button class="btn btn-ghost tracks-more" id="show-more-tracks" type="button" aria-controls="tracks">Show 5 more</button>
+          </div>
         </div>
       </div>
     </section>
@@ -646,6 +651,19 @@ button { font: inherit; }
       li.querySelector("button").addEventListener("click", () => (i === index ? playPause() : load(i, true)));
       list.append(li);
     });
+    let visibleTracks = 5;
+    const moreTracks = document.getElementById("show-more-tracks");
+    function updateVisibleTracks() {
+      [...list.children].forEach((li, i) => { li.hidden = i >= visibleTracks; });
+      const remaining = TRACKS.length - visibleTracks;
+      moreTracks.hidden = remaining <= 0;
+      moreTracks.textContent = `Show ${Math.min(5, remaining)} more`;
+    }
+    moreTracks.addEventListener("click", () => {
+      visibleTracks = Math.min(TRACKS.length, visibleTracks + 5);
+      updateVisibleTracks();
+    });
+    updateVisibleTracks();
     function load(i, autoplay) {
       index = (i + TRACKS.length) % TRACKS.length;
       const [file, title] = TRACKS[index];
