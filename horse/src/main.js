@@ -216,7 +216,7 @@
   loadImage("sayed-dunk", "assets/sprites/chibi/sayed-dunk.webp");
   loadImage("sayed-spin", "assets/sprites/chibi/sayed-spin.webp");
   loadImage("sayed-fade", "assets/sprites/chibi/sayed-fade.webp");
-  loadImage("sayed-hook", "assets/sprites/chibi/sayed-hook.webp");
+  loadImage("sayed-hook", "assets/sprites/chibi/sayed-hook.webp?v=natural2");
   loadImage("sayed-dribble", "assets/sprites/chibi/sayed-dribble.webp");
   loadImage("sayed-move", "assets/sprites/chibi/sayed-move.webp");
   loadImage("skin-board", "assets/ui/makko/board.webp");
@@ -1126,61 +1126,56 @@
     },
     "hook": {
       "frames": 12,
-      "fw": 140,
+      "fw": 186,
       "fh": 256,
       "cols": 4,
-      "body": 170,
-      "fill": 0.6640625,
+      "body": 216,
+      "fill": 0.84375,
       "feet": [
-        0.99609375
+        0.98828125
       ],
       "originX": 0.5,
-      "fps": 18,
+      "fps": 14,
       "sourceFacing": 1,
       "sourceFrames": [
         1,
-        5,
-        11,
+        7,
         13,
-        17,
-        21,
+        19,
         25,
-        29,
-        53,
-        57,
+        49,
+        55,
         61,
-        69
+        67,
+        73,
+        79,
+        91
       ],
       "play": 11,
       "authoredLift": true,
       "emptyHands": true,
       "duration": 1.05,
       "releaseTime": 0.3,
-      "releaseFrame": 3,
+      "releaseFrame": 2,
       "releaseHand": [
-        0.19285714285714287,
-        0.0
+        0.25806451612903225,
+        0.06640625
       ],
       "handKeys": [
         [
           0,
-          0.18571428571428572,
-          0.671875
+          0.3709677419354839,
+          0.62109375
         ],
         [
           1,
-          0.19285714285714287,
-          0.66015625
+          0.23655913978494625,
+          0.265625
         ],
         [
           2,
-          0.1,
-          0.2578125
-        ],
-        [
-          3,
-          0.19285714285714287,
-          0.0
+          0.25806451612903225,
+          0.06640625
         ]
       ],
       "loopStart": 0,
@@ -1317,6 +1312,9 @@
     }
   }
 };
+  // Calibrated to visible head/torso size, not transparent cell or standing height.
+  for (const clip of Object.values(CLIPS.sayed)) clip.characterScale = 0.8;
+
 
   let crowdGain = null;
 
@@ -1510,6 +1508,38 @@
     return id === "mamdani" ? "sayed" : "mamdani";
   }
 
+  function sideline(id) {
+    return { x: id === "mamdani" ? -.12 : 1.12, y: .38 };
+  }
+
+  function stageNextTurn(shooter) {
+    match.transit ||= {};
+    match.transit[shooter] = sideline(shooter);
+    const incoming = match.active;
+    if (incoming !== shooter) {
+      const p = match.pos[incoming];
+      if (p.x < .08 || p.x > .92)
+        match.transit[incoming] = { x: incoming === "mamdani" ? .16 : .84, y: .38 };
+    }
+  }
+
+  function updateTransit(dt) {
+    for (const [id, target] of Object.entries(match.transit || {})) {
+      const p = match.pos[id], dx = target.x - p.x, dy = target.y - p.y;
+      const distance = Math.hypot(dx, dy), step = .62 * dt;
+      if (distance <= step) {
+        Object.assign(p, target);
+        match.pose[id] = "idle";
+        match.face[id] = p.x < .5 ? 1 : -1;
+        delete match.transit[id];
+      } else {
+        p.x += dx / distance * step; p.y += dy / distance * step;
+        match.face[id] = dx < 0 ? -1 : 1;
+        match.pose[id] = "move";
+      }
+    }
+  }
+
   function freshMatch(humanId) {
     const cpuId = otherId(humanId);
     const home = FIGHTERS[humanId];
@@ -1521,9 +1551,10 @@
       marketingSession: marketingUnlock,
       letters: { mamdani: 0, sayed: 0 },
       pos: {
-        mamdani: { x: 0.32, y: 0.28 },
-        sayed: { x: 0.68, y: 0.28 },
+        mamdani: humanId === "mamdani" ? { x: 0.32, y: 0.28 } : sideline("mamdani"),
+        sayed: humanId === "sayed" ? { x: 0.68, y: 0.28 } : sideline("sayed"),
       },
+      transit: {},
       face: { mamdani: 1, sayed: -1 },
       active: humanId,
       phase: "set",
@@ -1603,7 +1634,7 @@
       const key = match.pose[id] === "move" ? "move" : "dribble";
       const clock = match.dribbleClock[id];
       if (!clock || clock.key !== key) match.dribbleClock[id] = { key, time: 0 };
-      else if (match.owner === id && !match.hold && !match.ball) {
+      else if (match.transit?.[id] || (match.owner === id && !match.hold && !match.ball)) {
         const clip = CLIPS[id][key];
         if (key === "move" && clip?.strideDistance && clock.pos) {
           const at = project(match.pos[id].x, match.pos[id].y);
@@ -2021,6 +2052,7 @@
     match.flair = "none";
     match.power = 0;
     match.lock = .65;
+    if (!match.over) stageNextTurn(id);
     if (match.active === match.cpuId && !match.over) {
       match.cpu = null;
     }
@@ -2081,6 +2113,7 @@
   function updateWorld(dt) {
     if (!match || screen !== "play") return;
     match.t += dt;
+    updateTransit(dt);
     if (match.releaseFeedback) match.releaseFeedback.life = Math.max(0, match.releaseFeedback.life - dt);
     if (match.shake > 0) match.shake = Math.max(0, match.shake - dt * 1.4);
     if (match.zoom > 0) match.zoom = Math.max(0, match.zoom - dt * 0.42);
@@ -2132,6 +2165,7 @@
       }
     }
     if (match.over) return;
+    if (match.transit?.[match.active]) { match.lock = Math.max(match.lock, .05); return; }
     if (match.lock > 0) {
       match.lock -= dt;
       return;
@@ -2245,7 +2279,7 @@
   }
 
   function humanRelease() {
-    if (!match || match.over || match.ball || match.pass || match.lock > 0) return;
+    if (!match || match.over || match.ball || match.pass || match.lock > 0 || match.transit?.[match.active]) return;
     if (match.active !== match.humanId || !match.hold) return;
     release(match.humanId);
   }
@@ -2586,7 +2620,7 @@
     const dribbling = match.owner === id && !match.hold && !match.ball && !match.pass;
     if (flairPose && set[pose]) key = pose;
     else if (shooting && set.shot) key = "shot";
-    else if (dribbling && pose === "move" && set.move) key = "move";
+    else if (pose === "move" && set.move) key = "move";
     else if (dribbling && set.dribble) key = "dribble";
     else if (set[pose] && pose !== "move") key = pose;
     else if (set.idle) key = "idle";
@@ -3103,7 +3137,7 @@
     }
     if (!match) return;
     if (match.over) { if (k === "enter" || k === " ") restartMatch(); return; }
-    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0) {
+    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.humanId]) {
       if (!match.hold) {
         match.hold = true;
         match.power = 0;

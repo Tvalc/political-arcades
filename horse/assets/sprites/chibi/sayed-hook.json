@@ -4,119 +4,308 @@
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "1": {
       "frame": {
-        "x": 140,
+        "x": 186,
         "y": 0,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "2": {
       "frame": {
-        "x": 280,
+        "x": 372,
         "y": 0,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "3": {
       "frame": {
-        "x": 420,
+        "x": 558,
         "y": 0,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "4": {
       "frame": {
         "x": 0,
         "y": 256,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "5": {
       "frame": {
-        "x": 140,
+        "x": 186,
         "y": 256,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "6": {
       "frame": {
-        "x": 280,
+        "x": 372,
         "y": 256,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "7": {
       "frame": {
-        "x": 420,
+        "x": 558,
         "y": 256,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "8": {
       "frame": {
         "x": 0,
         "y": 512,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "9": {
       "frame": {
-        "x": 140,
+        "x": 186,
         "y": 512,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "10": {
       "frame": {
-        "x": 280,
+        "x": 372,
         "y": 512,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     },
     "11": {
       "frame": {
-        "x": 420,
+        "x": 558,
         "y": 512,
-        "w": 140,
+        "w": 186,
         "h": 256
-      }
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 256
+      },
+      "duration": 250
     }
   },
   "meta": {
-    "sourceZip": "chibi_cast__concepts_to_reference_sheets_horse_chibi_sayed_dunk_12.zip",
+    "app": "MAKKO Sprite Studio",
+    "version": "1.0.0",
+    "image": "chibi_cast__concepts_to_reference_sheets_horse_sayed_hook_natural_12.webp",
+    "format": "RGBA8888",
+    "size": {
+      "w": 744,
+      "h": 768
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "animation",
+        "from": 0,
+        "to": 11,
+        "direction": "forward"
+      }
+    ],
+    "anchor": {
+      "x": 93,
+      "y": 253,
+      "normalized": {
+        "x": 0.5,
+        "y": 0.98828125
+      },
+      "strategy": "bottom-center"
+    },
+    "referenceAlignment": {
+      "referenceBounds": {
+        "width": 125,
+        "height": 216
+      },
+      "frameBounds": {
+        "width": 186,
+        "height": 256
+      },
+      "normalized": true
+    },
+    "sourceAnimation": "e4bdc057-0b8c-4812-aeb6-63f6e233f076",
     "sourceFrames": [
       1,
-      5,
-      11,
+      7,
       13,
-      17,
-      21,
+      19,
       25,
-      29,
-      53,
-      57,
+      49,
+      55,
       61,
-      69
+      67,
+      73,
+      79,
+      91
     ],
-    "reuse": "sayed-dunk",
-    "size": {
-      "w": 560,
-      "h": 768
-    }
+    "sourceZip": "chibi_cast__concepts_to_reference_sheets_horse_sayed_hook_natural_12.zip"
   }
 }
