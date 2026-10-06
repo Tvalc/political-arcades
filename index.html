@@ -20,7 +20,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="arcade.css?v=1" />
+  <link rel="stylesheet" href="arcade.css?v=2" />
+  <link rel="preload" as="image" href="art/web/rally-1600.webp" imagesrcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" imagesizes="100vw" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -39,7 +40,7 @@
 
   <main>
     <section class="floor" id="play">
-      <img class="mural" src="art/chibi/rally.webp" width="1600" height="900" alt="" fetchpriority="high" />
+      <img class="mural" src="art/web/rally-1600.webp" srcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
       <div class="wrap">
         <div class="floor-copy">
           <p class="kicker">Two machines · free<span class="hide-m"> · in your browser</span></p>
@@ -54,7 +55,7 @@
               <span class="machine">Machine 01</span>
             </div>
             <div class="screen">
-              <img src="art/chibi/hero.webp" width="1600" height="900" alt="Mamdani and El-Sayed square up on a rainy street in front of the Capitol." />
+              <img src="art/web/crashers-1200.webp" srcset="art/web/crashers-800.webp 800w, art/web/crashers-1200.webp 1200w" sizes="(max-width: 760px) 100vw, 50vw" width="1200" height="675" alt="Mamdani and El-Sayed square up on a rainy street in front of the Capitol." decoding="async" />
               <span class="coin" aria-hidden="true">Insert coin · press start</span>
             </div>
             <div class="deck">
@@ -70,7 +71,7 @@
               <span class="machine">Machine 02</span>
             </div>
             <div class="screen">
-              <img src="horse/assets/ui/makko/title.webp" width="1920" height="1080" alt="Mamdani and El-Sayed on a New York playground court at night." />
+              <img src="art/web/vote-1200.webp" srcset="art/web/vote-800.webp 800w, art/web/vote-1200.webp 1200w" sizes="(max-width: 760px) 100vw, 50vw" width="1200" height="675" alt="Mamdani and El-Sayed on a New York playground court at night." decoding="async" />
               <span class="coin" aria-hidden="true">Insert coin · press start</span>
             </div>
             <div class="deck">
@@ -105,10 +106,12 @@
           <p class="lede">Cut from real gameplay, the Makko cast, and the comic panels brought to life. Two minutes and ten seconds, one song.</p>
         </div>
         <!-- To switch to YouTube once the video is uploaded: set data-youtube to the video id. The MP4 stays as the fallback. -->
-        <div class="theater" id="theater" data-youtube="">
-          <video controls preload="metadata" playsinline poster="media/freeze-the-rent-poster.jpg">
-            <source src="media/freeze-the-rent.mp4" type="video/mp4" />
-          </video>
+        <div class="theater" id="theater" data-youtube="" data-mp4="media/freeze-the-rent.mp4">
+          <button type="button" class="theater-poster" aria-label="Play the Freeze the Rent music video">
+            <img src="art/web/video-poster.webp" width="1280" height="720" alt="" loading="lazy" decoding="async" />
+            <span class="btn btn-big">▶ Play the video</span>
+            <span class="theater-meta">2:10 · 20 MB</span>
+          </button>
         </div>
         <div class="theater-caption">
           <span><b>Track 01</b> · Freeze the Rent · from the Political Arcades soundtrack</span>
@@ -176,27 +179,27 @@
         <div class="cast-group">
           <h3>The fighters</h3>
           <div class="cast">
-          <figure><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
-          <figure><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
+          <figure><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." loading="lazy" decoding="async" /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
+          <figure><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." loading="lazy" decoding="async" /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
           </div>
         </div>
         <div class="cast-group">
           <h3>The block</h3>
           <div class="cast">
-          <figure><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
-          <figure><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
-          <figure><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
-          <figure><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
-          <figure><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record.</span></figcaption></figure>
+          <figure><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." loading="lazy" decoding="async" /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
+          <figure><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
+          <figure><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
+          <figure><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." loading="lazy" decoding="async" /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record.</span></figcaption></figure>
           </div>
         </div>
         <div class="cast-group">
           <h3>The machine</h3>
           <div class="cast">
-          <figure class="foe"><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." /><figcaption><span class="role">Boss · The Insurance Exec</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, denies the claim.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you are not looking.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Insurance Exec</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, denies the claim.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you are not looking.</span></figcaption></figure>
+          <figure class="foe"><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." loading="lazy" decoding="async" /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
           </div>
         </div>
       </div>
@@ -354,14 +357,19 @@
     // ---- YouTube swap: fill data-youtube with the id and the embed replaces the MP4 (click-to-load, no tracking until played).
     const theater = document.getElementById("theater");
     const yt = theater?.dataset.youtube;
-    if (yt) {
-      theater.innerHTML = `<button type="button" class="yt" style="all:unset;display:block;position:relative;aspect-ratio:16/9;width:100%;cursor:pointer;background:#000 url(media/freeze-the-rent-poster.jpg) center/cover"><span class="btn btn-big" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">▶ Play on YouTube</span></button>`;
-      theater.querySelector(".yt").addEventListener("click", () => { theater.innerHTML = `<iframe style="display:block;width:100%;aspect-ratio:16/9;border:0" src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0" title="Freeze the Rent" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; });
-    }
+    theater?.querySelector(".theater-poster")?.addEventListener("click", () => {
+      if (yt) {
+        theater.innerHTML = `<iframe style="display:block;width:100%;aspect-ratio:16/9;border:0" src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0" title="Freeze the Rent" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+        return;
+      }
+      const v = document.createElement("video");
+      v.controls = true; v.playsInline = true; v.autoplay = true; v.poster = "art/web/video-poster.webp";
+      v.src = theater.dataset.mp4; v.style.cssText = "display:block;width:100%;aspect-ratio:16/9";
+      theater.replaceChildren(v);
+      v.play().catch(() => {});
+      if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { if (!en.isIntersecting && !v.paused) v.pause(); }, { threshold: 0.2 }).observe(v);
+    });
 
-    // ---- Pause the video when it scrolls away
-    const video = document.querySelector(".theater video");
-    if (video && "IntersectionObserver" in window) new IntersectionObserver(([en]) => { if (!en.isIntersecting && !video.paused) video.pause(); }, { threshold: 0.2 }).observe(video);
   </script>
 </body>
 </html>
