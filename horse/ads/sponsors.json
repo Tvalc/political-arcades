@@ -1,0 +1,32 @@
+[
+  {
+    "surface": "led",
+    "kind": "image",
+    "src": "assets/ui/makko/logo.webp",
+    "href": "../",
+    "label": "VOTE · Political Arcades",
+    "sponsor": "house",
+    "start": null,
+    "end": null
+  },
+  {
+    "surface": "jumbotron",
+    "kind": "image",
+    "src": "assets/ui/makko/title.webp",
+    "href": "../",
+    "label": "Political Arcades · Ads to Aid",
+    "sponsor": "house",
+    "start": null,
+    "end": null
+  },
+  {
+    "surface": "center_court",
+    "kind": "image",
+    "src": "assets/ui/makko/logo.webp",
+    "href": null,
+    "label": "This court is sponsored by Political Arcades",
+    "sponsor": "house",
+    "start": null,
+    "end": null
+  }
+]

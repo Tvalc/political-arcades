@@ -73,6 +73,15 @@
   let selectIndex = 0;
   let match = null;
 
+  // Ads to Aid hooks (see ads/CONTRACT.md). The ad module calls adPause/adResume
+  // around every ad; adHold freezes the loop and input while an ad is up.
+  const AD_FRAME_TEXT = "Ads pay for this arcade. Half the profit goes to community programs.";
+  let adHold = false, prerollState = "", adsNoticeUntil = 0;
+  function adPause() { adHold = true; keys.clear(); pointer = null; window.VoteMusic?.setState(false, true); audioCtx?.suspend()?.catch(() => {}); }
+  function adResume() { adHold = false; window.VoteMusic?.setState(!muted, paused); if (!muted && !paused) audioCtx?.resume()?.catch(() => {}); }
+  window.A2A?.ads?.init({ game: "vote", pause: adPause, resume: adResume, flags: {} });
+  const adsApi = () => window.A2A?.ads;
+
   const COURTS = [{"id": "nyc", "name": "New York Playground", "wins": 0, "src": "assets/nyc-playground.webp", "thumb": "assets/nyc-playground.webp", "rim": [640, 134]}, {"id": "detroit", "name": "Detroit Playground", "wins": 0, "src": "assets/detroit-playground.webp", "thumb": "assets/detroit-playground.webp", "rim": [634, 160]}, {"id": "court-01", "name": "Rent Freeze Schoolyard", "wins": 3, "src": "assets/courts/01.webp", "thumb": "assets/courts/01-thumb.webp", "rim": [636, 117]}, {"id": "court-02", "name": "Motor City Union Hall", "wins": 6, "src": "assets/courts/02.webp", "thumb": "assets/courts/02-thumb.webp", "rim": [640, 149]}, {"id": "court-03", "name": "Free Bus Fast Break", "wins": 9, "src": "assets/courts/03.webp", "thumb": "assets/courts/03-thumb.webp", "rim": [640, 108]}, {"id": "court-04", "name": "Public Health Playground", "wins": 12, "src": "assets/courts/04.webp", "thumb": "assets/courts/04-thumb.webp", "rim": [640, 113]}, {"id": "court-05", "name": "Grocery Co-op Corner", "wins": 15, "src": "assets/courts/05.webp", "thumb": "assets/courts/05-thumb.webp", "rim": [640, 158]}, {"id": "court-06", "name": "Rooftop Housing Boom", "wins": 18, "src": "assets/courts/06.webp", "thumb": "assets/courts/06-thumb.webp", "rim": [639, 176]}, {"id": "court-07", "name": "Library After Dark", "wins": 21, "src": "assets/courts/07.webp", "thumb": "assets/courts/07-thumb.webp", "rim": [634, 133]}, {"id": "court-08", "name": "Great Lakes Green Deal", "wins": 24, "src": "assets/courts/08.webp", "thumb": "assets/courts/08-thumb.webp", "rim": [637, 156]}, {"id": "court-09", "name": "Childcare Block Party", "wins": 27, "src": "assets/courts/09.webp", "thumb": "assets/courts/09-thumb.webp", "rim": [636, 162]}, {"id": "court-10", "name": "Ballot Box Boulevard", "wins": 30, "src": "assets/courts/10.webp", "thumb": "assets/courts/10-thumb.webp", "rim": [639, 128]}, {"id": "court-11", "name": "Trickle Down Country Club", "wins": 33, "src": "assets/courts/11.webp", "thumb": "assets/courts/11-thumb.webp", "rim": [640, 93]}, {"id": "court-12", "name": "Infrastructure Week Forever", "wins": 36, "src": "assets/courts/12.webp", "thumb": "assets/courts/12-thumb.webp", "rim": [640, 119]}, {"id": "court-13", "name": "Emergency Vacation Resort", "wins": 39, "src": "assets/courts/13.webp", "thumb": "assets/courts/13-thumb.webp", "rim": [638, 98]}, {"id": "court-14", "name": "Filibuster Falls", "wins": 42, "src": "assets/courts/14.webp", "thumb": "assets/courts/14-thumb.webp", "rim": [640, 137]}, {"id": "court-15", "name": "Border Wall Gift Shop", "wins": 45, "src": "assets/courts/15.webp", "thumb": "assets/courts/15-thumb.webp", "rim": [640, 158]}, {"id": "court-16", "name": "Stone Age Senate", "wins": 48, "src": "assets/courts/16.webp", "thumb": "assets/courts/16-thumb.webp", "rim": [637, 129]}, {"id": "court-17", "name": "Trickle Down Tar Pit", "wins": 51, "src": "assets/courts/17.webp", "thumb": "assets/courts/17-thumb.webp", "rim": [640, 121]}, {"id": "court-18", "name": "Mammoth Healthcare Maze", "wins": 54, "src": "assets/courts/18.webp", "thumb": "assets/courts/18-thumb.webp", "rim": [631, 130]}, {"id": "court-19", "name": "Fossil Fuel Fan Club", "wins": 57, "src": "assets/courts/19.webp", "thumb": "assets/courts/19-thumb.webp", "rim": [640, 171]}, {"id": "court-20", "name": "Cave Condo Crisis", "wins": 60, "src": "assets/courts/20.webp", "thumb": "assets/courts/20-thumb.webp", "rim": [640, 174]}, {"id": "court-21", "name": "Neon Public Option", "wins": 63, "src": "assets/courts/21.webp", "thumb": "assets/courts/21-thumb.webp", "rim": [640, 98]}, {"id": "court-22", "name": "Robo Landlord 3000", "wins": 66, "src": "assets/courts/22.webp", "thumb": "assets/courts/22-thumb.webp", "rim": [640, 143]}, {"id": "court-23", "name": "Solar Punk Commons", "wins": 69, "src": "assets/courts/23.webp", "thumb": "assets/courts/23-thumb.webp", "rim": [640, 109]}, {"id": "court-24", "name": "Algorithmic Gerrymander", "wins": 72, "src": "assets/courts/24.webp", "thumb": "assets/courts/24-thumb.webp", "rim": [640, 119]}, {"id": "court-25", "name": "Billionaire Bunker League", "wins": 75, "src": "assets/courts/25.webp", "thumb": "assets/courts/25-thumb.webp", "rim": [640, 121]}, {"id": "court-26", "name": "Lunar Tax Haven", "wins": 78, "src": "assets/courts/26.webp", "thumb": "assets/courts/26-thumb.webp", "rim": [640, 191]}, {"id": "court-27", "name": "Mars Infrastructure Week", "wins": 81, "src": "assets/courts/27.webp", "thumb": "assets/courts/27-thumb.webp", "rim": [635, 152]}, {"id": "court-28", "name": "Galactic Public Transit", "wins": 84, "src": "assets/courts/28.webp", "thumb": "assets/courts/28-thumb.webp", "rim": [640, 101]}, {"id": "court-29", "name": "Orbital Lobbyist Lounge", "wins": 87, "src": "assets/courts/29.webp", "thumb": "assets/courts/29-thumb.webp", "rim": [640, 114]}, {"id": "court-30", "name": "Democracy Block Party 2099", "wins": 90, "src": "assets/courts/30.webp", "thumb": "assets/courts/30-thumb.webp", "rim": [640, 93]}];
   let selectedCourt = null, courtOpen = false, pendingCourtStart = false;
   let careerWins = 0, progressSaved = true, marketingUnlock = false;
@@ -80,7 +89,10 @@
     careerWins = Number.isSafeInteger(saved.wins) && saved.wins >= 0 ? Math.min(saved.wins, 1000000) : 0;
   } catch (_) { progressSaved = false; }
   function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
-  function courtUnlocked(id) { return marketingUnlock || courtById(id).wins <= careerWins; }
+  // Courts opened one win early through a rewarded ad (see ads/CONTRACT.md). Not progress: careerWins is untouched.
+  let adUnlocks = new Set();
+  try { adUnlocks = new Set(JSON.parse(localStorage.getItem('vote-court-ad-unlocks-v1') || '[]')); } catch (_) {}
+  function courtUnlocked(id) { return marketingUnlock || adUnlocks.has(id) || courtById(id).wins <= careerWins; }
   function recordCourtWin() {
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
@@ -110,8 +122,19 @@
     document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
     document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
     renderCourtSongs();
+    // Rewarded unlock (see ads/CONTRACT.md): only for the next locked court, only when it is one win away.
+    const nextLocked = COURTS.find(c => !courtUnlocked(c.id)), unlockBtn = document.getElementById('court-unlock-ad');
+    unlockBtn.hidden = !(nextLocked && nextLocked.wins - careerWins === 1 && !marketingUnlock && adsApi());
+    if (!unlockBtn.hidden) { unlockBtn.textContent = `Watch an ad · unlock ${nextLocked.name} now`; unlockBtn.dataset.court = nextLocked.id; }
     document.getElementById('court-play').focus();
   }
+  document.getElementById('court-unlock-ad').addEventListener('click', ev => {
+    const id = ev.currentTarget.dataset.court; if (!id || courtUnlocked(id)) return;
+    adsApi()?.reward('unlock_court', () => {
+      adUnlocks.add(id); try { localStorage.setItem('vote-court-ad-unlocks-v1', JSON.stringify([...adUnlocks])); } catch (_) {}
+      selectedCourt = id; openCourtSelect();
+    }, () => document.getElementById('court-play').focus());
+  });
   document.getElementById('court-grid').addEventListener('click', ev => {
     const card = ev.target.closest?.('[data-court]');
     if (!card || !courtUnlocked(card.dataset.court)) return;
@@ -151,6 +174,13 @@
     if (paused) document.getElementById("resume").focus();
     else canvas.focus({ preventScroll: true });
   }
+  // Player-opened pause menu (Esc or the Pause button). Blur and tab switches pause without an ad. See ads/CONTRACT.md.
+  function userPause() { setPaused(!paused); if (paused) adsApi()?.break("pause", () => {}); }
+  // Leaving a finished match (win or loss) is the court-end break. Practice never ends, so never breaks. See ads/CONTRACT.md.
+  function leaveCourt(next) {
+    if (match?.over && !match.practice && !match.courtBreakDone && adsApi()) { match.courtBreakDone = true; adsApi().break("court_end", next); }
+    else next();
+  }
   function startPractice() {
     setPaused(false); keys.clear(); pointer = null;
     const id = match?.humanId || (selectIndex === 1 ? "sayed" : "mamdani");
@@ -168,7 +198,7 @@
     setPaused(false); keys.clear(); pointer = null;
     screen = "select"; match = null; canvas.focus({ preventScroll: true });
   }
-  document.getElementById("pause-toggle").addEventListener("click", () => setPaused(!paused));
+  document.getElementById("pause-toggle").addEventListener("click", userPause);
   document.getElementById("resume").addEventListener("click", () => setPaused(false));
   document.getElementById("rematch").addEventListener("click", restartMatch);
   document.getElementById("pick-again").addEventListener("click", chooseAgain);
@@ -2039,27 +2069,59 @@
           : !flairOk
             ? `That was a ${FLAIR_NAME[ball.flair]}. Copy the ${FLAIR_NAME[match.challenge.flair]}.`
             : "No good.";
-        const word = addLetter(id);
-        match.pop[id] = 1;
-        if (match.over) say(`${why} ${name} spells VOTE. ${FIGHTERS[match.over].name} wins.`);
-        if (!match.over) {
-          match.phase = "set";
-          match.challenge = null;
-          match.active = otherId(id);
-          say(`${why} ${name} picks up ${word}. ${FIGHTERS[match.active].name} calls the next one.`);
-          punch(word);
+        const takeLetter = () => {
+          const word = addLetter(id);
+          match.pop[id] = 1;
+          if (match.over) say(`${why} ${name} spells VOTE. ${FIGHTERS[match.over].name} wins.`);
+          if (!match.over) {
+            match.phase = "set";
+            match.challenge = null;
+            match.active = otherId(id);
+            say(`${why} ${name} picks up ${word}. ${FIGHTERS[match.active].name} calls the next one.`);
+            punch(word);
+          }
+          settle();
+        };
+        // Rewarded redo (see ads/CONTRACT.md): once per match the player may redo a copy miss instead of taking a letter.
+        if (id === match.humanId && !match.redoOffered && adsApi()) {
+          match.redoOffered = true;
+          offerRedo(why, takeLetter, () => { match.hold = false; match.flair = "none"; match.power = 0; match.lock = .65; say(`Redo. ${copyHint()}`); punch("REDO"); beginCatch(from); });
+          return;
         }
+        takeLetter();
+        return;
       }
     }
-    match.flair = "none";
-    match.power = 0;
-    match.lock = .65;
-    if (!match.over) stageNextTurn(id);
-    if (match.active === match.cpuId && !match.over) {
-      match.cpu = null;
+    settle();
+    function settle() {
+      match.flair = "none";
+      match.power = 0;
+      match.lock = .65;
+      if (!match.over) stageNextTurn(id);
+      if (match.active === match.cpuId && !match.over) {
+        match.cpu = null;
+      }
+      beginCatch(from);
     }
-    beginCatch(from);
   }
+
+  // Redo panel for the rewarded redo_shot call (see ads/CONTRACT.md). The match waits on lock until the player decides.
+  const redoPanel = document.getElementById("redo-panel");
+  let redoChoice = null;
+  function offerRedo(why, take, redo) {
+    match.lock = Infinity; match.hold = false; keys.clear(); pointer = null;
+    redoChoice = { take, redo };
+    document.getElementById("redo-copy").textContent = `${why} Redo the shot, or take the letter.`;
+    redoPanel.hidden = false; document.getElementById("redo-shot").focus();
+  }
+  function settleRedo(pick) {
+    const choice = redoChoice; redoChoice = null; redoPanel.hidden = true; canvas.focus({ preventScroll: true });
+    if (!choice || !match) return;
+    match.hold = false;
+    if (pick === "redo") adsApi().reward("redo_shot", choice.redo, choice.take); else choice.take();
+  }
+  document.getElementById("redo-shot").addEventListener("click", () => settleRedo("redo"));
+  document.getElementById("redo-take").addEventListener("click", () => settleRedo("take"));
 
   function advanceBall(ball) {
     const hoop = hoopLayout();
@@ -2402,6 +2464,8 @@
     ctx.font = "17px Share Tech Mono, monospace";
     ctx.fillStyle = "#fff6d8";
     ctx.fillText("Make your shot. Make them match it.", W / 2, 584);
+    // Preroll frame text, shown again briefly after the preroll. See ads/CONTRACT.md.
+    if (performance.now() < adsNoticeUntil) { ctx.font = "15px Share Tech Mono, monospace"; ctx.fillText(AD_FRAME_TEXT, W / 2, 614); ctx.font = "17px Share Tech Mono, monospace"; }
     ctx.fillText("PRESS ENTER OR TAP TO START", W / 2, 644);
   }
 
@@ -2949,10 +3013,11 @@
         ctx.font = "19px Bungee, sans-serif";
         ctx.fillText(match.unlockMessage, 640, 529);
       }
-      button(W / 2 - 320, 600, 280, 58, "RUN IT BACK", () => {
+      // Court-end break runs inside leaveCourt before either action. See ads/CONTRACT.md.
+      button(W / 2 - 320, 600, 280, 58, "RUN IT BACK", () => leaveCourt(() => {
         match = freshMatch(match.humanId);
-      }, true);
-      button(W / 2 + 40, 600, 280, 58, "CHOOSE COURT", openCourtSelect, false);
+      }), true);
+      button(W / 2 + 40, 600, 280, 58, "CHOOSE COURT", () => leaveCourt(openCourtSelect), false);
     }
   }
 
@@ -3083,7 +3148,7 @@
   });
 
   canvas.addEventListener("pointerdown", (ev) => {
-    if (paused || guideOpen || !assetsReady()) return;
+    if (paused || guideOpen || adHold || prerollState !== "done" || !assetsReady()) return;
     unlockAudio();
     canvas.focus();
     const p = pointerPos(ev);
@@ -3117,9 +3182,9 @@
       return;
     }
     if (courtOpen && k === "escape") { ev.preventDefault(); courtOpen=false; document.getElementById('court-select').hidden=true; chooseAgain(); return; }
-    if (k === "escape" && screen === "play") { ev.preventDefault(); if (!ev.repeat) setPaused(!paused); return; }
+    if (k === "escape" && screen === "play") { ev.preventDefault(); if (!ev.repeat && !adHold) userPause(); return; }
     if (ev.target?.closest?.("button, a, input, select, textarea, [contenteditable]")) return;
-    if (guideOpen || courtOpen || !assetsReady()) return;
+    if (guideOpen || courtOpen || adHold || prerollState !== "done" || !assetsReady()) return;
     if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) ev.preventDefault();
     if (paused || ev.repeat) return;
     unlockAudio();
@@ -3138,7 +3203,7 @@
       return;
     }
     if (!match) return;
-    if (match.over) { if (k === "enter" || k === " ") restartMatch(); return; }
+    if (match.over) { if (k === "enter" || k === " ") leaveCourt(restartMatch); return; }
     if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.humanId]) {
       if (!match.hold) {
         match.hold = true;
@@ -3173,12 +3238,16 @@
       if (!reducedMotion?.matches) canvas.animate?.([{ opacity: .65, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 220, easing: "ease-out" });
     }
     const ready = assetsReady(), progress = assetProgress();
-    document.getElementById("asset-loading").hidden = ready;
-    document.getElementById("asset-progress").textContent = progress.failed ? "Some artwork could not load. Check your connection and retry." : `Getting the court ready: ${progress.loaded} / ${progress.total}`;
+    // Preroll once, when assets are ready and before the title shows (see ads/CONTRACT.md).
+    // The loading panel carries the frame text while it runs; the title repeats it after.
+    if (ready && !prerollState) { prerollState = "running"; (adsApi()?.preroll || (cb => cb()))(() => { prerollState = "done"; adsNoticeUntil = performance.now() + 6000; }); }
+    document.getElementById("asset-loading").hidden = ready && prerollState === "done";
+    document.getElementById("asset-progress").textContent = progress.failed ? "Some artwork could not load. Check your connection and retry." : ready ? AD_FRAME_TEXT : `Getting the court ready: ${progress.loaded} / ${progress.total}`;
     document.getElementById("asset-retry").hidden = !progress.failed;
     if (pendingCourtStart && ready) { pendingCourtStart=false; startGame(); }
-    if (!paused && !guideOpen && !courtOpen && ready) update(dt * (match?.practice && document.getElementById("slow-motion").checked ? 0.25 : 1));
+    if (!paused && !guideOpen && !courtOpen && !adHold && ready) update(dt * (match?.practice && document.getElementById("slow-motion").checked ? 0.25 : 1));
     document.getElementById("practice-speed").hidden = !match?.practice;
+    if (redoChoice && (!match || match.lock !== Infinity || screen !== "play")) { redoChoice = null; redoPanel.hidden = true; }
     draw();
     controls.hidden = screen !== "play";
     document.getElementById("pause-toggle").hidden = !match || match.over;
