@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>VOTE</title>
+  <link rel="canonical" href="https://politicalarcades.com/horse/" />
+  <meta
+    name="description"
+    content="VOTE is a Political Arcades playground game. Call a shot as Zohran Mamdani or Abdul El-Sayed. The other player has to copy the spot and the flair."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Political Arcades" />
+  <meta property="og:title" content="VOTE" />
+  <meta property="og:description" content="Call a shot as Zohran Mamdani or Abdul El-Sayed. The other player has to copy the spot and the flair." />
+  <meta property="og:url" content="https://politicalarcades.com/horse/" />
+  <meta property="og:image" content="https://politicalarcades.com/art/horse-screen.jpg" />
+  <meta property="og:image:width" content="960" />
+  <meta property="og:image:height" content="540" />
+  <meta property="og:image:alt" content="Mamdani and El-Sayed on a New York playground court." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=courts1" />
+  <link rel="stylesheet" href="touch.css?v=launch1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../chibi-ui.css?v=2">
+<link rel="stylesheet" href="court-layout.css?v=safe1">
+<link rel="stylesheet" href="mobile.css?v=22">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><img src="assets/ui/makko/logo.webp" alt="VOTE" width="110" height="37"></a>
+    <button type="button" id="sound-toggle" aria-pressed="false">Sound off · Enable</button>
+    <a class="brand-side" href="../">Political Arcades</a>
+  </header>
+  <div class="session-controls" id="session-controls" hidden><button type="button" id="pause-toggle">Pause · Esc</button><button type="button" id="rematch" hidden>Restart match</button><button type="button" id="pick-again" hidden>Choose player</button><label id="practice-speed" hidden><input type="checkbox" id="slow-motion"> Slow motion</label></div>
+  <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
+  <main class="stage">
+    <section class="launch-panel" id="asset-loading" role="status" aria-live="polite"><h2>Getting ready</h2><p id="asset-progress">Loading the court...</p><button id="asset-retry" type="button" hidden>Retry loading</button></section>
+    <section class="launch-panel" id="first-play" hidden aria-labelledby="guide-title"><h2 id="guide-title">Make them match it.</h2><p>Make a shot. Everyone else must copy the spot and the shot.</p><p>Miss a copy? Earn a letter. Spell VOTE and you are out. Last player standing wins.</p><p><strong>Shooting takes two presses:</strong> one to aim, one to shoot in the gold zone.</p><button id="guide-learn" type="button">Try a guided shot</button><button id="guide-skip" type="button">I know the rules. Play!</button></section>
+    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>Take a breath. Your court is waiting.</p><button type="button" id="resume">Resume</button><button type="button" id="pause-restart">Restart game</button><button type="button" id="pause-choose">Change player</button></section>
+    <section id="court-select" class="court-select" hidden aria-labelledby="court-title"><header><h2 id="court-title">Choose your court</h2><p id="court-progress"></p></header><details class="court-songs"><summary id="court-songs-title">Court songs</summary><ol id="court-songs-list"></ol><p id="court-songs-note"></p></details><div id="court-grid" class="court-grid"></div><nav><button type="button" id="court-back">Back to players</button><button type="button" id="court-play">Play</button></nav></section>
+    <canvas id="game" width="1280" height="720" tabindex="0" aria-label="VOTE, a playground shooting game"></canvas>
+  </main>
+  <details class="how-to"><summary>How to play</summary><div>
+    <p><strong>Make them copy you.</strong> Pick a spot and a shot. If you make it, every other player must match both. Miss a copy and you earn a letter. Spell VOTE and you are out; the last player standing wins. If everyone matches, the next player sets a shot. If anyone misses, the setter goes again.</p>
+    <p><strong>Group play:</strong> all three characters play. Choose Solo vs 2 CPU or Pass and Play on the player screen. In Pass and Play, hand the device to the highlighted player each turn.</p>
+    <p><strong>Move:</strong> arrows / WASD, or the touch stick. <strong>Shoot:</strong> press Space or tap Aim, then press again when the needle reaches the gold zone.</p>
+    <p><strong>Add flair:</strong> 1 Spin · 2 Dunk (near the rim) · 3 Fade · 4 Hook. Choose the active trick again to return to a regular shot. Practice has no letters.</p>
+    <p><strong>Unlock courts:</strong> win three matches to unlock the next court. Wins are saved in this browser; practice does not count.</p>
+    <p><strong>Pause:</strong> Esc or Pause. Restart and change shooter from the pause menu.</p>
+  </div></details>
+  <footer class="site-foot">
+    <p>VOTE is an unofficial cartoon from <a href="../">Political Arcades</a>. It is not authorized by Zohran Mamdani, Abdul El-Sayed, James Talarico, or any candidate or candidate's committee.</p>
+  </footer>
+  <script src="touch-mobile.js?v=22"></script>
+  <script src="src/court-songs.js?v=starter1"></script>
+  <script src="src/music.js?v=starter1"></script>
+  <script src="src/basketball-clips.js?v=1"></script>
+  <script src="src/talarico-timing.js?v=7"></script>
+  <script src="src/talarico-fixed-clips.js?v=21"></script>
+  <script src="src/mobile-ui.js?v=22"></script>
+  <script src="src/mobile-main.js?v=mobile22"></script>
+</body>
+</html>
