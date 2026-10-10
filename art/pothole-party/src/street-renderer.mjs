@@ -3,7 +3,8 @@ import {animationMeta} from './animation-meta.mjs';
 import {REPAIR_MS} from './engine.mjs';
 const assets={};for(const name of ['walk','dig','street','props']){const im=new Image();im.src='./'+name+'-v9.webp';assets[name]=im;}
 const mapAssets={};for(const id of ['nyc','detroit','texas']){const im=new Image();im.src='/art/pothole-party/'+id+'-map-v15.webp';mapAssets[id]=im;}
-const makkoAssets={};for(const name of ['materials','construction','weathered','residents','work']){const im=new Image();im.src='/art/pothole-party/'+(name==='work'?'work-crew':name)+'-v17.webp';makkoAssets[name]=im;}
+const wornMaps={};for(const id of ['nyc','detroit','texas']){const im=new Image();im.src='/art/pothole-party/'+id+'-weathered-v18.webp';wornMaps[id]=im;}
+const makkoAssets={};for(const name of ['materials','construction','weathered','residents','work']){const im=new Image();im.src='/art/pothole-party/'+(name==='work'?'work-crew':name)+(name==='residents'?'-v18.webp':'-v17.webp');makkoAssets[name]=im;}
 const palette=['#60cbb8','#bb9be1','#efa666','#e2cb72'];
 const names=['Mamdani','El-Sayed','Talarico','Neighbor'];
 const loaded=im=>im.complete&&im.naturalWidth>0;
@@ -23,7 +24,7 @@ export function drawStreet(ctx,g,{previous,blend,leader,repairs,particles,cues=[
  for(let y=0;y<g.size;y++)for(let x=0;x<g.size;x++){ctx.strokeStyle='#cbe6da09';ctx.lineWidth=1;ctx.strokeRect(x*cell,y*cell,cell,cell);}
  if(!g.level)for(const p of g.patches){const x=(p.x+.5)*cell,y=(p.y+.5)*cell;ctx.fillStyle='#657273';ctx.beginPath();ctx.roundRect(x-16,y-12,32,27,7);ctx.fill();}
  for(const p of repairs){const t=Math.max(0,(now-p.time)/900);if(t<1&&!reduced){ctx.strokeStyle=`rgba(110,240,169,${1-t})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc((p.x+.5)*cell,(p.y+.5)*cell,16+t*23,0,Math.PI*2);ctx.stroke();ctx.fillStyle=`rgba(255,233,153,${1-t})`;ctx.font='bold 14px sans-serif';ctx.textAlign='center';ctx.fillText('+100',(p.x+.5)*cell,(p.y+.5)*cell-24-t*20);}}
- if(g.food){if(g.level){const x=(g.food.x+.5)*cell,y=(g.food.y+.5)*cell;makkoProp(ctx,'materials',taskArt(g,g.assigned).material,x,y,31);label(ctx,g.level.materials[g.assigned].toUpperCase(),x,y-23,'#ffd23f');}else hole(ctx,g.food,cell,now,reduced);}
+ if(g.food){if(g.level){const x=(g.food.x+.5)*cell,y=(g.food.y+.5)*cell;makkoProp(ctx,'materials',taskArt(g,g.assigned).material,x,y,31);label(ctx,g.level.materials[g.assigned].toUpperCase(),x,y+29,'#ffd23f');}else hole(ctx,g.food,cell,now,reduced);}
  if(g.level&&g.site)workSite(ctx,g,g.site,g.assigned,cell,now,reduced);
 
 
@@ -38,7 +39,7 @@ export function drawStreet(ctx,g,{previous,blend,leader,repairs,particles,cues=[
   if(!j.ready&&!reduced&&['pave','court'].includes(art.kind)){const phase=(j.progress%960)/960;if(phase>.48&&phase<.95){ctx.save();ctx.globalAlpha=(.95-phase)*1.2;ctx.fillStyle='#c8b79b';for(let k=0;k<4;k++){ctx.beginPath();ctx.arc(x+8+(k-1.5)*5,y+8-(phase-.48)*22,2+k*.8,0,Math.PI*2);ctx.fill();}ctx.restore();}}
 
   if(!j.ready&&g.level&&['hammer','plant','install'].includes(art.kind))workActor(ctx,j.worker.id,art.kind,reduced||g.status!=='playing'?0:Math.floor(j.progress/220)%4,x-3,y+16,38);else actor(ctx,j.worker.id,j.ready?'walk':'dig',j.ready?1:f,x-3,y+16,g.level?38:46);
-  ctx.fillStyle='#09231d';ctx.beginPath();ctx.roundRect(x-22,y-48,44,14,4);ctx.fill();ctx.fillStyle=j.ready?'#87ffc1':'#ffdf87';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(j.ready?'PICK UP ✓':((REPAIR_MS-j.progress)/1000).toFixed(1)+'s',x,y-38);
+  ctx.fillStyle='#09231d';ctx.beginPath();ctx.roundRect(x-22,y-48,44,14,4);ctx.fill();ctx.fillStyle=j.ready?'#87ffc1':'#ffdf87';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(j.ready?'PICK UP âœ“':((REPAIR_MS-j.progress)/1000).toFixed(1)+'s',x,y-38);
   if(!j.ready){ctx.fillStyle='#061019';ctx.fillRect(x-19,y-30,38,4);ctx.fillStyle='#ffe391';ctx.fillRect(x-19,y-30,38*progress,4);}else{ctx.strokeStyle='#83f0b0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y+3,22,0,Math.PI*2);ctx.stroke();}
  }
  const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p;const dx=p.x-before.x,dy=p.y-before.y;return{x:(before.x+dx*blend+.5)*cell,y:(before.y+dy*blend+.5)*cell,id:p.id,uid:p.uid,flip:dx<0,index:i};});
@@ -56,22 +57,18 @@ const TASK_ART={
 };
 function taskArt(g,task){return TASK_ART[g.level.id][Math.min(5,task)];}
 function makkoProp(ctx,name,id,x,y,width,maxHeight=Infinity){const im=makkoAssets[name],m=makkoMeta[name].cells[id];if(!loaded(im))return;const scale=Math.min(width/m.w,maxHeight/m.h);ctx.drawImage(im,m.x,m.y,m.w,m.h,x-m.w*scale/2,y-m.h*scale/2,m.w*scale,m.h*scale);}
-function constructionStage(ctx,art,stage,x,y,width,maxHeight=Infinity){if(art.stage===null)makkoProp(ctx,'materials',art.material,x,y,width,maxHeight);else makkoProp(ctx,'construction',art.stage+stage,x,y,width,maxHeight);}
+function constructionStage(ctx,art,stage,x,y,width,maxHeight=Infinity){if(art.stage===null)makkoProp(ctx,'materials',art.material,x,y,width,maxHeight);else makkoProp(ctx,'construction',art.stage+(art.kind==='hammer'?Math.min(stage,1):stage),x,y,width,maxHeight);}
 function atlasActor(ctx,name,row,frame,x,y,height){const im=makkoAssets[name],m=makkoMeta[name],r=m.rows[row];if(!loaded(im))return;const sc=height/r.height;ctx.drawImage(im,frame*m.fw,row*m.fh,m.fw,m.fh,x-r.anchor*sc,y-m.fh*sc,m.fw*sc,m.fh*sc);}
 function workActor(ctx,id,kind,frame,x,y,height){const action={hammer:0,plant:1,install:2}[kind];if(loaded(makkoAssets.work))atlasActor(ctx,'work',id*3+action,frame,x,y,height);else actor(ctx,id,'dig',frame%6,x,y,height);}
 function workSite(ctx,g,p,task,cell,now,reduced){const art=taskArt(g,task),x=(p.x+.5)*cell,y=(p.y+.5)*cell;if(art.kind==='pave')hole(ctx,p,cell,now,reduced);else{constructionStage(ctx,art,0,x,y+5,28);ctx.strokeStyle='#ffcf72';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y+2,19+(reduced?0:Math.sin(now/280)),0,Math.PI*2);ctx.stroke();label(ctx,'DROP',x,y-23,'#ffdb83');}label(ctx,art.label,x,y-39,'#19e6ff');}
 const AMENITY_SPOTS={nyc:[[370,150,70,35],[325,122,90,50],[250,650,270,110],[665,220,85,260],[40,260,70,120],[280,625,180,40]],detroit:[[150,260,35,150],[665,245,100,340],[368,633,40,40],[0,200,110,390],[440,615,105,110],[115,115,65,55]],texas:[[175,200,40,140],[670,235,98,360],[460,642,60,55],[120,625,260,120],[0,230,105,370],[340,125,90,40]]};
-function weatheredArea(ctx,id,x,y,w,h,opacity=1){const im=makkoAssets.weathered,m=makkoMeta.weathered.cells[id];if(!loaded(im))return;ctx.save();ctx.globalAlpha=opacity;ctx.drawImage(im,m.x,m.y,m.w,m.h,x,y,w,h);ctx.restore();}
+function mapRegion(ctx,im,x,y,w,h){if(!loaded(im))return;const sx=im.naturalWidth/768,sy=im.naturalHeight/768;ctx.drawImage(im,x*sx,y*sy,w*sx,h*sy,x,y,w,h);}
 function drawWorkdayScene(ctx,g,now,reduced){
- const done=new Set(g.patches.map(p=>p.task));const spots=AMENITY_SPOTS[g.level.id];
- // Illustrated wear clears from the same fixed coordinates; the clean map never shifts.
- for(let task=0;task<6;task++){if(done.has(task))continue;const x=176+(task%3)*416/3,y=176+Math.floor(task/3)*208,w=416/3,h=208;weatheredArea(ctx,g.level.id==='nyc'?0:g.level.id==='detroit'?2:3,x,y,w,h,.76);}
- spots.forEach(([x,y,w,h],task)=>{if(done.has(task))return;const art=taskArt(g,task),job=g.jobs.find(j=>j.task===task&&!j.open),phase=job?Math.min(2,Math.floor(job.progress/REPAIR_MS*3)):0;
-  const wear=art.kind==='court'?5:g.level.id==='nyc'?0:g.level.id==='detroit'?2:3;
-  weatheredArea(ctx,wear,x,y,w,h);
-  const n=(art.kind==='plant'||(g.level.id==='detroit'&&task===3))?3:1;
-  for(let i=0;i<n;i++)constructionStage(ctx,art,phase,x+w*(i+.5)/n,y+h*.57,Math.min(w/n*.84,115),Math.min(h*.85,100));
- });
+ const done=new Set(g.patches.map(p=>p.task)),spots=AMENITY_SPOTS[g.level.id],worn=wornMaps[g.level.id];
+ // Each maintenance zone reveals the same coordinates from the clean original.
+ // Buildings remain on the approved clean base; no ground tiles are stretched over it.
+ for(let task=0;task<6;task++){if(done.has(task))continue;const x=176+(task%3)*416/3,y=176+Math.floor(task/3)*208;mapRegion(ctx,worn,x,y,416/3,208);}
+ spots.forEach(([x,y,w,h],task)=>{if(done.has(task))return;const cx=Math.max(6,x),cy=Math.max(6,y),cw=Math.min(762,x+w)-cx,ch=Math.min(762,y+h)-cy;mapRegion(ctx,worn,cx,cy,cw,ch);});
  const f=reduced||g.status==='paused'?0:Math.floor(now/230)%4;
  if(g.level.id==='nyc'){
   if(done.has(2))atlasActor(ctx,'residents',2,f,382,724,36);
