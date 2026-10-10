@@ -201,7 +201,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v14` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v15` : src;
     images[key] = img;
   }
 
@@ -1758,11 +1758,14 @@
       let x = at.x + face * (clip.sourceFacing || 1) * (hand[0] - (clip.originX ?? .5)) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
       if (clip.ballPath?.releasePhase) {
-        const u = (dribbleFrameClock(clip, id) % clip.frames) / clip.frames;
+        const cycleFrames = clip.ballPath.cycleFrames || clip.frames;
+        const clock = dribbleFrameClock(clip, id);
+        const cycleStart = Math.floor(clock / cycleFrames) * cycleFrames;
+        const u = (clock % cycleFrames) / cycleFrames;
         const release = clip.ballPath.releasePhase, floorPhase = clip.ballPath.floorPhase;
         const catchPhase = clip.ballPath.catchPhase ?? 1;
         const palm = phase => {
-          const f = phase * clip.frames, a = Math.floor(f) % clip.frames, blend = f % 1;
+          const f = cycleStart + phase * cycleFrames, a = Math.floor(f) % clip.frames, blend = f % 1;
           const h = clip.hands[a].map((v, i) => v + (clip.hands[(a + 1) % clip.frames][i] - v) * blend);
           // Palm samples and foot anchors must use the same authored frame.
           // Using the currently displayed foot for a future catch moves the
