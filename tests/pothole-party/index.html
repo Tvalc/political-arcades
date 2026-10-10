@@ -127,7 +127,7 @@ function drawStreet(ctx,g,{previous,blend,leader,repairs,particles,now,reduced,f
  for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/.6);ctx.fillStyle=p.color||'#ffd35a';ctx.fillRect(p.x*road/640-2,p.y*road/640-2,4,4);}ctx.globalAlpha=1;if(flash>0&&!reduced){ctx.fillStyle=`rgba(140,236,178,${flash*.07})`;ctx.fillRect(0,0,road,road);}ctx.restore();
 }
 
-const $=s=>document.querySelector(s),canvas=$('#game'),ctx=canvas.getContext('2d');let g=createGame(),leader=0,started=false,last=0,acc=0,sound=false,audio,flash=0;let best=0;try{best=+localStorage.getItem('a2a-potholes-best')||0}catch{}$('#best').textContent=best;
+const $=s=>document.querySelector(s),canvas=$('#game'),ctx=canvas.getContext('2d');let g=createGame(),leader=0,started=false,last=0,acc=0,sound=false,audio,flash=0;let best=0;try{best=+localStorage.getItem('a2a-potholes-work-best')||0}catch{}$('#best').textContent=best;
 const criticIds=['trump','cruz','greene'],heroIds=['mamdani','sayed','talarico'];
 const criticPlayers=[...document.querySelectorAll('.cast-performance')].map(c=>new CastPlayer(c,castManifest));
 const heroPlayers=[...document.querySelectorAll('.hero-performance')].map(c=>new CastPlayer(c,castManifest));
@@ -149,7 +149,7 @@ function repairFX(p){repairs.push({...p,time:performance.now()});for(let i=0;i<1
 function draw(now){const interval=Math.max(145,235-g.repairs*3);drawStreet(ctx,g,{previous,blend:reduced||g.status!=='playing'?1:Math.min(1,acc/interval),leader,repairs,particles,now,reduced,flash});flash=Math.max(0,flash-.04)}
 function processEvents(){
  for(const event of g.events.splice(0)){
-  if(event.type==='repair'){repairFX(event);heckle();repairReactions();flash=1;beep(520);$('#quip').textContent='Repair done! Collect the green worker to grow the crew.';if(g.score>best){best=g.score;try{localStorage.setItem('a2a-potholes-best',String(best))}catch{}}}
+  if(event.type==='repair'){repairFX(event);heckle();repairReactions();flash=1;beep(520);$('#quip').textContent='Repair done! Collect the green worker to grow the crew.';if(g.score>best){best=g.score;try{localStorage.setItem('a2a-potholes-work-best',String(best))}catch{}}}
   if(event.type==='drop'){$('#quip').textContent='Worker dropped off. Give them 4.2 seconds to finish.';beep(310);}
   if(event.type==='early'){$('#quip').textContent='Too early! Worker collected, pothole still open. Try again.';beep(180);}
   if(event.type==='pickup'){$('#quip').textContent='Worker back! A neighbor joins the crew. Keep it moving.';beep(760);}
