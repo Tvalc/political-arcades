@@ -1856,7 +1856,7 @@
     if (flair !== "dunk") return { x: 0, lift: 0 };
     const clip = CLIPS[id].dunk, drawn = drawnSprite(clip, at, clip.releaseFrame), hoop = hoopLayout();
     const handX = at.x + (match.face[id] || 1) * (clip.releaseHand[0] - clip.originX) * drawn.width;
-    const handY = at.y + (clip.releaseHand[1] - clip.feet[0]) * drawn.height;
+    const handY = at.y + (clip.releaseHand[1] - clip.feet[clip.alignReleaseFoot ? clip.releaseFrame : 0]) * drawn.height;
     const amount = t <= show ? Math.sin(clamp(t / show, 0, 1) * Math.PI / 2)
       : Math.cos(clamp((t - show) / (.85 - show), 0, 1) * Math.PI / 2);
     return { x: (hoop.x - handX) * amount, lift: Math.max(0, handY - (hoop.rim - 9)) * amount };
