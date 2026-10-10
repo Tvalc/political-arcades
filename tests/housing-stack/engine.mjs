@@ -32,7 +32,7 @@ export function ghostY(g){let y=g.piece.y;while(fits(g,g.piece.matrix,g.piece.x,
 export function drop(g){if(g.status!=='playing')return null;const y=ghostY(g);g.score+=(y-g.piece.y)*2;g.piece.y=y;return lock(g);}
 export function tick(g){if(g.status!=='playing')return null;move(g,0,1);return null;}
 function lock(g){const p=g.piece;for(let y=0;y<p.matrix.length;y++)for(let x=0;x<p.matrix[y].length;x++)if(p.matrix[y][x])g.board[p.y+y][p.x+x]=p.id+1;
- const cleared=g.board.filter(row=>row.every(Boolean)).length;
+ const finishedRows=g.board.map((cells,y)=>({y,cells:[...cells]})).filter(row=>row.cells.every(Boolean));const cleared=finishedRows.length;
  if(cleared){g.board=g.board.filter(row=>!row.every(Boolean));while(g.board.length<20)g.board.unshift(Array(10).fill(0));g.lines+=cleared;g.homes+=cleared*10;g.score+=[0,100,300,500,800][cleared]*(1+Math.floor((g.lines-cleared)/10));}
- g.combo=cleared?g.combo+1:-1;const comboBonus=cleared?Math.max(0,g.combo)*50*(1+Math.floor(g.lines/10)):0;g.score+=comboBonus;g.canHold=true;g.crew=(g.crew+1)%3;spawn(g);return{cleared,combo:g.combo,comboBonus,crew:g.crew,lost:g.status==='lost'};
+ g.combo=cleared?g.combo+1:-1;const comboBonus=cleared?Math.max(0,g.combo)*50*(1+Math.floor(g.lines/10)):0;g.score+=comboBonus;g.canHold=true;g.crew=(g.crew+1)%3;spawn(g);return{cleared,finishedRows,combo:g.combo,comboBonus,crew:g.crew,lost:g.status==='lost'};
 }
