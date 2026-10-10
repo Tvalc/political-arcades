@@ -34,6 +34,7 @@
 
   const ROSTER = Object.keys(FIGHTERS);
   let opponentIndex = 1;
+  let playMode = "solo";
   const selectedFighter = () => ROSTER[selectIndex];
   const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % 2];
 
@@ -1514,7 +1515,7 @@
   }
 
   function shotNeed() {
-    const p = match.pos[match.humanId];
+    const p = match.pos[match.active];
     return zoneFor(p.x, p.y, match.flair);
   }
 
@@ -1522,15 +1523,15 @@
     return distToHoop(x, y) < 0.16;
   }
 
-  function otherId(id) {
-    if (match && [match.humanId, match.cpuId].includes(id)) return id === match.humanId ? match.cpuId : match.humanId;
-    return ROSTER.find(other => other !== id);
+  function remainingPlayers() { return match.players.filter(id => !match.eliminated.includes(id)); }
+  function isHuman(id) { return !!match && (match.practice ? id === match.humanId : match.localPlayers.includes(id)); }
+  function nextPlayer(id) {
+    const order=match.players,start=order.indexOf(id);
+    for(let n=1;n<=order.length;n++){const candidate=order[(start+n)%order.length];if(!match.eliminated.includes(candidate))return candidate;}
+    return id;
   }
-
-  function sideline(id) {
-    if (match && id === match.spectatorId) return { x: .94, y: .57 };
-    return { x: id === (match?.humanId || selectedFighter()) ? -.06 : 1.06, y: .38 };
-  }
+  function otherId(id) { return match?.players ? nextPlayer(id) : ROSTER.find(other=>other!==id); }
+  function sideline(id) { const i=(match?.players||ROSTER).indexOf(id);return {x:.13+Math.max(0,i)*.36,y:.66}; }
 
   function stageNextTurn(shooter) {
     match.transit ||= {};
@@ -1538,8 +1539,7 @@
     const incoming = match.active;
     if (incoming !== shooter) {
       const p = match.pos[incoming];
-      if (p.x < .08 || p.x > .92)
-        match.transit[incoming] = { x: incoming === match.humanId ? .16 : .84, y: .38 };
+      if (match.phase === "set") match.transit[incoming] = {x:.32,y:.28};
     }
   }
 
@@ -1563,18 +1563,24 @@
 
   function freshMatch(humanId) {
     const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % 2];
-    const spectatorId = ROSTER.find(id => id !== humanId && id !== cpuId);
+    const players=[humanId,...ROSTER.filter(id=>id!==humanId)];
+    const spectatorId=null;
     const home = FIGHTERS[humanId];
     return {
       humanId,
       cpuId,
       spectatorId,
+      players,
+      localPlayers: playMode === "local" ? [...players] : [humanId],
+      eliminated: [],
+      round: null,
+      mode: playMode,
       reactions: {},
       court: selectedCourt || home.court,
       songShots: {},
       marketingSession: marketingUnlock,
       letters: Object.fromEntries(ROSTER.map(id => [id, 0])),
-      pos: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? {x:.32,y:.28} : id === cpuId ? {x:1.06,y:.38} : {x:.94,y:.57}])),
+      pos: Object.fromEntries(players.map((id,i)=>[id,id===humanId?{x:.32,y:.28}:{x:.13+i*.36,y:.66}])),
       transit: {},
       face: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? 1 : -1])),
       active: humanId,
@@ -1937,10 +1943,10 @@
   function release(id) {
     const p = match.pos[id];
     match.face[id] = Math.sign(HOOP.x - p.x) || match.face[id] || 1;
-    let flair = id === match.humanId ? match.flair : match.cpu.flair;
+    let flair = isHuman(id) ? match.flair : match.cpu.flair;
     if (flair === "dunk" && !canDunk(p.x, p.y)) {
       flair = "none";
-      if (id === match.humanId) say("Too far to dunk. That one stays a jumper.");
+      if (isHuman(id)) say("Too far to dunk. That one stays a jumper.");
     }
     const zone = zoneFor(p.x, p.y, flair);
     const error = match.power - zone.need;
@@ -1988,7 +1994,7 @@
       match.ball.x0 += offset.x; match.ball.y0 -= offset.lift;
       if (flair === "dunk") match.ball.arc = 8;
     }
-    if (id === match.humanId) {
+    if (isHuman(id)) {
       match.releaseFeedback = { text: grade, life: .9, perfect: grade === "PERFECT", made };
       if (grade === "PERFECT") tone(1046, .09, "triangle", .05);
     }
@@ -2010,26 +2016,15 @@
   }
 
   function addLetter(id) {
-    match.letters[id] += 1;
-    const word = LETTERS.slice(0, match.letters[id]).join("");
-    tone(220, 0.18, "sawtooth", 0.05);
-    if (match.letters[id] >= LETTERS.length) {
-      const winner = otherId(id);
-      match.over = winner;
-      recordCourtWin();
-      say(`${FIGHTERS[id].full} spells VOTE. ${FIGHTERS[winner].full} takes the court.${match.unlockMessage ? " " + match.unlockMessage : ""}`);
-      punch("VOTE", true);
-      match.pop[id] = 1;
-      return;
+    match.letters[id]+=1;match.pop[id]=1;tone(220,.18,"sawtooth",.05);
+    if(match.letters[id]>=LETTERS.length && !match.eliminated.includes(id)) {
+      match.eliminated.push(id);const left=remainingPlayers();
+      if(left.length===1){match.over=left[0];recordCourtWin();say(`${FIGHTERS[id].name} spells VOTE. ${FIGHTERS[match.over].full} takes the court.${match.unlockMessage?" "+match.unlockMessage:""}`);punch("WINNER",true);}
     }
-    return word;
+    return LETTERS.slice(0,match.letters[id]).join("");
   }
-
-  function reactToShot(shooter, made, flair) {
-    const rival = otherId(shooter);
-    const success = made;
-    const states = {[shooter]: success ? "celebrate" : "shocked", [rival]: success ? "shocked" : "mock", [match.spectatorId]: success ? (flair === "dunk" ? "shocked" : "celebrate") : "mock"};
-    for (const [id, state] of Object.entries(states)) match.reactions[id] = {state, start:match.t, life:4.1};
+  function reactToShot(shooter,made,flair) {
+    for(const id of ROSTER){const state=id===shooter?(made?"celebrate":"shocked"):(made?(flair==="dunk"?"shocked":"celebrate"):"mock");match.reactions[id]={state,start:match.t,life:4.1};}
   }
 
   function resolveBall() {
@@ -2057,60 +2052,26 @@
       beginCatch(from);
       return;
     }
-    if (match.phase === "set") {
-      if (ball.made) {
-        match.challenge = { x: ball.sx, y: ball.sy, flair: ball.flair };
-        match.phase = "copy";
-        match.active = otherId(id);
-        const trick = FLAIR_NAME[ball.flair];
-        say(`${name} sinks the ${trick}. ${FIGHTERS[match.active].name} has to copy the spot and the flair.`);
-        punch(signature[ball.flair] || "SWISH", true);
-        if (ball.flair === "dunk") {
-          match.shake = 1.8;
-          match.zoom = 1;
-          match.flash = 1;
-        }
-      } else {
-        match.challenge = null;
-        match.phase = "set";
-        match.active = otherId(id);
-        say(`No good. ${FIGHTERS[match.active].name}, your rock. Set the next shot.`);
-        punch("NO GOOD!");
-      }
+    if(match.phase === "set") {
+      if(ball.made){
+        match.challenge={x:ball.sx,y:ball.sy,flair:ball.flair};const pending=[];
+        for(let next=nextPlayer(id);next!==id;next=nextPlayer(next))pending.push(next);
+        match.round={setter:id,pending,missed:false};match.phase="copy";match.active=pending.shift();
+        say(`${name} sinks the ${FLAIR_NAME[ball.flair]}. Everyone must copy it. ${FIGHTERS[match.active].name} is up.`);punch(signature[ball.flair]||"SWISH",true);
+      } else {match.active=nextPlayer(id);match.challenge=null;match.round=null;say(`No good. ${FIGHTERS[match.active].name} sets the next shot.`);punch("NO GOOD!");}
     } else {
-      const spotOk = Math.hypot(ball.sx - match.challenge.x, ball.sy - match.challenge.y) < 0.11;
-      const flairOk = ball.flair === match.challenge.flair;
-      if (ball.made && spotOk && flairOk) {
-        match.phase = "set";
-        match.challenge = null;
-        match.active = otherId(id);
-        say(`Matched it. ${FIGHTERS[match.active].name}, your rock.`);
-        punch("MATCHED IT", true);
-      } else {
-        const why = !spotOk
-          ? "Wrong spot."
-          : !flairOk
-            ? `That was a ${FLAIR_NAME[ball.flair]}. Copy the ${FLAIR_NAME[match.challenge.flair]}.`
-            : "No good.";
-        const word = addLetter(id);
-        match.pop[id] = 1;
-        if (match.over) say(`${why} ${name} spells VOTE. ${FIGHTERS[match.over].name} wins.`);
-        if (!match.over) {
-          match.phase = "set";
-          match.challenge = null;
-          match.active = otherId(id);
-          say(`${why} ${name} picks up ${word}. ${FIGHTERS[match.active].name} calls the next one.`);
-          punch(word);
-        }
+      const round=match.round,matched=ball.made&&validCopy;let result="Matched it.";
+      if(!matched){round.missed=true;const why=Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)>=.11?"Wrong spot.":ball.flair!==match.challenge.flair?"Wrong shot.":"No good.";
+        const word=addLetter(id);result=match.eliminated.includes(id)?`${name} spells VOTE and is out.`:`${why} ${name} picks up ${word}.`;punch(word);
+      } else punch("MATCHED IT",true);
+      if(!match.over){
+        round.pending=round.pending.filter(player=>!match.eliminated.includes(player));
+        if(round.pending.length){match.active=round.pending.shift();say(`${result} ${FIGHTERS[match.active].name} must copy the same shot.`);}
+        else {match.active=round.missed&&!match.eliminated.includes(round.setter)?round.setter:nextPlayer(round.setter);match.phase="set";match.challenge=null;match.round=null;say(`${result} ${FIGHTERS[match.active].name} sets the next shot.`);}
       }
     }
-    match.flair = "none";
-    match.power = 0;
-    match.lock = .65;
-    if (!match.over) stageNextTurn(id);
-    if (match.active === match.cpuId && !match.over) {
-      match.cpu = null;
-    }
+    match.flair="none";match.power=0;match.hold=false;match.cpu=null;match.lock=.65;pointer=null;keys.clear();
+    if(!match.over)stageNextTurn(id);
     beginCatch(from);
   }
 
@@ -2228,12 +2189,12 @@
       match.lock -= dt;
       return;
     }
-    if (match.active === match.cpuId) updateCpu(dt);
+    if (!isHuman(match.active)) updateCpu(dt);
     else updateHuman(dt);
   }
 
   function updateHuman(dt) {
-    const id = match.humanId;
+    const id = match.active;
     const p = match.pos[id];
     let vx = 0;
     let vy = 0;
@@ -2338,13 +2299,13 @@
 
   function humanRelease() {
     if (!match || match.over || match.ball || match.pass || match.lock > 0 || match.transit?.[match.active]) return;
-    if (match.active !== match.humanId || !match.hold) return;
-    release(match.humanId);
+    if (!isHuman(match.active) || !match.hold) return;
+    release(match.active);
   }
 
   function setFlair(id) {
-    if (!match || match.ball || match.pass || match.active !== match.humanId) return;
-    if (id === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y)) {
+    if (!match || match.ball || match.pass || !isHuman(match.active)) return;
+    if (id === "dunk" && !canDunk(match.pos[match.active].x, match.pos[match.active].y)) {
       say("Get closer to the rim to dunk.");
       tone(160, 0.08, "square", 0.04);
       return;
@@ -2484,7 +2445,7 @@
       ctx.font="17px Share Tech Mono, monospace";
       ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
     });
-    button(390,545,500,58,`VS ${FIGHTERS[selectedOpponent()].full.toUpperCase()} · CHANGE`,()=>{opponentIndex=(opponentIndex+1)%2;});
+    button(390,545,500,58,playMode === "solo" ? "ALL 3 : SOLO VS 2 CPU" : "ALL 3 : PASS AND PLAY",()=>{playMode=playMode==="solo"?"local":"solo";});
     button(478,618,324,64,"CHOOSE COURT",()=>openCourtSelect(),true);
     ctx.fillStyle="#fff6d8";ctx.font="14px Share Tech Mono, monospace";ctx.textAlign="center";
     ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT",640,708);
@@ -2851,7 +2812,7 @@
       frame = poseFrame(CLIPS[id][action], match.ball);
     } else if (!match.ball && match.hold) {
       id = match.active;
-      const flair = id === match.cpuId ? match.cpu.flair : match.flair;
+      const flair = !isHuman(id) ? match.cpu.flair : match.flair;
       action = flair === "none" ? "shot" : flair;
       frame = 0;
     } else return null;
@@ -2958,49 +2919,26 @@
 
   function drawHud() {
     buttons.length = 0;
-    const aiming = match.hold && match.active === match.humanId && !match.ball ? shotNeed() : null;
-    // Keep the center display above y=92: Detroit's backboard begins below it.
-    if (match.humanId !== "talarico") skin(`score-${match.humanId}`, 16, 8, 96, 100);
-    else drawScorePortrait("talarico",16,8);
-    skin("score-left", 112, 12, 248, 100);
-    skin("score-center", 400, 3, 480, 57);
-    skin("score-right", 920, 12, 248, 100);
-    if (match.cpuId !== "talarico") skin(`score-${match.cpuId}`, 1168, 8, 96, 100);
-    else drawScorePortrait("talarico",1168,8);
-    [match.humanId, match.cpuId].forEach((id, i) => {
-      const right = i === 1;
-      const f = FIGHTERS[id];
-      ctx.fillStyle = "#f4efe4";
-      ctx.font = "16px Bungee, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(f.name.toUpperCase(), right ? 1044 : 236, 40);
-      LETTERS.forEach((letter, n) => {
-        const on = n < match.letters[id];
-        const fresh = on && n === match.letters[id] - 1 && match.pop[id] > 0;
-        const s = fresh ? 1 + match.pop[id] * 0.55 : 1;
-        const lx = (right ? 950 : 142) + n * 61;
-        ctx.save();
-        ctx.translate(lx, 88);
-        ctx.scale(s, s);
-        ctx.font = "28px Bungee, sans-serif";
-        ctx.textAlign = "center";
-        ctx.shadowColor = on ? "#fff6d8" : "transparent";
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = on ? "#ff9b40" : "rgba(244, 239, 228, 0.35)";
-        ctx.fillText(letter, 0, 0);
-        ctx.restore();
-      });
+    const aiming = match.hold && isHuman(match.active) && !match.ball ? shotNeed() : null;
+    const cardWidth=(W-32)/match.players.length;
+    match.players.forEach((id,i)=>{
+      const x=16+i*cardWidth,out=match.eliminated.includes(id),active=match.active===id&&!match.over;
+      ctx.fillStyle=out?"#18202d":"#182d43";roundRect(x,4,cardWidth-8,76,8);ctx.fill();ctx.strokeStyle=active?"#ffba45":"#62748a";ctx.lineWidth=active?3:1;ctx.stroke();
+      if(id!=="talarico")skin(`score-${id}`,x+4,9,64,64);else{ctx.save();ctx.translate(x+4,9);ctx.scale(2/3,2/3);drawScorePortrait(id,0,0);ctx.restore();}
+      ctx.textAlign="center";ctx.fillStyle=out?"#8793a1":"#fff6d8";ctx.font="15px Bungee, sans-serif";ctx.fillText(`${FIGHTERS[id].name.toUpperCase()}${out?" : OUT":""}`,x+cardWidth*.57,26,cardWidth-88);
+      LETTERS.forEach((letter,n)=>{ctx.fillStyle=n<match.letters[id]?"#ff9b40":"#667789";ctx.font="23px Bungee, sans-serif";ctx.fillText(letter,x+94+n*(cardWidth-112)/4,62);});
     });
+    ctx.fillStyle="rgba(8,17,30,.9)";roundRect(240,85,800,43,6);ctx.fill();
     const city = courtById(match.court).name.toUpperCase();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     if (aiming) {
       ctx.fillStyle = "#fff6d8";
       ctx.font = "20px Bungee, sans-serif";
-      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 26);
+      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 101);
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "16px Share Tech Mono, monospace";
-      ctx.fillText("Space or tap the shot button again", W / 2, 48);
+      ctx.fillText("Space or tap the shot button again", W / 2, 120);
       const w = 440, h = 48, x = (W - w) / 2, y = 596;
       skin("meter", x, y, w, h);
       const pad = 32, inner = w - pad * 2;
@@ -3012,13 +2950,13 @@
     } else {
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "12px Bungee, sans-serif";
-      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${city} · ${match.active === match.humanId ? "YOUR TURN" : "OPPONENT TURN"}`, W / 2, 21, 450);
+      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} · ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 100, 780);
       const tutorial = match.tutorial;
       const brief = match.over ? `${FIGHTERS[match.over].name} wins! Run it back?` : tutorial
         ? tutorial.shot ? "Ready? Start a match." : !tutorial.moved ? "Move: arrows / WASD / stick." : "Press Space / Aim to begin."
-        : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && match.active === match.humanId
+        : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && isHuman(match.active)
         ? copyHint() : "Set a shot. Make them match it.";
-      wrapCall(brief, W / 2, 43);
+      wrapCall(brief, W / 2, 119);
     }
 
     if (match.notice && match.notice.until > match.t && !aiming) {
@@ -3035,7 +2973,7 @@
     }
     if (match.tutorial) button(904, 512, 352, 46, match.tutorial.shot ? "START MATCH" : "SKIP LESSON", () => startGame(), true);
 
-    if (!match.over && match.active === match.humanId && !match.ball && !match.pass) {
+    if (!match.over && isHuman(match.active) && !match.ball && !match.pass) {
       const labels = [
         ["1  SPIN", "spin"],
         ["2  DUNK", "dunk"],
@@ -3043,7 +2981,7 @@
         ["4  HOOK", "hook"],
       ];
       labels.forEach((item, i) => {
-        const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y);
+        const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.active].x, match.pos[match.active].y);
         button(24 + i * 168, 662, 156, 44, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
       const label = !match.hold ? "SPACE / TAP TO AIM" : aiming && aiming.hit ? "SHOOT NOW!" : "SPACE / TAP TO SHOOT";
@@ -3074,7 +3012,7 @@
   }
 
   function copyHint() {
-    const p = match.pos[match.humanId], c = match.challenge;
+    const p = match.pos[match.active], c = match.challenge;
     if (!c) return "Match the spot and shot.";
     const spot = Math.hypot(p.x - c.x, p.y - c.y) < .11;
     const shot = match.flair === c.flair;
@@ -3135,7 +3073,7 @@
           if (!gather?.behind) drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
         }
       } else if (match.hold) {
-        const flair = match.active === match.cpuId ? match.cpu.flair : match.flair;
+        const flair = !isHuman(match.active) ? match.cpu.flair : match.flair;
         if (!gather?.behind) drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
       } else if (match.pass) {
         drawLoose(match.pass, match.pass.t * 1.4);
@@ -3215,7 +3153,7 @@
       pointer = null;
       return;
     }
-    if (screen === "play" && match && match.active === match.humanId && !match.ball && !match.pass && !match.over) {
+    if (screen === "play" && match && isHuman(match.active) && !match.ball && !match.pass && !match.over) {
       const spot = courtPoint(p.x, p.y);
       if (spot) pointer = { move: spot };
     }
@@ -3258,7 +3196,7 @@
     }
     if (!match) return;
     if (match.over) { if (k === "enter" || k === " ") restartMatch(); return; }
-    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.humanId]) {
+    if ((k === " " || k === "j") && isHuman(match.active) && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.active]) {
       if (!match.hold) {
         match.hold = true;
         match.power = 0;
