@@ -115,13 +115,19 @@ function atlasActor(ctx,name,row,frame,x,y,height){const im=makkoAssets[name],m=
 function workActor(ctx,id,kind,frame,x,y,height){const action={hammer:0,plant:1,install:2}[kind];if(loaded(makkoAssets.work))atlasActor(ctx,'work',id*3+action,frame,x,y,height);else actor(ctx,id,'dig',frame%6,x,y,height);}
 function workSite(ctx,g,p,task,cell,now,reduced){const art=taskArt(g,task),x=(p.x+.5)*cell,y=(p.y+.5)*cell;if(art.kind==='pave')hole(ctx,p,cell,now,reduced);else{constructionStage(ctx,art,0,x,y+5,28);ctx.strokeStyle='#ffcf72';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y+2,19+(reduced?0:Math.sin(now/280)),0,Math.PI*2);ctx.stroke();label(ctx,'DROP',x,y-23,'#ffdb83');}label(ctx,art.label,x,y-39,'#19e6ff');}
 const AMENITY_SPOTS={nyc:[[370,150,70,35],[325,122,90,50],[250,650,270,110],[665,220,85,260],[40,260,70,120],[280,625,180,40]],detroit:[[150,260,35,150],[665,245,100,340],[368,633,40,40],[0,200,110,390],[440,615,105,110],[115,115,65,55]],texas:[[175,200,40,140],[670,235,98,360],[460,642,60,55],[120,625,260,120],[0,230,105,370],[340,125,90,40]]};
-function mapRegion(ctx,im,x,y,w,h){if(!loaded(im))return;const sx=im.naturalWidth/768,sy=im.naturalHeight/768;ctx.drawImage(im,x*sx,y*sy,w*sx,h*sy,x,y,w,h);}
+const regionCache=new Map();
+function mapRegion(ctx,im,x,y,w,h,feather=0){
+ if(!loaded(im))return;const key=im.src+':'+[x,y,w,h,feather].join(',');let tile=regionCache.get(key);
+ if(!tile){tile=document.createElement('canvas');tile.width=Math.ceil(w);tile.height=Math.ceil(h);const c=tile.getContext('2d'),sx=im.naturalWidth/768,sy=im.naturalHeight/768;c.drawImage(im,x*sx,y*sy,w*sx,h*sy,0,0,w,h);
+  if(feather){c.globalCompositeOperation='destination-in';for(const horizontal of [true,false]){const length=horizontal?w:h,gr=c.createLinearGradient(0,0,horizontal?w:0,horizontal?0:h),f=Math.min(.45,feather/length);gr.addColorStop(0,'transparent');gr.addColorStop(f,'black');gr.addColorStop(1-f,'black');gr.addColorStop(1,'transparent');c.fillStyle=gr;c.fillRect(0,0,w,h);}}
+  regionCache.set(key,tile);
+ }ctx.drawImage(tile,x,y,w,h);
+}
 function drawWorkdayScene(ctx,g,now,reduced){
  const done=new Set(g.patches.map(p=>p.task)),spots=AMENITY_SPOTS[g.level.id],worn=wornMaps[g.level.id];
- // Each maintenance zone reveals the same coordinates from the clean original.
- // Buildings remain on the approved clean base; no ground tiles are stretched over it.
- for(let task=0;task<6;task++){if(done.has(task))continue;const x=176+(task%3)*416/3,y=176+Math.floor(task/3)*208;mapRegion(ctx,worn,x,y,416/3,208);}
- spots.forEach(([x,y,w,h],task)=>{if(done.has(task))return;const cx=Math.max(6,x),cy=Math.max(6,y),cw=Math.min(762,x+w)-cx,ch=Math.min(762,y+h)-cy;mapRegion(ctx,worn,cx,cy,cw,ch);});
+ // Matching map crops blend into the original; completed zones reveal clean paving.
+ if(done.size<6){mapRegion(ctx,worn,176,176,416,416,20);for(const task of done){const x=176+(task%3)*416/3,y=176+Math.floor(task/3)*208;mapRegion(ctx,mapAssets[g.level.id],x,y,416/3,208,8);}}
+ spots.forEach(([x,y,w,h],task)=>{if(done.has(task))return;const cx=Math.max(6,x),cy=Math.max(6,y),cw=Math.min(762,x+w)-cx,ch=Math.min(762,y+h)-cy;mapRegion(ctx,worn,cx,cy,cw,ch,10);});
  const f=reduced||g.status==='paused'?0:Math.floor(now/230)%4;
  if(g.level.id==='nyc'){
   if(done.has(2))atlasActor(ctx,'residents',2,f,382,724,36);
@@ -135,6 +141,6 @@ function drawWorkdayScene(ctx,g,now,reduced){
  if(g.status==='won')label(ctx,g.level.id==='texas'?'WELCOME BACK, STUDENTS':g.level.id==='detroit'?'THE COURT IS OPEN':'THE BLOCK IS YOURS',384,100,'#37e28a');
 }
 
-const scenes=[];for(const level of LEVELS){for(const state of ['Before','Working','Completed']){const el=document.createElement('section');el.innerHTML='<h2>'+level.place+' Â· '+state+'</h2><canvas width="768" height="768"></canvas>';document.querySelector('#scenes').append(el);const g=createGame(16,()=>.3,level.hero,level);if(state==='Working'){g.assigned=6;g.food=null;g.site=null;g.jobs=Array.from({length:6},(_,task)=>({x:3+task*2,y:8,task,worker:{id:task%4,uid:30+task},progress:2200,ready:false}));}if(state==='Completed'){g.status='won';g.patches=Array.from({length:6},(_,task)=>({x:task,y:8,task}));g.jobs=[];g.food=null;g.site=null;}scenes.push({ctx:el.querySelector('canvas').getContext('2d'),g});}}
+const scenes=[];for(const level of LEVELS){for(const state of ['Before','Working','Completed']){const el=document.createElement('section');el.innerHTML='<h2>'+level.place+' &middot; '+state+'</h2><canvas width="768" height="768"></canvas>';document.querySelector('#scenes').append(el);const g=createGame(16,()=>.3,level.hero,level);if(state==='Working'){g.assigned=6;g.food=null;g.site=null;g.jobs=Array.from({length:6},(_,task)=>({x:3+task*2,y:8,task,worker:{id:task%4,uid:30+task},progress:2200,ready:false}));}if(state==='Completed'){g.status='won';g.patches=Array.from({length:6},(_,task)=>({x:task,y:8,task}));g.jobs=[];g.food=null;g.site=null;}scenes.push({ctx:el.querySelector('canvas').getContext('2d'),g});}}
 function render(now){for(const {ctx,g}of scenes){g.elapsed=now;for(const j of g.jobs)j.progress=1800+now%1800;drawStreet(ctx,g,{previous:g.body,blend:1,leader:g.level.hero,repairs:[],particles:[],now,reduced:false,flash:0});}requestAnimationFrame(render);}requestAnimationFrame(render);
 </script></body></html>
