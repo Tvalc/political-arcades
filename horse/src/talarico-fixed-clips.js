@@ -2790,3 +2790,213 @@ Object.assign(window.VoteExtraClips.talarico, {
 
 Object.assign(window.VoteExtraClips.talarico.dribble, {fps:48});
 Object.assign(window.VoteExtraClips.talarico.move, {fps:18, strideDistance:3.4});
+
+Object.assign(window.VoteExtraClips.talarico, {
+  "dribble": {
+    "frames": 12,
+    "fw": 155,
+    "fh": 256,
+    "cols": 4,
+    "body": 256,
+    "fills": true,
+    "feet": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "originX": 0.5,
+    "fps": 14,
+    "sourceFacing": 1,
+    "bodyScale": 1.25,
+    "characterScale": 0.85,
+    "embeddedBall": false,
+    "sourceFile": "horse_talarico_dribble_empty96_v15.png",
+    "sourceFrames": [
+      40,
+      44,
+      48,
+      52,
+      56,
+      60,
+      64,
+      68,
+      72,
+      76,
+      80,
+      84
+    ],
+    "loopStart": 0,
+    "loopEnd": 11,
+    "hands": [
+      [
+        0.9468590831918506,
+        0.3979235197368421
+      ],
+      [
+        0.9469921534437663,
+        0.39759290540540543
+      ],
+      [
+        0.9453405017921147,
+        0.4009331597222222
+      ],
+      [
+        0.8995792426367462,
+        0.47885529891304346
+      ],
+      [
+        0.8167918692001768,
+        0.5475171232876712
+      ],
+      [
+        0.7174937965260546,
+        0.5863506610576923
+      ],
+      [
+        0.6369054127938765,
+        0.6149033368644068
+      ],
+      [
+        0.752073732718894,
+        0.5684151785714285
+      ],
+      [
+        0.8374193548387098,
+        0.48971354166666664
+      ],
+      [
+        0.8825806451612904,
+        0.398828125
+      ],
+      [
+        0.8893300248138958,
+        0.35697115384615385
+      ],
+      [
+        0.888774193548387,
+        0.356875
+      ]
+    ],
+    "ballPath": {
+      "releasePhase": 0.08333333333333333,
+      "floorPhase": 0.5,
+      "catchPhase": 0.9166666666666666,
+      "floorX": 1.1
+    },
+    "smoothFrames": false,
+    "image": "assets/sprites/chibi/talarico-dribble-v17.webp"
+  },
+  "move": {
+    "frames": 12,
+    "fw": 177,
+    "fh": 256,
+    "cols": 4,
+    "body": 239.746,
+    "fills": true,
+    "feet": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "originX": 0.5,
+    "fps": 12,
+    "sourceFacing": 1,
+    "bodyScale": 1.25,
+    "characterScale": 0.85,
+    "embeddedBall": false,
+    "sourceFile": "horse_talarico_move_empty96_v15.png",
+    "sourceFrames": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13,
+      15,
+      18,
+      20,
+      23,
+      25,
+      28
+    ],
+    "loopStart": 0,
+    "loopEnd": 11,
+    "hands": [
+      [
+        0.8531073446327684,
+        0.5703125
+      ],
+      [
+        0.751412429378531,
+        0.640625
+      ],
+      [
+        0.6666666666666666,
+        0.6484375
+      ],
+      [
+        0.6101694915254238,
+        0.61328125
+      ],
+      [
+        0.6440677966101694,
+        0.66015625
+      ],
+      [
+        0.7062146892655368,
+        0.58984375
+      ],
+      [
+        0.6949152542372882,
+        0.58984375
+      ],
+      [
+        0.655367231638418,
+        0.56640625
+      ],
+      [
+        0.655367231638418,
+        0.6171875
+      ],
+      [
+        0.7457627118644068,
+        0.625
+      ],
+      [
+        0.8135593220338984,
+        0.58984375
+      ],
+      [
+        0.8870056497175142,
+        0.58203125
+      ]
+    ],
+    "ballPath": {
+      "releasePhase": 0.08333333333333333,
+      "floorPhase": 0.5,
+      "catchPhase": 0.9166666666666666,
+      "floorX": 1.1
+    },
+    "strideDistance": 1.1,
+    "smoothFrames": false,
+    "image": "assets/sprites/chibi/talarico-move-v17.webp"
+  }
+});
