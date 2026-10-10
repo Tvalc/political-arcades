@@ -1464,6 +1464,8 @@
   function spriteCell(clip, frame, layout) {
     const padding = clip.padding || 0;
     const cols = clip.cols || clip.frames;
+    // Logical playback frames may reuse atlas cells without rebuilding the art.
+    frame = clip.frameOrder?.[frame] ?? frame;
     return {
       x: (frame % cols) * (clip.fw + padding * 2) + padding,
       y: Math.floor(frame / cols) * (clip.fh + padding * 2) + padding + layout.sy,
