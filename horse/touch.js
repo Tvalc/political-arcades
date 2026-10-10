@@ -78,6 +78,7 @@
     pad.addEventListener("lostpointercapture", end);
     window.addEventListener("blur", () => end());
     document.addEventListener("visibilitychange", () => { if (document.hidden) end(); });
+    pad.releaseHeld = () => end();
     return pad;
   }
 
@@ -86,9 +87,11 @@
     btn.type = "button";
     btn.className = `touch-btn${def.tone ? ` ${def.tone}` : ""}`;
     btn.textContent = def.label;
+    btn.dataset.key = def.key;
+    btn.setAttribute("aria-label",def.label);
     let id = null;
     btn.addEventListener("pointerdown", (ev) => {
-      if (id !== null) return;
+      if (id !== null || btn.disabled) return;
       id = ev.pointerId;
       try { btn.setPointerCapture(id); } catch (err) { /* capture is optional */ }
       btn.classList.add("down");
@@ -103,6 +106,9 @@
     };
     btn.addEventListener("pointerup", up);
     btn.addEventListener("pointercancel", up);
+    btn.addEventListener("lostpointercapture", up);
+    window.addEventListener("blur", () => { if (id !== null) up({pointerId:id}); });
+    btn.releaseHeld = () => { if (id !== null) up({pointerId:id}); };
     btn.addEventListener("contextmenu", (ev) => ev.preventDefault());
     return btn;
   }
@@ -125,6 +131,20 @@
     };
     if (coarse.matches || new URLSearchParams(location.search).has("touch")) show();
     window.addEventListener("touchstart", show, { once: true, passive: true });
+    let signature="";
+    window.VoteTouch={update(state){
+      const next=JSON.stringify(state);if(next===signature)return;signature=next;
+      bar.classList.toggle("idle",!state.visible);
+      const pad=bar.querySelector(".touch-pad");if(!state.enabled)pad.releaseHeld();pad.style.opacity=state.enabled?"1":".35";pad.style.pointerEvents=state.enabled?"auto":"none";
+      cluster.querySelectorAll("button").forEach(button=>{
+        const key=button.dataset.key,flair={"1":"spin","2":"dunk","3":"fade","4":"hook"}[key];
+        button.disabled=!state.enabled || key==="2"&&!state.dunk;
+        if(button.disabled)button.releaseHeld();
+        if(flair)button.setAttribute("aria-pressed",String(state.flair===flair));
+        if(key===" "){button.textContent=!state.enabled?"Wait":state.aiming?"Shoot":"Aim";button.classList.toggle("gold-zone",state.hit);button.setAttribute("aria-label",state.hit?"Shoot now":button.textContent);}
+        if(key==="2")button.setAttribute("aria-label",state.dunk?"Dunk":"Dunk, move closer to the hoop");
+      });
+    }};
     return bar;
   };
 })();

@@ -98,13 +98,13 @@
     catch (_) { progressSaved = false; }
     const unlocked = COURTS.find(c => c.wins === careerWins);
     match.unlockMessage = unlocked ? `COURT UNLOCKED: ${unlocked.name}` : `${careerWins} career wins`;
-    if (newSongs.length) match.unlockMessage += ` · ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
+    if (newSongs.length) match.unlockMessage += ` Â· ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
   }
   function renderCourtSongs() {
     const slots = window.VoteSongs?.slots(selectedCourt,marketingUnlock) || [];
-    document.getElementById('court-songs-title').textContent = `${courtById(selectedCourt).name} · ${slots.filter(s=>s.unlocked).length}/5 songs`;
-    document.getElementById('court-songs-list').innerHTML = slots.map(s=>`<li><strong>${s.unlocked?'Unlocked':'Locked'} · ${s.title}</strong><span>${s.rule}</span></li>`).join('');
-    document.getElementById('court-songs-note').textContent = marketingUnlock ? 'Marketing preview: all songs available; no progress earned.' : `Starter track: ${window.VoteSongs?.starter(selectedCourt).title || ''} — available now. Enable sound to listen. Earn five more tracks with winning-match challenges; practice does not count.`;
+    document.getElementById('court-songs-title').textContent = `${courtById(selectedCourt).name} Â· ${slots.filter(s=>s.unlocked).length}/5 songs`;
+    document.getElementById('court-songs-list').innerHTML = slots.map(s=>`<li><strong>${s.unlocked?'Unlocked':'Locked'} Â· ${s.title}</strong><span>${s.rule}</span></li>`).join('');
+    document.getElementById('court-songs-note').textContent = marketingUnlock ? 'Marketing preview: all songs available; no progress earned.' : `Starter track: ${window.VoteSongs?.starter(selectedCourt).title || ''} â€” available now. Enable sound to listen. Earn five more tracks with winning-match challenges; practice does not count.`;
     if(window.VoteSongs && !window.VoteSongs.persistent()) document.getElementById('court-songs-note').textContent += ' Storage unavailable: unlocks last for this session.';
   }
   function openCourtSelect() {
@@ -112,10 +112,10 @@
     if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = FIGHTERS[selectedFighter()].court;
     const panel = document.getElementById('court-select');
     panel.hidden = false;
-    document.getElementById('court-progress').textContent = `${careerWins} wins · ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
+    document.getElementById('court-progress').textContent = `${careerWins} wins Â· ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
       (marketingUnlock ? 'Marketing preview: all courts open; wins do not count. ' : '') + (progressSaved ? 'Progress is saved in this browser. Practice does not count.' : 'Browser storage is unavailable. Progress lasts for this session.');
-    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
-    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins Â· ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
+    document.getElementById('court-play').textContent = `Play Â· ${courtById(selectedCourt).name}`;
     renderCourtSongs();
     document.getElementById('court-play').focus();
   }
@@ -124,7 +124,7 @@
     if (!card || !courtUnlocked(card.dataset.court)) return;
     selectedCourt = card.dataset.court;
     document.querySelectorAll?.('[data-court]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.court===selectedCourt)));
-    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    document.getElementById('court-play').textContent = `Play Â· ${courtById(selectedCourt).name}`;
     renderCourtSongs();
   });
   document.getElementById('court-back').addEventListener('click',()=>{
@@ -153,7 +153,7 @@
     window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     pausePanel.hidden = !paused;
-    document.getElementById("pause-toggle").textContent = paused ? "Resume · Esc" : "Pause · Esc";
+    document.getElementById("pause-toggle").textContent = paused ? "Resume Â· Esc" : "Pause Â· Esc";
     if (audioCtx) { const operation = paused || muted ? audioCtx.suspend() : audioCtx.resume(); operation?.catch(() => {}); }
     if (paused) document.getElementById("resume").focus();
     else canvas.focus({ preventScroll: true });
@@ -162,7 +162,7 @@
     setPaused(false); keys.clear(); pointer = null;
     const id = match?.humanId || selectedFighter();
     match = freshMatch(id); match.practice = true; screen = "play";
-    match.call = "Practice: move with arrows / WASD. Choose a shot with 1–4; Space to aim and shoot.";
+    match.call = "Practice: move with arrows / WASD. Choose a shot with 1â€“4; Space to aim and shoot.";
     canvas.focus({ preventScroll: true });
   }
   function restartMatch() {
@@ -186,7 +186,7 @@
     window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     const toggle = document.getElementById("sound-toggle");
-    toggle.textContent = muted ? "Sound off · Enable" : "Sound on · Mute";
+    toggle.textContent = muted ? "Sound off Â· Enable" : "Sound on Â· Mute";
     toggle.setAttribute?.("aria-pressed", String(!muted));
     if (muted) audioCtx?.suspend()?.catch(() => {});
     else if (!paused) unlockAudio();
@@ -1953,7 +1953,7 @@
     const zone = zoneFor(p.x, p.y, flair);
     const error = match.power - zone.need;
     const made = zone.hit;
-    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT — MORE POWER" : "TOO STRONG — LESS POWER";
+    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT â€” MORE POWER" : "TOO STRONG â€” LESS POWER";
     const hand = ownedBall(id);
     const hoop = hoopLayout();
     const side = Math.sign(hand.x - hoop.x) || 1;
@@ -2445,12 +2445,12 @@
       ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="24px Bungee, sans-serif";
       ctx.fillText(FIGHTERS[id].full,x+194,438);
       ctx.font="17px Share Tech Mono, monospace";
-      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
+      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} Â· ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
     });
     button(390,545,500,58,playMode === "solo" ? "ALL 3 : SOLO VS 2 CPU" : "ALL 3 : PASS AND PLAY",()=>{playMode=playMode==="solo"?"local":"solo";});
     button(478,618,324,64,"CHOOSE COURT",()=>openCourtSelect(),true);
     ctx.fillStyle="#fff6d8";ctx.font="14px Share Tech Mono, monospace";ctx.textAlign="center";
-    ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT",640,708);
+    ctx.fillText("LEFT / RIGHT TO PICK Â· ENTER TO CHOOSE COURT",640,708);
   }
 
   function startGame() {
@@ -2919,9 +2919,11 @@
     ctx.drawImage(img,0,0,clip.fw,head,x,y,96,96);ctx.restore();
   }
 
+  const mobileInput = () => !!document.documentElement?.classList?.contains?.("has-touch");
   function drawHud() {
     buttons.length = 0;
     const aiming = match.hold && isHuman(match.active) && !match.ball ? shotNeed() : null;
+    if (!mobileInput()) {
     const cardWidth=(W-32)/match.players.length;
     match.players.forEach((id,i)=>{
       const x=16+i*cardWidth,out=match.eliminated.includes(id),active=match.active===id&&!match.over;
@@ -2952,7 +2954,7 @@
     } else {
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "12px Bungee, sans-serif";
-      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} · ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 75, 780);
+      ctx.fillText(match.practice ? "PRACTICE Â· NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} Â· ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 75, 780);
       const tutorial = match.tutorial;
       const brief = match.over ? `${FIGHTERS[match.over].name} wins! Run it back?` : tutorial
         ? tutorial.shot ? "Ready? Start a match." : !tutorial.moved ? "Move: arrows / WASD / stick." : "Press Space / Aim to begin."
@@ -2961,7 +2963,8 @@
       wrapCall(brief, W / 2, 89);
     }
 
-    if (match.notice && match.notice.until > match.t && !aiming) {
+    } // Mobile scores, instructions and timing use readable DOM controls.
+    if (match.notice && match.notice.until > match.t && !aiming && !mobileInput()) {
       skin("secondary", 230, 564, 820, 62);
       ctx.fillStyle = "#fff6d8"; ctx.font = "17px Share Tech Mono, monospace";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -2975,7 +2978,7 @@
     }
     if (match.tutorial) button(904, 512, 352, 46, match.tutorial.shot ? "START MATCH" : "SKIP LESSON", () => startGame(), true);
 
-    if (!match.over && isHuman(match.active) && !match.ball && !match.pass) {
+    if (!mobileInput() && !match.over && isHuman(match.active) && !match.ball && !match.pass) {
       const labels = [
         ["1  SPIN", "spin"],
         ["2  DUNK", "dunk"],
@@ -3243,9 +3246,22 @@
     document.getElementById("pause-toggle").hidden = !match || match.over;
     const message = screen === "play" && match ? (paused ? "Paused. Resume when ready." : match.call) : "";
     if (status.textContent !== message) status.textContent = message;
+    updateMobileUi();
     requestAnimationFrame(frame);
   }
 
+  function updateMobileUi() {
+    const playing=screen === "play" && !!match, overlay=paused || guideOpen || courtOpen || !assetsReady();
+    const human=playing && isHuman(match.active), available=human && !match.over && !match.ball && !match.pass && !overlay;
+    const aiming=available && match.hold ? shotNeed() : null;
+    let message=playing ? match.over ? `${FIGHTERS[match.over].name} wins!` : `${FIGHTERS[match.active].name} Â· ${human ? "Your turn" : "Computer's turn"}` : "";
+    if (available) message=aiming ? aiming.hit ? "Gold zone! Tap Shoot now" : "Tap Shoot in the gold zone" : match.phase === "copy" ? copyHint() : "Move, choose a shot, then tap Aim";
+    if (playing && match.notice && match.notice.until > match.t && !aiming) message=match.notice.text;
+    window.VoteMobile?.update({playing,overlay,screen,selected:selectIndex,mode:playMode,winner:match?.over ? FIGHTERS[match.over].name : null,message,aiming,power:match?.power || 0,players:playing ? match.players.map(id=>({name:FIGHTERS[id].name,active:match.active===id&&!match.over,out:match.eliminated.includes(id),letters:match.letters[id]})) : []});
+    window.VoteTouch?.update({visible:playing&&!overlay&&!match.over,enabled:available,flair:match?.flair,aiming:!!aiming,hit:!!aiming?.hit,dunk:available && canDunk(match.pos[match.active].x,match.pos[match.active].y)});
+    if (mobileInput()) document.getElementById("pause-toggle").textContent=paused?"Resume":"Pause";
+  }
+  window.VoteMobile?.mount({roster:ROSTER.map(id=>FIGHTERS[id]),start(){screen="select";},pick(i){selectIndex=i;},mode(value){playMode=value;},court:openCourtSelect,again:restartMatch,portrait(ctx,i){const id=ROSTER[i],clip=CLIPS[id]?.idle,img=images[`${id}-idle`];if(!clip || !img?.naturalWidth)return;const cell=spriteCell(clip,0,{sy:0}),h=112,w=h*clip.fw/clip.fh;ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,50-w/2,4,w,h);}});
   if (window.mountTouchControls) {
     window.mountTouchControls(canvas.parentElement, {
       pad: {
