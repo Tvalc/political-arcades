@@ -201,7 +201,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v13` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v14` : src;
     images[key] = img;
   }
 
@@ -1784,6 +1784,12 @@
           const flight = (u - release) / (catchPhase - release);
           const lateral = flight * flight * (3 - 2 * flight);
           x = start.x + (end.x - start.x) * lateral;
+          if (Number.isFinite(clip.ballPath.floorX)) {
+            const floorX = at.x + face * (clip.sourceFacing || 1) * (clip.ballPath.floorX - (clip.originX ?? .5)) * width;
+            const phase = u < floorPhase ? (u - release) / (floorPhase - release) : (u - floorPhase) / (catchPhase - floorPhase);
+            const ease = phase * phase * (3 - 2 * phase);
+            x = u < floorPhase ? start.x + (floorX - start.x) * ease : floorX + (end.x - floorX) * ease;
+          }
           y = u < floorPhase
             ? start.y + (floor - start.y) * Math.pow((u - release) / (floorPhase - release), 2)
             : end.y + (floor - end.y) * Math.pow((catchPhase - u) / (catchPhase - floorPhase), 2);
