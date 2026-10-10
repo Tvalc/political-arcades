@@ -54,10 +54,64 @@ html = once(html, /<footer class="site-foot"><p>[\s\S]*?<\/p>/, '<footer class="
 // Provenance links inside the embedded cast manifest (metadata, never loaded).
 html = html.replace(/,"sourceUrl":"https?:[^"]*"/g, "");
 
-// Layout: Playgama wants no browser page scrollbar. The page scrolls inside
-// its own root instead, and the viewport never scrolls.
-html = once(html, "</style></head><body>",
-  "html,body{height:100%;overflow:hidden}#pg-root{height:100%;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}\n</style></head><body><div id=\"pg-root\">", "page root open");
+// Layout: Playgama wants no browser page scrollbar and a game field that
+// stretches to the available area. The intro column goes (its hero picker
+// moves into the cabinet), the extras and footer are hidden, and the cabinet
+// becomes a grid: a side column (hero picker, map picker, stats, complaint
+// department) and a foot (toolbar, D-pad) beside the square stage on wide
+// screens, stacked above and below it on narrow ones. The stage is as large
+// as the shorter viewport side allows. Nothing scrolls unless it has to.
+const heroes = html.match(/<div id="heroes"[\s\S]*?<\/div>/);
+if (!heroes) fail("hero picker not found");
+html = html.replace(heroes[0], "");
+html = once(html, /<section class="intro">[\s\S]*?<\/section>/, "", "intro section");
+const cabinetAt = html.indexOf('<section class="cabinet">'), stageAt = html.indexOf('<div class="stage">'),
+  toolbarAt = html.indexOf('<div class="toolbar">'), cabinetEnd = html.indexOf("</section></main>");
+if ([cabinetAt, stageAt, toolbarAt, cabinetEnd].some(i => i < 0) || !(cabinetAt < stageAt && stageAt < toolbarAt && toolbarAt < cabinetEnd)) fail("cabinet structure changed; update the Playgama layout step");
+const sideHtml = html.slice(cabinetAt + '<section class="cabinet">'.length, stageAt);
+const stageHtml = html.slice(stageAt, toolbarAt);
+const footHtml = html.slice(toolbarAt, cabinetEnd);
+html = html.slice(0, cabinetAt)
+  + `<section class="cabinet pg-cabinet"><div class="pg-side">${heroes[0]}${sideHtml}</div>${stageHtml}<div class="pg-foot">${footHtml}</div>`
+  + html.slice(cabinetEnd);
+const layoutCss = `
+/* Playgama build layout */
+html,body{height:100%;overflow:hidden;margin:0}
+#pg-root{height:100%;display:flex;flex-direction:column;overflow:hidden;--pg-chrome:104px}
+.topbar{flex:none;padding:8px 14px!important}
+.game-extras,.site-foot{display:none!important}
+main#play{flex:1 1 auto;min-height:0;display:block!important;max-width:none!important;width:auto!important;margin:0!important;padding:8px!important}
+.pg-cabinet{height:100%;box-sizing:border-box;max-width:none!important;display:grid!important;grid-template-columns:minmax(230px,400px) auto minmax(150px,200px);grid-template-rows:minmax(0,1fr);gap:8px 12px;padding:10px!important;overflow:hidden;align-items:start;justify-content:center}
+.pg-side{grid-column:1;grid-row:1;align-self:stretch;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.pg-foot{grid-column:3;grid-row:1;align-self:center}
+.pg-foot .toolbar{flex-direction:column;align-items:stretch;gap:8px}
+.pg-foot .session-buttons{display:flex;flex-direction:column;gap:6px}
+.pg-foot #quip{text-align:center}
+.pg-cabinet .stage{grid-column:2;grid-row:1;align-self:center;justify-self:center;width:min(calc(100dvh - var(--pg-chrome)),calc(100vw - 480px));max-width:100%;height:auto;aspect-ratio:1;margin:0}
+.pg-cabinet .stage canvas{width:100%;height:100%}
+#heroes{margin:0!important;gap:4px!important;flex-wrap:nowrap!important}
+#heroes button{min-width:0!important;flex:1;padding:2px 4px 5px!important;font-size:9px!important}
+.hero-performance{width:44px!important}
+.pg-side .map-picker{margin-bottom:0!important}.pg-side .map-picker button{min-height:36px!important}.pg-side .map-heading{margin-bottom:0!important;gap:2px!important}.pg-side .map-heading b{font-size:12px!important}
+.pg-side .marquee{padding:7px 12px!important}
+.pg-side .stats{padding:4px 0!important}.pg-side .stats strong{font-size:20px!important;margin-top:2px!important}
+.pg-side .sidelines{margin:0!important;padding:8px!important}.pg-side .hecklers{padding-top:34px!important}.pg-side .cast-actor{height:54px!important;width:62px!important}.pg-side .heckler>b{margin-top:2px!important}
+.pg-side .block-progress{padding:2px 0 6px!important}.pg-side .assignment{margin:2px 0!important}
+.pg-foot .toolbar{margin-top:0!important}
+.pg-foot .help,.pg-foot .dpad-tip{display:none!important}
+.pg-foot .controls{margin:8px 0 0!important;justify-content:center!important}
+@media (pointer:coarse){.pg-foot .controls{display:flex!important}}
+@media (max-width:759px){
+  #pg-root{overflow:auto}
+  main#play{flex:none;min-height:0}
+  .pg-cabinet{height:auto;display:flex!important;flex-direction:column;overflow:visible}
+  .pg-side{overflow:visible}
+  .pg-cabinet .stage{width:min(100%,calc(100dvh - 120px));align-self:center}
+  .pg-foot .toolbar{flex-direction:row;align-items:center}
+  .pg-foot .session-buttons{flex-direction:row}
+}
+`;
+html = once(html, "</style></head><body>", `${layoutCss}</style></head><body><div id="pg-root">`, "page root open");
 html = once(html, "</script></body></html>", "</script></div></body></html>", "page root close");
 
 // Assets: absolute site paths become folders inside the archive.
