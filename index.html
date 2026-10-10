@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Political Arcades</title>
   <link rel="canonical" href="https://politicalarcades.com/" />
-  <meta name="description" content="A free browser arcade. Capitol Crashers and VOTE, plus the soundtrack, the music video, the comic and the platform they're fighting for." />
+  <meta name="description" content="A free browser arcade. Capitol Crashers, VOTE and Pothole Party, plus the soundtrack, the music video, the comic and the platform they're fighting for." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Political Arcades" />
   <meta property="og:title" content="Political Arcades" />
-  <meta property="og:description" content="Two free games, twenty-eight songs, one comic, one platform. Pick your fight." />
+  <meta property="og:description" content="Three free games, twenty-eight songs, one comic, one platform. Pick your fight." />
   <meta property="og:url" content="https://politicalarcades.com/" />
   <meta property="og:image" content="https://politicalarcades.com/art/chibi/hero.webp" />
   <meta property="og:image:width" content="1600" />
@@ -325,7 +325,8 @@ button { font: inherit; }
 .keys { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .keys kbd { padding: 5px 9px; border-radius: 6px; border: 1px solid rgba(246, 239, 228, 0.25); border-bottom-width: 3px; background: #1a1626; font-family: var(--mono); font-size: 12px; color: var(--ink); }
 
-  </style>
+  .cabinets{grid-template-columns:repeat(3,minmax(0,1fr))}.cab .marquee{gap:6px;padding:12px}.cab .marquee h2{font-size:clamp(16px,1.55vw,22px)}.cab .marquee .machine{font-size:9px;letter-spacing:.1em}.cab .deck .btn-big{font-size:13px;padding:14px 16px;min-height:54px}@media(max-width:980px){.cabinets{grid-template-columns:1fr}.cab .marquee h2{font-size:clamp(20px,4vw,28px)}.cab .deck .btn-big{font-size:16px}}
+</style>
   <link rel="preload" as="image" href="art/web/rally-1600.webp" imagesrcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" imagesizes="100vw" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
 </head>
@@ -349,9 +350,9 @@ button { font: inherit; }
       <img class="mural" src="art/web/rally-1600.webp" srcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
       <div class="wrap">
         <div class="floor-copy">
-          <p class="kicker">Two machines · free<span class="hide-m"> · in your browser</span></p>
+          <p class="kicker">Three machines · free<span class="hide-m"> · in your browser</span></p>
           <h1>Political Arcades</h1>
-          <p class="lede">Zohran Mamdani and Abdul El-Sayed, chibi-sized, fighting for the block. Pick a cabinet.</p>
+          <p class="lede">Zohran Mamdani, Abdul El-Sayed and James Talarico, chibi-sized, fighting for the block. Pick a cabinet.</p>
         </div>
 
         <div class="cabinets">
@@ -385,6 +386,12 @@ button { font: inherit; }
               <div class="meta"><span>You vs. the CPU</span><span>30 courts</span><span>Soundtrack rewards</span></div>
               <span class="btn btn-big btn-teal">Play VOTE</span>
             </div>
+          </a>
+
+          <a class="cab" href="pothole-party/">
+            <div class="marquee"><h2>Pothole Party</h2><span class="machine">Machine 03</span></div>
+            <div class="screen"><img src="art/pothole-party/banner-1200.webp" srcset="art/pothole-party/banner-800.webp 800w, art/pothole-party/banner-1200.webp 1200w" sizes="(max-width: 980px) 100vw, 33vw" width="1200" height="675" alt="Mamdani leads the crew, El-Sayed fills a pothole and Talarico compacts a fresh patch while detractors complain." decoding="async"><span class="coin" aria-hidden="true">Free play · press start</span></div>
+            <div class="deck"><p>Snake, with a shift to finish. Drop off workers, circle back after the repair, and collect them to grow the crew. The complaint department can cope.</p><div class="meta"><span>1 player</span><span>Keys + touch</span><span>3 heroes</span></div><span class="btn btn-big">Play Pothole Party</span></div>
           </a>
         </div>
 
@@ -618,9 +625,9 @@ button { font: inherit; }
     <div class="wrap">
       <div class="row">
         <span>© Political Arcades · Art and animation made in <a href="https://www.makko.ai/" rel="noopener">Makko</a></span>
-        <span><a href="https://capitolcrashers.com/">capitolcrashers.com</a> · <a href="horse/">VOTE</a> · <a href="community-pot/">Community Pot</a> · <a href="privacy.html">Privacy</a></span>
+        <span><a href="https://capitolcrashers.com/">capitolcrashers.com</a> · <a href="horse/">VOTE</a> · <a href="pothole-party/">Pothole Party</a> · <a href="community-pot/">Community Pot</a> · <a href="privacy.html">Privacy</a></span>
       </div>
-      <p class="fine">Capitol Crashers and VOTE are original games. They are unofficial cartoons, not authorized, paid for or reviewed by Zohran Mamdani, Abdul El-Sayed, or any candidate or campaign committee. Not affiliated with any other publisher.</p>
+      <p class="fine">Capitol Crashers, VOTE and Pothole Party are original games. They are unofficial cartoons, not authorized, paid for or reviewed by Zohran Mamdani, Abdul El-Sayed, James Talarico, or any candidate or campaign committee. Not affiliated with any other publisher.</p>
     </div>
   </footer>
 
@@ -725,3 +732,4 @@ button { font: inherit; }
   </script>
 </body>
 </html>
+
