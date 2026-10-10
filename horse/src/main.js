@@ -201,7 +201,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=cast3-final1` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-ball-fix-v8` : src;
     images[key] = img;
   }
 
@@ -1464,7 +1464,6 @@
   function spriteCell(clip, frame, layout) {
     const padding = clip.padding || 0;
     const cols = clip.cols || clip.frames;
-    // Logical playback frames may reuse atlas cells without rebuilding the art.
     frame = clip.frameOrder?.[frame] ?? frame;
     return {
       x: (frame % cols) * (clip.fw + padding * 2) + padding,
@@ -1760,9 +1759,16 @@
         const palm = phase => {
           const f = phase * clip.frames, a = Math.floor(f) % clip.frames, blend = f % 1;
           const h = clip.hands[a].map((v, i) => v + (clip.hands[(a + 1) % clip.frames][i] - v) * blend);
+          // Palm samples and foot anchors must use the same authored frame.
+          // Using the currently displayed foot for a future catch moves the
+          // flight endpoint and produces a jump when the animation loops.
+          const footA = clip.feet?.[a] ?? 1;
+          const footB = clip.feet?.[(a + 1) % clip.frames] ?? 1;
+          const foot = footA + (footB - footA) * blend;
+          const footInSlice = (foot * clip.fh - layout.sy) / layout.sh;
           return {
             x: at.x + face * (clip.sourceFacing || 1) * (h[0] - (clip.originX ?? .5)) * width,
-            y: Math.min(at.y - r, at.y - lift - height * layout.footInSlice + ((h[1] * clip.fh - layout.sy) / layout.sh) * height + r)
+            y: Math.min(at.y - r, at.y - lift - height * footInSlice + ((h[1] * clip.fh - layout.sy) / layout.sh) * height + r)
           };
         };
         // Receive and push for one authored frame. The ball's top touches the
@@ -1957,6 +1963,7 @@
     if (shotClip.releaseFrame != null) {
       const at = project(p.x, p.y), drawn = drawnSprite(shotClip, at, shotClip.releaseFrame);
       match.ball.syncRelease = true;
+      if (id === "talarico") match.ball.releaseRadius = Math.max(8, playerHeight(at) * .09);
       match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.sourceFacing || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
       match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[shotClip.releaseFrame] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shotLift(match.ball.show)) * at.s;
       const offset = shotDisplacement(id, match.ball.show, flair, match.ball.show);
@@ -2793,7 +2800,7 @@
     const at = project(match.pos[id].x, match.pos[id].y);
     const drawn = drawnSprite(clip, at, frame);
     const keys = clip.handKeys;
-    if (clip.turnOnly && frame > 2 && frame < 7) return; // Possession passes behind the torso during the turn.
+    if (clip.turnOnly && frame > (clip.occludeStart ?? 2) && frame < (clip.occludeEnd ?? 7)) return; // Possession passes behind the torso during the turn.
     let a = keys[0], b = keys[keys.length - 1];
     for (let i = 1; i < keys.length; i++) {
       if (frame <= keys[i][0]) { a = keys[i - 1]; b = keys[i]; break; }
