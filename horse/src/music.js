@@ -4,7 +4,7 @@
     '04-this-city-belongs-to-you', '05-turn-the-volume-up', '06-town-hall',
     '07-never-taken-a-dime', '08-ive-got-receipts', '09-two-hundred',
     'freeze-the-rent-block-party', 'this-city-belongs-to-you-after-hours',
-    'shouldnt-be-this-hard-soul-court', '10-drop-bombs', '11-expansively', '12-bosses-get-small', '13-how-you-gonna-pay',
+    'shouldnt-be-this-hard-soul-court', '11-expansively', '12-bosses-get-small', '13-how-you-gonna-pay',
     'keep-the-lights-on-love-everyone', 'keep-the-lights-on-neighbors-not-donors', 'fine-print-receipts', 'fine-print-read-the-bill', 'bill-for-breathing-money-in-your-pocket', 'bill-for-breathing-no-copay', 'bill-for-breathing-people-before-paperwork', 'bill-for-breathing-doctor-on-the-block', 'rent-due-rent-freeze', 'rent-due-landlord-sweating', 'rent-due-keys-to-the-city', 'rent-due-stay-on-the-block'
   ];
   let tracks = defaultTracks, poolKey = '';
