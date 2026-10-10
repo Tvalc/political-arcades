@@ -3000,3 +3000,216 @@ Object.assign(window.VoteExtraClips.talarico, {
     "image": "assets/sprites/chibi/talarico-move-v17.webp"
   }
 });
+
+// Remade Makko dribble body cycles, 12 frames each.
+Object.assign(window.VoteExtraClips.talarico, {
+  "dribble": {
+    "frames": 12,
+    "fw": 201,
+    "fh": 256,
+    "cols": 4,
+    "body": 292.571,
+    "fills": true,
+    "feet": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "originX": 0.5,
+    "fps": 16,
+    "sourceFacing": 1,
+    "bodyScale": 1.25,
+    "characterScale": 0.85,
+    "loopStart": 0,
+    "loopEnd": 11,
+    "sourceFile": "horse_talarico_dribble_remade_v18_source.png",
+    "sourceFrames": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ],
+    "sourceAnimation": "befd9459-a474-4067-aa54-5d6d5e62d1da",
+    "embeddedBall": false,
+    "smoothFrames": false,
+    "hands": [
+      [
+        0.8706467661691543,
+        0.53125
+      ],
+      [
+        0.8656716417910447,
+        0.546875
+      ],
+      [
+        0.8407960199004975,
+        0.58984375
+      ],
+      [
+        0.8009950248756219,
+        0.63671875
+      ],
+      [
+        0.7711442786069652,
+        0.6875
+      ],
+      [
+        0.7761194029850746,
+        0.7109375
+      ],
+      [
+        0.7960199004975125,
+        0.703125
+      ],
+      [
+        0.845771144278607,
+        0.69921875
+      ],
+      [
+        0.8557213930348259,
+        0.66015625
+      ],
+      [
+        0.8507462686567164,
+        0.625
+      ],
+      [
+        0.8656716417910447,
+        0.57421875
+      ],
+      [
+        0.8955223880597015,
+        0.515625
+      ]
+    ],
+    "ballPath": {
+      "releasePhase": 0.16666666666666666,
+      "floorPhase": 0.5,
+      "catchPhase": 0.9166666666666666,
+      "floorX": 0.89
+    },
+    "image": "assets/sprites/chibi/talarico-dribble-v18.webp"
+  },
+  "move": {
+    "frames": 12,
+    "fw": 190,
+    "fh": 256,
+    "cols": 4,
+    "body": 284.444,
+    "fills": true,
+    "feet": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "originX": 0.5,
+    "fps": 16,
+    "sourceFacing": 1,
+    "bodyScale": 1.25,
+    "characterScale": 0.85,
+    "loopStart": 0,
+    "loopEnd": 11,
+    "sourceFile": "horse_talarico_move_remade_v18_source.png",
+    "sourceFrames": [
+      18,
+      20,
+      21,
+      23,
+      24,
+      26,
+      27,
+      29,
+      30,
+      32,
+      33,
+      35
+    ],
+    "sourceAnimation": "9e1df11a-9e19-4ffc-8a8f-520ef484cfd8",
+    "embeddedBall": false,
+    "smoothFrames": false,
+    "hands": [
+      [
+        0.8947368421052632,
+        0.4375
+      ],
+      [
+        0.9,
+        0.5625
+      ],
+      [
+        0.8736842105263158,
+        0.6171875
+      ],
+      [
+        0.7315789473684211,
+        0.65234375
+      ],
+      [
+        0.7842105263157895,
+        0.46484375
+      ],
+      [
+        0.8210526315789474,
+        0.38671875
+      ],
+      [
+        0.8315789473684211,
+        0.41796875
+      ],
+      [
+        0.8421052631578947,
+        0.51171875
+      ],
+      [
+        0.7736842105263158,
+        0.66015625
+      ],
+      [
+        0.7526315789473684,
+        0.58984375
+      ],
+      [
+        0.8473684210526315,
+        0.53125
+      ],
+      [
+        0.9,
+        0.51953125
+      ]
+    ],
+    "ballPath": {
+      "releasePhase": 0.16666666666666666,
+      "floorPhase": 0.5,
+      "catchPhase": 0.9166666666666666,
+      "floorX": 0.95
+    },
+    "image": "assets/sprites/chibi/talarico-move-v18.webp",
+    "strideDistance": 0.9
+  }
+});
