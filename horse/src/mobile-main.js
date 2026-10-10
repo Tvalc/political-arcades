@@ -91,6 +91,7 @@
   function recordCourtWin() {
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
+    window.CityRewards?.credit('vote:win',4);
     careerWins++;
     const newSongs = window.VoteSongs?.award(match) || [];
     match.newSongs = newSongs;
@@ -2042,6 +2043,7 @@
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
     reactToShot(id, ball.made && validCopy, ball.flair);
+    if (ball.made && validCopy && !match.practice && !marketingUnlock && !match.marketingSession && match.localPlayers.includes(id)) window.CityRewards?.credit('vote:basket');
     if(id===match.humanId && ball.made && validCopy && !match.practice){
       match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
     }
