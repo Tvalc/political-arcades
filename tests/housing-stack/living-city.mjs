@@ -1,5 +1,5 @@
 import {apartmentTile} from './art-renderer.mjs?v=4';
-import {paintCityDelivery} from './delivery-effects.mjs?v=5';
+import {paintCityDelivery} from './delivery-effects.mjs?v=5.1';
 import {blockName} from './city-state.mjs';
 const palette=['#57bba8','#e6b655','#b999dc','#70a7d0','#d88b76','#91bc7b','#d9a371'];
 function box(c,x,y,w,h,color){c.fillStyle=color;c.fillRect(x,y,w,h);}

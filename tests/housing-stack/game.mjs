@@ -1,7 +1,7 @@
 import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
 import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
-import {paintLivingBlock} from './living-city.mjs?v=5';
-import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=5';
+import {paintLivingBlock} from './living-city.mjs?v=5.1';
+import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=5.1';
 let deliveryJobs=[],effectClock=0;
 let storage;try{storage=localStorage;}catch{}
 const city=loadCity(storage);let visitedBlock=null,saveFailed=false,celebrationBlock=null,celebrationUntil=0;

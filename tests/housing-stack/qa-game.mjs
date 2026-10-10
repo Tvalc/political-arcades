@@ -1,7 +1,7 @@
 import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
 import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
-import {paintLivingBlock} from './living-city.mjs?v=5';
-import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=5';
+import {paintLivingBlock} from './living-city.mjs?v=5.1';
+import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=5.1';
 let deliveryJobs=[],effectClock=0;
 let storage;try{storage={getItem:k=>localStorage.getItem("qa-v4:"+k),setItem:(k,v)=>localStorage.setItem("qa-v4:"+k,v)};}catch{}
 const city=loadCity(storage);let visitedBlock=null,saveFailed=false,celebrationBlock=null,celebrationUntil=0;
@@ -71,4 +71,4 @@ $('#qa-four').onclick=()=>{if(!started)start();g.board=Array.from({length:20},()
 $('#qa-city').onclick=()=>{city.floors=0;addFloors(city,48,storage);refreshMap();hud();};
 $('#qa-loss').onclick=()=>{g.status='lost';result({lost:true});};
 
-let qaDeliveryStage=0;const qaDelivery=document.createElement('button');qaDelivery.textContent='QA: delivery choreography';document.body.append(qaDelivery);qaDelivery.onclick=()=>{if(qaDeliveryStage===0){document.querySelector('#qa-four').click();g.status='paused';qaDeliveryStage=1;effectClock=deliveryJobs.at(-1).time+650;}else if(qaDeliveryStage===1){qaDeliveryStage=2;effectClock=deliveryJobs.at(-1).time+2700;}else{qaDeliveryStage=0;effectClock=deliveryJobs.at(-1).time+3700;}paintCity(performance.now());};
+let qaDeliveryStage=0;const qaDelivery=document.createElement('button');qaDelivery.textContent='QA: delivery choreography';document.body.append(qaDelivery);qaDelivery.onclick=()=>{if(qaDeliveryStage===0){document.querySelector('#qa-four').click();g.status='paused';qaDeliveryStage=1;effectClock=deliveryJobs.at(-1).time+650;}else if(qaDeliveryStage===1){qaDeliveryStage=2;effectClock=deliveryJobs.at(-1).time+2700;}else if(qaDeliveryStage===2){qaDeliveryStage=3;effectClock=deliveryJobs.at(-1).time+3700;}else{qaDeliveryStage=0;effectClock=deliveryJobs.at(-1).time+4700;}paintCity(performance.now());};
