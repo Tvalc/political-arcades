@@ -1,0 +1,4 @@
+{
+  "note": "One row per creative: { surface, kind, src, href, label, sponsor, start, end }. Pothole Party draws no commercial surface today, so there are no rows and no surface() call sites. See CONTRACT.md.",
+  "rows": []
+}
