@@ -192,7 +192,9 @@
     else if (!paused) unlockAudio();
   }
   document.getElementById("sound-toggle").addEventListener("click", () => setMuted(!muted));
-  window.addEventListener("blur", () => setPaused(true));
+  // Mobile controls can briefly lose window focus without leaving the game.
+  // Clear held inputs on blur; only a hidden page should automatically pause.
+  window.addEventListener("blur", () => { keys.clear(); pointer = null; });
   document.addEventListener("visibilitychange", () => { if (document.hidden) setPaused(true); });
 
   function loadImage(key, src) {

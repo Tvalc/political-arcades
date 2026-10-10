@@ -9,7 +9,7 @@
 // A key is { key, code } as it would appear on a KeyboardEvent.
 (function () {
   function send(type, k) {
-    window.dispatchEvent(new KeyboardEvent(type, { key: k.key, code: k.code, bubbles: true }));
+    window.dispatchEvent(new KeyboardEvent(type, { key: k.key, code: k.code, bubbles: true, cancelable: true }));
   }
 
   function makePad(keys) {
@@ -66,11 +66,12 @@
       if (id !== null) return;
       id = ev.pointerId;
       try { pad.setPointerCapture(id); } catch (err) { /* capture is optional */ }
-      aim(ev);
       ev.preventDefault();
+      ev.stopPropagation();
+      aim(ev);
     });
     pad.addEventListener("pointermove", (ev) => {
-      if (ev.pointerId === id) aim(ev);
+      if (ev.pointerId === id) { ev.preventDefault(); ev.stopPropagation(); aim(ev); }
     });
     pad.addEventListener("pointerup", end);
     pad.addEventListener("pointercancel", end);

@@ -3213,3 +3213,7 @@ Object.assign(window.VoteExtraClips.talarico, {
     "strideDistance": 0.9
   }
 });
+
+// Match the regular jumper and fadeaway to the remade dribble body size.
+// The shared transform also scales the tracked hand and ball-release point.
+for (const key of ["shot", "fade"]) Object.assign(window.VoteExtraClips.talarico[key], {body:256});
