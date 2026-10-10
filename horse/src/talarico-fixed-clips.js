@@ -786,3 +786,5 @@ Object.assign(window.VoteExtraClips.talarico, {
     "sourceFile": "talarico_hook_mime_v11.png"
   }
 });
+
+window.VoteExtraClips.talarico.spin.image = "assets/sprites/chibi/talarico-spin-v12.webp";
