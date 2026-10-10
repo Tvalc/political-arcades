@@ -26,8 +26,8 @@ export function paintLivingBlock(canvas,floors,index,time=0,reduced=false,close=
  }
  if(done){const tx=65+((reduced?0:t*15)%700);drawProp(c,3,tx+40,440,96,65);drawProp(c,1,30,377,62,43);tree(c,28,345);drawProp(c,8,190,356,43,33);}
  if(done>=2){drawProp(c,2,416,374,72,74);person(c,460,375,5,t,true);}
- if(done>=3)drawProp(c,7,647,380,59,57);
- if(done===4){drawProp(c,6,812,451,130,90);person(c,786,425,2,t,false,29);for(let x=75;x<750;x+=60){c.fillStyle=palette[(x/15|0)%7];c.beginPath();c.moveTo(x,65);c.lineTo(x+12,85);c.lineTo(x+24,65);c.fill();}c.font='bold 13px sans-serif';c.fillStyle='#243441';c.fillText('BLOCK PARTY · EVERY HOME HAS AN ADDRESS',270,49);}
+ if(done>=3)drawProp(c,7,615,380,59,57);
+ if(done===4){box(c,773,314,116,66,'#668c76');drawProp(c,6,827,378,108,80);person(c,800,367,2,t,false,29);for(let x=75;x<750;x+=60){c.fillStyle=palette[(x/15|0)%7];c.beginPath();c.moveTo(x,65);c.lineTo(x+12,85);c.lineTo(x+24,65);c.fill();}c.font='bold 13px sans-serif';c.fillStyle='#243441';c.fillText('BLOCK PARTY · EVERY HOME HAS AN ADDRESS',270,49);}
  if(!reduced)paintCityDelivery(c,deliveries,effectTime,index);
  c.restore();canvas.setAttribute('aria-label',blockName(index)+': '+done+' buildings finished, '+(local%4)+' floors on the next lot. '+(done===4?'Basketball court and block party.':done>=2?'Coffee cart open.':'Construction underway.'));
 }
