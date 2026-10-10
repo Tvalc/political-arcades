@@ -53,7 +53,7 @@ export function step(g){
   if((!g.level&&g.food&&same(g.food,h))||open||atSite){
    if(atSite&&!g.cargo&&!open){event='need-supply';g.events.push({type:event,x:h.x,y:h.y});}
    else 
-   if(g.crew.length>1){const worker=g.crew.splice(1,1)[0];g.body.pop();if(open)g.jobs.splice(g.jobs.indexOf(open),1);const task=open?open.task:g.assigned;g.jobs.push({x:h.x,y:h.y,worker,progress:0,ready:false,task});if(g.level&&!open){g.cargo=0;g.delivered++;g.districtDeliveries++;g.assigned=(g.assigned+1)%g.level.jobs.length;g.site=nextSite(g);spawn(g);}else if(g.food&&same(g.food,h))spawn(g);event='drop';g.events.push({type:event,x:h.x,y:h.y,worker,task});}
+   if(g.crew.length>1){const worker=g.crew.splice(1,1)[0];g.body.pop();if(open)g.jobs.splice(g.jobs.indexOf(open),1);const task=open?open.task:g.level?g.assigned:g.assigned++;g.jobs.push({x:h.x,y:h.y,worker,progress:0,ready:false,task});if(g.level&&!open){g.cargo=0;g.delivered++;g.districtDeliveries++;g.assigned=(g.assigned+1)%g.level.jobs.length;g.site=nextSite(g);spawn(g);}else if(g.food&&same(g.food,h))spawn(g);event='drop';g.events.push({type:event,x:h.x,y:h.y,worker,task});}
    else{event='empty';g.events.push({type:event,x:h.x,y:h.y});}
   }
  }
