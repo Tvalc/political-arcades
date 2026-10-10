@@ -215,7 +215,7 @@ function drawStreet(ctx,g,{previous,blend,leader,repairs,particles,cues=[],now,r
   if(!j.ready&&!reduced&&['pave','court'].includes(art.kind)){const phase=(j.progress%960)/960;if(phase>.48&&phase<.95){ctx.save();ctx.globalAlpha=(.95-phase)*1.2;ctx.fillStyle='#c8b79b';for(let k=0;k<4;k++){ctx.beginPath();ctx.arc(x+8+(k-1.5)*5,y+8-(phase-.48)*22,2+k*.8,0,Math.PI*2);ctx.fill();}ctx.restore();}}
 
   if(!j.ready&&g.level&&['hammer','plant','install'].includes(art.kind))workActor(ctx,j.worker.id,art.kind,reduced||g.status!=='playing'?0:Math.floor(j.progress/220)%4,x-3,y+16,38);else actor(ctx,j.worker.id,j.ready?'walk':'dig',j.ready?1:f,x-3,y+16,g.level?38:46);
-  ctx.fillStyle='#09231d';ctx.beginPath();ctx.roundRect(x-22,y-48,44,14,4);ctx.fill();ctx.fillStyle=j.ready?'#87ffc1':'#ffdf87';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(j.ready?'PICK UP âœ“':((REPAIR_MS-j.progress)/1000).toFixed(1)+'s',x,y-38);
+  ctx.fillStyle='#09231d';ctx.beginPath();ctx.roundRect(x-22,y-48,44,14,4);ctx.fill();ctx.fillStyle=j.ready?'#87ffc1':'#ffdf87';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(j.ready?'PICK UP':((REPAIR_MS-j.progress)/1000).toFixed(1)+'s',x,y-38);
   if(!j.ready){ctx.fillStyle='#061019';ctx.fillRect(x-19,y-30,38,4);ctx.fillStyle='#ffe391';ctx.fillRect(x-19,y-30,38*progress,4);}else{ctx.strokeStyle='#83f0b0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y+3,22,0,Math.PI*2);ctx.stroke();}
  }
  const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p;const dx=p.x-before.x,dy=p.y-before.y;return{x:(before.x+dx*blend+.5)*cell,y:(before.y+dy*blend+.5)*cell,id:p.id,uid:p.uid,flip:dx<0,index:i};});
