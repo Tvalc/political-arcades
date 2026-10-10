@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VOTE</title>
+  <title>Talarico animation comparison</title>
   <link rel="canonical" href="https://politicalarcades.com/horse/" />
   <meta
     name="description"
@@ -24,7 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=courts1" />
   <link rel="stylesheet" href="touch.css?v=launch1" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
+  
 <link rel="stylesheet" href="../chibi-ui.css?v=2">
 <link rel="stylesheet" href="court-layout.css?v=safe1">
 </head>
@@ -36,6 +36,7 @@
   </header>
   <div class="session-controls" id="session-controls" hidden><button type="button" id="pause-toggle">Pause · Esc</button><button type="button" id="rematch" hidden>Restart match</button><button type="button" id="pick-again" hidden>Choose player</button><label id="practice-speed" hidden><input type="checkbox" id="slow-motion"> Slow motion</label></div>
   <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
+  <h1 style="text-align:center">Talarico animation comparison</h1><nav style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px"><button onclick="TalaricoReview.mode('all')">all</button><button onclick="TalaricoReview.mode('idle')">idle</button><button onclick="TalaricoReview.mode('dribble')">dribble</button><button onclick="TalaricoReview.mode('move')">move</button><button onclick="TalaricoReview.mode('shot')">shot</button><button onclick="TalaricoReview.mode('spin')">spin</button><button onclick="TalaricoReview.mode('fade')">fade</button><button onclick="TalaricoReview.mode('dunk')">dunk</button><button onclick="TalaricoReview.mode('hook')">hook</button><button onclick="TalaricoReview.mode('celebrate')">celebrate</button><button onclick="TalaricoReview.mode('mock')">mock</button><button onclick="TalaricoReview.mode('shocked')">shocked</button><button onclick="TalaricoReview.flip()">Flip facing</button><button onclick="TalaricoReview.pause()">Pause / play</button><label>Scrub <input type="range" min="0" max="1" step="0.005" oninput="TalaricoReview.seek(this.value)"></label><span id="review-state"></span></nav><p style="text-align:center">Tap an animation to enlarge it. The same game renderer and ball are used here.</p>
   <main class="stage">
     <section class="launch-panel" id="asset-loading" role="status" aria-live="polite"><h2>Getting ready</h2><p id="asset-progress">Loading the court...</p><button id="asset-retry" type="button" hidden>Retry loading</button></section>
     <section class="launch-panel" id="first-play" hidden aria-labelledby="guide-title"><h2 id="guide-title">Make them match it.</h2><p>Make a shot. Your opponent must copy the spot and the shot.</p><p>Miss a copy? Earn a letter. Spell VOTE and you lose.</p><p><strong>Shooting takes two presses:</strong> one to aim, one to shoot in the gold zone.</p><button id="guide-learn" type="button">Try a guided shot</button><button id="guide-skip" type="button">I know the rules. Play!</button></section>
@@ -56,9 +57,8 @@
   <script src="touch.js?v=3"></script>
   <script src="src/court-songs.js?v=starter1"></script>
   <script src="src/music.js?v=starter1"></script>
-  <script src="src/basketball-clips.js?v=1"></script>
-  <script src="src/talarico-timing.js?v=7"></script>
-  <script src="src/talarico-fixed-clips.js?v=11"></script>
-  <script src="src/main.js?v=talarico-consistency11"></script>
+  <script src="src/basketball-clips.js?v=1"></script><script src="src/talarico-timing.js?v=7"></script><script src="src/talarico-fixed-clips.js?v=11"></script>
+  <script src="src/animation-review-build.js?v=11"></script>
 </body>
 </html>
+

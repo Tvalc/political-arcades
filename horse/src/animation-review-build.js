@@ -3217,6 +3217,32 @@
     keys.delete(k);
   });
 
+
+  let reviewClock=0, reviewFacing=1, reviewMode='all', reviewFrozen=false;
+  const reviewKeys=['idle','dribble','move','shot','spin','fade','dunk','hook','celebrate','mock','shocked'];
+  window.TalaricoReview={mode(k){reviewMode=k;reviewClock=0;},flip(){reviewFacing*=-1;},pause(){reviewFrozen=!reviewFrozen;},seek(t){reviewClock=Number(t)*4;reviewFrozen=true;},render(dt){
+    if(!reviewFrozen)reviewClock+=dt;
+    const keysToDraw=reviewMode==='all'?reviewKeys:[reviewMode],cols=reviewMode==='all'?6:1,w=1280/cols,h=reviewMode==='all'?350:650;canvas.height=720;canvas.style.aspectRatio='1280 / '+canvas.height;
+    ctx.clearRect(0,0,1280,canvas.height);ctx.fillStyle='#e1e7ec';ctx.fillRect(0,0,1280,canvas.height);
+    keysToDraw.forEach((key,n)=>{
+      screen='play';match=freshMatch('talarico');match.pos.talarico={x:.5,y:key==='dunk'?.8:.3};match.face.talarico=reviewFacing;match.pass=null;match.ball=null;match.hold=false;match.owner=null;match.pose.talarico=key;
+      const shooting=['shot','spin','fade','dunk','hook'].includes(key),clip=CLIPS.talarico[key];
+      match.t=reviewClock;const cycle=reviewClock%4;
+      if(['dribble','move'].includes(key)){match.owner='talarico';match.dribbleClock={talarico:{key,time:reviewClock}};}
+      if(shooting){match.flair=key==='shot'?'none':key;match.power=.6;release('talarico');match.ball.t=clamp((cycle-.4)/1.8,0,.999);}
+      const at=project(.5,key==='dunk'?.8:.3),x=n%cols*w,y=Math.floor(n/cols)*h;
+      ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.fillStyle='#1e293b';ctx.font='bold 17px system-ui';ctx.textAlign='center';ctx.fillText(key,x+w/2,y+28);
+      ctx.strokeStyle='#9ba7b2';ctx.beginPath();ctx.moveTo(x+12,y+h-44);ctx.lineTo(x+w-12,y+h-44);ctx.stroke();
+      const scale=(reviewMode==='all'?1:1.8)*playerHeight(project(.5,.3))/playerHeight(at);ctx.translate(x+w/2-at.x*scale,y+h-44-at.y*scale);ctx.scale(scale,scale);
+      if(key==='dunk'){const motion=bodyMotion('talarico');ctx.translate(-(motion.shift||0)*at.s,motion.lift*at.s);}
+      drawPlayer('talarico');
+      if(shooting){if(match.ball.t<match.ball.show){const action=match.ball.turnUntil&&match.ball.t>=match.ball.turnUntil?'shot':key;drawGatherBall('talarico',poseFrame(CLIPS.talarico[action],match.ball),action);}else drawFlight();}
+      else if(match.owner){const b=ownedBall('talarico');drawBall(b.x,b.y,b.r,b.spin);}
+      ctx.restore();
+    });
+    document.getElementById('review-state').textContent=(reviewFacing===1?'Facing right':'Facing left')+(reviewFrozen?'  / paused':'');
+  }};
+
   function frame(now) {
     const dt = Math.max(0, Math.min(0.033, (now - last) / 1000));
     last = now;
@@ -3234,6 +3260,7 @@
     document.getElementById("asset-progress").textContent = progress.failed ? "Some artwork could not load. Check your connection and retry." : `Getting the court ready: ${progress.loaded} / ${progress.total}`;
     document.getElementById("asset-retry").hidden = !progress.failed;
     if (pendingCourtStart && ready) { pendingCourtStart=false; startGame(); }
+    if(ready){window.TalaricoReview.render(dt);requestAnimationFrame(frame);return;}
     if (!paused && !guideOpen && !courtOpen && ready) update(dt * (match?.practice && document.getElementById("slow-motion").checked ? 0.25 : 1));
     document.getElementById("practice-speed").hidden = !match?.practice;
     draw();
