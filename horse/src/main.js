@@ -89,9 +89,9 @@
   function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
   function courtUnlocked(id) { return marketingUnlock || courtById(id).wins <= careerWins; }
   function recordCourtWin() {
+    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = true; window.CityRewards?.credit('vote:win',4); }
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
-    window.CityRewards?.credit('vote:win',4);
     careerWins++;
     const newSongs = window.VoteSongs?.award(match) || [];
     match.newSongs = newSongs;
