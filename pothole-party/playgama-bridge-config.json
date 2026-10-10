@@ -1,0 +1,17 @@
+{
+  "advertisement": {
+    "minimumDelayBetweenInterstitial": 180,
+    "interstitial": {
+      "placements": [
+        { "id": "preroll" },
+        { "id": "shift_end" }
+      ]
+    },
+    "rewarded": {
+      "placements": [
+        { "id": "extra_shift" }
+      ]
+    }
+  },
+  "platforms": {}
+}
