@@ -1,7 +1,7 @@
 import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
 import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
 import {paintLivingBlock} from './living-city.mjs?v=4';
-let storage;try{storage=localStorage;}catch{}
+let storage;try{storage={getItem:k=>localStorage.getItem("qa-v4:"+k),setItem:(k,v)=>localStorage.setItem("qa-v4:"+k,v)};}catch{}
 const city=loadCity(storage);let visitedBlock=null,saveFailed=false;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 import {ConstructionPlayer} from './construction-player.mjs?v=3.1';
@@ -62,3 +62,8 @@ function refreshMap(){const cp=cityProgress(city.floors),container=$('#city-map'
  for(let n=0;n<=cp.activeNeighborhood;n++){const district=document.createElement('section');district.className='district';const heading=document.createElement('h3');heading.textContent=`Borough ${Math.floor(n/3)+1} / Neighborhood ${n%3+1}`;district.append(heading);const road=document.createElement('div');road.className='map-road';for(let j=0;j<3;j++){const i=n*3+j;if(i>=available)break;const button=document.createElement('button');button.textContent=blockName(i)+' · '+Math.min(16,Math.max(0,city.floors-i*16))+'/16';button.className=i===cp.activeBlock?'active-block':'';button.onclick=()=>{visitedBlock=i;$('#visit-label').textContent=blockName(i);paintCity(performance.now());};road.append(button);}district.append(road);container.append(district);}}
 for(const b of document.querySelectorAll('[data-city-open]'))b.onclick=()=>{if(started&&g.status==='playing')pause();visitedBlock=null;refreshMap();$('#visit-label').textContent=blockName(cityProgress(city.floors).activeBlock);paintCity(performance.now());$('#city-dialog').showModal();};
 $('#city-close').onclick=()=>$('#city-dialog').close();refreshMap();
+
+const qa=document.createElement('div');qa.innerHTML='<button id="qa-four">QA: clear four floors</button><button id="qa-city">QA: finished neighborhood</button><button id="qa-loss">QA: end shift</button>';document.body.append(qa);
+$('#qa-four').onclick=()=>{if(!started)start();g.board=Array.from({length:20},()=>Array(10).fill(0));for(let y=16;y<20;y++)g.board[y]=Array.from({length:10},(_,x)=>x===5?0:2);g.piece={id:0,x:5,y:0,matrix:[[1],[1],[1],[1]]};g.status='playing';result(drop(g));};
+$('#qa-city').onclick=()=>{city.floors=0;addFloors(city,48,storage);refreshMap();hud();};
+$('#qa-loss').onclick=()=>{g.status='lost';result({lost:true});};
