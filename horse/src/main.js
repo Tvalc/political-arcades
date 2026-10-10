@@ -201,7 +201,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-consistency-v10` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v13` : src;
     images[key] = img;
   }
 
@@ -1672,11 +1672,16 @@
     }
   }
 
+  function dribbleFrameClock(clip, id = match.owner) {
+    const value = (match.dribbleClock?.[id]?.time || 0) * (clip.fps || 8);
+    const nearest = Math.round(value);
+    return Math.abs(value - nearest) < 1e-9 ? nearest : value;
+  }
+
   function dribbleIndex(clip, id = match.owner) {
     const start = clip.loopStart || 0;
     const length = (clip.loopEnd == null ? clip.frames : clip.loopEnd + 1) - start;
-    const time = match.dribbleClock?.[id]?.time || 0;
-    return start + Math.floor(time * (clip.fps || 8)) % length;
+    return start + Math.floor(dribbleFrameClock(clip, id)) % length;
   }
 
   function tickDribble() {
@@ -1748,12 +1753,12 @@
       const width = drawn.width;
       const handA = clip.hands[Math.min(frame, clip.hands.length - 1)];
       const handB = clip.hands[(frame + 1) % clip.hands.length];
-      const fraction = ((match.dribbleClock?.[id]?.time || 0) * clip.fps) % 1;
+      const fraction = dribbleFrameClock(clip, id) % 1;
       const hand = clip.ballPath?.hand || handA.map((v, i) => v + (handB[i] - v) * fraction);
       let x = at.x + face * (clip.sourceFacing || 1) * (hand[0] - (clip.originX ?? .5)) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
       if (clip.ballPath?.releasePhase) {
-        const u = ((match.dribbleClock?.[id]?.time || 0) * clip.fps % clip.frames) / clip.frames;
+        const u = (dribbleFrameClock(clip, id) % clip.frames) / clip.frames;
         const release = clip.ballPath.releasePhase, floorPhase = clip.ballPath.floorPhase;
         const catchPhase = clip.ballPath.catchPhase ?? 1;
         const palm = phase => {
@@ -2675,6 +2680,35 @@
     return { img, clip: set[key], key };
   }
 
+  const spriteBlendSurfaces = new Map();
+
+  function blendedDribbleImage(id, key, img, clip, frame) {
+    if (!clip.smoothFrames || typeof document.createElement !== "function") return null;
+    const blend = dribbleFrameClock(clip, id) % 1;
+    if (blend < 1e-6) return null;
+    const cacheKey = `${id}-${key}`;
+    let surface = spriteBlendSurfaces.get(cacheKey);
+    if (!surface) {
+      surface = document.createElement("canvas");
+      surface.width = clip.fw; surface.height = clip.fh;
+      spriteBlendSurfaces.set(cacheKey, surface);
+    }
+    const buffer = surface.getContext("2d");
+    const next = frame >= (clip.loopEnd ?? clip.frames - 1) ? (clip.loopStart || 0) : frame + 1;
+    const a = spriteCell(clip, frame, spriteLayout(clip, frame));
+    const b = spriteCell(clip, next, spriteLayout(clip, next));
+    buffer.clearRect(0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "source-over";
+    buffer.globalAlpha = 1 - blend;
+    buffer.drawImage(img, a.x, a.y, clip.fw, clip.fh, 0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "lighter";
+    buffer.globalAlpha = blend;
+    buffer.drawImage(img, b.x, b.y, clip.fw, clip.fh, 0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "source-over";
+    buffer.globalAlpha = 1;
+    return surface;
+  }
+
   function drawPlayer(id) {
     const f = FIGHTERS[id];
     const p = match.pos[id];
@@ -2721,7 +2755,8 @@
       ctx.scale((match.face[id] || 1) * (clip.sourceFacing || 1) * wide, motion.squash);
       const top = -height * layout.footInSlice;
       const cell = spriteCell(clip, frame, layout);
-      ctx.drawImage(img, cell.x, cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
+      const blended = (key === "dribble" || key === "move") && blendedDribbleImage(id, key, img, clip, frame);
+      ctx.drawImage(blended || img, blended ? 0 : cell.x, blended ? 0 : cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
       ctx.restore();
       return;
     }
@@ -2796,6 +2831,22 @@
     const u = Math.min(1, ball.t / (ball.show || 0.35));
     if (u >= 1) return last;
     return Math.min(last, Math.floor(u * (last + 1)));
+  }
+
+  function gatheringBall() {
+    if (!match) return null;
+    let id, action, frame;
+    if (match.ball && match.ball.phase === "arc" && match.ball.t < match.ball.show) {
+      id = match.ball.id;
+      action = match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair;
+      frame = poseFrame(CLIPS[id][action], match.ball);
+    } else if (!match.ball && match.hold) {
+      id = match.active;
+      const flair = id === match.cpuId ? match.cpu.flair : match.flair;
+      action = flair === "none" ? "shot" : flair;
+      frame = 0;
+    } else return null;
+    return { id, action, frame, behind: !!CLIPS[id][action].ballBehind?.[frame] };
   }
 
   function drawGatherBall(id, frame, action = "shot") {
@@ -3061,6 +3112,8 @@
       drawCourt();
       drawHoopBack();
       const order = [...ROSTER].sort((a, b) => match.pos[b].y - match.pos[a].y);
+      const gather = gatheringBall();
+      if (gather?.behind) drawGatherBall(gather.id, gather.frame, gather.action);
       order.forEach(drawPlayer);
       drawReleaseFeedback();
       const through = match.ball && match.ball.phase === "net";
@@ -3070,11 +3123,11 @@
         else {
           const action = match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair;
           const clip = CLIPS[match.ball.id][action];
-          drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
+          if (!gather?.behind) drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
         }
       } else if (match.hold) {
         const flair = match.active === match.cpuId ? match.cpu.flair : match.flair;
-        drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
+        if (!gather?.behind) drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
       } else if (match.pass) {
         drawLoose(match.pass, match.pass.t * 1.4);
       } else if (match.owner && !match.hold && !spriteFor(match.owner, match.pose[match.owner])?.clip.embeddedBall) {
