@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Political Arcades" />
   <meta property="og:title" content="Political Arcades" />
-  <meta property="og:description" content="Three free games, twenty-four songs, one comic, one platform. Pick your fight." />
+  <meta property="og:description" content="Three free games, twelve songs, one comic, one platform. Pick your fight." />
   <meta property="og:url" content="https://politicalarcades.com/" />
   <meta property="og:image" content="https://politicalarcades.com/art/chibi/hero.webp" />
   <meta property="og:image:width" content="1600" />
@@ -428,7 +428,7 @@ button { font: inherit; }
         </div>
         <div class="theater-caption">
           <span><b>Track 01</b> · Freeze the Rent · from the Political Arcades soundtrack</span>
-          <span><a href="#listen">All twenty-four songs below</a></span>
+          <span><a href="#listen">All twelve songs below</a></span>
         </div>
       </div>
     </section>
@@ -454,7 +454,7 @@ button { font: inherit; }
             </div>
             <div class="bar" id="bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
             <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
-            <p class="hint">Twenty-four tracks. Space bar plays and pauses. The music keeps going while you scroll.</p>
+            <p class="hint">Twelve tracks. Space bar plays and pauses. The music keeps going while you scroll.</p>
           </div>
           <div>
             <ol class="tracks" id="tracks"></ol>
@@ -634,30 +634,18 @@ button { font: inherit; }
   <script>
     // ---- Jukebox: one audio element, a track list, a seek bar.
     const TRACKS = [
-      ["01-freeze-the-rent", "Freeze the Rent", "Original", "2:12"],
-      ["02-shouldnt-be-this-hard", "Shouldn't Be This Hard", "Original", "2:04"],
-      ["03-hope-is-alive", "Hope Is Alive", "Original", "2:04"],
-      ["04-this-city-belongs-to-you", "This City Belongs to You", "Original", "1:58"],
-      ["05-turn-the-volume-up", "Turn the Volume Up", "Original", "1:50"],
-      ["06-town-hall", "Town Hall", "Original", "1:56"],
-      ["07-never-taken-a-dime", "Never Taken a Dime", "Original", "1:46"],
-      ["08-ive-got-receipts", "I've Got Receipts", "Original", "1:52"],
-      ["11-expansively", "Expansively", "Original", "1:38"],
-      ["freeze-the-rent-block-party", "Freeze the Rent (Block Party)", "Remix", "2:08"],
-      ["shouldnt-be-this-hard-soul-court", "Shouldn't Be This Hard (Soul Court)", "Remix", "2:00"],
-      ["this-city-belongs-to-you-after-hours", "This City Belongs to You (After Hours)", "Remix", "1:54"],
-      ["keep-the-lights-on-love-everyone","Keep the Lights On — Love Everyone Edition","Edition","1:00"],
-      ["keep-the-lights-on-neighbors-not-donors","Keep the Lights On — Neighbors Not Donors Edition","Edition","1:00"],
-      ["fine-print-receipts","Fine Print — I’ve Got Receipts Edition","Edition","1:00"],
-      ["fine-print-read-the-bill","Fine Print — Read the Bill Edition","Edition","1:00"],
-      ["bill-for-breathing-money-in-your-pocket","Bill for Breathing — Money in Your Pocket Edition","Edition","1:00"],
-      ["bill-for-breathing-no-copay","Bill for Breathing — No Co-Pay Edition","Edition","1:00"],
-      ["bill-for-breathing-people-before-paperwork","Bill for Breathing — People Before Paperwork Edition","Edition","1:00"],
-      ["bill-for-breathing-doctor-on-the-block","Bill for Breathing — Doctor on the Block Edition","Edition","1:00"],
-      ["rent-due-rent-freeze","Rent Due — Rent Freeze Edition","Edition","1:00"],
-      ["rent-due-landlord-sweating","Rent Due — Landlord Sweating Edition","Edition","1:00"],
-      ["rent-due-keys-to-the-city","Rent Due — Keys to the City Edition","Edition","1:00"],
-      ["rent-due-stay-on-the-block","Rent Due — Stay on the Block Edition","Edition","1:00"],
+      ["freeze-the-rent-full-spectrum", "Freeze the Rent — Full Spectrum", "Mix", "5:00"],
+      ["never-taken-a-dime-full-spectrum", "Never Taken a Dime — Full Spectrum", "Mix", "5:00"],
+      ["freeze-the-rent-robot-disco", "Freeze the Rent — Robot Disco", "Mix", "5:10"],
+      ["never-taken-a-dime-robot-disco", "Never Taken a Dime — Robot Disco", "Mix", "5:00"],
+      ["freeze-the-rent-neon-synth", "Freeze the Rent — Neon Synth", "Mix", "5:00"],
+      ["never-taken-a-dime-neon-synth", "Never Taken a Dime — Neon Synth", "Mix", "4:40"],
+      ["freeze-the-rent-sunset-house", "Freeze the Rent — Sunset House", "Mix", "5:10"],
+      ["never-taken-a-dime-sunset-house", "Never Taken a Dime — Sunset House", "Mix", "5:05"],
+      ["freeze-the-rent-robot-sunset", "Freeze the Rent — Robot Sunset", "Mix", "5:10"],
+      ["never-taken-a-dime-robot-sunset", "Never Taken a Dime — Robot Sunset", "Mix", "5:04"],
+      ["freeze-the-rent-neon-disco", "Freeze the Rent — Neon Disco", "Mix", "5:10"],
+      ["never-taken-a-dime-neon-disco", "Never Taken a Dime — Neon Disco", "Mix", "4:40"],
     ];
     const audio = new Audio(); audio.preload = "none"; audio.volume = 0.8;
     const list = document.getElementById("tracks");
