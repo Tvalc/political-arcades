@@ -1,5 +1,5 @@
-import {apartmentTile,boardBackdrop,paintNeighborhood} from './art-renderer.mjs?v=3';
-import {ConstructionPlayer} from './construction-player.mjs?v=3';
+import {apartmentTile,boardBackdrop,paintNeighborhood,onArtReady} from './art-renderer.mjs?v=3.1';
+import {ConstructionPlayer} from './construction-player.mjs?v=3.1';
 import {createGame,move,rotate,drop,tick,ghostY,SHAPES,hold,advanceLock} from './engine.mjs?v=3';
 import {CastPlayer} from './cast-player.mjs';
 import {castManifest} from './cast-manifest.mjs';
@@ -50,4 +50,4 @@ function draw(){const crane=$('#crane-trolley');crane.style.left=Math.max(8,Math
  if(clearFx&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const t=(performance.now()-clearFx.time)/550;if(t>=1)clearFx=null;else{ctx.save();ctx.globalAlpha=1-t;for(const row of clearFx.rows)row.cells.forEach((id,x)=>tile(ctx,x*32,row.y*32-t*22,32,colors[id-1]));ctx.fillStyle='#ffda78';ctx.font='bold 16px sans-serif';ctx.textAlign='center';ctx.fillText('+'+clearFx.homes+' HOMES',160,Math.max(50,clearFx.rows[0].y*32-12-t*20));ctx.restore();}}
  if(shine>0&&!matchMedia('(prefers-reduced-motion: reduce)').matches){ctx.fillStyle=`rgba(96,210,187,${shine*.4})`;ctx.fillRect(0,0,320,640);}
 }
-let lastPaint=-1,lastCityPaint=0;function frame(now){const dt=Math.min(100,now-last);last=now;shine=Math.max(0,shine-dt/1000);if(started&&g.status==='playing'){gravity+=dt;const interval=Math.max(120,820-Math.floor(g.lines/10)*65);if(gravity>=interval){gravity-=interval;result(tick(g));}result(advanceLock(g,dt));}draw();if(g.lines!==lastPaint||now-lastCityPaint>900){paintNeighborhood($('#skyline'),g.lines);paintNeighborhood($('#phone-city'),g.lines);lastPaint=g.lines;lastCityPaint=now;}requestAnimationFrame(frame);}hud();requestAnimationFrame(frame);
+let lastPaint=-1,lastCityPaint=0;function frame(now){const dt=Math.min(100,now-last);last=now;shine=Math.max(0,shine-dt/1000);if(started&&g.status==='playing'){gravity+=dt;const interval=Math.max(120,820-Math.floor(g.lines/10)*65);if(gravity>=interval){gravity-=interval;result(tick(g));}result(advanceLock(g,dt));}draw();if(g.lines!==lastPaint||now-lastCityPaint>900){paintNeighborhood($('#skyline'),g.lines);paintNeighborhood($('#phone-city'),g.lines);lastPaint=g.lines;lastCityPaint=now;}requestAnimationFrame(frame);}hud();onArtReady(hud);requestAnimationFrame(frame);
