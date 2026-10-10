@@ -1,7 +1,8 @@
+import {onSpritesReady} from './makko-sprites.mjs?v=6';
 import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
 import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
-import {paintLivingBlock} from './living-city.mjs?v=5.1';
-import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=5.1';
+import {paintLivingBlock} from './living-city.mjs?v=6';
+import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=6';
 let deliveryJobs=[],effectClock=0;
 let storage;try{storage=localStorage;}catch{}
 const city=loadCity(storage);let visitedBlock=null,saveFailed=false,celebrationBlock=null,celebrationUntil=0;
@@ -65,3 +66,5 @@ function refreshMap(){const cp=cityProgress(city.floors),container=$('#city-map'
  for(let n=0;n<=cp.activeNeighborhood;n++){const district=document.createElement('section');district.className='district';const heading=document.createElement('h3');heading.textContent=`Borough ${Math.floor(n/3)+1} / Neighborhood ${n%3+1}`;district.append(heading);const road=document.createElement('div');road.className='map-road';for(let j=0;j<3;j++){const i=n*3+j;if(i>=available)break;const button=document.createElement('button');const thumb=document.createElement('canvas');thumb.width=450;thumb.height=235;paintLivingBlock(thumb,city.floors,i,0,true);const caption=document.createElement('span');caption.textContent=blockName(i)+' · '+Math.min(16,Math.max(0,city.floors-i*16))+'/16';button.append(thumb,caption);button.className=i===cp.activeBlock?'active-block':'';button.onclick=()=>{visitedBlock=i;$('#visit-label').textContent=blockName(i);container.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));paintCity(performance.now());};road.append(button);}district.append(road);container.append(district);}}
 for(const b of document.querySelectorAll('[data-city-open]'))b.onclick=()=>{if(started&&g.status==='playing')pause();visitedBlock=null;refreshMap();$('#visit-label').textContent=blockName(cityProgress(city.floors).activeBlock);paintCity(performance.now());$('#city-dialog').showModal();};
 $('#city-close').onclick=()=>$('#city-dialog').close();refreshMap();
+
+onSpritesReady(()=>{hud();refreshMap();});
