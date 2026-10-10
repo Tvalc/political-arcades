@@ -2787,3 +2787,6 @@ Object.assign(window.VoteExtraClips.talarico, {
     "image": "assets/sprites/chibi/talarico-move-v15.webp"
   }
 });
+
+Object.assign(window.VoteExtraClips.talarico.dribble, {fps:48});
+Object.assign(window.VoteExtraClips.talarico.move, {fps:18, strideDistance:3.4});
