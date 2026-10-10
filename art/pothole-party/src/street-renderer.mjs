@@ -3,7 +3,7 @@ import {animationMeta} from './animation-meta.mjs';
 import {REPAIR_MS} from './engine.mjs';
 const assets={};for(const name of ['walk','dig','street','props']){const im=new Image();im.src='./'+name+'-v9.webp';assets[name]=im;}
 const mapAssets={};for(const id of ['nyc','detroit','texas']){const im=new Image();im.src='/art/pothole-party/'+id+'-map-v15.webp';mapAssets[id]=im;}
-const wornMaps={};for(const id of ['nyc','detroit','texas']){const im=new Image();im.src='/art/pothole-party/'+id+'-weathered-v18.webp?rev=2';wornMaps[id]=im;}
+const wornMaps={};for(const id of ['nyc','detroit','texas']){const im=new Image();im.src='/art/pothole-party/'+id+'-weathered-v18.webp?rev=3';wornMaps[id]=im;}
 const makkoAssets={};for(const name of ['materials','construction','weathered','residents','work']){const im=new Image();im.src='/art/pothole-party/'+(name==='work'?'work-crew':name)+(name==='residents'?'-v18.webp':'-v17.webp');makkoAssets[name]=im;}
 const palette=['#60cbb8','#bb9be1','#efa666','#e2cb72'];
 const names=['Mamdani','El-Sayed','Talarico','Neighbor'];
@@ -85,5 +85,5 @@ function drawWorkdayScene(ctx,g,now,reduced){
   if(g.level.id==='texas'&&done.has(5))atlasActor(ctx,'residents',2,f,400,690,37);
   if(g.level.id==='detroit'&&done.has(5))atlasActor(ctx,'residents',2,f,150,208,34);
  }
- if(g.status==='won')label(ctx,g.level.id==='texas'?'WELCOME BACK, STUDENTS':g.level.id==='detroit'?'THE COURT IS OPEN':'THE BLOCK IS YOURS',384,100,'#37e28a');
+ if(done.size===6)label(ctx,g.level.id==='texas'?'WELCOME BACK, STUDENTS':g.level.id==='detroit'?'THE COURT IS OPEN':'THE BLOCK IS YOURS',384,100,'#37e28a');
 }
