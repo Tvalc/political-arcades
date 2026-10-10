@@ -9,8 +9,11 @@
   {id:'craft',label:'Win after making a spin jumper and a hook',test:s=>s.made.spin>0&&s.made.hook>0},
   {id:'range',label:'Win after making a dunk and a fadeaway',test:s=>s.made.dunk>0&&s.made.fade>0}
  ];
+ // Song unlocks are loaded and saved by main.js through A2A.store (see ../ads/CONTRACT.md), never from localStorage here.
  let saved={},persistent=true;
- try {const x=JSON.parse(localStorage.getItem('vote-song-unlocks-v1')||'{}');if(x&&typeof x==='object'&&!Array.isArray(x))saved=x;}catch(_){persistent=false;}
+ function hydrate(x){if(x&&typeof x==='object'&&!Array.isArray(x))saved=x;}
+ function data(){return saved;}
+ function setPersistent(v){persistent=Boolean(v);}
  function starter(court){
   const list=courts[court]||courts.nyc;
   const preferred=court==='detroit'?['bill-for-breathing-money-in-your-pocket','shouldnt-be-this-hard-soul-court','09-two-hundred']:['rent-due-rent-freeze','this-city-belongs-to-you-after-hours','03-hope-is-alive'];
@@ -23,9 +26,9 @@
   m.songsRecorded=true;const stats={letters:m.letters[m.humanId],made:m.songShots||{}};const gained=[];
   if(!saved[m.court]||typeof saved[m.court]!=='object'||Array.isArray(saved[m.court]))saved[m.court]={};
   rules.forEach((r,i)=>{if(r.test(stats)&&saved[m.court][r.id]!==true){saved[m.court][r.id]=true;gained.push(slots(m.court)[i].title);}});
-  try{localStorage.setItem('vote-song-unlocks-v1',JSON.stringify(saved));}catch(_){persistent=false;}
+  window.VoteSongs.persist?.();
   return gained;
  }
- window.VoteSongs={tracks,courts,rules,slots,starter,award,persistent:()=>persistent};
+ window.VoteSongs={tracks,courts,rules,slots,starter,award,hydrate,data,setPersistent,persist:null,persistent:()=>persistent};
 })();
 

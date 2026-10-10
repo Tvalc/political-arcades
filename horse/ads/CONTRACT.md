@@ -62,20 +62,46 @@ Set in `index.html` before `ads/a2a-ads.js` loads.
 | `frequencyHint` | `'180s'` | Minimum gap between breaks, for Google and Bridge alike. |
 | `sponsors` | `'ads/sponsors.json'` | Where the creatives live. |
 | `bridge` | `true` | Load and initialise the Playgama Bridge SDK. `false` skips it (offline tests). |
+| `google` | `true` | Allow the AdSense tag at all. The Playgama build sets `false` so Google can never load there, even if Bridge fails. |
+| `storage` | `'auto'` | Where `A2A.store` saves: Bridge storage whenever Bridge is up (its mock keeps the same localStorage keys on our site); `local` forces localStorage. |
 
 Modes:
 
 - Dark (today, in review): `{ enabled: false, stub: true }`. Nothing loads from Google.
 - Production on politicalarcades.com: `{ enabled: true, stub: false }`.
-- Playgama build: `{ enabled: true, stub: false }`. Bridge reports a real
-  platform, so ads go through Bridge and the Google tag is never loaded.
+- Playgama build: `{ enabled: true, stub: false, google: false }`, written by
+  `horse/build-playgama.js`. Bridge reports a real platform, so ads go through
+  Bridge and the Google tag is never loaded. On a real platform the module uses
+  Bridge ads whatever `enabled` says, because the platform's checklist requires
+  them; `enabled` only gates Google on our own domains.
+
+## Saves: `A2A.store`
+
+Progress never touches `localStorage` from game code. `src/main.js` keeps one
+`saveProgress()` that writes the three keys in a single array-keyed call, and
+loads them once at start:
+
+```js
+A2A.store.load(['vote-court-progress-v1', 'vote-song-unlocks-v1', 'vote-court-ad-unlocks-v1'])
+  // -> Promise<{ key: parsedValue | null }>
+A2A.store.save({ 'vote-court-progress-v1': { wins }, 'vote-song-unlocks-v1': {...}, 'vote-court-ad-unlocks-v1': [...] })
+  // -> Promise<boolean>  (false = could not persist; the game shows its storage notice)
+```
+
+This is `bridge.storage.get/set` whenever Bridge is up. On our own site the
+Bridge mock platform keeps the values in localStorage under the same keys, so
+existing players keep their wins; only a missing Bridge falls back to
+localStorage directly.
+`src/court-songs.js` exposes `hydrate(data)`, `data()` and a `persist` hook
+that `main.js` points at `saveProgress`. Practice, losses and the marketing
+unlock still award nothing: they never call `saveProgress` with new wins.
 
 ## Events out
 
 The module dispatches `a2a:ad` CustomEvents on `window` with
 `detail = { type, surface, outcome }`:
 
-- `type`: `init`, `preroll`, `break`, `reward`, `surface`
+- `type`: `init`, `preroll`, `break`, `reward`, `surface`, `store`
 - `surface`: the kind or surface name (`court_end`, `pause`, `redo_shot`,
   `unlock_court`, `led`, ...) or the subsystem for `init` (`bridge`, `google`, `sponsors`)
 - `outcome`: `stub`, `viewed`, `dismissed`, `unfilled`, `blocked`, `timeout`,
@@ -118,12 +144,27 @@ platform `court_end` is a Bridge interstitial, rewards are Bridge rewarded ads
 granted only on the `rewarded` state, and `pause` is skipped because Bridge
 paces interstitials itself.
 
+## Playgama build
+
+```
+node horse/build-playgama.js   ->  horse/dist/vote-playgama.zip
+```
+
+Copies everything the game loads into `horse/dist/playgama/` (court art,
+sprites, UI, the 28 music files, the two fonts as local woff2, the site button
+sheet), rewrites `index.html` to drop Google Fonts, the live-site links and
+meta, and the AdSense flags, adds `playgama.css` (single screen, no page
+scrollbar, no text selection), nulls sponsor links, checks Latin-only names and
+the 300 MB limit, and zips with `index.html` at the root. `dist/` is ignored by
+git. Upload the zip through Tony's Playgama console; nothing here publishes.
+
 ## The rule
 
 No file other than `horse/ads/a2a-ads.js` may reference `adsbygoogle`,
 `adBreak`, `adConfig`, `window.bridge` or any Playgama API. The only
-exceptions are the `window.A2A_ADS` flags line in `index.html` and
-`playgama-bridge-config.json`. If a change needs a new ad behaviour, add it to
+exceptions are the `window.A2A_ADS` flags line in `index.html`,
+`playgama-bridge-config.json`, and the build script, which only rewrites that
+flags line. If a change needs a new ad behaviour, add it to
 the module and keep the five-call surface.
 
 ## Call sites in `src/main.js` (grep `CONTRACT.md`)

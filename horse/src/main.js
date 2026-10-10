@@ -84,14 +84,30 @@
 
   const COURTS = [{"id": "nyc", "name": "New York Playground", "wins": 0, "src": "assets/nyc-playground.webp", "thumb": "assets/nyc-playground.webp", "rim": [640, 134]}, {"id": "detroit", "name": "Detroit Playground", "wins": 0, "src": "assets/detroit-playground.webp", "thumb": "assets/detroit-playground.webp", "rim": [634, 160]}, {"id": "court-01", "name": "Rent Freeze Schoolyard", "wins": 3, "src": "assets/courts/01.webp", "thumb": "assets/courts/01-thumb.webp", "rim": [636, 117]}, {"id": "court-02", "name": "Motor City Union Hall", "wins": 6, "src": "assets/courts/02.webp", "thumb": "assets/courts/02-thumb.webp", "rim": [640, 149]}, {"id": "court-03", "name": "Free Bus Fast Break", "wins": 9, "src": "assets/courts/03.webp", "thumb": "assets/courts/03-thumb.webp", "rim": [640, 108]}, {"id": "court-04", "name": "Public Health Playground", "wins": 12, "src": "assets/courts/04.webp", "thumb": "assets/courts/04-thumb.webp", "rim": [640, 113]}, {"id": "court-05", "name": "Grocery Co-op Corner", "wins": 15, "src": "assets/courts/05.webp", "thumb": "assets/courts/05-thumb.webp", "rim": [640, 158]}, {"id": "court-06", "name": "Rooftop Housing Boom", "wins": 18, "src": "assets/courts/06.webp", "thumb": "assets/courts/06-thumb.webp", "rim": [639, 176]}, {"id": "court-07", "name": "Library After Dark", "wins": 21, "src": "assets/courts/07.webp", "thumb": "assets/courts/07-thumb.webp", "rim": [634, 133]}, {"id": "court-08", "name": "Great Lakes Green Deal", "wins": 24, "src": "assets/courts/08.webp", "thumb": "assets/courts/08-thumb.webp", "rim": [637, 156]}, {"id": "court-09", "name": "Childcare Block Party", "wins": 27, "src": "assets/courts/09.webp", "thumb": "assets/courts/09-thumb.webp", "rim": [636, 162]}, {"id": "court-10", "name": "Ballot Box Boulevard", "wins": 30, "src": "assets/courts/10.webp", "thumb": "assets/courts/10-thumb.webp", "rim": [639, 128]}, {"id": "court-11", "name": "Trickle Down Country Club", "wins": 33, "src": "assets/courts/11.webp", "thumb": "assets/courts/11-thumb.webp", "rim": [640, 93]}, {"id": "court-12", "name": "Infrastructure Week Forever", "wins": 36, "src": "assets/courts/12.webp", "thumb": "assets/courts/12-thumb.webp", "rim": [640, 119]}, {"id": "court-13", "name": "Emergency Vacation Resort", "wins": 39, "src": "assets/courts/13.webp", "thumb": "assets/courts/13-thumb.webp", "rim": [638, 98]}, {"id": "court-14", "name": "Filibuster Falls", "wins": 42, "src": "assets/courts/14.webp", "thumb": "assets/courts/14-thumb.webp", "rim": [640, 137]}, {"id": "court-15", "name": "Border Wall Gift Shop", "wins": 45, "src": "assets/courts/15.webp", "thumb": "assets/courts/15-thumb.webp", "rim": [640, 158]}, {"id": "court-16", "name": "Stone Age Senate", "wins": 48, "src": "assets/courts/16.webp", "thumb": "assets/courts/16-thumb.webp", "rim": [637, 129]}, {"id": "court-17", "name": "Trickle Down Tar Pit", "wins": 51, "src": "assets/courts/17.webp", "thumb": "assets/courts/17-thumb.webp", "rim": [640, 121]}, {"id": "court-18", "name": "Mammoth Healthcare Maze", "wins": 54, "src": "assets/courts/18.webp", "thumb": "assets/courts/18-thumb.webp", "rim": [631, 130]}, {"id": "court-19", "name": "Fossil Fuel Fan Club", "wins": 57, "src": "assets/courts/19.webp", "thumb": "assets/courts/19-thumb.webp", "rim": [640, 171]}, {"id": "court-20", "name": "Cave Condo Crisis", "wins": 60, "src": "assets/courts/20.webp", "thumb": "assets/courts/20-thumb.webp", "rim": [640, 174]}, {"id": "court-21", "name": "Neon Public Option", "wins": 63, "src": "assets/courts/21.webp", "thumb": "assets/courts/21-thumb.webp", "rim": [640, 98]}, {"id": "court-22", "name": "Robo Landlord 3000", "wins": 66, "src": "assets/courts/22.webp", "thumb": "assets/courts/22-thumb.webp", "rim": [640, 143]}, {"id": "court-23", "name": "Solar Punk Commons", "wins": 69, "src": "assets/courts/23.webp", "thumb": "assets/courts/23-thumb.webp", "rim": [640, 109]}, {"id": "court-24", "name": "Algorithmic Gerrymander", "wins": 72, "src": "assets/courts/24.webp", "thumb": "assets/courts/24-thumb.webp", "rim": [640, 119]}, {"id": "court-25", "name": "Billionaire Bunker League", "wins": 75, "src": "assets/courts/25.webp", "thumb": "assets/courts/25-thumb.webp", "rim": [640, 121]}, {"id": "court-26", "name": "Lunar Tax Haven", "wins": 78, "src": "assets/courts/26.webp", "thumb": "assets/courts/26-thumb.webp", "rim": [640, 191]}, {"id": "court-27", "name": "Mars Infrastructure Week", "wins": 81, "src": "assets/courts/27.webp", "thumb": "assets/courts/27-thumb.webp", "rim": [635, 152]}, {"id": "court-28", "name": "Galactic Public Transit", "wins": 84, "src": "assets/courts/28.webp", "thumb": "assets/courts/28-thumb.webp", "rim": [640, 101]}, {"id": "court-29", "name": "Orbital Lobbyist Lounge", "wins": 87, "src": "assets/courts/29.webp", "thumb": "assets/courts/29-thumb.webp", "rim": [640, 114]}, {"id": "court-30", "name": "Democracy Block Party 2099", "wins": 90, "src": "assets/courts/30.webp", "thumb": "assets/courts/30-thumb.webp", "rim": [640, 93]}];
   let selectedCourt = null, courtOpen = false, pendingCourtStart = false;
-  let careerWins = 0, progressSaved = true, marketingUnlock = false;
-  try { const saved = JSON.parse(localStorage.getItem('vote-court-progress-v1') || '{}');
-    careerWins = Number.isSafeInteger(saved.wins) && saved.wins >= 0 ? Math.min(saved.wins, 1000000) : 0;
-  } catch (_) { progressSaved = false; }
-  function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
+  let careerWins = 0, progressSaved = true, marketingUnlock = false, progressLoaded = false;
   // Courts opened one win early through a rewarded ad (see ads/CONTRACT.md). Not progress: careerWins is untouched.
   let adUnlocks = new Set();
-  try { adUnlocks = new Set(JSON.parse(localStorage.getItem('vote-court-ad-unlocks-v1') || '[]')); } catch (_) {}
+  // Progress (wins, song unlocks, ad unlocks) loads and saves through A2A.store in one call (see ads/CONTRACT.md):
+  // Bridge storage on a platform, localStorage on our own site. The inline fallback only runs if the module is missing.
+  const PROGRESS_KEYS = ['vote-court-progress-v1', 'vote-song-unlocks-v1', 'vote-court-ad-unlocks-v1'];
+  const storeApi = () => window.A2A?.store || {
+    load: keys => Promise.resolve(Object.fromEntries(keys.map(k => { try { return [k, JSON.parse(localStorage.getItem(k) || 'null')]; } catch (_) { return [k, null]; } }))),
+    save: data => { try { Object.entries(data).forEach(([k, v]) => localStorage.setItem(k, JSON.stringify(v))); return Promise.resolve(true); } catch (_) { return Promise.resolve(false); } },
+  };
+  function saveProgress() {
+    return storeApi().save({ [PROGRESS_KEYS[0]]: { wins: careerWins }, [PROGRESS_KEYS[1]]: window.VoteSongs?.data() || {}, [PROGRESS_KEYS[2]]: [...adUnlocks] })
+      .then(ok => { progressSaved = ok; window.VoteSongs?.setPersistent(ok); return ok; });
+  }
+  if (window.VoteSongs) window.VoteSongs.persist = saveProgress;
+  storeApi().load(PROGRESS_KEYS).then(data => {
+    const saved = data[PROGRESS_KEYS[0]] || {};
+    careerWins = Number.isSafeInteger(saved.wins) && saved.wins >= 0 ? Math.min(saved.wins, 1000000) : 0;
+    window.VoteSongs?.hydrate(data[PROGRESS_KEYS[1]]);
+    adUnlocks = new Set(Array.isArray(data[PROGRESS_KEYS[2]]) ? data[PROGRESS_KEYS[2]].filter(id => typeof id === 'string') : []);
+    progressLoaded = true;
+    if (courtOpen) openCourtSelect();
+  }).catch(() => { progressSaved = false; progressLoaded = true; });
+  function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
   function courtUnlocked(id) { return marketingUnlock || adUnlocks.has(id) || courtById(id).wins <= careerWins; }
   function recordCourtWin() {
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
@@ -99,8 +115,7 @@
     careerWins++;
     const newSongs = window.VoteSongs?.award(match) || [];
     match.newSongs = newSongs;
-    try { localStorage.setItem('vote-court-progress-v1', JSON.stringify({wins:careerWins})); }
-    catch (_) { progressSaved = false; }
+    saveProgress();
     const unlocked = COURTS.find(c => c.wins === careerWins);
     match.unlockMessage = unlocked ? `COURT UNLOCKED: ${unlocked.name}` : `${careerWins} career wins`;
     if (newSongs.length) match.unlockMessage += ` · ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
@@ -131,7 +146,7 @@
   document.getElementById('court-unlock-ad').addEventListener('click', ev => {
     const id = ev.currentTarget.dataset.court; if (!id || courtUnlocked(id)) return;
     adsApi()?.reward('unlock_court', () => {
-      adUnlocks.add(id); try { localStorage.setItem('vote-court-ad-unlocks-v1', JSON.stringify([...adUnlocks])); } catch (_) {}
+      adUnlocks.add(id); saveProgress();
       selectedCourt = id; openCourtSelect();
     }, () => document.getElementById('court-play').focus());
   });

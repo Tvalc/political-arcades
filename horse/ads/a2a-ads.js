@@ -26,6 +26,8 @@
     sponsors: "ads/sponsors.json",
     rotateSeconds: 20,
     bridge: true,
+    google: true,
+    storage: "auto",
   };
   const GOOGLE_TYPES = { preroll: "preroll", court_end: "next", match_end: "next", pause: "pause" };
   const WATCHDOG_MS = 8000;
@@ -125,7 +127,9 @@
       emit("init", "bridge", "game_ready");
     } catch (err) { console.warn("[a2a-ads] game_ready failed", err); }
   }
-  function useBridgeAds() { return cfg.enabled && bridgeState.ready && bridgeState.real; }
+  // On a real platform (Playgama and its partners) the platform serves the ads
+  // whatever the enabled flag says: their checklist requires interstitials.
+  function useBridgeAds() { return bridgeState.ready && bridgeState.real; }
 
   function onBridgeInterstitial(state) {
     if (!busy || busy.provider !== "bridge" || busy.type !== "interstitial") return;
@@ -162,7 +166,8 @@
     document.head.appendChild(tag);
     window.adConfig({ preloadAdBreaks: "on", sound: "on", onReady: () => { google.ready = true; } });
   }
-  function useGoogleAds() { return cfg.enabled && !useBridgeAds() && !google.failed; }
+  // google:false (set by the Playgama build) keeps the AdSense tag out even if Bridge failed to start.
+  function useGoogleAds() { return cfg.enabled && cfg.google !== false && !useBridgeAds() && !google.failed; }
 
   // ------------------------------------------------------------ one at a time
   function finish(outcome) {
@@ -237,7 +242,8 @@
 
     // Before the title screen. cb runs either way; afterwards Bridge is told the game is ready.
     preroll(cb) {
-      const done = () => { gameReadyWanted = true; flushGameReady(); if (typeof cb === "function") cb(); };
+      // game_ready goes out after the first playable frame has painted, never from the loading screen.
+      const done = () => { if (typeof cb === "function") cb(); requestAnimationFrame(() => requestAnimationFrame(() => { gameReadyWanted = true; flushGameReady(); })); };
       const go = () => {
         const provider = pickProvider();
         start({ kind: "preroll", type: "interstitial", provider, done, run() {
@@ -277,7 +283,8 @@
     reward(kind, onGranted, onDismissed) {
       kind = String(kind || "reward");
       const done = outcome => {
-        const granted = outcome === "viewed" || (cfg.stub && outcome !== "dismissed");
+        // Granted only when a real ad was watched, or when no network was asked at all (stub).
+        const granted = outcome === "viewed" || (cfg.stub && outcome === "stub");
         emit("reward", kind, granted ? "granted" : `denied:${outcome}`);
         if (granted) { if (typeof onGranted === "function") onGranted(); }
         else if (typeof onDismissed === "function") onDismissed();
@@ -311,6 +318,59 @@
     },
   };
 
+  // ------------------------------------------------------------- storage
+  // Progress saves go through bridge.storage in one array-keyed call whenever
+  // Bridge is up. Its mock platform (our own site) keeps them in localStorage
+  // under the same keys, so players who saved before keep their wins; only a
+  // missing or failed Bridge falls back to localStorage directly.
+  // Values are JSON strings either way; load() hands back parsed values.
+  function useBridgeStorage() {
+    if (cfg.storage === "local") return false;
+    return bridgeState.ready;
+  }
+  function parse(value) {
+    if (value == null) return null;
+    if (typeof value !== "string") return value;
+    try { return JSON.parse(value); } catch (_) { return value; }
+  }
+  const store = {
+    // keys: string[] -> Promise<{ key: parsedValue | null }>
+    load(keys) {
+      keys = Array.isArray(keys) ? keys : [keys];
+      const out = {};
+      const fromLocal = () => {
+        keys.forEach(k => { let v = null; try { v = localStorage.getItem(k); } catch (_) {} out[k] = parse(v); });
+        emit("store", "local", "loaded");
+        return out;
+      };
+      return bridgeInit().then(() => {
+        if (!useBridgeStorage()) return fromLocal();
+        return bridgeState.sdk.storage.get(keys).then(values => {
+          keys.forEach((k, i) => { out[k] = parse(values ? values[i] : null); });
+          emit("store", bridgeState.platform, "loaded");
+          return out;
+        }).catch(err => { console.warn("[a2a-ads] bridge.storage.get failed, using localStorage", err); return fromLocal(); });
+      });
+    },
+    // data: { key: value } -> Promise<boolean> (true when persisted)
+    save(data) {
+      const keys = Object.keys(data || {});
+      const values = keys.map(k => JSON.stringify(data[k]));
+      const toLocal = () => {
+        let ok = true;
+        keys.forEach((k, i) => { try { localStorage.setItem(k, values[i]); } catch (_) { ok = false; } });
+        emit("store", "local", ok ? "saved" : "failed");
+        return ok;
+      };
+      return bridgeInit().then(() => {
+        if (!useBridgeStorage()) return toLocal();
+        return bridgeState.sdk.storage.set(keys, values).then(() => { emit("store", bridgeState.platform, "saved"); return true; })
+          .catch(err => { console.warn("[a2a-ads] bridge.storage.set failed, using localStorage", err); return toLocal(); });
+      });
+    },
+  };
+
   window.A2A = window.A2A || {};
   window.A2A.ads = ads;
+  window.A2A.store = store;
 })();
