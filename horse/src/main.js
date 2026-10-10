@@ -17,6 +17,7 @@
       pants: "#1c2430",
       smile: true,
     },
+    talarico: { id: "talarico", name: "Talarico", full: "James Talarico", city: "Texas", court: "nyc", body: "#d86827", trim: "#fff0cc", skin: "#f0c6a1", pants: "#d86827", smile: true },
     sayed: {
       id: "sayed",
       name: "El-Sayed",
@@ -30,6 +31,11 @@
       smile: false,
     },
   };
+
+  const ROSTER = Object.keys(FIGHTERS);
+  let opponentIndex = 1;
+  const selectedFighter = () => ROSTER[selectIndex];
+  const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % 2];
 
   const FLAIR_NAME = {
     none: "plain jumper",
@@ -102,7 +108,7 @@
   }
   function openCourtSelect() {
     courtOpen = true; keys.clear(); pointer = null;
-    if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = selectIndex === 0 ? 'nyc' : 'detroit';
+    if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = FIGHTERS[selectedFighter()].court;
     const panel = document.getElementById('court-select');
     panel.hidden = false;
     document.getElementById('court-progress').textContent = `${careerWins} wins · ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
@@ -153,7 +159,7 @@
   }
   function startPractice() {
     setPaused(false); keys.clear(); pointer = null;
-    const id = match?.humanId || (selectIndex === 1 ? "sayed" : "mamdani");
+    const id = match?.humanId || selectedFighter();
     match = freshMatch(id); match.practice = true; screen = "play";
     match.call = "Practice: move with arrows / WASD. Choose a shot with 1–4; Space to aim and shoot.";
     canvas.focus({ preventScroll: true });
@@ -195,7 +201,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}?v=42` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=cast3-final1` : src;
     images[key] = img;
   }
 
@@ -1318,6 +1324,15 @@
   for (const clip of Object.values(CLIPS.sayed)) clip.characterScale = 0.8;
 
 
+  // Makko sprite metadata is kept separate so animation exports remain editable.
+  for (const [id, clips] of Object.entries(window.VoteExtraClips || {})) {
+    CLIPS[id] ||= {};
+    for (const [key, clip] of Object.entries(clips)) {
+      CLIPS[id][key] = clip;
+      loadImage(`${id}-${key}`, clip.image || `assets/sprites/chibi/${id}-${key}.webp`);
+    }
+  }
+
   let crowdGain = null;
 
   function tone(freq, dur, type, gain) {
@@ -1507,11 +1522,13 @@
   }
 
   function otherId(id) {
-    return id === "mamdani" ? "sayed" : "mamdani";
+    if (match && [match.humanId, match.cpuId].includes(id)) return id === match.humanId ? match.cpuId : match.humanId;
+    return ROSTER.find(other => other !== id);
   }
 
   function sideline(id) {
-    return { x: id === "mamdani" ? -.12 : 1.12, y: .38 };
+    if (match && id === match.spectatorId) return { x: .94, y: .57 };
+    return { x: id === (match?.humanId || selectedFighter()) ? -.06 : 1.06, y: .38 };
   }
 
   function stageNextTurn(shooter) {
@@ -1521,7 +1538,7 @@
     if (incoming !== shooter) {
       const p = match.pos[incoming];
       if (p.x < .08 || p.x > .92)
-        match.transit[incoming] = { x: incoming === "mamdani" ? .16 : .84, y: .38 };
+        match.transit[incoming] = { x: incoming === match.humanId ? .16 : .84, y: .38 };
     }
   }
 
@@ -1533,6 +1550,7 @@
         Object.assign(p, target);
         match.pose[id] = "idle";
         match.face[id] = p.x < .5 ? 1 : -1;
+        if (match.reactions[id]) { match.reactions[id].start = match.t; match.reactions[id].life = 4.1; }
         delete match.transit[id];
       } else {
         p.x += dx / distance * step; p.y += dy / distance * step;
@@ -1543,21 +1561,21 @@
   }
 
   function freshMatch(humanId) {
-    const cpuId = otherId(humanId);
+    const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % 2];
+    const spectatorId = ROSTER.find(id => id !== humanId && id !== cpuId);
     const home = FIGHTERS[humanId];
     return {
       humanId,
       cpuId,
+      spectatorId,
+      reactions: {},
       court: selectedCourt || home.court,
       songShots: {},
       marketingSession: marketingUnlock,
-      letters: { mamdani: 0, sayed: 0 },
-      pos: {
-        mamdani: humanId === "mamdani" ? { x: 0.32, y: 0.28 } : sideline("mamdani"),
-        sayed: humanId === "sayed" ? { x: 0.68, y: 0.28 } : sideline("sayed"),
-      },
+      letters: Object.fromEntries(ROSTER.map(id => [id, 0])),
+      pos: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? {x:.32,y:.28} : id === cpuId ? {x:1.06,y:.38} : {x:.94,y:.57}])),
       transit: {},
-      face: { mamdani: 1, sayed: -1 },
+      face: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? 1 : -1])),
       active: humanId,
       phase: "set",
       challenge: null,
@@ -1568,9 +1586,9 @@
       ball: null,
       owner: humanId,
       pass: null,
-      pose: { mamdani: "idle", sayed: "idle" },
-      jump: { mamdani: 0, sayed: 0 },
-      jumpDur: { mamdani: 0, sayed: 0 },
+      pose: Object.fromEntries(ROSTER.map(id => [id, "idle"])),
+      jump: Object.fromEntries(ROSTER.map(id => [id, 0])),
+      jumpDur: Object.fromEntries(ROSTER.map(id => [id, 0])),
       hoopKick: 0,
       lock: 0.2,
       call: `${home.full} calls the first shot.`,
@@ -1585,7 +1603,7 @@
       roar: 0,
       flash: 0,
       dribU: null,
-      pop: { mamdani: 0, sayed: 0 },
+      pop: Object.fromEntries(ROSTER.map(id => [id, 0])),
     };
   }
 
@@ -1632,7 +1650,7 @@
 
   function tickDribbleClock(dt) {
     match.dribbleClock ||= {};
-    for (const id of ["mamdani", "sayed"]) {
+    for (const id of ROSTER) {
       const key = match.pose[id] === "move" ? "move" : "dribble";
       const clock = match.dribbleClock[id];
       if (!clock || clock.key !== key) match.dribbleClock[id] = { key, time: 0 };
@@ -1937,8 +1955,8 @@
     if (shotClip.releaseFrame != null) {
       const at = project(p.x, p.y), drawn = drawnSprite(shotClip, at, shotClip.releaseFrame);
       match.ball.syncRelease = true;
-      match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
-      match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[0] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shotLift(match.ball.show)) * at.s;
+      match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.sourceFacing || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
+      match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[shotClip.releaseFrame] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shotLift(match.ball.show)) * at.s;
       const offset = shotDisplacement(id, match.ball.show, flair, match.ball.show);
       match.ball.x0 += offset.x; match.ball.y0 -= offset.lift;
       if (flair === "dunk") match.ball.arc = 8;
@@ -1980,6 +1998,13 @@
     return word;
   }
 
+  function reactToShot(shooter, made, flair) {
+    const rival = otherId(shooter);
+    const success = made;
+    const states = {[shooter]: success ? "celebrate" : "shocked", [rival]: success ? "shocked" : "mock", [match.spectatorId]: success ? (flair === "dunk" ? "shocked" : "celebrate") : "mock"};
+    for (const [id, state] of Object.entries(states)) match.reactions[id] = {state, start:match.t, life:4.1};
+  }
+
   function resolveBall() {
     const ball = match.ball;
     const id = ball.id;
@@ -1992,6 +2017,7 @@
     match.pose[id] = "idle";
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
+    reactToShot(id, ball.made && validCopy, ball.flair);
     if(id===match.humanId && ball.made && validCopy && !match.practice){
       match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
     }
@@ -2125,13 +2151,16 @@
       match.basket.life -= dt;
       if (match.basket.life <= 0) match.basket = null;
     }
-    match.pop.mamdani = Math.max(0, match.pop.mamdani - dt * 1.4);
-    match.pop.sayed = Math.max(0, match.pop.sayed - dt * 1.4);
+    for (const id of ROSTER) match.pop[id] = Math.max(0, match.pop[id] - dt * 1.4);
+    for (const [id, reaction] of Object.entries(match.reactions)) {
+      if (!match.transit?.[id]) reaction.life -= dt;
+      if (reaction.life <= 0) delete match.reactions[id];
+    }
     if (match.banner) {
       match.banner.life -= dt;
       if (match.banner.life <= 0) match.banner = null;
     }
-    for (const id of ["mamdani", "sayed"]) {
+    for (const id of ROSTER) {
       if (match.jump[id] > 0) {
         match.jump[id] += dt;
         if (match.jump[id] >= (match.jumpDur[id] || 0)) {
@@ -2407,31 +2436,31 @@
 
   function drawSelect() {
     buttons.length = 0;
-    menuBackdrop("select");
-    const ids = ["mamdani", "sayed"];
-    ctx.textAlign = "center";
-    ctx.textBaseline = "alphabetic";
-    skin("banner", 390, 14, 500, 64);
-    ctx.fillStyle = "#fff6d8";
-    ctx.font = "24px Bungee, sans-serif";
-    ctx.fillText("WHO'S GOT NEXT?", 640, 55);
-    ids.forEach((id, i) => {
-      const x = i * 640;
-      const on = i === selectIndex;
-      buttons.push({x, y:90, w:640, h:430, action:()=>{selectIndex=i;}});
-      skin(on ? "primary" : "secondary", x + 100, 435, 440, 74);
-      ctx.fillStyle = on ? "#10182b" : "#fff6d8";
-      ctx.font = "28px Bungee, sans-serif";
-      ctx.fillText(FIGHTERS[id].full, x + 320, 480);
-      ctx.fillStyle = "#fff6d8";
-      ctx.font = "18px Share Tech Mono, monospace";
-      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on ? "YOUR PICK" : "TAP TO SELECT"}`, x + 320, 538);
+    ctx.drawImage(images["nyc-future"],0,0,W,H);
+    ctx.fillStyle = "rgba(8,17,31,.84)"; ctx.fillRect(0,0,W,H);
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#fff6d8"; ctx.font = "28px Bungee, sans-serif";
+    ctx.fillText("WHO'S GOT NEXT?", W/2, 56);
+    ROSTER.forEach((id,i) => {
+      const x=42+i*400, on=i===selectIndex;
+      ctx.fillStyle=on?"#31425b":"#15243a"; roundRect(x,90,388,440,18); ctx.fill();
+      ctx.strokeStyle=on?"#f5bc51":"#405570"; ctx.lineWidth=on?4:2; ctx.stroke();
+      const clip=CLIPS[id]?.idle, img=images[`${id}-idle`];
+      if(clip && img?.naturalWidth) {
+        const frame=Math.floor(performance.now()/1000*clip.fps)%clip.frames;
+        const cell=spriteCell(clip,frame,{sy:0}), height=270, width=height*clip.fw/clip.fh;
+        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+194-width/2,117,width,height);
+      }
+      buttons.push({x,y:90,w:388,h:440,action:()=>{selectIndex=i;}});
+      ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="24px Bungee, sans-serif";
+      ctx.fillText(FIGHTERS[id].full,x+194,438);
+      ctx.font="17px Share Tech Mono, monospace";
+      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
     });
-    button(478, 585, 324, 64, "CHOOSE COURT", () => openCourtSelect(), true);
-    ctx.fillStyle = "#fff6d8";
-    ctx.font = "16px Share Tech Mono, monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT · SAME MOVES, YOUR STYLE", 640, 688);
+    button(390,545,500,58,`VS ${FIGHTERS[selectedOpponent()].full.toUpperCase()} · CHANGE`,()=>{opponentIndex=(opponentIndex+1)%2;});
+    button(478,618,324,64,"CHOOSE COURT",()=>openCourtSelect(),true);
+    ctx.fillStyle="#fff6d8";ctx.font="14px Share Tech Mono, monospace";ctx.textAlign="center";
+    ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT",640,708);
   }
 
   function startGame() {
@@ -2442,7 +2471,7 @@
       document.getElementById("guide-learn").focus();
       return;
     }
-    const id = selectIndex === 0 ? "mamdani" : "sayed";
+    const id = selectedFighter();
     paused = false; pausePanel.hidden = true; keys.clear(); pointer = null;
     match = freshMatch(id);
     screen = "play";
@@ -2637,7 +2666,9 @@
     const f = FIGHTERS[id];
     const p = match.pos[id];
     const at = project(p.x, p.y);
-    const pose = match.pose[id];
+    const reaction = match.reactions[id];
+    const onSideline = !match.transit?.[id] && id !== match.owner && id !== match.active && match.ball?.id !== id;
+    const pose = onSideline && reaction ? reaction.state : match.pose[id];
     const moving = pose === "move";
     const motion = bodyMotion(id);
     const lift = motion.lift * at.s;
@@ -2659,6 +2690,8 @@
         frame = poseFrame(clip, match.ball);
       } else if (key === "dribble" || key === "move") {
         frame = dribbleIndex(clip, id);
+      } else if (["celebrate", "mock", "shocked"].includes(key)) {
+        frame = Math.min(clip.frames - 1, Math.floor((match.t - (reaction?.start ?? match.t)) * clip.fps));
       } else if (key === "idle") {
         frame = Math.floor(match.t * (clip.fps || 8)) % clip.frames;
       } else {
@@ -2766,8 +2799,8 @@
     const t = clamp((frame - a[0]) / Math.max(1, b[0] - a[0]), 0, 1);
     const hx = a[1] + (b[1] - a[1]) * t, hy = a[2] + (b[2] - a[2]) * t;
     const motion = bodyMotion(id);
-    drawBall(at.x + (motion.shift || 0) * at.s + (match.face[id] || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
-      at.y - motion.lift * at.s + (hy - clip.feet[0]) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
+    drawBall(at.x + (motion.shift || 0) * at.s + (match.face[id] || 1) * (clip.sourceFacing || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
+      at.y - motion.lift * at.s + (hy - (clip.feet[frame] ?? clip.feet[0])) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
   }
 
   function drawBall(x, y, r, spin) {
@@ -2841,16 +2874,27 @@
     ctx.restore();
   }
 
+  function drawScorePortrait(id,x,y) {
+    const clip=CLIPS[id].idle,img=images[`${id}-idle`];
+    if(!img?.naturalWidth)return;
+    const head=clip.fh*.43;
+    ctx.save();ctx.beginPath();ctx.arc(x+48,y+48,43,0,Math.PI*2);ctx.clip();
+    ctx.fillStyle=FIGHTERS[id].body;ctx.fillRect(x,y,96,96);
+    ctx.drawImage(img,0,0,clip.fw,head,x,y,96,96);ctx.restore();
+  }
+
   function drawHud() {
     buttons.length = 0;
     const aiming = match.hold && match.active === match.humanId && !match.ball ? shotNeed() : null;
     // Keep the center display above y=92: Detroit's backboard begins below it.
-    skin("score-mamdani", 16, 8, 96, 100);
+    if (match.humanId !== "talarico") skin(`score-${match.humanId}`, 16, 8, 96, 100);
+    else drawScorePortrait("talarico",16,8);
     skin("score-left", 112, 12, 248, 100);
     skin("score-center", 400, 3, 480, 57);
     skin("score-right", 920, 12, 248, 100);
-    skin("score-sayed", 1168, 8, 96, 100);
-    ["mamdani", "sayed"].forEach((id, i) => {
+    if (match.cpuId !== "talarico") skin(`score-${match.cpuId}`, 1168, 8, 96, 100);
+    else drawScorePortrait("talarico",1168,8);
+    [match.humanId, match.cpuId].forEach((id, i) => {
       const right = i === 1;
       const f = FIGHTERS[id];
       ctx.fillStyle = "#f4efe4";
@@ -3003,7 +3047,7 @@
     else {
       drawCourt();
       drawHoopBack();
-      const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
+      const order = [...ROSTER].sort((a, b) => match.pos[b].y - match.pos[a].y);
       order.forEach(drawPlayer);
       drawReleaseFeedback();
       const through = match.ball && match.ball.phase === "net";
@@ -3132,8 +3176,8 @@
     }
     if (screen === "select") {
       ev.preventDefault();
-      if (k === "arrowleft" || k === "a") selectIndex = 0;
-      if (k === "arrowright" || k === "d") selectIndex = 1;
+      if (k === "arrowleft" || k === "a") selectIndex = (selectIndex + ROSTER.length - 1) % ROSTER.length;
+      if (k === "arrowright" || k === "d") selectIndex = (selectIndex + 1) % ROSTER.length;
       if (k === "enter" || k === " ") openCourtSelect();
       return;
     }
