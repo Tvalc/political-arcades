@@ -2923,22 +2923,22 @@
     const cardWidth=(W-32)/match.players.length;
     match.players.forEach((id,i)=>{
       const x=16+i*cardWidth,out=match.eliminated.includes(id),active=match.active===id&&!match.over;
-      ctx.fillStyle=out?"#18202d":"#182d43";roundRect(x,4,cardWidth-8,76,8);ctx.fill();ctx.strokeStyle=active?"#ffba45":"#62748a";ctx.lineWidth=active?3:1;ctx.stroke();
-      if(id!=="talarico")skin(`score-${id}`,x+4,9,64,64);else{ctx.save();ctx.translate(x+4,9);ctx.scale(2/3,2/3);drawScorePortrait(id,0,0);ctx.restore();}
-      ctx.textAlign="center";ctx.fillStyle=out?"#8793a1":"#fff6d8";ctx.font="15px Bungee, sans-serif";ctx.fillText(`${FIGHTERS[id].name.toUpperCase()}${out?" : OUT":""}`,x+cardWidth*.57,26,cardWidth-88);
-      LETTERS.forEach((letter,n)=>{ctx.fillStyle=n<match.letters[id]?"#ff9b40":"#667789";ctx.font="23px Bungee, sans-serif";ctx.fillText(letter,x+94+n*(cardWidth-112)/4,62);});
+      ctx.fillStyle=out?"#18202d":"#182d43";roundRect(x,4,cardWidth-8,58,8);ctx.fill();ctx.strokeStyle=active?"#ffba45":"#62748a";ctx.lineWidth=active?3:1;ctx.stroke();
+      if(id!=="talarico")skin(`score-${id}`,x+4,9,48,48);else{ctx.save();ctx.translate(x+4,9);ctx.scale(.5,.5);drawScorePortrait(id,0,0);ctx.restore();}
+      ctx.textAlign="center";ctx.fillStyle=out?"#8793a1":"#fff6d8";ctx.font="15px Bungee, sans-serif";ctx.fillText(`${FIGHTERS[id].name.toUpperCase()}${out?" : OUT":""}`,x+cardWidth*.57,20,cardWidth-88);
+      LETTERS.forEach((letter,n)=>{ctx.fillStyle=n<match.letters[id]?"#ff9b40":"#667789";ctx.font="23px Bungee, sans-serif";ctx.fillText(letter,x+94+n*(cardWidth-112)/4,49);});
     });
-    ctx.fillStyle="rgba(8,17,30,.9)";roundRect(240,85,800,43,6);ctx.fill();
+    ctx.fillStyle="rgba(8,17,30,.9)";roundRect(240,64,800,27,6);ctx.fill();
     const city = courtById(match.court).name.toUpperCase();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     if (aiming) {
       ctx.fillStyle = "#fff6d8";
       ctx.font = "20px Bungee, sans-serif";
-      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 101);
+      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 76);
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "16px Share Tech Mono, monospace";
-      ctx.fillText("Space or tap the shot button again", W / 2, 120);
+      ctx.fillText("Space or tap the shot button again", W / 2, 90);
       const w = 440, h = 48, x = (W - w) / 2, y = 596;
       skin("meter", x, y, w, h);
       const pad = 32, inner = w - pad * 2;
@@ -2950,13 +2950,13 @@
     } else {
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "12px Bungee, sans-serif";
-      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} · ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 100, 780);
+      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} · ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 75, 780);
       const tutorial = match.tutorial;
       const brief = match.over ? `${FIGHTERS[match.over].name} wins! Run it back?` : tutorial
         ? tutorial.shot ? "Ready? Start a match." : !tutorial.moved ? "Move: arrows / WASD / stick." : "Press Space / Aim to begin."
         : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && isHuman(match.active)
         ? copyHint() : "Set a shot. Make them match it.";
-      wrapCall(brief, W / 2, 119);
+      wrapCall(brief, W / 2, 89);
     }
 
     if (match.notice && match.notice.until > match.t && !aiming) {
