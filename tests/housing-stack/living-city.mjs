@@ -7,7 +7,7 @@ function tree(c,x,y){box(c,x-3,y-25,6,27,'#92684c');for(const [dx,dy,r]of [[-10,
 export function paintLivingBlock(canvas,floors,index,time=0,reduced=false,close=false){
  const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.save();c.scale(canvas.width/900,canvas.height/470);
  const t=reduced?0:time/1000,local=Math.max(0,Math.min(16,floors-index*16)),done=Math.floor(local/4),night=Math.sin(t/100)<-.5;
- if(close){const focus=125+Math.min(3,Math.floor(local/4))*195;c.translate(450,235);c.scale(1.4,1.4);c.translate(-Math.max(210,Math.min(690,focus)), -235);}
+ if(close){const focus=125+Math.min(3,Math.floor(local/4))*195;c.translate(450,235);c.scale(1.4,1.4);c.translate(-Math.max(322,Math.min(578,focus)), -235);}
  const sky=c.createLinearGradient(0,0,0,470);sky.addColorStop(0,night?'#15243f':'#9bc7cb');sky.addColorStop(1,'#e2cdb0');c.fillStyle=sky;c.fillRect(0,0,900,470);
  box(c,0,315,900,72,'#c6b8a0');box(c,0,387,900,83,'#364250');box(c,0,385,900,4,'#f1dfb8');for(let x=0;x<900;x+=110)box(c,x,431,55,3,'#d2c4a0');
  c.font='bold 16px sans-serif';c.fillStyle='#223440';c.fillText(blockName(index).toUpperCase(),24,28);
