@@ -17,4 +17,3 @@
  document.addEventListener('DOMContentLoaded',()=>{const frame=document.querySelector('[data-city-game]');frame?.addEventListener('load',()=>frame.contentWindow.postMessage({channel:'pa-city-v1',kind:'ready'},'https://capitolcrashers.com'));});
  window.addEventListener('pagehide',()=>{if(!foreign)flush();});link();
 })();
-
