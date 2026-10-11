@@ -1,6 +1,6 @@
-import {activeGroups} from './life-v13.mjs?v=13.1';
+import {activeGroups} from './life-v13.mjs?v=13.2';
 import {drawPerson} from '/tests/outreach-route/people-v7.mjs?v=10.0';
-import {householdState,paintHousehold,residentsReady} from './resident-life-v13.mjs?v=13.1';
+import {householdState,paintHousehold,residentsReady} from './resident-life-v13.mjs?v=13.2';
 import {drawActor,actorsReady} from '/tests/outreach-route/actors-v6.mjs?v=10.0';
 const names=['homes','park','court','clinic','kitchen','fountain'];
 const images={};for(const name of ['neighborhood-base','neighborhood-repaired',...names]){const im=new Image();im.src=new URL(name+'-v12.webp',import.meta.url).href;images[name]=im;}
