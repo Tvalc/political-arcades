@@ -26,3 +26,6 @@
 .has-touch .touch-btn.gold-zone{box-shadow:0 0 0 3px #fff3bb,0 0 20px #ffc65b80!important}
 
 .has-touch.mobile-overlay .topbar,.has-touch.mobile-overlay .session-controls{visibility:hidden}
+
+/* Four-player roster */
+.mobile-players{grid-template-columns:repeat(2,minmax(0,1fr))}.mobile-scores{grid-template-columns:repeat(4,minmax(0,1fr))}.mobile-score>span{gap:4px}.mobile-player strong{white-space:normal}.mobile-score strong{font-size:10px}

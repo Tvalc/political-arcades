@@ -18,6 +18,7 @@
       smile: true,
     },
     talarico: { id: "talarico", name: "Talarico", full: "James Talarico", city: "Texas", court: "nyc", body: "#d86827", trim: "#fff0cc", skin: "#f0c6a1", pants: "#d86827", smile: true },
+    buddy: { id:"buddy", name:"Talarico’s Buddy", full:"Talarico’s Buddy", city:"Texas", court:"nyc", body:"#d86827", trim:"#fff0cc", skin:"#f0c6a1", pants:"#d86827", smile:true },
     sayed: {
       id: "sayed",
       name: "El-Sayed",
@@ -36,7 +37,7 @@
   let opponentIndex = 1;
   let playMode = "solo";
   const selectedFighter = () => ROSTER[selectIndex];
-  const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % 2];
+  const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % (ROSTER.length - 1)];
 
   const FLAIR_NAME = {
     none: "plain jumper",
@@ -1535,7 +1536,7 @@
     return id;
   }
   function otherId(id) { return match?.players ? nextPlayer(id) : ROSTER.find(other=>other!==id); }
-  function sideline(id) { const i=(match?.players||ROSTER).indexOf(id);return {x:.13+Math.max(0,i)*.36,y:.66}; }
+  function sideline(id) { const i=(match?.players||ROSTER).indexOf(id);return {x:.08+Math.max(0,i)*.84/Math.max(1,(match?.players||ROSTER).length-1),y:.66}; }
 
   function stageNextTurn(shooter) {
     match.transit ||= {};
@@ -1566,7 +1567,7 @@
   }
 
   function freshMatch(humanId) {
-    const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % 2];
+    const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % (ROSTER.length - 1)];
     const players=[humanId,...ROSTER.filter(id=>id!==humanId)];
     const spectatorId=null;
     const home = FIGHTERS[humanId];
@@ -1585,7 +1586,7 @@
       songShots: {},
       marketingSession: marketingUnlock,
       letters: Object.fromEntries(ROSTER.map(id => [id, 0])),
-      pos: Object.fromEntries(players.map((id,i)=>[id,id===humanId?{x:.32,y:.28}:{x:.13+i*.36,y:.66}])),
+      pos: Object.fromEntries(players.map((id,i)=>[id,id===humanId?{x:.32,y:.28}:{x:.08+i*.84/(players.length-1),y:.66}])),
       transit: {},
       face: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? 1 : -1])),
       active: humanId,
@@ -1992,7 +1993,7 @@
     if (shotClip.releaseFrame != null) {
       const at = project(p.x, p.y), drawn = drawnSprite(shotClip, at, shotClip.releaseFrame);
       match.ball.syncRelease = true;
-      if (id === "talarico") match.ball.releaseRadius = Math.max(8, playerHeight(at) * .09);
+      if (["talarico","buddy"].includes(id)) match.ball.releaseRadius = Math.max(8, playerHeight(at) * .09);
       match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.sourceFacing || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
       match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[shotClip.releaseFrame] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shootingLift(match.ball, match.ball.show)) * at.s;
       const offset = shotDisplacement(id, match.ball.show, flair, match.ball.show);
@@ -2436,22 +2437,22 @@
     ctx.fillStyle = "#fff6d8"; ctx.font = "28px Bungee, sans-serif";
     ctx.fillText("WHO'S GOT NEXT?", W/2, 56);
     ROSTER.forEach((id,i) => {
-      const x=42+i*400, on=i===selectIndex;
-      ctx.fillStyle=on?"#31425b":"#15243a"; roundRect(x,90,388,440,18); ctx.fill();
+      const cardW=(W-64)/ROSTER.length-12, x=32+i*(cardW+12), on=i===selectIndex;
+      ctx.fillStyle=on?"#31425b":"#15243a"; roundRect(x,90,cardW,440,18); ctx.fill();
       ctx.strokeStyle=on?"#f5bc51":"#405570"; ctx.lineWidth=on?4:2; ctx.stroke();
       const clip=CLIPS[id]?.idle, img=images[`${id}-idle`];
       if(clip && img?.naturalWidth) {
         const frame=Math.floor(performance.now()/1000*clip.fps)%clip.frames;
-        const cell=spriteCell(clip,frame,{sy:0}), height=270, width=height*clip.fw/clip.fh;
-        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+194-width/2,117,width,height);
+        const cell=spriteCell(clip,frame,{sy:0}), height=270*(id==="talarico"?clip.fh/clip.body:1), width=height*clip.fw/clip.fh;
+        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+cardW/2-width/2,117,width,height);
       }
-      buttons.push({x,y:90,w:388,h:440,action:()=>{selectIndex=i;}});
-      ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="24px Bungee, sans-serif";
-      ctx.fillText(FIGHTERS[id].full,x+194,438);
-      ctx.font="17px Share Tech Mono, monospace";
-      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} | ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
+      buttons.push({x,y:90,w:cardW,h:440,action:()=>{selectIndex=i;}});
+      ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="19px Bungee, sans-serif";
+      ctx.fillText(FIGHTERS[id].full,x+cardW/2,438);
+      ctx.font="15px Share Tech Mono, monospace";
+      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} | ${on?"YOUR PICK":"TAP TO SELECT"}`,x+cardW/2,482);
     });
-    button(390,545,500,58,playMode === "solo" ? "ALL 3 : SOLO VS 2 CPU" : "ALL 3 : PASS AND PLAY",()=>{playMode=playMode==="solo"?"local":"solo";});
+    button(390,545,500,58,playMode === "solo" ? `ALL ${ROSTER.length} : SOLO VS ${ROSTER.length-1} CPU` : `ALL ${ROSTER.length} : PASS AND PLAY`,()=>{playMode=playMode==="solo"?"local":"solo";});
     button(478,618,324,64,"CHOOSE COURT",()=>openCourtSelect(),true);
     ctx.fillStyle="#fff6d8";ctx.font="14px Share Tech Mono, monospace";ctx.textAlign="center";
     ctx.fillText("LEFT / RIGHT TO PICK | ENTER TO CHOOSE COURT",640,708);
@@ -2920,7 +2921,7 @@
     const head=clip.fh*.43;
     ctx.save();ctx.beginPath();ctx.arc(x+48,y+48,43,0,Math.PI*2);ctx.clip();
     ctx.fillStyle=FIGHTERS[id].body;ctx.fillRect(x,y,96,96);
-    ctx.drawImage(img,0,0,clip.fw,head,x,y,96,96);ctx.restore();
+    const crop=clip.portrait||{x:0,y:0,w:clip.fw,h:head};ctx.drawImage(img,crop.x,crop.y,crop.w,crop.h,x,y,96,96);ctx.restore();
   }
 
   const mobileInput = () => !!document.documentElement?.classList?.contains?.("has-touch");
@@ -2932,7 +2933,7 @@
     match.players.forEach((id,i)=>{
       const x=16+i*cardWidth,out=match.eliminated.includes(id),active=match.active===id&&!match.over;
       ctx.fillStyle=out?"#18202d":"#182d43";roundRect(x,4,cardWidth-8,58,8);ctx.fill();ctx.strokeStyle=active?"#ffba45":"#62748a";ctx.lineWidth=active?3:1;ctx.stroke();
-      if(id!=="talarico")skin(`score-${id}`,x+4,9,48,48);else{ctx.save();ctx.translate(x+4,9);ctx.scale(.5,.5);drawScorePortrait(id,0,0);ctx.restore();}
+      if(!["talarico","buddy"].includes(id))skin(`score-${id}`,x+4,9,48,48);else{ctx.save();ctx.translate(x+4,9);ctx.scale(.5,.5);drawScorePortrait(id,0,0);ctx.restore();}
       ctx.textAlign="center";ctx.fillStyle=out?"#8793a1":"#fff6d8";ctx.font="15px Bungee, sans-serif";ctx.fillText(`${FIGHTERS[id].name.toUpperCase()}${out?" : OUT":""}`,x+cardWidth*.57,20,cardWidth-88);
       LETTERS.forEach((letter,n)=>{ctx.fillStyle=n<match.letters[id]?"#ff9b40":"#667789";ctx.font="23px Bungee, sans-serif";ctx.fillText(letter,x+94+n*(cardWidth-112)/4,49);});
     });
