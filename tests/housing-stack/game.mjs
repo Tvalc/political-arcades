@@ -1,0 +1,70 @@
+import {onSpritesReady} from './makko-sprites.mjs?v=6';
+import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
+import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
+import {paintLivingBlock} from './living-city.mjs?v=6.1';
+import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=6.1';
+let deliveryJobs=[],effectClock=0;
+let storage;try{storage=localStorage;}catch{}
+const city=loadCity(storage);let visitedBlock=null,saveFailed=false,celebrationBlock=null,celebrationUntil=0;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+import {ConstructionPlayer} from './construction-player.mjs?v=3.1';
+import {createGame,move,rotate,drop,tick,ghostY,SHAPES,hold,advanceLock} from './engine.mjs?v=3';
+import {CastPlayer} from './cast-player.mjs';
+import {castManifest} from './cast-manifest.mjs';
+const $=s=>document.querySelector(s),canvas=$('#game'),ctx=canvas.getContext('2d'),next=$('#next').getContext('2d'),reserve=$('#held').getContext('2d');
+const names=['Mamdani','El-Sayed','Talarico'],ids=['mamdani','sayed','talarico'],colors=['#57bba8','#e6b655','#b999dc','#70a7d0','#d88b76','#91bc7b','#d9a371'];
+const actors=[...document.querySelectorAll('[data-actor]')].map(c=>new ConstructionPlayer(c,castManifest)),critic=new CastPlayer($('#critic'),castManifest);
+let g=createGame(),started=false,last=0,gravity=0,best=0,sound=false,audio,shine=0,reactionTimer,clearFx=null;
+try{best=Number(localStorage.getItem('pa-housing-best'))||0;}catch{}
+function actorState(state,loop=true){actors.forEach((p,i)=>p.play(ids[i],state,{loop}).catch(()=>{}));}
+function criticState(){critic.play('cruz',g.homes>=40?'disbelief':'angry',{loop:true}).catch(()=>{});}
+actorState('working');criticState();
+function tone(freq){if(!sound)return;try{audio??=new AudioContext();audio.resume();const o=audio.createOscillator(),v=audio.createGain();o.connect(v);v.connect(audio.destination);o.frequency.value=freq;v.gain.setValueAtTime(.035,audio.currentTime);v.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);o.start();o.stop(audio.currentTime+.13);}catch{}}
+function hud(){
+ $('#homes').textContent=g.homes;$('#score').textContent=g.score;$('#best').textContent=best;$('#lines').textContent=g.lines;$('#level').textContent=1+Math.floor(g.lines/10);
+ document.querySelectorAll('.crew figure').forEach((f,i)=>{f.classList.toggle('operating',i===g.crew);f.querySelector('figcaption').textContent=names[i]+(i===g.crew?' · CRANE':' · CREW');});
+ $('#crew-label').textContent=`${names[g.crew]} is on the crane. The whole crew is building.`;
+ const comments=['But have you considered doing nothing?','Okay, but those homes are politically motivated.','Where will the luxury empty lot go?','I was pro-housing before the homes existed.'];
+ $('#heckle').textContent='“'+comments[Math.min(3,Math.floor(g.homes/40))]+'”';
+ const cp=cityProgress(city.floors);$('#neighborhood-label').textContent=`${cp.homes} homes earned in Housing Stack. Place them in your shared city. ${saveFailed?'Saving unavailable on this device.':'Saved on this device.'}`;
+ paintCity(performance.now());
+ $('#city-report').textContent=`${blockName(cp.activeBlock)} · ${city.floors%16}/16 floors · ${16-city.floors%16} to the next block`;
+ next.clearRect(0,0,120,240);
+ g.queue.slice(0,3).forEach((id,i)=>preview(next,id,120,i*80,80,18));
+ reserve.clearRect(0,0,120,72);if(g.held!==null)preview(reserve,g.held,120,0,72,19);
+ $('#hold').disabled=!started||g.status!=='playing'||!g.canHold;
+}
+function preview(c,id,w,y,h,size){const m=SHAPES[id],x=(w-m[0].length*size)/2;const top=y+(h-m.length*size)/2;m.forEach((row,dy)=>row.forEach((v,dx)=>{if(v)tile(c,x+dx*size,top+dy*size,size,colors[id]);}));}
+function updateBest(){if(g.score>best){best=g.score;try{localStorage.setItem('pa-housing-best',String(best));}catch{}}}
+
+function overlay(title,message,label){$('#title').textContent=title;$('#message').textContent=message;$('#start').textContent=label;$('#overlay').hidden=false;}
+function start(){release();clearTimeout(reactionTimer);g=createGame();clearFx=null;deliveryJobs=[];started=true;gravity=0;last=performance.now();$('#overlay').hidden=true;$('#pause').textContent='Pause';$('#overline').textContent='ALL THREE. ONE BUILDING CREW.';$('#call').textContent='New shift. All three are on the job.';actorState('working');criticState();hud();canvas.focus();}
+function pause(){release();if(!started||g.status==='lost')return;clearTimeout(reactionTimer);if(g.status==='paused'){g.status='playing';last=performance.now();gravity=0;$('#overlay').hidden=true;$('#pause').textContent='Pause';actorState('working');criticState();hud();canvas.focus();}else{g.status='paused';actors.forEach(p=>p.stop());critic.stop();$('#pause').textContent='Resume';hud();overlay('Union break.','The crane is parked. Resume when ready.','Back to building →');}}
+function result(event){if(!event)return;gravity=0;if(event.held&&!event.lost)return;if(event.cleared){if(!reduced.matches)deliveryJobs.push({time:effectClock,floors:event.cleared,before:city.floors,rows:event.finishedRows});saveFailed=!addFloors(city,event.cleared,storage);window.CityRewards?.syncHousing();visitedBlock=null;if(city.floors%16<event.cleared){celebrationBlock=Math.floor(city.floors/16)-1;celebrationUntil=performance.now()+6000;}refreshMap();shine=.4;clearFx={rows:event.finishedRows,time:performance.now(),homes:event.cleared*10};tone(event.cleared===4?880:660);$('#call').textContent=event.cleared===4?'FOUR FLOORS! The crew is bringing supplies to your block.':`${event.cleared*10} homes finished! Residents celebrate. Supplies headed to your block.`;actorState('celebrate',false);clearTimeout(reactionTimer);reactionTimer=setTimeout(()=>{if(g.status==='playing')actorState('working');},3800);if(event.comboBonus)$('#call').textContent+=' Consecutive floors: +'+event.comboBonus+'.';criticState();}else tone(170);
+ updateBest();
+ hud();if(event.lost){release();clearTimeout(reactionTimer);actorState('shocked',false);$('#overline').textContent='SHIFT COMPLETE';overlay('Crane needs room.',`${g.homes} homes this shift. ${city.floors*10} homes earned for your shared city. Keep bringing supplies.`,'Build another block →');$('#call').textContent='Your city stays built. The next shift continues where you left off.';}
+}
+function action(a){if(!started||g.status!=='playing')return;if(a==='hold'){result(hold(g));hud();return;}if(a==='left')move(g,-1);if(a==='right')move(g,1);if(a==='rotate'){if(rotate(g))tone(320);}if(a==='down'){if(move(g,0,1)){g.score++;updateBest();hud();}else result(tick(g));}if(a==='drop')result(drop(g));}
+$('#start').onclick=()=>g.status==='paused'?pause():start();$('#pause').onclick=pause;$('#sound').onclick=()=>{sound=!sound;$('#sound').textContent=sound?'Sound on':'Sound off';$('#sound').setAttribute('aria-pressed',String(sound));tone(440);};
+const keys={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'rotate',w:'rotate',ArrowDown:'down',s:'down',' ':'drop',c:'hold',Shift:'hold'};
+window.addEventListener('keydown',e=>{if($('#city-dialog').open)return;if(e.target.closest?.('input,select,textarea,a'))return;if(e.target instanceof HTMLButtonElement&&(e.key===' '||e.key==='Enter'))return;if(e.key.toLowerCase()==='p'||e.key==='Escape'){e.preventDefault();pause();return;}const a=keys[e.key]||keys[e.key.toLowerCase()];if(a){e.preventDefault();if(e.repeat&&['rotate','drop','hold'].includes(a))return;action(a);}});
+let held,repeat;function release(){clearTimeout(held);clearInterval(repeat);held=repeat=null;document.querySelectorAll('[data-action]').forEach(b=>b.classList.remove('pressed'));}
+document.querySelectorAll('[data-action]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();release();const a=b.dataset.action;b.classList.add('pressed');action(a);canvas.focus({preventScroll:true});if(['left','right','down'].includes(a))held=setTimeout(()=>{repeat=setInterval(()=>action(a),90);},220);});b.addEventListener('click',e=>{if(e.detail===0)action(b.dataset.action);});});window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);
+window.addEventListener('blur',()=>{release();if(started&&g.status==='playing')pause();});document.addEventListener('visibilitychange',()=>{if(document.hidden){release();if(started&&g.status==='playing')pause();}});
+let touch;canvas.addEventListener('pointerdown',e=>{touch={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointerup',e=>{if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;if(Math.max(Math.abs(dx),Math.abs(dy))<15)action('rotate');else if(Math.abs(dy)>Math.abs(dx))action(dy>0?'drop':'rotate');else action(dx>0?'right':'left');touch=null;});canvas.addEventListener('pointercancel',()=>touch=null);
+function tile(c,x,y,s,color,ghost=false){if(apartmentTile(c,Math.max(0,colors.indexOf(color)),x,y,s,{ghost}))return;c.save();c.globalAlpha=ghost?.24:1;c.fillStyle=color;c.fillRect(x+1,y+1,s-2,s-2);c.fillStyle='#ffffff35';c.fillRect(x+2,y+2,s-4,3);c.fillStyle='#152833';c.fillRect(x+s*.2,y+s*.26,s*.23,s*.32);c.fillRect(x+s*.57,y+s*.26,s*.23,s*.32);c.fillStyle=ghost?'#ffffff55':'#fff0b3';c.fillRect(x+s*.23,y+s*.29,s*.17,s*.23);c.fillRect(x+s*.60,y+s*.29,s*.17,s*.23);c.fillStyle='#0004';c.fillRect(x+2,y+s-6,s-4,4);c.restore();}
+function draw(){const crane=$('#crane-trolley');crane.style.left=Math.max(8,Math.min(92,(g.piece.x+g.piece.matrix[0].length/2)*10))+'%';ctx.fillStyle='#101c29';ctx.fillRect(0,0,320,640);boardBackdrop(ctx,320,640);ctx.fillStyle='#ffca590b';ctx.fillRect(0,0,320,64);ctx.strokeStyle='#ffca5940';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(0,64);ctx.lineTo(320,64);ctx.stroke();ctx.setLineDash([]);ctx.strokeStyle='#ffffff06';ctx.lineWidth=1;for(let x=0;x<=10;x++){ctx.beginPath();ctx.moveTo(x*32,0);ctx.lineTo(x*32,640);ctx.stroke();}for(let y=0;y<=20;y++){ctx.beginPath();ctx.moveTo(0,y*32);ctx.lineTo(320,y*32);ctx.stroke();}
+ g.board.forEach((row,y)=>row.forEach((id,x)=>{if(id)tile(ctx,x*32,y*32,32,colors[id-1]);}));if(g.status!=='lost'){const p=g.piece,y=ghostY(g);p.matrix.forEach((row,dy)=>row.forEach((v,dx)=>{if(v){tile(ctx,(p.x+dx)*32,(y+dy)*32,32,colors[p.id],true);tile(ctx,(p.x+dx)*32,(p.y+dy)*32,32,colors[p.id]);}}));}
+ if(clearFx&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const t=(performance.now()-clearFx.time)/550;if(t>=1)clearFx=null;else{ctx.save();ctx.globalAlpha=1-t;for(const row of clearFx.rows)row.cells.forEach((id,x)=>tile(ctx,x*32,row.y*32-t*22,32,colors[id-1]));ctx.fillStyle='#ffda78';ctx.font='bold 16px sans-serif';ctx.textAlign='center';ctx.restore();}}
+ if(!reduced.matches)paintRowCrew(ctx,deliveryJobs,effectClock);
+ if(shine>0&&!matchMedia('(prefers-reduced-motion: reduce)').matches){ctx.fillStyle=`rgba(96,210,187,${shine*.4})`;ctx.fillRect(0,0,320,640);}
+}
+let lastPaint=-1,lastCityPaint=0;function frame(now){const dt=Math.min(100,now-last);last=now;shine=Math.max(0,shine-dt/1000);if(started&&g.status==='playing'){gravity+=dt;const interval=Math.max(120,820-Math.floor(g.lines/10)*65);if(gravity>=interval){gravity-=interval;result(tick(g));}result(advanceLock(g,dt));}if(g.status!=='paused')effectClock+=dt;deliveryJobs=deliveryJobs.filter(j=>effectClock-j.time<5500);draw();if(g.lines!==lastPaint||now-lastCityPaint>100){paintCity(now);lastPaint=g.lines;lastCityPaint=now;}requestAnimationFrame(frame);}hud();onArtReady(hud);requestAnimationFrame(frame);
+
+function paintCity(now){const index=visitedBlock??(now<celebrationUntil?celebrationBlock:cityProgress(city.floors).activeBlock);for(const id of ['skyline','phone-city','city-detail'])paintLivingBlock($('#'+id),visibleFloors(city.floors,deliveryJobs,effectClock),index,now,reduced.matches,id!=='city-detail'&&now>=celebrationUntil,deliveryJobs,effectClock);}
+function refreshMap(){const cp=cityProgress(city.floors),container=$('#city-map');container.replaceChildren();$('#city-total').textContent=`${cp.homes} homes · ${cp.blocks} blocks · ${cp.neighborhoods} neighborhoods · ${cp.boroughs} boroughs`;const available=Math.floor(city.floors/16)+1;
+ for(let n=0;n<=cp.activeNeighborhood;n++){const district=document.createElement('section');district.className='district';const heading=document.createElement('h3');heading.textContent=`Borough ${Math.floor(n/3)+1} / Neighborhood ${n%3+1}`;district.append(heading);const road=document.createElement('div');road.className='map-road';for(let j=0;j<3;j++){const i=n*3+j;if(i>=available)break;const button=document.createElement('button');const thumb=document.createElement('canvas');thumb.width=450;thumb.height=235;paintLivingBlock(thumb,city.floors,i,0,true);const caption=document.createElement('span');caption.textContent=blockName(i)+' · '+Math.min(16,Math.max(0,city.floors-i*16))+'/16';button.append(thumb,caption);button.className=i===cp.activeBlock?'active-block':'';button.onclick=()=>{visitedBlock=i;$('#visit-label').textContent=blockName(i);container.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));paintCity(performance.now());};road.append(button);}district.append(road);container.append(district);}}
+for(const b of document.querySelectorAll('[data-city-open]'))b.onclick=()=>{if(started&&g.status==='playing')pause();visitedBlock=null;refreshMap();$('#visit-label').textContent=blockName(cityProgress(city.floors).activeBlock);paintCity(performance.now());if(!$('#shared-city').getAttribute('src'))$('#shared-city').src='/city/?embedded=1';$('#city-dialog').showModal();};
+$('#city-close').onclick=()=>$('#city-dialog').close();refreshMap();
+
+onSpritesReady(()=>{hud();refreshMap();});

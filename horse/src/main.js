@@ -17,6 +17,7 @@
       pants: "#1c2430",
       smile: true,
     },
+    talarico: { id: "talarico", name: "Talarico", full: "James Talarico", city: "Texas", court: "nyc", body: "#d86827", trim: "#fff0cc", skin: "#f0c6a1", pants: "#d86827", smile: true },
     sayed: {
       id: "sayed",
       name: "El-Sayed",
@@ -30,6 +31,12 @@
       smile: false,
     },
   };
+
+  const ROSTER = Object.keys(FIGHTERS);
+  let opponentIndex = 1;
+  let playMode = "solo";
+  const selectedFighter = () => ROSTER[selectIndex];
+  const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % 2];
 
   const FLAIR_NAME = {
     none: "plain jumper",
@@ -110,6 +117,7 @@
   function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
   function courtUnlocked(id) { return marketingUnlock || adUnlocks.has(id) || courtById(id).wins <= careerWins; }
   function recordCourtWin() {
+    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = true; window.CityRewards?.credit('vote:win',4); }
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
     careerWins++;
@@ -118,24 +126,24 @@
     saveProgress();
     const unlocked = COURTS.find(c => c.wins === careerWins);
     match.unlockMessage = unlocked ? `COURT UNLOCKED: ${unlocked.name}` : `${careerWins} career wins`;
-    if (newSongs.length) match.unlockMessage += ` · ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
+    if (newSongs.length) match.unlockMessage += ` Â· ${newSongs.length} song${newSongs.length===1?"":"s"} unlocked`;
   }
   function renderCourtSongs() {
     const slots = window.VoteSongs?.slots(selectedCourt,marketingUnlock) || [];
-    document.getElementById('court-songs-title').textContent = `${courtById(selectedCourt).name} · ${slots.filter(s=>s.unlocked).length}/5 songs`;
-    document.getElementById('court-songs-list').innerHTML = slots.map(s=>`<li><strong>${s.unlocked?'Unlocked':'Locked'} · ${s.title}</strong><span>${s.rule}</span></li>`).join('');
-    document.getElementById('court-songs-note').textContent = marketingUnlock ? 'Marketing preview: all songs available; no progress earned.' : `Starter track: ${window.VoteSongs?.starter(selectedCourt).title || ''} — available now. Enable sound to listen. Earn five more tracks with winning-match challenges; practice does not count.`;
+    document.getElementById('court-songs-title').textContent = `${courtById(selectedCourt).name} Â· ${slots.filter(s=>s.unlocked).length}/5 songs`;
+    document.getElementById('court-songs-list').innerHTML = slots.map(s=>`<li><strong>${s.unlocked?'Unlocked':'Locked'} Â· ${s.title}</strong><span>${s.rule}</span></li>`).join('');
+    document.getElementById('court-songs-note').textContent = marketingUnlock ? 'Marketing preview: all songs available; no progress earned.' : `Starter track: ${window.VoteSongs?.starter(selectedCourt).title || ''} â€” available now. Enable sound to listen. Earn five more tracks with winning-match challenges; practice does not count.`;
     if(window.VoteSongs && !window.VoteSongs.persistent()) document.getElementById('court-songs-note').textContent += ' Storage unavailable: unlocks last for this session.';
   }
   function openCourtSelect() {
     courtOpen = true; keys.clear(); pointer = null;
-    if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = selectIndex === 0 ? 'nyc' : 'detroit';
+    if (!selectedCourt || !courtUnlocked(selectedCourt)) selectedCourt = FIGHTERS[selectedFighter()].court;
     const panel = document.getElementById('court-select');
     panel.hidden = false;
-    document.getElementById('court-progress').textContent = `${careerWins} wins · ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
+    document.getElementById('court-progress').textContent = `${careerWins} wins Â· ${COURTS.filter(c=>courtUnlocked(c.id)).length} / ${COURTS.length} courts unlocked. ` +
       (marketingUnlock ? 'Marketing preview: all courts open; wins do not count. ' : '') + (progressSaved ? 'Progress is saved in this browser. Practice does not count.' : 'Browser storage is unavailable. Progress lasts for this session.');
-    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins · ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
-    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    document.getElementById('court-grid').innerHTML = COURTS.map(c=>`<button type="button" class="court-card" data-court="${c.id}" aria-pressed="${c.id===selectedCourt}" ${!courtUnlocked(c.id)?'disabled':''}><img loading="lazy" src="${c.thumb}" alt=""><span class="court-copy"><strong>${c.name}</strong><span>${!courtUnlocked(c.id)?`Unlock at ${c.wins} wins Â· ${c.wins-careerWins} to go`:c.wins===0?'Starter court':marketingUnlock?'Marketing preview':'Unlocked'}</span></span></button>`).join('');
+    document.getElementById('court-play').textContent = `Play Â· ${courtById(selectedCourt).name}`;
     renderCourtSongs();
     // Rewarded unlock (see ads/CONTRACT.md): only for the next locked court, only when it is one win away.
     const nextLocked = COURTS.find(c => !courtUnlocked(c.id)), unlockBtn = document.getElementById('court-unlock-ad');
@@ -155,7 +163,7 @@
     if (!card || !courtUnlocked(card.dataset.court)) return;
     selectedCourt = card.dataset.court;
     document.querySelectorAll?.('[data-court]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.court===selectedCourt)));
-    document.getElementById('court-play').textContent = `Play · ${courtById(selectedCourt).name}`;
+    document.getElementById('court-play').textContent = `Play Â· ${courtById(selectedCourt).name}`;
     renderCourtSongs();
   });
   document.getElementById('court-back').addEventListener('click',()=>{
@@ -184,7 +192,7 @@
     window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     pausePanel.hidden = !paused;
-    document.getElementById("pause-toggle").textContent = paused ? "Resume · Esc" : "Pause · Esc";
+    document.getElementById("pause-toggle").textContent = paused ? "Resume Â· Esc" : "Pause Â· Esc";
     if (audioCtx) { const operation = paused || muted ? audioCtx.suspend() : audioCtx.resume(); operation?.catch(() => {}); }
     if (paused) document.getElementById("resume").focus();
     else canvas.focus({ preventScroll: true });
@@ -198,9 +206,9 @@
   }
   function startPractice() {
     setPaused(false); keys.clear(); pointer = null;
-    const id = match?.humanId || (selectIndex === 1 ? "sayed" : "mamdani");
+    const id = match?.humanId || selectedFighter();
     match = freshMatch(id); match.practice = true; screen = "play";
-    match.call = "Practice: move with arrows / WASD. Choose a shot with 1–4; Space to aim and shoot.";
+    match.call = "Practice: move with arrows / WASD. Choose a shot with 1â€“4; Space to aim and shoot.";
     canvas.focus({ preventScroll: true });
   }
   function restartMatch() {
@@ -224,13 +232,15 @@
     window.VoteMusic?.setCourt?.(screen === "play" && match ? match.court : null, marketingUnlock);
     window.VoteMusic?.setState(!muted, paused);
     const toggle = document.getElementById("sound-toggle");
-    toggle.textContent = muted ? "Sound off · Enable" : "Sound on · Mute";
+    toggle.textContent = muted ? "Sound off Â· Enable" : "Sound on Â· Mute";
     toggle.setAttribute?.("aria-pressed", String(!muted));
     if (muted) audioCtx?.suspend()?.catch(() => {});
     else if (!paused) unlockAudio();
   }
   document.getElementById("sound-toggle").addEventListener("click", () => setMuted(!muted));
-  window.addEventListener("blur", () => setPaused(true));
+  // Mobile controls can briefly lose window focus without leaving the game.
+  // Clear held inputs on blur; only a hidden page should automatically pause.
+  window.addEventListener("blur", () => { keys.clear(); pointer = null; });
   document.addEventListener("visibilitychange", () => { if (document.hidden) setPaused(true); });
 
   function loadImage(key, src) {
@@ -240,7 +250,7 @@
     img.onload = () => { asset.state = "ready"; };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
-    img.src = src.startsWith("assets/") ? `${src}?v=42` : src;
+    img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v15` : src;
     images[key] = img;
   }
 
@@ -1363,6 +1373,15 @@
   for (const clip of Object.values(CLIPS.sayed)) clip.characterScale = 0.8;
 
 
+  // Makko sprite metadata is kept separate so animation exports remain editable.
+  for (const [id, clips] of Object.entries(window.VoteExtraClips || {})) {
+    CLIPS[id] ||= {};
+    for (const [key, clip] of Object.entries(clips)) {
+      CLIPS[id][key] = clip;
+      loadImage(`${id}-${key}`, clip.image || `assets/sprites/chibi/${id}-${key}.webp`);
+    }
+  }
+
   let crowdGain = null;
 
   function tone(freq, dur, type, gain) {
@@ -1494,6 +1513,7 @@
   function spriteCell(clip, frame, layout) {
     const padding = clip.padding || 0;
     const cols = clip.cols || clip.frames;
+    frame = clip.frameOrder?.[frame] ?? frame;
     return {
       x: (frame % cols) * (clip.fw + padding * 2) + padding,
       y: Math.floor(frame / cols) * (clip.fh + padding * 2) + padding + layout.sy,
@@ -1543,7 +1563,7 @@
   }
 
   function shotNeed() {
-    const p = match.pos[match.humanId];
+    const p = match.pos[match.active];
     return zoneFor(p.x, p.y, match.flair);
   }
 
@@ -1551,13 +1571,15 @@
     return distToHoop(x, y) < 0.16;
   }
 
-  function otherId(id) {
-    return id === "mamdani" ? "sayed" : "mamdani";
+  function remainingPlayers() { return match.players.filter(id => !match.eliminated.includes(id)); }
+  function isHuman(id) { return !!match && (match.practice ? id === match.humanId : match.localPlayers.includes(id)); }
+  function nextPlayer(id) {
+    const order=match.players,start=order.indexOf(id);
+    for(let n=1;n<=order.length;n++){const candidate=order[(start+n)%order.length];if(!match.eliminated.includes(candidate))return candidate;}
+    return id;
   }
-
-  function sideline(id) {
-    return { x: id === "mamdani" ? -.12 : 1.12, y: .38 };
-  }
+  function otherId(id) { return match?.players ? nextPlayer(id) : ROSTER.find(other=>other!==id); }
+  function sideline(id) { const i=(match?.players||ROSTER).indexOf(id);return {x:.13+Math.max(0,i)*.36,y:.66}; }
 
   function stageNextTurn(shooter) {
     match.transit ||= {};
@@ -1565,8 +1587,7 @@
     const incoming = match.active;
     if (incoming !== shooter) {
       const p = match.pos[incoming];
-      if (p.x < .08 || p.x > .92)
-        match.transit[incoming] = { x: incoming === "mamdani" ? .16 : .84, y: .38 };
+      if (match.phase === "set") match.transit[incoming] = {x:.32,y:.28};
     }
   }
 
@@ -1578,6 +1599,7 @@
         Object.assign(p, target);
         match.pose[id] = "idle";
         match.face[id] = p.x < .5 ? 1 : -1;
+        if (match.reactions[id]) { match.reactions[id].start = match.t; match.reactions[id].life = 4.1; }
         delete match.transit[id];
       } else {
         p.x += dx / distance * step; p.y += dy / distance * step;
@@ -1588,21 +1610,27 @@
   }
 
   function freshMatch(humanId) {
-    const cpuId = otherId(humanId);
+    const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % 2];
+    const players=[humanId,...ROSTER.filter(id=>id!==humanId)];
+    const spectatorId=null;
     const home = FIGHTERS[humanId];
     return {
       humanId,
       cpuId,
+      spectatorId,
+      players,
+      localPlayers: playMode === "local" ? [...players] : [humanId],
+      eliminated: [],
+      round: null,
+      mode: playMode,
+      reactions: {},
       court: selectedCourt || home.court,
       songShots: {},
       marketingSession: marketingUnlock,
-      letters: { mamdani: 0, sayed: 0 },
-      pos: {
-        mamdani: humanId === "mamdani" ? { x: 0.32, y: 0.28 } : sideline("mamdani"),
-        sayed: humanId === "sayed" ? { x: 0.68, y: 0.28 } : sideline("sayed"),
-      },
+      letters: Object.fromEntries(ROSTER.map(id => [id, 0])),
+      pos: Object.fromEntries(players.map((id,i)=>[id,id===humanId?{x:.32,y:.28}:{x:.13+i*.36,y:.66}])),
       transit: {},
-      face: { mamdani: 1, sayed: -1 },
+      face: Object.fromEntries(ROSTER.map(id => [id, id === humanId ? 1 : -1])),
       active: humanId,
       phase: "set",
       challenge: null,
@@ -1613,9 +1641,9 @@
       ball: null,
       owner: humanId,
       pass: null,
-      pose: { mamdani: "idle", sayed: "idle" },
-      jump: { mamdani: 0, sayed: 0 },
-      jumpDur: { mamdani: 0, sayed: 0 },
+      pose: Object.fromEntries(ROSTER.map(id => [id, "idle"])),
+      jump: Object.fromEntries(ROSTER.map(id => [id, 0])),
+      jumpDur: Object.fromEntries(ROSTER.map(id => [id, 0])),
       hoopKick: 0,
       lock: 0.2,
       call: `${home.full} calls the first shot.`,
@@ -1630,7 +1658,7 @@
       roar: 0,
       flash: 0,
       dribU: null,
-      pop: { mamdani: 0, sayed: 0 },
+      pop: Object.fromEntries(ROSTER.map(id => [id, 0])),
     };
   }
 
@@ -1677,7 +1705,7 @@
 
   function tickDribbleClock(dt) {
     match.dribbleClock ||= {};
-    for (const id of ["mamdani", "sayed"]) {
+    for (const id of ROSTER) {
       const key = match.pose[id] === "move" ? "move" : "dribble";
       const clock = match.dribbleClock[id];
       if (!clock || clock.key !== key) match.dribbleClock[id] = { key, time: 0 };
@@ -1698,11 +1726,16 @@
     }
   }
 
+  function dribbleFrameClock(clip, id = match.owner) {
+    const value = (match.dribbleClock?.[id]?.time || 0) * (clip.fps || 8);
+    const nearest = Math.round(value);
+    return Math.abs(value - nearest) < 1e-9 ? nearest : value;
+  }
+
   function dribbleIndex(clip, id = match.owner) {
     const start = clip.loopStart || 0;
     const length = (clip.loopEnd == null ? clip.frames : clip.loopEnd + 1) - start;
-    const time = match.dribbleClock?.[id]?.time || 0;
-    return start + Math.floor(time * (clip.fps || 8)) % length;
+    return start + Math.floor(dribbleFrameClock(clip, id)) % length;
   }
 
   function tickDribble() {
@@ -1774,20 +1807,30 @@
       const width = drawn.width;
       const handA = clip.hands[Math.min(frame, clip.hands.length - 1)];
       const handB = clip.hands[(frame + 1) % clip.hands.length];
-      const fraction = ((match.dribbleClock?.[id]?.time || 0) * clip.fps) % 1;
+      const fraction = dribbleFrameClock(clip, id) % 1;
       const hand = clip.ballPath?.hand || handA.map((v, i) => v + (handB[i] - v) * fraction);
       let x = at.x + face * (clip.sourceFacing || 1) * (hand[0] - (clip.originX ?? .5)) * width;
       let y = at.y - lift + (-height * layout.footInSlice) + ((hand[1] * clip.fh - layout.sy) / layout.sh) * height;
       if (clip.ballPath?.releasePhase) {
-        const u = ((match.dribbleClock?.[id]?.time || 0) * clip.fps % clip.frames) / clip.frames;
+        const cycleFrames = clip.ballPath.cycleFrames || clip.frames;
+        const clock = dribbleFrameClock(clip, id);
+        const cycleStart = Math.floor(clock / cycleFrames) * cycleFrames;
+        const u = (clock % cycleFrames) / cycleFrames;
         const release = clip.ballPath.releasePhase, floorPhase = clip.ballPath.floorPhase;
         const catchPhase = clip.ballPath.catchPhase ?? 1;
         const palm = phase => {
-          const f = phase * clip.frames, a = Math.floor(f) % clip.frames, blend = f % 1;
+          const f = cycleStart + phase * cycleFrames, a = Math.floor(f) % clip.frames, blend = f % 1;
           const h = clip.hands[a].map((v, i) => v + (clip.hands[(a + 1) % clip.frames][i] - v) * blend);
+          // Palm samples and foot anchors must use the same authored frame.
+          // Using the currently displayed foot for a future catch moves the
+          // flight endpoint and produces a jump when the animation loops.
+          const footA = clip.feet?.[a] ?? 1;
+          const footB = clip.feet?.[(a + 1) % clip.frames] ?? 1;
+          const foot = footA + (footB - footA) * blend;
+          const footInSlice = (foot * clip.fh - layout.sy) / layout.sh;
           return {
             x: at.x + face * (clip.sourceFacing || 1) * (h[0] - (clip.originX ?? .5)) * width,
-            y: Math.min(at.y - r, at.y - lift - height * layout.footInSlice + ((h[1] * clip.fh - layout.sy) / layout.sh) * height + r)
+            y: Math.min(at.y - r, at.y - lift - height * footInSlice + ((h[1] * clip.fh - layout.sy) / layout.sh) * height + r)
           };
         };
         // Receive and push for one authored frame. The ball's top touches the
@@ -1798,6 +1841,12 @@
           const flight = (u - release) / (catchPhase - release);
           const lateral = flight * flight * (3 - 2 * flight);
           x = start.x + (end.x - start.x) * lateral;
+          if (Number.isFinite(clip.ballPath.floorX)) {
+            const floorX = at.x + face * (clip.sourceFacing || 1) * (clip.ballPath.floorX - (clip.originX ?? .5)) * width;
+            const phase = u < floorPhase ? (u - release) / (floorPhase - release) : (u - floorPhase) / (catchPhase - floorPhase);
+            const ease = phase * phase * (3 - 2 * phase);
+            x = u < floorPhase ? start.x + (floorX - start.x) * ease : floorX + (end.x - floorX) * ease;
+          }
           y = u < floorPhase
             ? start.y + (floor - start.y) * Math.pow((u - release) / (floorPhase - release), 2)
             : end.y + (floor - end.y) * Math.pow((catchPhase - u) / (catchPhase - floorPhase), 2);
@@ -1860,6 +1909,10 @@
     return Math.sin(clamp(t / 0.78, 0, 1) * Math.PI) * 24;
   }
 
+  function shootingLift(ball, t) {
+    return shotLift(ball.turnUntil ? clamp((t - ball.turnUntil) / (1 - ball.turnUntil), 0, 1) : t);
+  }
+
   function bodyMotion(id) {
     if (match?.ball?.id === id && match.ball.syncRelease && match.ball.phase === "arc") {
       const offset = shotDisplacement(id, match.ball.t, match.ball.flair, match.ball.show);
@@ -1867,10 +1920,10 @@
         const at = project(match.pos[id].x, match.pos[id].y);
         return { lift: offset.lift / at.s, shift: offset.x / at.s, squash: 1 };
       }
-      if (CLIPS[id][match.ball.flair === "none" ? "shot" : match.ball.flair].authoredLift) return { lift: 0, squash: 1 };
+      if (CLIPS[id][match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair].authoredLift) return { lift: 0, squash: 1 };
       const t = match.ball.t;
       const landing = t > 0.72 && t < 0.98 ? Math.sin((t - 0.72) / 0.26 * Math.PI) : 0;
-      return { lift: shotLift(t), squash: 1 - landing * 0.08 };
+      return { lift: shootingLift(match.ball, t), squash: 1 - landing * 0.08 };
     }
     return { lift: 0, squash: 1 };
   }
@@ -1881,7 +1934,7 @@
     if (flair !== "dunk") return { x: 0, lift: 0 };
     const clip = CLIPS[id].dunk, drawn = drawnSprite(clip, at, clip.releaseFrame), hoop = hoopLayout();
     const handX = at.x + (match.face[id] || 1) * (clip.releaseHand[0] - clip.originX) * drawn.width;
-    const handY = at.y + (clip.releaseHand[1] - clip.feet[0]) * drawn.height;
+    const handY = at.y + (clip.releaseHand[1] - clip.feet[clip.alignReleaseFoot ? clip.releaseFrame : 0]) * drawn.height;
     const amount = t <= show ? Math.sin(clamp(t / show, 0, 1) * Math.PI / 2)
       : Math.cos(clamp((t - show) / (.85 - show), 0, 1) * Math.PI / 2);
     return { x: (hoop.x - handX) * amount, lift: Math.max(0, handY - (hoop.rim - 9)) * amount };
@@ -1938,15 +1991,15 @@
   function release(id) {
     const p = match.pos[id];
     match.face[id] = Math.sign(HOOP.x - p.x) || match.face[id] || 1;
-    let flair = id === match.humanId ? match.flair : match.cpu.flair;
+    let flair = isHuman(id) ? match.flair : match.cpu.flair;
     if (flair === "dunk" && !canDunk(p.x, p.y)) {
       flair = "none";
-      if (id === match.humanId) say("Too far to dunk. That one stays a jumper.");
+      if (isHuman(id)) say("Too far to dunk. That one stays a jumper.");
     }
     const zone = zoneFor(p.x, p.y, flair);
     const error = match.power - zone.need;
     const made = zone.hit;
-    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT — MORE POWER" : "TOO STRONG — LESS POWER";
+    const grade = Math.abs(error) <= zone.span * .24 ? "PERFECT" : made ? "GOOD RELEASE" : error < 0 ? "TOO SOFT â€” MORE POWER" : "TOO STRONG â€” LESS POWER";
     const hand = ownedBall(id);
     const hoop = hoopLayout();
     const side = Math.sign(hand.x - hoop.x) || 1;
@@ -1975,20 +2028,21 @@
       match.ball.show = shotClip.releaseTime;
     }
     if (actionClip.turnOnly) {
-      match.ball.turnUntil = .30;
+      match.ball.turnUntil = actionClip.turnTime ?? .30;
       match.ball.dur = actionClip.duration;
       match.ball.show = actionClip.releaseTime;
     }
     if (shotClip.releaseFrame != null) {
       const at = project(p.x, p.y), drawn = drawnSprite(shotClip, at, shotClip.releaseFrame);
       match.ball.syncRelease = true;
-      match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
-      match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[0] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shotLift(match.ball.show)) * at.s;
+      if (id === "talarico") match.ball.releaseRadius = Math.max(8, playerHeight(at) * .09);
+      match.ball.x0 = at.x + (match.face[id] || 1) * (shotClip.sourceFacing || 1) * (shotClip.releaseHand[0] - (shotClip.originX ?? .5)) * drawn.width;
+      match.ball.y0 = at.y - drawn.height * ((shotClip.feet?.[shotClip.releaseFrame] || 1) - shotClip.releaseHand[1]) - (shotClip.authoredLift ? 0 : shootingLift(match.ball, match.ball.show)) * at.s;
       const offset = shotDisplacement(id, match.ball.show, flair, match.ball.show);
       match.ball.x0 += offset.x; match.ball.y0 -= offset.lift;
       if (flair === "dunk") match.ball.arc = 8;
     }
-    if (id === match.humanId) {
+    if (isHuman(id)) {
       match.releaseFeedback = { text: grade, life: .9, perfect: grade === "PERFECT", made };
       if (grade === "PERFECT") tone(1046, .09, "triangle", .05);
     }
@@ -2010,19 +2064,15 @@
   }
 
   function addLetter(id) {
-    match.letters[id] += 1;
-    const word = LETTERS.slice(0, match.letters[id]).join("");
-    tone(220, 0.18, "sawtooth", 0.05);
-    if (match.letters[id] >= LETTERS.length) {
-      const winner = otherId(id);
-      match.over = winner;
-      recordCourtWin();
-      say(`${FIGHTERS[id].full} spells VOTE. ${FIGHTERS[winner].full} takes the court.${match.unlockMessage ? " " + match.unlockMessage : ""}`);
-      punch("VOTE", true);
-      match.pop[id] = 1;
-      return;
+    match.letters[id]+=1;match.pop[id]=1;tone(220,.18,"sawtooth",.05);
+    if(match.letters[id]>=LETTERS.length && !match.eliminated.includes(id)) {
+      match.eliminated.push(id);const left=remainingPlayers();
+      if(left.length===1){match.over=left[0];recordCourtWin();say(`${FIGHTERS[id].name} spells VOTE. ${FIGHTERS[match.over].full} takes the court.${match.unlockMessage?" "+match.unlockMessage:""}`);punch("WINNER",true);}
     }
-    return word;
+    return LETTERS.slice(0,match.letters[id]).join("");
+  }
+  function reactToShot(shooter,made,flair) {
+    for(const id of ROSTER){const state=id===shooter?(made?"celebrate":"shocked"):(made?(flair==="dunk"?"shocked":"celebrate"):"mock");match.reactions[id]={state,start:match.t,life:4.1};}
   }
 
   function resolveBall() {
@@ -2037,6 +2087,8 @@
     match.pose[id] = "idle";
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
+    reactToShot(id, ball.made && validCopy, ball.flair);
+    if (ball.made && validCopy && !match.practice && !marketingUnlock && !match.marketingSession && match.localPlayers.includes(id)) window.CityRewards?.credit('vote:basket');
     if(id===match.humanId && ball.made && validCopy && !match.practice){
       match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
     }
@@ -2049,73 +2101,41 @@
       beginCatch(from);
       return;
     }
-    if (match.phase === "set") {
-      if (ball.made) {
-        match.challenge = { x: ball.sx, y: ball.sy, flair: ball.flair };
-        match.phase = "copy";
-        match.active = otherId(id);
-        const trick = FLAIR_NAME[ball.flair];
-        say(`${name} sinks the ${trick}. ${FIGHTERS[match.active].name} has to copy the spot and the flair.`);
-        punch(signature[ball.flair] || "SWISH", true);
-        if (ball.flair === "dunk") {
-          match.shake = 1.8;
-          match.zoom = 1;
-          match.flash = 1;
-        }
-      } else {
-        match.challenge = null;
-        match.phase = "set";
-        match.active = otherId(id);
-        say(`No good. ${FIGHTERS[match.active].name}, your rock. Set the next shot.`);
-        punch("NO GOOD!");
-      }
+    if(match.phase === "set") {
+      if(ball.made){
+        match.challenge={x:ball.sx,y:ball.sy,flair:ball.flair};const pending=[];
+        for(let next=nextPlayer(id);next!==id;next=nextPlayer(next))pending.push(next);
+        match.round={setter:id,pending,missed:false};match.phase="copy";match.active=pending.shift();
+        say(`${name} sinks the ${FLAIR_NAME[ball.flair]}. Everyone must copy it. ${FIGHTERS[match.active].name} is up.`);punch(signature[ball.flair]||"SWISH",true);
+      } else {match.active=nextPlayer(id);match.challenge=null;match.round=null;say(`No good. ${FIGHTERS[match.active].name} sets the next shot.`);punch("NO GOOD!");}
     } else {
-      const spotOk = Math.hypot(ball.sx - match.challenge.x, ball.sy - match.challenge.y) < 0.11;
-      const flairOk = ball.flair === match.challenge.flair;
-      if (ball.made && spotOk && flairOk) {
-        match.phase = "set";
-        match.challenge = null;
-        match.active = otherId(id);
-        say(`Matched it. ${FIGHTERS[match.active].name}, your rock.`);
-        punch("MATCHED IT", true);
-      } else {
-        const why = !spotOk
-          ? "Wrong spot."
-          : !flairOk
-            ? `That was a ${FLAIR_NAME[ball.flair]}. Copy the ${FLAIR_NAME[match.challenge.flair]}.`
-            : "No good.";
-        const takeLetter = () => {
-          const word = addLetter(id);
-          match.pop[id] = 1;
-          if (match.over) say(`${why} ${name} spells VOTE. ${FIGHTERS[match.over].name} wins.`);
-          if (!match.over) {
-            match.phase = "set";
-            match.challenge = null;
-            match.active = otherId(id);
-            say(`${why} ${name} picks up ${word}. ${FIGHTERS[match.active].name} calls the next one.`);
-            punch(word);
-          }
-          settle();
-        };
-        // Rewarded redo (see ads/CONTRACT.md): once per match the player may redo a copy miss instead of taking a letter.
-        if (id === match.humanId && !match.redoOffered && adsApi()) {
-          match.redoOffered = true;
-          offerRedo(why, takeLetter, () => { match.hold = false; match.flair = "none"; match.power = 0; match.lock = .65; say(`Redo. ${copyHint()}`); punch("REDO"); beginCatch(from); });
-          return;
+      const round=match.round,matched=ball.made&&validCopy;
+      const why=Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)>=.11?"Wrong spot.":ball.flair!==match.challenge.flair?"Wrong shot.":"No good.";
+      const finishCopy=(made)=>{
+        let result="Matched it.";
+        if(!made){round.missed=true;
+          const word=addLetter(id);result=match.eliminated.includes(id)?`${name} spells VOTE and is out.`:`${why} ${name} picks up ${word}.`;punch(word);
+        } else punch("MATCHED IT",true);
+        if(!match.over){
+          round.pending=round.pending.filter(player=>!match.eliminated.includes(player));
+          if(round.pending.length){match.active=round.pending.shift();say(`${result} ${FIGHTERS[match.active].name} must copy the same shot.`);}
+          else {match.active=round.missed&&!match.eliminated.includes(round.setter)?round.setter:nextPlayer(round.setter);match.phase="set";match.challenge=null;match.round=null;say(`${result} ${FIGHTERS[match.active].name} sets the next shot.`);}
         }
-        takeLetter();
+        settle();
+      };
+      // Rewarded redo (see ads/CONTRACT.md): once per match a local player may redo a copy miss instead of taking a letter.
+      if(!matched&&isHuman(id)&&!match.redoOffered&&adsApi()){
+        match.redoOffered=true;
+        offerRedo(why,()=>finishCopy(false),()=>{match.hold=false;match.flair="none";match.power=0;match.lock=.65;pointer=null;keys.clear();say(`Redo. ${copyHint()}`);punch("REDO");beginCatch(from);});
         return;
       }
+      finishCopy(matched);
+      return;
     }
     settle();
-    function settle() {
-      match.flair = "none";
-      match.power = 0;
-      match.lock = .65;
-      if (!match.over) stageNextTurn(id);
-      if (match.active === match.cpuId && !match.over) {
-        match.cpu = null;
-      }
+    function settle(){
+      match.flair="none";match.power=0;match.hold=false;match.cpu=null;match.lock=.65;pointer=null;keys.clear();
+      if(!match.over)stageNextTurn(id);
       beginCatch(from);
     }
   }
@@ -2202,13 +2222,16 @@
       match.basket.life -= dt;
       if (match.basket.life <= 0) match.basket = null;
     }
-    match.pop.mamdani = Math.max(0, match.pop.mamdani - dt * 1.4);
-    match.pop.sayed = Math.max(0, match.pop.sayed - dt * 1.4);
+    for (const id of ROSTER) match.pop[id] = Math.max(0, match.pop[id] - dt * 1.4);
+    for (const [id, reaction] of Object.entries(match.reactions)) {
+      if (!match.transit?.[id]) reaction.life -= dt;
+      if (reaction.life <= 0) delete match.reactions[id];
+    }
     if (match.banner) {
       match.banner.life -= dt;
       if (match.banner.life <= 0) match.banner = null;
     }
-    for (const id of ["mamdani", "sayed"]) {
+    for (const id of ROSTER) {
       if (match.jump[id] > 0) {
         match.jump[id] += dt;
         if (match.jump[id] >= (match.jumpDur[id] || 0)) {
@@ -2249,12 +2272,12 @@
       match.lock -= dt;
       return;
     }
-    if (match.active === match.cpuId) updateCpu(dt);
+    if (!isHuman(match.active)) updateCpu(dt);
     else updateHuman(dt);
   }
 
   function updateHuman(dt) {
-    const id = match.humanId;
+    const id = match.active;
     const p = match.pos[id];
     let vx = 0;
     let vy = 0;
@@ -2359,13 +2382,13 @@
 
   function humanRelease() {
     if (!match || match.over || match.ball || match.pass || match.lock > 0 || match.transit?.[match.active]) return;
-    if (match.active !== match.humanId || !match.hold) return;
-    release(match.humanId);
+    if (!isHuman(match.active) || !match.hold) return;
+    release(match.active);
   }
 
   function setFlair(id) {
-    if (!match || match.ball || match.pass || match.active !== match.humanId) return;
-    if (id === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y)) {
+    if (!match || match.ball || match.pass || !isHuman(match.active)) return;
+    if (id === "dunk" && !canDunk(match.pos[match.active].x, match.pos[match.active].y)) {
       say("Get closer to the rim to dunk.");
       tone(160, 0.08, "square", 0.04);
       return;
@@ -2486,31 +2509,31 @@
 
   function drawSelect() {
     buttons.length = 0;
-    menuBackdrop("select");
-    const ids = ["mamdani", "sayed"];
-    ctx.textAlign = "center";
-    ctx.textBaseline = "alphabetic";
-    skin("banner", 390, 14, 500, 64);
-    ctx.fillStyle = "#fff6d8";
-    ctx.font = "24px Bungee, sans-serif";
-    ctx.fillText("WHO'S GOT NEXT?", 640, 55);
-    ids.forEach((id, i) => {
-      const x = i * 640;
-      const on = i === selectIndex;
-      buttons.push({x, y:90, w:640, h:430, action:()=>{selectIndex=i;}});
-      skin(on ? "primary" : "secondary", x + 100, 435, 440, 74);
-      ctx.fillStyle = on ? "#10182b" : "#fff6d8";
-      ctx.font = "28px Bungee, sans-serif";
-      ctx.fillText(FIGHTERS[id].full, x + 320, 480);
-      ctx.fillStyle = "#fff6d8";
-      ctx.font = "18px Share Tech Mono, monospace";
-      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} · ${on ? "YOUR PICK" : "TAP TO SELECT"}`, x + 320, 538);
+    ctx.drawImage(images["nyc-future"],0,0,W,H);
+    ctx.fillStyle = "rgba(8,17,31,.84)"; ctx.fillRect(0,0,W,H);
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#fff6d8"; ctx.font = "28px Bungee, sans-serif";
+    ctx.fillText("WHO'S GOT NEXT?", W/2, 56);
+    ROSTER.forEach((id,i) => {
+      const x=42+i*400, on=i===selectIndex;
+      ctx.fillStyle=on?"#31425b":"#15243a"; roundRect(x,90,388,440,18); ctx.fill();
+      ctx.strokeStyle=on?"#f5bc51":"#405570"; ctx.lineWidth=on?4:2; ctx.stroke();
+      const clip=CLIPS[id]?.idle, img=images[`${id}-idle`];
+      if(clip && img?.naturalWidth) {
+        const frame=Math.floor(performance.now()/1000*clip.fps)%clip.frames;
+        const cell=spriteCell(clip,frame,{sy:0}), height=270, width=height*clip.fw/clip.fh;
+        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+194-width/2,117,width,height);
+      }
+      buttons.push({x,y:90,w:388,h:440,action:()=>{selectIndex=i;}});
+      ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="24px Bungee, sans-serif";
+      ctx.fillText(FIGHTERS[id].full,x+194,438);
+      ctx.font="17px Share Tech Mono, monospace";
+      ctx.fillText(`${FIGHTERS[id].city.toUpperCase()} Â· ${on?"YOUR PICK":"TAP TO SELECT"}`,x+194,482);
     });
-    button(478, 585, 324, 64, "CHOOSE COURT", () => openCourtSelect(), true);
-    ctx.fillStyle = "#fff6d8";
-    ctx.font = "16px Share Tech Mono, monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("LEFT / RIGHT TO PICK · ENTER TO CHOOSE COURT · SAME MOVES, YOUR STYLE", 640, 688);
+    button(390,545,500,58,playMode === "solo" ? "ALL 3 : SOLO VS 2 CPU" : "ALL 3 : PASS AND PLAY",()=>{playMode=playMode==="solo"?"local":"solo";});
+    button(478,618,324,64,"CHOOSE COURT",()=>openCourtSelect(),true);
+    ctx.fillStyle="#fff6d8";ctx.font="14px Share Tech Mono, monospace";ctx.textAlign="center";
+    ctx.fillText("LEFT / RIGHT TO PICK Â· ENTER TO CHOOSE COURT",640,708);
   }
 
   function startGame() {
@@ -2521,7 +2544,7 @@
       document.getElementById("guide-learn").focus();
       return;
     }
-    const id = selectIndex === 0 ? "mamdani" : "sayed";
+    const id = selectedFighter();
     paused = false; pausePanel.hidden = true; keys.clear(); pointer = null;
     match = freshMatch(id);
     screen = "play";
@@ -2712,11 +2735,42 @@
     return { img, clip: set[key], key };
   }
 
+  const spriteBlendSurfaces = new Map();
+
+  function blendedDribbleImage(id, key, img, clip, frame) {
+    if (!clip.smoothFrames || typeof document.createElement !== "function") return null;
+    const blend = dribbleFrameClock(clip, id) % 1;
+    if (blend < 1e-6) return null;
+    const cacheKey = `${id}-${key}`;
+    let surface = spriteBlendSurfaces.get(cacheKey);
+    if (!surface) {
+      surface = document.createElement("canvas");
+      surface.width = clip.fw; surface.height = clip.fh;
+      spriteBlendSurfaces.set(cacheKey, surface);
+    }
+    const buffer = surface.getContext("2d");
+    const next = frame >= (clip.loopEnd ?? clip.frames - 1) ? (clip.loopStart || 0) : frame + 1;
+    const a = spriteCell(clip, frame, spriteLayout(clip, frame));
+    const b = spriteCell(clip, next, spriteLayout(clip, next));
+    buffer.clearRect(0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "source-over";
+    buffer.globalAlpha = 1 - blend;
+    buffer.drawImage(img, a.x, a.y, clip.fw, clip.fh, 0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "lighter";
+    buffer.globalAlpha = blend;
+    buffer.drawImage(img, b.x, b.y, clip.fw, clip.fh, 0, 0, clip.fw, clip.fh);
+    buffer.globalCompositeOperation = "source-over";
+    buffer.globalAlpha = 1;
+    return surface;
+  }
+
   function drawPlayer(id) {
     const f = FIGHTERS[id];
     const p = match.pos[id];
     const at = project(p.x, p.y);
-    const pose = match.pose[id];
+    const reaction = match.reactions[id];
+    const onSideline = !match.transit?.[id] && id !== match.owner && id !== match.active && match.ball?.id !== id;
+    const pose = onSideline && reaction ? reaction.state : match.pose[id];
     const moving = pose === "move";
     const motion = bodyMotion(id);
     const lift = motion.lift * at.s;
@@ -2738,6 +2792,8 @@
         frame = poseFrame(clip, match.ball);
       } else if (key === "dribble" || key === "move") {
         frame = dribbleIndex(clip, id);
+      } else if (["celebrate", "mock", "shocked"].includes(key)) {
+        frame = Math.min(clip.frames - 1, Math.floor((match.t - (reaction?.start ?? match.t)) * clip.fps));
       } else if (key === "idle") {
         frame = Math.floor(match.t * (clip.fps || 8)) % clip.frames;
       } else {
@@ -2754,7 +2810,8 @@
       ctx.scale((match.face[id] || 1) * (clip.sourceFacing || 1) * wide, motion.squash);
       const top = -height * layout.footInSlice;
       const cell = spriteCell(clip, frame, layout);
-      ctx.drawImage(img, cell.x, cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
+      const blended = (key === "dribble" || key === "move") && blendedDribbleImage(id, key, img, clip, frame);
+      ctx.drawImage(blended || img, blended ? 0 : cell.x, blended ? 0 : cell.y, clip.fw, layout.sh, -width * (clip.originX ?? .5), top, width, height);
       ctx.restore();
       return;
     }
@@ -2831,13 +2888,29 @@
     return Math.min(last, Math.floor(u * (last + 1)));
   }
 
+  function gatheringBall() {
+    if (!match) return null;
+    let id, action, frame;
+    if (match.ball && match.ball.phase === "arc" && match.ball.t < match.ball.show) {
+      id = match.ball.id;
+      action = match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair;
+      frame = poseFrame(CLIPS[id][action], match.ball);
+    } else if (!match.ball && match.hold) {
+      id = match.active;
+      const flair = !isHuman(id) ? match.cpu.flair : match.flair;
+      action = flair === "none" ? "shot" : flair;
+      frame = 0;
+    } else return null;
+    return { id, action, frame, behind: !!CLIPS[id][action].ballBehind?.[frame] };
+  }
+
   function drawGatherBall(id, frame, action = "shot") {
     const clip = CLIPS[id][action];
     if (!clip.emptyHands) return;
     const at = project(match.pos[id].x, match.pos[id].y);
     const drawn = drawnSprite(clip, at, frame);
     const keys = clip.handKeys;
-    if (clip.turnOnly && frame > 2 && frame < 7) return; // Possession passes behind the torso during the turn.
+    if (clip.turnOnly && frame > (clip.occludeStart ?? 2) && frame < (clip.occludeEnd ?? 7)) return; // Possession passes behind the torso during the turn.
     let a = keys[0], b = keys[keys.length - 1];
     for (let i = 1; i < keys.length; i++) {
       if (frame <= keys[i][0]) { a = keys[i - 1]; b = keys[i]; break; }
@@ -2845,8 +2918,8 @@
     const t = clamp((frame - a[0]) / Math.max(1, b[0] - a[0]), 0, 1);
     const hx = a[1] + (b[1] - a[1]) * t, hy = a[2] + (b[2] - a[2]) * t;
     const motion = bodyMotion(id);
-    drawBall(at.x + (motion.shift || 0) * at.s + (match.face[id] || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
-      at.y - motion.lift * at.s + (hy - clip.feet[0]) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
+    drawBall(at.x + (motion.shift || 0) * at.s + (match.face[id] || 1) * (clip.sourceFacing || 1) * (hx - (clip.originX ?? .5)) * drawn.width,
+      at.y - motion.lift * at.s + (hy - (clip.feet[frame] ?? clip.feet[0])) * drawn.height, Math.max(8, playerHeight(at) * .09), 0);
   }
 
   function drawBall(x, y, r, spin) {
@@ -2920,49 +2993,39 @@
     ctx.restore();
   }
 
+  function drawScorePortrait(id,x,y) {
+    const clip=CLIPS[id].idle,img=images[`${id}-idle`];
+    if(!img?.naturalWidth)return;
+    const head=clip.fh*.43;
+    ctx.save();ctx.beginPath();ctx.arc(x+48,y+48,43,0,Math.PI*2);ctx.clip();
+    ctx.fillStyle=FIGHTERS[id].body;ctx.fillRect(x,y,96,96);
+    ctx.drawImage(img,0,0,clip.fw,head,x,y,96,96);ctx.restore();
+  }
+
+  const mobileInput = () => !!document.documentElement?.classList?.contains?.("has-touch");
   function drawHud() {
     buttons.length = 0;
-    const aiming = match.hold && match.active === match.humanId && !match.ball ? shotNeed() : null;
-    // Keep the center display above y=92: Detroit's backboard begins below it.
-    skin("score-mamdani", 16, 8, 96, 100);
-    skin("score-left", 112, 12, 248, 100);
-    skin("score-center", 400, 3, 480, 57);
-    skin("score-right", 920, 12, 248, 100);
-    skin("score-sayed", 1168, 8, 96, 100);
-    ["mamdani", "sayed"].forEach((id, i) => {
-      const right = i === 1;
-      const f = FIGHTERS[id];
-      ctx.fillStyle = "#f4efe4";
-      ctx.font = "16px Bungee, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(f.name.toUpperCase(), right ? 1044 : 236, 40);
-      LETTERS.forEach((letter, n) => {
-        const on = n < match.letters[id];
-        const fresh = on && n === match.letters[id] - 1 && match.pop[id] > 0;
-        const s = fresh ? 1 + match.pop[id] * 0.55 : 1;
-        const lx = (right ? 950 : 142) + n * 61;
-        ctx.save();
-        ctx.translate(lx, 88);
-        ctx.scale(s, s);
-        ctx.font = "28px Bungee, sans-serif";
-        ctx.textAlign = "center";
-        ctx.shadowColor = on ? "#fff6d8" : "transparent";
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = on ? "#ff9b40" : "rgba(244, 239, 228, 0.35)";
-        ctx.fillText(letter, 0, 0);
-        ctx.restore();
-      });
+    const aiming = match.hold && isHuman(match.active) && !match.ball ? shotNeed() : null;
+    if (!mobileInput()) {
+    const cardWidth=(W-32)/match.players.length;
+    match.players.forEach((id,i)=>{
+      const x=16+i*cardWidth,out=match.eliminated.includes(id),active=match.active===id&&!match.over;
+      ctx.fillStyle=out?"#18202d":"#182d43";roundRect(x,4,cardWidth-8,58,8);ctx.fill();ctx.strokeStyle=active?"#ffba45":"#62748a";ctx.lineWidth=active?3:1;ctx.stroke();
+      if(id!=="talarico")skin(`score-${id}`,x+4,9,48,48);else{ctx.save();ctx.translate(x+4,9);ctx.scale(.5,.5);drawScorePortrait(id,0,0);ctx.restore();}
+      ctx.textAlign="center";ctx.fillStyle=out?"#8793a1":"#fff6d8";ctx.font="15px Bungee, sans-serif";ctx.fillText(`${FIGHTERS[id].name.toUpperCase()}${out?" : OUT":""}`,x+cardWidth*.57,20,cardWidth-88);
+      LETTERS.forEach((letter,n)=>{ctx.fillStyle=n<match.letters[id]?"#ff9b40":"#667789";ctx.font="23px Bungee, sans-serif";ctx.fillText(letter,x+94+n*(cardWidth-112)/4,49);});
     });
+    ctx.fillStyle="rgba(8,17,30,.9)";roundRect(240,64,800,27,6);ctx.fill();
     const city = courtById(match.court).name.toUpperCase();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     if (aiming) {
       ctx.fillStyle = "#fff6d8";
       ctx.font = "20px Bungee, sans-serif";
-      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 26);
+      ctx.fillText(aiming.hit ? "RELEASE NOW" : "HIT THE GOLD ZONE", W / 2, 76);
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "16px Share Tech Mono, monospace";
-      ctx.fillText("Space or tap the shot button again", W / 2, 48);
+      ctx.fillText("Space or tap the shot button again", W / 2, 90);
       const w = 440, h = 48, x = (W - w) / 2, y = 596;
       skin("meter", x, y, w, h);
       const pad = 32, inner = w - pad * 2;
@@ -2974,16 +3037,17 @@
     } else {
       ctx.fillStyle = "#9fd4ff";
       ctx.font = "12px Bungee, sans-serif";
-      ctx.fillText(match.practice ? "PRACTICE · NO LETTERS" : `${city} · ${match.active === match.humanId ? "YOUR TURN" : "OPPONENT TURN"}`, W / 2, 21, 450);
+      ctx.fillText(match.practice ? "PRACTICE Â· NO LETTERS" : `${FIGHTERS[match.active].name.toUpperCase()} Â· ${match.mode === "local" ? "PASS THE DEVICE" : isHuman(match.active) ? "YOUR TURN" : "CPU TURN"}`, W / 2, 75, 780);
       const tutorial = match.tutorial;
       const brief = match.over ? `${FIGHTERS[match.over].name} wins! Run it back?` : tutorial
         ? tutorial.shot ? "Ready? Start a match." : !tutorial.moved ? "Move: arrows / WASD / stick." : "Press Space / Aim to begin."
-        : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && match.active === match.humanId
+        : match.practice ? "Move. Aim. Hit the gold zone." : match.phase === "copy" && isHuman(match.active)
         ? copyHint() : "Set a shot. Make them match it.";
-      wrapCall(brief, W / 2, 43);
+      wrapCall(brief, W / 2, 89);
     }
 
-    if (match.notice && match.notice.until > match.t && !aiming) {
+    } // Mobile scores, instructions and timing use readable DOM controls.
+    if (match.notice && match.notice.until > match.t && !aiming && !mobileInput()) {
       skin("secondary", 230, 564, 820, 62);
       ctx.fillStyle = "#fff6d8"; ctx.font = "17px Share Tech Mono, monospace";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -2997,7 +3061,7 @@
     }
     if (match.tutorial) button(904, 512, 352, 46, match.tutorial.shot ? "START MATCH" : "SKIP LESSON", () => startGame(), true);
 
-    if (!match.over && match.active === match.humanId && !match.ball && !match.pass) {
+    if (!mobileInput() && !match.over && isHuman(match.active) && !match.ball && !match.pass) {
       const labels = [
         ["1  SPIN", "spin"],
         ["2  DUNK", "dunk"],
@@ -3005,7 +3069,7 @@
         ["4  HOOK", "hook"],
       ];
       labels.forEach((item, i) => {
-        const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.humanId].x, match.pos[match.humanId].y);
+        const dunkFar = item[1] === "dunk" && !canDunk(match.pos[match.active].x, match.pos[match.active].y);
         button(24 + i * 168, 662, 156, 44, dunkFar ? "2  TOO FAR" : item[0], () => setFlair(item[1]), match.flair === item[1]);
       });
       const label = !match.hold ? "SPACE / TAP TO AIM" : aiming && aiming.hit ? "SHOOT NOW!" : "SPACE / TAP TO SHOOT";
@@ -3037,7 +3101,7 @@
   }
 
   function copyHint() {
-    const p = match.pos[match.humanId], c = match.challenge;
+    const p = match.pos[match.active], c = match.challenge;
     if (!c) return "Match the spot and shot.";
     const spot = Math.hypot(p.x - c.x, p.y - c.y) < .11;
     const shot = match.flair === c.flair;
@@ -3083,7 +3147,9 @@
     else {
       drawCourt();
       drawHoopBack();
-      const order = ["mamdani", "sayed"].sort((a, b) => match.pos[b].y - match.pos[a].y);
+      const order = [...ROSTER].sort((a, b) => match.pos[b].y - match.pos[a].y);
+      const gather = gatheringBall();
+      if (gather?.behind) drawGatherBall(gather.id, gather.frame, gather.action);
       order.forEach(drawPlayer);
       drawReleaseFeedback();
       const through = match.ball && match.ball.phase === "net";
@@ -3093,11 +3159,11 @@
         else {
           const action = match.ball.flair === "none" || (match.ball.turnUntil && match.ball.t >= match.ball.turnUntil) ? "shot" : match.ball.flair;
           const clip = CLIPS[match.ball.id][action];
-          drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
+          if (!gather?.behind) drawGatherBall(match.ball.id, poseFrame(clip, match.ball), action);
         }
       } else if (match.hold) {
-        const flair = match.active === match.cpuId ? match.cpu.flair : match.flair;
-        drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
+        const flair = !isHuman(match.active) ? match.cpu.flair : match.flair;
+        if (!gather?.behind) drawGatherBall(match.active, 0, flair === "none" ? "shot" : flair);
       } else if (match.pass) {
         drawLoose(match.pass, match.pass.t * 1.4);
       } else if (match.owner && !match.hold && !spriteFor(match.owner, match.pose[match.owner])?.clip.embeddedBall) {
@@ -3176,7 +3242,7 @@
       pointer = null;
       return;
     }
-    if (screen === "play" && match && match.active === match.humanId && !match.ball && !match.pass && !match.over) {
+    if (screen === "play" && match && isHuman(match.active) && !match.ball && !match.pass && !match.over) {
       const spot = courtPoint(p.x, p.y);
       if (spot) pointer = { move: spot };
     }
@@ -3212,14 +3278,14 @@
     }
     if (screen === "select") {
       ev.preventDefault();
-      if (k === "arrowleft" || k === "a") selectIndex = 0;
-      if (k === "arrowright" || k === "d") selectIndex = 1;
+      if (k === "arrowleft" || k === "a") selectIndex = (selectIndex + ROSTER.length - 1) % ROSTER.length;
+      if (k === "arrowright" || k === "d") selectIndex = (selectIndex + 1) % ROSTER.length;
       if (k === "enter" || k === " ") openCourtSelect();
       return;
     }
     if (!match) return;
     if (match.over) { if (k === "enter" || k === " ") leaveCourt(restartMatch); return; }
-    if ((k === " " || k === "j") && match.active === match.humanId && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.humanId]) {
+    if ((k === " " || k === "j") && isHuman(match.active) && !match.ball && !match.pass && match.lock <= 0 && !match.transit?.[match.active]) {
       if (!match.hold) {
         match.hold = true;
         match.power = 0;
@@ -3268,9 +3334,22 @@
     document.getElementById("pause-toggle").hidden = !match || match.over;
     const message = screen === "play" && match ? (paused ? "Paused. Resume when ready." : match.call) : "";
     if (status.textContent !== message) status.textContent = message;
+    updateMobileUi();
     requestAnimationFrame(frame);
   }
 
+  function updateMobileUi() {
+    const playing=screen === "play" && !!match, overlay=paused || guideOpen || courtOpen || !assetsReady();
+    const human=playing && isHuman(match.active), available=human && !match.over && !match.ball && !match.pass && !overlay;
+    const aiming=available && match.hold ? shotNeed() : null;
+    let message=playing ? match.over ? `${FIGHTERS[match.over].name} wins!` : `${FIGHTERS[match.active].name} Â· ${human ? "Your turn" : "Computer's turn"}` : "";
+    if (available) message=aiming ? aiming.hit ? "Gold zone! Tap Shoot now" : "Tap Shoot in the gold zone" : match.phase === "copy" ? copyHint() : "Move, choose a shot, then tap Aim";
+    if (playing && match.notice && match.notice.until > match.t && !aiming) message=match.notice.text;
+    window.VoteMobile?.update({playing,overlay,screen,selected:selectIndex,mode:playMode,winner:match?.over ? FIGHTERS[match.over].name : null,message,aiming,power:match?.power || 0,players:playing ? match.players.map(id=>({name:FIGHTERS[id].name,active:match.active===id&&!match.over,out:match.eliminated.includes(id),letters:match.letters[id]})) : []});
+    window.VoteTouch?.update({visible:playing&&!overlay&&!match.over,enabled:available,flair:match?.flair,aiming:!!aiming,hit:!!aiming?.hit,dunk:available && canDunk(match.pos[match.active].x,match.pos[match.active].y)});
+    if (mobileInput()) document.getElementById("pause-toggle").textContent=paused?"Resume":"Pause";
+  }
+  window.VoteMobile?.mount({roster:ROSTER.map(id=>FIGHTERS[id]),start(){screen="select";},pick(i){selectIndex=i;},mode(value){playMode=value;},court:openCourtSelect,again:restartMatch,portrait(ctx,i){const id=ROSTER[i],clip=CLIPS[id]?.idle,img=images[`${id}-idle`];if(!clip || !img?.naturalWidth)return;const cell=spriteCell(clip,0,{sy:0}),h=112,w=h*clip.fw/clip.fh;ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,50-w/2,4,w,h);}});
   if (window.mountTouchControls) {
     window.mountTouchControls(canvas.parentElement, {
       pad: {
