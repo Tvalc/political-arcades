@@ -1,5 +1,5 @@
 import {createService} from './service-v7.mjs?v=10.0';
-import './neighborhood.mjs?v=10.0';
+import './neighborhood.mjs?v=11.0';
 import {outreachCount} from './neighborhood-state.mjs';
 import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs?v=6.4';
 import {createScene,point as worldPoint} from './scene-v6.mjs?v=10.0';

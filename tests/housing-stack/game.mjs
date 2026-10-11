@@ -1,7 +1,7 @@
 import {onSpritesReady} from './makko-sprites.mjs?v=6';
 import {apartmentTile,boardBackdrop,onArtReady} from './art-renderer.mjs?v=4';
 import {loadCity,addFloors,cityProgress,blockName} from './city-state.mjs?v=4';
-import {paintLivingBlock} from './living-city.mjs?v=6.1';
+import {paintLivingBlock} from './living-city.mjs?v=11.0';
 import {paintRowCrew,visibleFloors} from './delivery-effects.mjs?v=6.1';
 let deliveryJobs=[],effectClock=0;
 let storage;try{storage=localStorage;}catch{}
