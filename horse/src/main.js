@@ -88,8 +88,9 @@
   } catch (_) { progressSaved = false; }
   function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
   function courtUnlocked(id) { return marketingUnlock || courtById(id).wins <= careerWins; }
+  function creditCourtPoints(type,count=1){if(!match||match.practice||marketingUnlock||match.marketingSession)return false;const receipt=window.CityRewards?.credit(type,count);if(!receipt)return false;if(type==='vote:basket')match.cityBaskets+=count;else match.cityWinBonus+=count;match.cityPoints+=count;match.cityPointsEvent='+'+count+' court point'+(count===1?'':'s')+' - '+(type==='vote:basket'?'your made match basket':'match win');return true;}
   function recordCourtWin() {
-    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = true; window.CityRewards?.credit('vote:win',4); }
+    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = creditCourtPoints('vote:win',4); }
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
     careerWins++;
@@ -1571,6 +1572,7 @@
     const home = FIGHTERS[humanId];
     return {
       humanId,
+      cityPoints:0,cityBaskets:0,cityWinBonus:0,cityPointsEvent:'',
       cpuId,
       spectatorId,
       players,
@@ -2043,7 +2045,7 @@
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
     reactToShot(id, ball.made && validCopy, ball.flair);
-    if (ball.made && validCopy && !match.practice && !marketingUnlock && !match.marketingSession && match.localPlayers.includes(id)) window.CityRewards?.credit('vote:basket');
+    if (ball.made && validCopy && match.localPlayers.includes(id)){creditCourtPoints('vote:basket');}else if(match.localPlayers.includes(id)){match.cityPointsEvent=ball.made?'0 points - match the required spot and shot':'0 points - missed shot';}
     if(id===match.humanId && ball.made && validCopy && !match.practice){
       match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
     }
@@ -3253,6 +3255,7 @@
   }
 
   function updateMobileUi() {
+    window.VotePoints?.update({playing:screen==='play'&&!!match,over:!!match?.over,practice:!!match?.practice,preview:!!match?.marketingSession,total:match?.cityPoints||0,baskets:match?.cityBaskets||0,bonus:match?.cityWinBonus||0,event:match?.cityPointsEvent||''});
     const playing=screen === "play" && !!match, overlay=paused || guideOpen || courtOpen || !assetsReady();
     const human=playing && isHuman(match.active), available=human && !match.over && !match.ball && !match.pass && !overlay;
     const aiming=available && match.hold ? shotNeed() : null;
