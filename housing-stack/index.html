@@ -1,5 +1,118 @@
 <!doctype html>
-<html lang="en"><head><base href="/tests/housing-stack/"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Housing Stack · AdsToAid</title><link rel="stylesheet" href="style.css?v=4.1"><script src="/shared/city-rewards.js?v=launch1"></script><link rel="canonical" href="https://politicalarcades.com/housing-stack/"><meta name="description" content="Fit the floors, clear rows and earn building supplies for your AdsToAid city."><meta property="og:title" content="Housing Stack · AdsToAid"><meta property="og:image" content="https://politicalarcades.com/city/homes-v12.webp"><link rel="stylesheet" href="/shared/city-session.css?v=launch1"></head>
-<body><header><a href="/">ADSTOAID</a><span>FALLING-BLOCK PUZZLE · BETA</span><button id="sound" aria-pressed="false">Sound off</button></header>
-<main><section class="intro"><p class="eyebrow">THE BLOCK IS GOING UP.</p><h1>HOUSING<br><em>STACK.</em></h1><p>Fit the floors. Finish the homes.<br>Give the complaint department something to complain about.</p><div class="crew" aria-label="Construction crew"><figure><canvas data-actor="mamdani" width="190" height="170"></canvas><figcaption>Mamdani</figcaption></figure><figure><canvas data-actor="sayed" width="190" height="170"></canvas><figcaption>El-Sayed</figcaption></figure><figure><canvas data-actor="talarico" width="190" height="170"></canvas><figcaption>Talarico</figcaption></figure></div><p id="crew-label" role="status">Mamdani is on the crane. The whole crew is building.</p><div class="neighborhood"><p class="eyebrow">YOUR CREW’S WORK</p><canvas id="skyline" width="900" height="470" aria-label="The neighborhood grows as floors are completed"></canvas><button data-city-open>Your city ↗</button><p id="neighborhood-label">Your shift scene celebrates the work. Choose where to build in your shared city.</p></div><a class="other-game" href="/pothole-party/">Also clock in at Pothole Party →</a></section>
-<section class="cabinet"><div class="marquee">DEPARTMENT OF BUILDING SHIT</div><div class="stats"><div>SUPPLIES<strong id="homes">0</strong></div><div>SCORE<strong id="score">0</strong></div><div>BEST<strong id="best">0</strong></div></div><div class="play-area"><div class="board"><div class="crane-beam" aria-hidden="true"><i id="crane-trolley"></i></div><canvas id="game" width="320" height="640" tabindex="0" aria-label="Falling apartment floors game"></canvas><div id="overlay"><p id="overline">ALL THREE. ONE BUILDING CREW.</p><h2 id="title">More homes.<br>Less bullshit.</h2><p id="message">Clear a row to earn 1 building supply. Four supplies build homes in your city.<br>Keep building until the crane runs out of room. Hold a delivery when you need a better fit.</p><button id="start">Start building →</button><div class="city-receipt"><p data-city-receipt>Arcade earnings build your city.</p><a href="/city/" data-city-cta>My city &amp; supplies →</a><small>Saved in this browser · fictional game supplies</small></div></div></div><aside><p class="eyebrow">NEXT 3 DELIVERIES</p><canvas id="next" width="120" height="240" aria-label="Next three floor shapes"></canvas><p class="eyebrow">ON RESERVE</p><canvas id="held" width="120" height="72" aria-label="Held floor shape"></canvas><button id="hold" data-action="hold">HOLD · C</button><p>LEVEL <b id="level">1</b></p><p>FLOORS <b id="lines">0</b></p><button id="pause">Pause</button><div class="critic"><canvas id="critic" width="190" height="170" aria-label="Ted Cruz animated satirical reaction"></canvas><b>THE COMPLAINT DEPARTMENT</b><p id="heckle">“But have you considered doing nothing?”</p><small>Satirical dialogue · not real quotes</small></div></aside></div><div class="controls"><button data-action="left" aria-label="Move left">←</button><button data-action="right" aria-label="Move right">→</button><button data-action="rotate" aria-label="Rotate floor">↻</button><button data-action="down" aria-label="Lower floor">↓</button><button data-action="drop">BUILD ↓</button></div><p class="help">← → move · ↑ rotate · ↓ lower · Space drop · C / Shift hold · P pause</p><div class="phone-neighborhood"><canvas id="phone-city" width="900" height="470" aria-label="Your completed homes on the block"></canvas><button data-city-open>Your city ↗</button><p id="city-report" role="status">An empty lot. First floor is yours.</p></div><p id="call" role="status">The crane is ready. Sound starts off.</p></section></main><dialog id="city-dialog"><div class="city-heading"><div><p class="eyebrow">EVERY SHIFT LEAVES SOMETHING STANDING</p><h2>Your city.</h2></div><button id="city-close" aria-label="Close city">Back to game</button></div><iframe id="shared-city" title="Your city across the arcade" style="width:100%;height:72dvh;border:0;border-radius:12px"></iframe><div hidden><p id="city-total"></p><p>4 floors → building · 4 buildings → block · 3 blocks → neighborhood · 3 neighborhoods → borough. Your city keeps growing.</p><h3 id="visit-label"></h3><canvas id="city-detail" width="900" height="470"></canvas><div id="city-map"></div><small>Saved on this device. Residents and homes are fictional game progress.</small></div></dialog><footer>Unofficial political satire · Supplies are fictional game progress · <a href="/community-pot/">How playing supports the Community Pot</a></footer><script src="../../horse/src/basketball-clips.js?v=1"></script><script type="module" src="game.mjs?v=launch1-city11.0"></script><script type="module" src="/shared/city-session.mjs?v=launch1"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Housing Stack · AdsToAid</title>
+  <meta name="description" content="Choose your builder. Fit the floors, clear rows and earn supplies for your AdsToAid city.">
+  <link rel="canonical" href="https://politicalarcades.com/housing-stack/">
+  <meta property="og:title" content="Housing Stack · AdsToAid">
+  <meta property="og:image" content="https://politicalarcades.com/city/homes-v12.webp">
+  <link rel="stylesheet" href="/housing-stack/experience.css?v=ux1">
+  <script src="/shared/city-rewards.js?v=launch1"></script>
+</head>
+<body data-phase="setup" data-touch="auto">
+  <a class="skip-link" href="#game-shell">Skip to game</a>
+  <header class="game-header">
+    <a class="back-link" href="/#library" aria-label="Back to all games">← Games</a>
+    <h1>Housing <span>Stack</span><small>BETA</small></h1>
+  </header>
+  <main>
+    <section class="game-shell" id="game-shell" aria-label="Housing Stack game">
+      <div class="game-toolbar">
+        <div class="live-stats" aria-label="This shift">
+          <div><span>Supplies earned</span><strong id="supplies">0</strong></div>
+          <div><span>Score</span><strong id="score">0</strong></div>
+        </div>
+        <div class="toolbar-actions">
+          <button class="quiet-button" id="help-open" aria-label="How to play and controls" disabled>?</button>
+          <button class="quiet-button" id="pause" disabled>Pause</button>
+        </div>
+      </div>
+      <div class="play-stage">
+        <div class="board">
+          <canvas id="game" width="320" height="640" tabindex="0" aria-label="Housing Stack board. Use arrow keys to move and rotate, Space to drop, C to hold, P to pause." aria-describedby="keyboard-hints"></canvas>
+          <div class="board-toast" id="board-toast" hidden aria-hidden="true"></div>
+        </div>
+        <aside class="play-rail" aria-label="Builder and next pieces">
+          <div class="selected-builder">
+            <canvas id="builder" width="190" height="170" aria-hidden="true"></canvas>
+            <strong id="builder-name">Mamdani</strong>
+          </div>
+          <div class="queue-panel"><h2>Next</h2><canvas id="next" width="120" height="216" aria-label="Next three floor shapes"></canvas></div>
+          <button class="hold-panel" id="hold" data-action="hold" aria-label="Hold piece. Keyboard C or Shift." disabled>
+            <span>Hold <kbd>C</kbd></span>
+            <canvas id="held" width="120" height="72" aria-hidden="true"></canvas>
+            <small id="hold-status">Empty</small>
+          </button>
+          <div class="level-label">Level <strong id="level">1</strong></div>
+        </aside>
+        <section class="stage-overlay" id="overlay" aria-labelledby="overlay-title">
+          <div class="overlay-card">
+            <p class="eyebrow" id="overline">MORE HOMES. LESS BULLSHIT.</p>
+            <h2 id="overlay-title">Build your block.</h2>
+            <p id="overlay-message">Fit the pieces. Fill a row. Earn supplies for your city.</p>
+            <fieldset class="builder-picker" id="builder-picker" disabled>
+              <legend>Choose your builder <span>Same game. Your favorite face.</span></legend>
+              <label><input type="radio" name="builder" value="mamdani" checked><span class="builder-option"><canvas data-choice="mamdani" width="190" height="170" aria-hidden="true"></canvas><strong>Mamdani</strong><span class="choice-mark" aria-hidden="true">✓</span></span></label>
+              <label><input type="radio" name="builder" value="sayed"><span class="builder-option"><canvas data-choice="sayed" width="190" height="170" aria-hidden="true"></canvas><strong>El-Sayed</strong><span class="choice-mark" aria-hidden="true">✓</span></span></label>
+              <label><input type="radio" name="builder" value="talarico"><span class="builder-option"><canvas data-choice="talarico" width="190" height="170" aria-hidden="true"></canvas><strong>Talarico</strong><span class="choice-mark" aria-hidden="true">✓</span></span></label>
+            </fieldset>
+            <div class="returning-builder" id="returning-builder" hidden><canvas id="returning-portrait" width="190" height="170" aria-hidden="true"></canvas><strong id="returning-name">Mamdani</strong></div>
+            <div class="result-stats" id="result-stats" hidden>
+              <div><strong id="result-supplies">0</strong><span>supplies earned</span></div>
+              <div><strong id="result-score">0</strong><span>score</span></div>
+              <p id="result-best"></p>
+            </div>
+            <button class="primary-button" id="start" disabled>Loading game…</button>
+            <button class="text-button" id="choose-another" hidden>Change builder</button>
+            <a class="result-city" id="result-city" href="/city/" hidden>Spend your supplies in your city →</a>
+            <p class="setup-note" id="setup-note">1 cleared row = 1 supply · 4 supplies build affordable homes</p>
+          </div>
+        </section>
+      </div>
+      <div class="touch-controls" id="touch-controls" aria-label="Touch controls">
+        <div class="movement-controls">
+          <button data-action="left" aria-label="Move left"><span aria-hidden="true">←</span></button>
+          <button data-action="down" aria-label="Lower piece"><span aria-hidden="true">↓</span></button>
+          <button data-action="right" aria-label="Move right"><span aria-hidden="true">→</span></button>
+        </div>
+        <button class="rotate-button" data-action="rotate"><span aria-hidden="true">↻</span><small>Rotate</small></button>
+        <button class="drop-button" data-action="drop"><span aria-hidden="true">⇣</span><small>Drop</small></button>
+      </div>
+      <p class="keyboard-hints" id="keyboard-hints"><span><kbd>←</kbd><kbd>→</kbd> Move</span><span><kbd>↑</kbd> Rotate</span><span><kbd>↓</kbd> Lower</span><span><kbd>Space</kbd> Drop</span><span><kbd>C</kbd> Hold</span></p>
+      <p class="game-message" id="call" role="status" aria-live="polite">Clear a full horizontal row to earn 1 supply.</p>
+      <section class="neighborhood" aria-labelledby="neighborhood-title">
+        <div class="neighborhood-copy"><div><h2 id="neighborhood-title">Your work adds up.</h2><p id="neighborhood-label">Clear rows here. Choose what to build in your city.</p></div><a href="/city/">My city <span aria-hidden="true">↗</span></a></div>
+        <canvas id="skyline" width="900" height="250" aria-label="A view of your Housing Stack neighborhood"></canvas>
+        <p class="save-note" id="save-status">Supplies save in this browser. Game progress is separate from real-world giving.</p>
+        <button class="text-button" id="retry-save" hidden>Retry saving supplies</button>
+      </section>
+    </section>
+  </main>
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="dialog-heading"><h2 id="help-title">Make room for more.</h2><button class="quiet-button" id="help-close" aria-label="Close how to play">✕</button></div>
+    <ol class="how-to"><li><strong>Fit the floors.</strong> Move and rotate each falling piece. The outline shows where it will land.</li><li><strong>Fill a row.</strong> Complete a horizontal row with no gaps. It clears and earns 1 building supply.</li><li><strong>Build your city.</strong> Your supplies stay saved when the stack reaches the top. Spend them in My city.</li></ol>
+    <p class="touch-tip">On touchscreens, use the buttons below the board. You can also tap the board to rotate or swipe sideways to move. Use Drop when you’re ready to place a piece.</p>
+    <details class="keyboard-reference" id="keyboard-reference"><summary>Keyboard shortcuts</summary><dl class="controls-list"><div><dt>Move</dt><dd>← → or A / D</dd></div><div><dt>Rotate</dt><dd>↑ or W</dd></div><div><dt>Lower slowly</dt><dd>↓ or S</dd></div><div><dt>Drop into place</dt><dd>Space</dd></div><div><dt>Hold / swap</dt><dd>C or Shift</dd></div><div><dt>Pause</dt><dd>P or Escape</dd></div></dl></details>
+    <div class="settings-row"><label for="touch-mode">On-screen controls</label><select id="touch-mode"><option value="auto">Automatic</option><option value="on">Always show</option><option value="off">Hide (keyboard)</option></select></div>
+    <div class="settings-row"><span>Sound effects</span><button class="quiet-button" id="sound" aria-pressed="false">Sound off</button></div>
+    <div class="settings-row"><label for="calm-mode">Reduce background motion</label><input type="checkbox" id="calm-mode"></div>
+    <p class="dialog-note">Hold keeps one piece for later. You can swap again after placing a piece. Choosing a builder doesn’t change the difficulty.</p>
+    <button class="primary-button" id="help-done">Got it</button>
+  </dialog>
+  <footer>Unofficial political satire · <a href="/community-pot/">How AdsToAid gives back</a></footer>
+  <noscript><p class="game-message">Housing Stack needs JavaScript enabled to play.</p></noscript>
+  <script type="module">
+    import('/housing-stack/experience.mjs?v=ux1').catch(error=>{
+      console.error('Housing Stack could not start',error);
+      document.querySelector('#overlay-title').textContent='Game couldn’t load.';
+      document.querySelector('#overline').textContent='LET’S TRY THAT AGAIN';
+      document.querySelector('#overlay-message').textContent='Check your connection, then reload to try again.';
+      document.querySelector('#builder-picker').hidden=true;
+      const start=document.querySelector('#start');start.disabled=false;start.textContent='Reload game';start.onclick=()=>location.reload();
+    });
+  </script>
+  <script type="module" src="/shared/arcade-navigation.mjs?v=ux2"></script>
+</body>
+</html>

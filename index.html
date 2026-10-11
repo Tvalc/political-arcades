@@ -195,82 +195,40 @@
   @media(max-width:760px) { .floor { padding-top:20px; } .floor h1 { font-size:clamp(27px,7vw,38px); } .floor-copy .kicker { white-space:normal; font-size:10px; letter-spacing:.1em; } .quick-play { gap:8px; } .quick-play a { padding:10px 12px; font-size:12px; } .machines { gap:24px; } .machine { width:min(100%,420px); justify-self:center; } }
 
 </style>
-<link rel="stylesheet" href="/shared/arcade-hub.css?v=launch1">
+<link rel="stylesheet" href="/shared/arcade-home.css?v=ux3">
 </head>
 <body>
+<a class="skip-link" href="#library">Skip to games</a>
 <header class="topbar"><div class="col">
-  <a class="a2a" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
-  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a></nav>
-  <a class="mobile-city" href="/city/">My city</a><a class="btn btn-top" href="#library">▶ Play free</a>
+  <a class="a2a" href="/" aria-label="AdsToAid home"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
+  <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu <span aria-hidden="true">☰</span></button>
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <a href="#library">Games</a><a href="/city/">My city</a><a href="#how">How giving works</a>
+    <details class="more-nav"><summary>More <span aria-hidden="true">⌄</span></summary><div class="more-links"><a href="#watch">Watch</a><a href="#listen">Listen</a><a href="#read">Read the comic</a><a href="#who">About Tony</a><a href="/community-pot/">Community Pot</a><a href="#dispatch">Newsletter</a><a href="https://www.patreon.com/c/PoliticalArcade">Support on Patreon</a></div></details>
+  </nav>
 </div></header>
 <main>
   <section class="floor" id="play">
     <img class="mural" src="art/web/rally-1600.webp" srcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" decoding="async">
     <div class="col">
       <div class="floor-copy">
-        <p class="kicker">Free browser arcade · <b>AdsToAid</b> · no download, no sign-up</p>
-        <h1>Play the arcade.<br><em>Build your city.</em></h1>
-        <p class="lede">Earn supplies in free games. Build a neighborhood of your own. <b>At least half of distributable profit goes to community programs.</b> As Tony earns more, the community’s share grows to 99%.</p>
-        <nav class="quick-play" aria-label="Start playing"><a class="chip" href="#library">Explore all five games</a><a class="chip" href="/city/">Build your city →</a></nav>
-        <button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="false">Pause previews</button>
+        <p class="kicker">Free games · no download · no sign-up</p>
+        <h1>Play the arcade.</h1>
+        <p class="lede">Play games. Earn supplies. Build a neighborhood of your own.</p>
+        <p class="giving-line">At least 50% of distributable profit supports community programs. <a href="#how">How giving works</a></p>
       </div>
+      <section id="library" aria-labelledby="library-title" tabindex="-1">
+        <div class="library-heading"><div><h2 id="library-title">Choose your cabinet.</h2><p>Every game earns supplies for your city.</p></div><button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="true" hidden>Motion previews: off</button></div>
+        <div class="arcade" id="arcade"><div class="machines" data-cabinets></div></div>
+        <noscript><nav class="fallback-games" aria-label="Games"><a href="/capitol-crashers/">Play Capitol Crashers</a><a href="/horse/">Play VOTE</a><a href="/pothole-party/">Play Pothole Party</a><a href="/housing-stack/">Play Housing Stack</a><a href="/outreach-route/">Play Every Kid Can See</a></nav></noscript>
+      </section>
+      <aside class="city-return" data-city-return hidden aria-label="Your saved city">
+        <div><strong data-hub-title>Your city</strong><p data-hub-copy></p></div>
+        <a href="/city/" data-hub-cta>Continue city →</a>
+      </aside>
+      <aside class="city-intro" data-city-intro><div><h2>Every round builds something.</h2><p>Turn your arcade supplies into homes, courts and places for your neighbors. Your city is saved in this browser.</p><small>Game supplies are fictional. Real giving is reported in the <a href="/community-pot/">Community Pot</a>.</small></div><a class="chip" href="/city/">Explore your city →</a></aside>
 
-      <section class="city-hub" aria-labelledby="hub-title"><div><p class="kicker">YOUR ARCADE. YOUR CITY.</p><h2 id="hub-title" data-hub-title>Build a place worth coming back to.</h2><p data-hub-copy>Five arcade games. One city. Earn supplies, build homes and courts, and watch your neighbors bring them to life.</p><a class="btn" href="/city/" data-hub-cta>Start your city →</a><small data-hub-save>Your first homes start with a free welcome delivery. No account needed.</small><small>City supplies are fictional game progress. Real giving is reported in the Community Pot.</small></div><div class="city-art" aria-hidden="true"><img src="/city/homes-v12.webp" width="477" height="456" alt=""><img src="/city/court-v12.webp" width="423" height="512" alt=""><img src="/city/park-v12.webp" width="446" height="463" alt=""></div></section>
-      <section id="library" aria-labelledby="library-title"><div class="library-heading"><h2 id="library-title">Find your next game.</h2><p>Every game brings something home.</p></div><div class="game-library" data-arcade-library></div><noscript><p><a href="/capitol-crashers/">Capitol Crashers</a> · <a href="/horse/">VOTE</a> · <a href="/pothole-party/">Pothole Party</a> · <a href="/housing-stack/">Housing Stack</a> · <a href="/outreach-route/">Every Kid Can See</a></p></noscript></section>
-      <p class="featured-label">ON THE ARCADE FLOOR</p>
-      <div class="arcade" id="arcade">
-        <div class="sitdown" id="sitdown" hidden>
-          <div class="bezel">
-            <div class="bezel-marquee"><span class="bezel-name" id="sd-name">Capitol Crashers</span><span class="mtag" id="sd-machine">Machine 01</span><button class="chip js-leave" type="button">&larr; Back to the floor</button></div>
-            <div class="bezel-screen" id="sd-screen"></div>
-            <div class="bezel-deck"><span class="mono">At least half of distributable profit goes to community programs.</span><span class="acts"><a class="chip js-full" href="#">Full screen</a><a class="chip" id="sd-open" href="#" target="_blank" rel="noopener">Open in a new tab</a></span></div>
-          </div>
-        </div>
-        <div class="machines">
-          <figure class="machine" data-game="crashers" data-url="capitol-crashers/" data-name="Capitol Crashers" data-machine="Machine 01">
-            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/crashers-v2.webp" data-src="media/cabinets/crashers-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
-            <figcaption class="placard">
-              <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
-              <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
-              <a class="btn btn-big js-play" href="capitol-crashers/">&#9654; Play</a>
-            </figcaption>
-          </figure>
-          <figure class="machine" data-game="vote" data-url="horse/" data-name="VOTE" data-machine="Machine 02">
-            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/vote-v2.webp" data-src="media/cabinets/vote-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
-            <figcaption class="placard">
-              <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
-              <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
-              <a class="btn btn-big btn-teal js-play" href="horse/">&#9654; Play</a>
-            </figcaption>
-          </figure>
-          <figure class="machine" data-game="pothole" data-url="pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
-            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/pothole-v2.webp" data-src="media/cabinets/pothole-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
-            <figcaption class="placard">
-              <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
-              <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
-              <a class="btn btn-big js-play" href="pothole-party/">&#9654; Play</a>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
 
-      <div class="statement" id="ledger">
-        <div class="row">
-          <span class="k">Giving policy · first financial statement pending</span>
-          <span>Community share<b>50% → 99%</b></span>
-          <span>Tony’s share<b>50% → 1%</b></span>
-          <span class="aidv">Monthly giving floor<b>$50 with Tony’s top-up</b></span>
-        </div>
-        <details>
-          <summary>How the money works</summary>
-          <div class="more">
-            <p>The split applies to distributable profit: money received from ads, Patreon and any merch sales, minus documented project costs and disclosed operating-reserve additions, plus reserve releases. Fees and refunds are counted once. The reserve and costs are explained in the <a href="community-pot/">Community Pot</a>.</p>
-            <p>The community share starts at 50% and rises to 99%. Recipients support causes the featured politicians care about; they are not campaigns or politicians. We plan to invite their recommendations. No endorsement or participation is implied. Chosen recipients and payment receipts will appear in the Community Pot.</p>
-            <p>No reconciled financial statement is published yet. Reports will distinguish money received, expenses, reserves, allocated shares and actual payments. Unpaid allocations are not described as donations already delivered.</p>
-            <p>If the site gives less than $50 in a month, Tony personally covers the difference so total monthly giving reaches $50, with his top-up going to a local Seattle cause. For example, $30 from the site means $20 from Tony; $0 means $50. Personal top-ups are separate from site profit. <a href="#milestones">See the split and milestones.</a></p>
-          </div>
-        </details>
-      </div>
     </div>
   </section>
 
@@ -288,7 +246,7 @@
 
 
   <section class="col media-sec" id="watch">
-    <div class="section-head"><div><p class="kicker">Watch</p><h2>Freeze the Rent, <em>the video</em></h2></div><p class="lede">Two minutes ten. Mamdani and El-Sayed on the block, cut with gameplay. Tap to load; nothing downloads until you do.</p></div>
+    <div class="section-head"><div><p class="kicker">Watch</p><h2>Freeze the Rent, <em>the video</em></h2></div></div>
     <div class="theater" id="theater">
       <img src="art/web/video-poster.webp" width="1280" height="720" loading="lazy" alt="Freeze the Rent music video poster">
       <button class="btn btn-big" type="button" id="theater-play">&#9654; Play the video</button>
@@ -326,6 +284,23 @@
   </section>
 
   <section class="how" id="how"><div class="col">
+      <div class="statement" id="ledger">
+        <div class="row">
+          <span class="k">Giving policy · first financial statement pending</span>
+          <span>Community share<b>50% → 99%</b></span>
+          <span>Tony’s share<b>50% → 1%</b></span>
+          <span class="aidv">Monthly giving floor<b>$50 with Tony’s top-up</b></span>
+        </div>
+        <details>
+          <summary>How the money works</summary>
+          <div class="more">
+            <p>The split applies to distributable profit: money received from ads, Patreon and any merch sales, minus documented project costs and disclosed operating-reserve additions, plus reserve releases. Fees and refunds are counted once. The reserve and costs are explained in the <a href="community-pot/">Community Pot</a>.</p>
+            <p>The community share starts at 50% and rises to 99%. Recipients support causes the featured politicians care about; they are not campaigns or politicians. We plan to invite their recommendations. No endorsement or participation is implied. Chosen recipients and payment receipts will appear in the Community Pot.</p>
+            <p>No reconciled financial statement is published yet. Reports will distinguish money received, expenses, reserves, allocated shares and actual payments. Unpaid allocations are not described as donations already delivered.</p>
+            <p>If the site gives less than $50 in a month, Tony personally covers the difference so total monthly giving reaches $50, with his top-up going to a local Seattle cause. For example, $30 from the site means $20 from Tony; $0 means $50. Personal top-ups are separate from site profit. <a href="#milestones">See the split and milestones.</a></p>
+          </div>
+        </details>
+      </div>
     <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">Free games, optional support, and a growing share for the community. AdsToAid starts by allocating 50% of distributable profit to community programs. That share rises as Tony reaches the milestones below.</p></div>
     <div class="steps">
       <div class="step"><b>1</b><h3>You play</h3><p>Five free games earn supplies for one shared city. Build homes, restore streets and open places for your neighbors. No account needed.</p></div>
@@ -388,98 +363,12 @@
   </div></section>
 
   <footer id="support"><div class="col">
-    <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
+    <div><a class="a2a small" href="/"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
     <div><a href="community-pot/">Community Pot</a> · <a href="city/">Your city</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:tony@makko.ai?subject=AdsToAid%20game%20issue">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
     <div class="stamp">Last updated Oct 11, 2026</div>
   </div></footer>
 </main>
 <script>
-(function () {
-  var arcade = document.getElementById('arcade'), sit = document.getElementById('sitdown'), scr = document.getElementById('sd-screen');
-  var frame = null;
-  function sitDown(m) {
-    // Give phones the game's full viewport and native touch controls.
-    if (window.matchMedia('(max-width: 760px)').matches) { window.location.assign(m.dataset.url); return; }
-
-    if (frame) { frame.remove(); frame = null; }
-    document.getElementById('sd-name').textContent = m.dataset.name;
-    document.getElementById('sd-machine').textContent = m.dataset.machine;
-    document.getElementById('sd-open').href = m.dataset.url;
-    frame = document.createElement('iframe');
-    frame.src = m.dataset.url; frame.title = m.dataset.name; frame.setAttribute('allow', 'autoplay; fullscreen; gamepad');
-    scr.appendChild(frame);
-    sit.hidden = false; arcade.classList.add('playing'); syncPreviews();
-    sit.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    frame.focus();
-  }
-  // Screen quads in the 600x900 cabinet art space: TL, TR, BR, BL.
-  var quads = {
-    crashers: [[159,250],[409,245],[388,492],[125,485]],
-    vote:     [[159,250],[410,245],[387,492],[124,483]],
-    pothole:  [[160,250],[410,246],[387,490],[126,483]]
-  };
-  function homography(src, dst) { // 4 point pairs -> CSS matrix3d (from Hartley/Zisserman via adjugate), src is the 480 box
-    function adj(m) { return [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]]; }
-    function mul(a, b) { var c = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) { var t = 0; for (var k = 0; k < 3; k++) t += a[3*i+k]*b[3*k+j]; c[3*i+j] = t; } return c; }
-    function basis(p) { var m = [p[0][0], p[1][0], p[2][0], p[0][1], p[1][1], p[2][1], 1, 1, 1]; var v = mulv(adj(m), [p[3][0], p[3][1], 1]); return mul(m, [v[0],0,0, 0,v[1],0, 0,0,v[2]]); }
-    function mulv(m, v) { return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2], m[3]*v[0]+m[4]*v[1]+m[5]*v[2], m[6]*v[0]+m[7]*v[1]+m[8]*v[2]]; }
-    var h = mul(basis(dst), adj(basis(src)));
-    for (var i = 0; i < 9; i++) h[i] /= h[8];
-    return 'matrix3d(' + [h[0],h[3],0,h[6], h[1],h[4],0,h[7], 0,0,1,0, h[2],h[5],0,h[8]].join(',') + ')';
-  }
-  function fitVideos() {
-    document.querySelectorAll('.machine').forEach(function (m) {
-      var img = m.querySelector('.screenwrap > img:not(.shade)'); if (!img || !img.clientWidth) return;
-      var k = parseFloat(getComputedStyle(img).width) / 600, ox = img.offsetLeft, oy = img.offsetTop;
-      var q = quads[m.dataset.game].map(function (pt) { return [ox + pt[0]*k, oy + pt[1]*k]; });
-      var plane = m.querySelector('.cab-screen');
-      plane.style.transform = homography([[0,0],[480,0],[480,480],[0,480]], q);
-    });
-  }
-  fitVideos(); window.addEventListener('resize', fitVideos); window.addEventListener('load', fitVideos);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitVideos);
-  document.querySelectorAll('.screenwrap > img:not(.shade)').forEach(function (i) { i.addEventListener('load', fitVideos); });
-  if ('ResizeObserver' in window) { var ro = new ResizeObserver(fitVideos); document.querySelectorAll('.screenwrap').forEach(function (w) { ro.observe(w); }); }
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var previewsPaused = reducedMotion.matches, previewButton = document.getElementById('preview-toggle');
-  var previews = Array.from(document.querySelectorAll('.screenvid')).map(function (video) {
-    return {video:video, visible:false};
-  });
-  function allowed(p) { return p.visible && !previewsPaused && !document.hidden && sit.hidden; }
-  function syncPreviews() {
-    previewButton.textContent = previewsPaused ? 'Play previews' : 'Pause previews';
-    previewButton.setAttribute('aria-pressed', String(previewsPaused));
-    previews.forEach(function (p) {
-      if (!allowed(p)) p.video.pause();
-      else { if (!p.video.getAttribute("src")) p.video.src = p.video.dataset.src; p.video.play().then(function () { if (!allowed(p)) p.video.pause(); }).catch(function () { /* Keep the real gameplay poster when autoplay is unavailable. */ }); }
-    });
-  }
-  previewButton.addEventListener('click', function () { previewsPaused = !previewsPaused; syncPreviews(); });
-  document.addEventListener('visibilitychange', syncPreviews);
-  reducedMotion.addEventListener('change', function (e) { previewsPaused = e.matches; syncPreviews(); });
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) { var p = previews.find(function (item) { return item.video === entry.target; }); p.visible = entry.isIntersecting && entry.intersectionRatio >= 0.25; });
-      syncPreviews();
-    }, {threshold:0.25});
-    previews.forEach(function (p) { io.observe(p.video); });
-  } else { previews.forEach(function (p) { p.visible = true; }); }
-  syncPreviews();
-  document.querySelectorAll('[data-open-game]').forEach(function (link) {
-    link.addEventListener('click', function (e) { e.preventDefault(); sitDown(document.querySelector('.machine[data-game="'+link.dataset.openGame+'"]')); });
-  });
-  document.querySelectorAll('.machine').forEach(function (m) {
-    m.querySelector('.cab-art').addEventListener('click', function () { sitDown(m); });
-    m.querySelector('.js-play').addEventListener('click', function (e) { e.preventDefault(); sitDown(m); });
-  });
-  document.querySelector('.js-leave').addEventListener('click', function () {
-    if (frame) { frame.remove(); frame = null; }
-    sit.hidden = true; arcade.classList.remove('playing'); syncPreviews();
-    document.getElementById('play').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-  document.querySelector('.js-full').addEventListener('click', function (e) { e.preventDefault(); var el = frame || scr; if (el.requestFullscreen) el.requestFullscreen(); });
-})();
-
 (function () {
   // Watch: nothing loads until the button is pressed.
   var th = document.getElementById('theater');
@@ -551,6 +440,7 @@
   track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); go(e.key === 'ArrowRight' ? 1 : -1); } });
 })();
 </script>
-<script type="module" src="/shared/arcade-hub.mjs?v=launch1"></script>
+<script type="module" src="/shared/arcade-home.mjs?v=ux3"></script>
 </body>
 </html>
+
