@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="adstoaid-brand.css">
 <style>
   :root { --col: 1180px; }
+  [hidden] { display: none !important; }
   .col { width: min(var(--col), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
   .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,6,11,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .topbar .col { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
@@ -127,7 +128,8 @@
   .juke-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 4px; }
   @media (min-width: 800px) { .juke-list { grid-template-columns: 1fr 1fr; } }
   .juke-list li { display: grid; grid-template-columns: 28px 1fr auto auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 15px; }
-  .juke-list li:hover { background: rgba(255,255,255,.04); }
+  .juke-list li:hover, .juke-list li:focus-visible { background: rgba(255,255,255,.04); }
+  .juke-list li:focus-visible { outline: 2px solid var(--aid); outline-offset: 2px; }
   .juke-list li.on { background: rgba(255,77,141,.12); box-shadow: inset 0 0 0 1px rgba(255,77,141,.4); }
   .juke-list li .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
   .juke-list li .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
@@ -186,6 +188,17 @@
   footer .col { display: grid; gap: 8px; }
   footer a { color: var(--coin); }
   .stamp { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+
+  .cab-art .cab-screen { position:absolute; left:0; top:0; width:480px; height:480px; transform-origin:0 0; z-index:1; pointer-events:none; isolation:isolate; }
+  .cab-art .cab-screen > * { position:absolute; inset:0; width:100%!important; height:100%!important; max-width:none; max-height:none; margin:0; padding:0; transform:none; }
+  .cab-art .coin { z-index:2; }
+  .quick-play { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px auto 0; }
+  .quick-play a { min-height:44px; padding:10px 16px; font-size:13px; }
+  .preview-toggle { display:block; margin:14px auto 0; min-height:44px; padding:8px 14px; border:1px solid var(--line); border-radius:999px; background:#100d18; color:var(--muted); font:13px var(--body); cursor:pointer; }
+  .cab-art:focus-visible,.preview-toggle:focus-visible,.quick-play a:focus-visible { outline:3px solid var(--cyan); outline-offset:5px; }
+  .sitdown { scroll-margin-top:90px; }
+  @media(max-width:760px) { .floor { padding-top:20px; } .floor h1 { font-size:clamp(27px,7vw,38px); } .floor-copy .kicker { white-space:normal; font-size:10px; letter-spacing:.1em; } .quick-play { gap:8px; } .quick-play a { padding:10px 12px; font-size:12px; } .machines { gap:24px; } .machine { width:min(100%,420px); justify-self:center; } }
+
 </style>
 </head>
 <body>
@@ -199,9 +212,15 @@
     <img class="mural" src="../art/web/rally-1600.webp" srcset="../art/web/rally-800.webp 800w, ../art/web/rally-1200.webp 1200w, ../art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" decoding="async">
     <div class="col">
       <div class="floor-copy">
-        <p class="kicker">Free browser arcade · <b>Political Arcades</b> · no download, no sign-up</p>
+        <p class="kicker">Free browser arcade · <b>AdsToAid</b> · no download, no sign-up</p>
         <h1>Free games that turn <em>ad money into aid.</em></h1>
         <p class="lede">Advertisers pay for the ads. <b>Half the profit goes to community programs</b>, and every dollar is posted on this page.</p>
+        <nav class="quick-play" aria-label="Choose a game">
+          <a class="chip" data-open-game="crashers" href="https://capitolcrashers.com/play/">Play Crashers</a>
+          <a class="chip" data-open-game="vote" href="https://politicalarcades.com/horse/">Play VOTE</a>
+          <a class="chip" data-open-game="pothole" href="https://politicalarcades.com/pothole-party/">Play Pothole</a>
+        </nav>
+        <button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="false">Pause previews</button>
       </div>
 
       <div class="arcade" id="arcade">
@@ -214,29 +233,26 @@
         </div>
         <div class="machines">
           <figure class="machine" data-game="crashers" data-url="https://capitolcrashers.com/play/" data-name="Capitol Crashers" data-machine="Machine 01">
-            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="../art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="../art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
-              <div class="placard-mode"><span class="k">Fight night</span> Mamdani <em>vs</em> The Landlord &middot; top score takes the card Sunday</div>
-              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your best</span><span class="v">&mdash;</span></div>
+              <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
               <a class="btn btn-big js-play" href="https://capitolcrashers.com/play/">&#9654; Play</a>
             </figcaption>
           </figure>
           <figure class="machine" data-game="vote" data-url="https://politicalarcades.com/horse/" data-name="VOTE" data-machine="Machine 02">
-            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="../art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="../art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
-              <div class="placard-mode"><span class="k">Daily court</span> Court <span id="daily-court">01</span> &middot; everyone plays the same court today</div>
-              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your streak</span><span class="v">0 days</span></div>
+              <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
               <a class="btn btn-big btn-teal js-play" href="https://politicalarcades.com/horse/">&#9654; Play</a>
             </figcaption>
           </figure>
           <figure class="machine" data-game="pothole" data-url="https://politicalarcades.com/pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
-            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="../art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="../art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
               <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
-              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your best</span><span class="v">&mdash;</span></div>
               <a class="btn btn-big js-play" href="https://politicalarcades.com/pothole-party/">&#9654; Play</a>
             </figcaption>
           </figure>
@@ -264,7 +280,7 @@
     </div>
   </section>
 
-  <div class="col"><div class="adslot" aria-label="Advertisement slot">Advertisement · 728×90 / 320×100 · dark until Google approves</div></div>
+  <!-- Ad placement is added only after approval; no empty placeholder for visitors. -->
 
   <section class="col more-sec" id="more">
     <p class="kicker">Keep the floor open</p>
@@ -318,7 +334,7 @@
   <section class="how" id="how"><div class="col">
     <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">No donations asked. No employees. No company to grow. The site earns from ads, pays its bills in the open, and sends half of what is left to community programs.</p></div>
     <div class="steps">
-      <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers and VOTE now, more arcades later. No account needed.</p></div>
+      <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers, VOTE and Pothole Party. No account needed.</p></div>
       <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Ads run beside the games and between matches, never over the controls. That is the only money in the system.</p></div>
       <div class="step"><b>3</b><h3>Half goes to aid</h3><p>Half the profit, after the bills, to community programs doing the work Mamdani, El-Sayed and Talarico fight for: rent, glasses for kids, food, childcare, insulin, schools, buses. Real examples are in the ledger below.</p></div>
     </div>
@@ -373,22 +389,23 @@
 
   <section class="who" id="who"><div class="col inner">
     <div><h2>Who makes this</h2><p>One person, Tony, with chibi art from Makko. No company, no employees, no donations asked.</p></div>
-    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="#">Corrections</a></p></div>
+    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a></p></div>
   </div></section>
 
   <footer><div class="col">
-    <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · Political Arcades · Fan-made. Not a campaign.</div>
-    <div><a href="#">Privacy</a> · <a href="#">Corrections</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
-    <div class="stamp">Last updated Oct 9, 2026</div>
+    <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
+    <div><a href="https://politicalarcades.com/privacy.html">Privacy</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
+    <div class="stamp">Last updated Oct 11, 2026</div>
   </div></footer>
 </main>
 <script>
 (function () {
-  // Daily court is set by the date (32 courts), so the label is true from day one.
-  document.getElementById('daily-court').textContent = String(Math.floor(Date.now() / 864e5) % 32 + 1).padStart(2, '0');
   var arcade = document.getElementById('arcade'), sit = document.getElementById('sitdown'), scr = document.getElementById('sd-screen');
   var frame = null;
   function sitDown(m) {
+    // Give phones the game's full viewport and native touch controls.
+    if (window.matchMedia('(max-width: 760px)').matches) { window.location.assign(m.dataset.url); return; }
+
     if (frame) { frame.remove(); frame = null; }
     document.getElementById('sd-name').textContent = m.dataset.name;
     document.getElementById('sd-machine').textContent = m.dataset.machine;
@@ -396,7 +413,7 @@
     frame = document.createElement('iframe');
     frame.src = m.dataset.url; frame.title = m.dataset.name; frame.setAttribute('allow', 'autoplay; fullscreen; gamepad');
     scr.appendChild(frame);
-    sit.hidden = false; arcade.classList.add('playing');
+    sit.hidden = false; arcade.classList.add('playing'); syncPreviews();
     sit.scrollIntoView({ behavior: 'smooth', block: 'start' });
     frame.focus();
   }
@@ -418,44 +435,69 @@
   function fitVideos() {
     document.querySelectorAll('.machine').forEach(function (m) {
       var img = m.querySelector('.screenwrap > img:not(.shade)'); if (!img || !img.clientWidth) return;
-      var k = img.clientWidth / 600, ox = img.offsetLeft, oy = img.offsetTop;
+      var k = parseFloat(getComputedStyle(img).width) / 600, ox = img.offsetLeft, oy = img.offsetTop;
       var q = quads[m.dataset.game].map(function (pt) { return [ox + pt[0]*k, oy + pt[1]*k]; });
-      m.querySelectorAll('.backing, .screenvid, .crt, .shade').forEach(function (el) {
-        // Pin the layer box with !important so host stylesheets cannot shrink it, then map from the box the browser actually gives.
-        ['width','height'].forEach(function (k2) { el.style.setProperty(k2, '480px', 'important'); });
-        el.style.setProperty('max-width', 'none', 'important'); el.style.setProperty('max-height', 'none', 'important');
-        el.style.setProperty('min-width', '0', 'important'); el.style.setProperty('margin', '0', 'important'); el.style.setProperty('padding', '0', 'important');
-        el.style.setProperty('left', '0', 'important'); el.style.setProperty('top', '0', 'important'); el.style.setProperty('position', 'absolute', 'important');
-        var w = el.offsetWidth || 480, h = el.offsetHeight || 480;
-        el.style.transform = homography([[0,0],[w,0],[w,h],[0,h]], q);
-      });
+      var plane = m.querySelector('.cab-screen');
+      plane.style.transform = homography([[0,0],[480,0],[480,480],[0,480]], q);
     });
   }
   fitVideos(); window.addEventListener('resize', fitVideos); window.addEventListener('load', fitVideos);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitVideos);
   document.querySelectorAll('.screenwrap > img:not(.shade)').forEach(function (i) { i.addEventListener('load', fitVideos); });
   if ('ResizeObserver' in window) { var ro = new ResizeObserver(fitVideos); document.querySelectorAll('.screenwrap').forEach(function (w) { ro.observe(w); }); }
-  var motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (motionOK && 'IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { var v = e.target, c = v.nextElementSibling, sh = c.nextElementSibling, bk = v.previousElementSibling; if (e.isIntersecting) { v.play().then(function () { v.classList.add('on'); c.classList.add('on'); sh.classList.add('on'); bk.classList.add('on'); }).catch(function () {}); } else { v.pause(); } });
-    }, { threshold: 0.25 });
-    document.querySelectorAll('.screenvid').forEach(function (v) {
-      io.observe(v);
-      // Gameplay plays through, then the screen rests on the cabinet's own painted hero shot before the next run.
-      v.addEventListener('ended', function () {
-        var c = v.nextElementSibling, sh = c.nextElementSibling, bk = v.previousElementSibling; [v, c, sh, bk].forEach(function (el) { el.classList.add('rest'); });
-        setTimeout(function () { v.currentTime = 0; v.play().then(function () { [v, c, sh, bk].forEach(function (el) { el.classList.remove('rest'); }); }).catch(function () {}); }, 2600);
-      });
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var previewsPaused = reducedMotion.matches, previewButton = document.getElementById('preview-toggle');
+  var previews = Array.from(document.querySelectorAll('.screenvid')).map(function (video) {
+    return {video:video, layers:Array.from(video.parentElement.children), visible:false, timer:null, resting:false};
+  });
+  function allowed(p) { return p.visible && !previewsPaused && !document.hidden && sit.hidden; }
+  function cancelRest(p) { if (p.timer !== null) { clearTimeout(p.timer); p.timer = null; } }
+  function startPreview(p) {
+    if (!allowed(p)) return;
+    if (p.video.ended || p.resting) p.video.currentTime = 0;
+    p.video.play().then(function () {
+      if (!allowed(p)) { p.video.pause(); return; }
+      p.resting = false;
+      p.layers.forEach(function (layer) { layer.classList.add('on'); layer.classList.remove('rest'); });
+    }).catch(function () { /* The painted screen stays visible when autoplay is unavailable. */ });
+  }
+  function syncPreviews() {
+    previewButton.textContent = previewsPaused ? 'Play previews' : 'Pause previews';
+    previewButton.setAttribute('aria-pressed', String(previewsPaused));
+    previews.forEach(function (p) {
+      if (!allowed(p)) { cancelRest(p); p.video.pause(); }
+      else if (!p.timer) startPreview(p);
     });
   }
+  previewButton.addEventListener('click', function () { previewsPaused = !previewsPaused; syncPreviews(); });
+  document.addEventListener('visibilitychange', syncPreviews);
+  reducedMotion.addEventListener('change', function (e) { previewsPaused = e.matches; syncPreviews(); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { var p = previews.find(function (item) { return item.video === entry.target; }); p.visible = entry.isIntersecting && entry.intersectionRatio >= 0.25; });
+      syncPreviews();
+    }, {threshold:0.25});
+    previews.forEach(function (p) { io.observe(p.video); });
+  } else { previews.forEach(function (p) { p.visible = true; }); }
+  previews.forEach(function (p) {
+    p.video.addEventListener('ended', function () {
+      p.resting = true;
+      p.layers.forEach(function (layer) { layer.classList.add('rest'); });
+      cancelRest(p);
+      if (allowed(p)) p.timer = setTimeout(function () { p.timer = null; startPreview(p); }, 2600);
+    });
+  });
+  syncPreviews();
+  document.querySelectorAll('[data-open-game]').forEach(function (link) {
+    link.addEventListener('click', function (e) { e.preventDefault(); sitDown(document.querySelector('.machine[data-game="'+link.dataset.openGame+'"]')); });
+  });
   document.querySelectorAll('.machine').forEach(function (m) {
     m.querySelector('.cab-art').addEventListener('click', function () { sitDown(m); });
     m.querySelector('.js-play').addEventListener('click', function (e) { e.preventDefault(); sitDown(m); });
   });
   document.querySelector('.js-leave').addEventListener('click', function () {
     if (frame) { frame.remove(); frame = null; }
-    sit.hidden = true; arcade.classList.remove('playing');
+    sit.hidden = true; arcade.classList.remove('playing'); syncPreviews();
     document.getElementById('play').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   document.querySelector('.js-full').addEventListener('click', function (e) { e.preventDefault(); var el = frame || scr; if (el.requestFullscreen) el.requestFullscreen(); });
@@ -470,7 +512,7 @@
     th.innerHTML = ''; th.appendChild(v); v.play().catch(function () {});
   });
 
-  // Listen: the 28-track jukebox. Sound starts only on a click.
+  // Listen: the twelve-track jukebox. Sound starts only on a click.
   var TRACKS = [
     ["freeze-the-rent-full-spectrum","Freeze the Rent — Full Spectrum","Mix","5:00"],["never-taken-a-dime-full-spectrum","Never Taken a Dime — Full Spectrum","Mix","5:00"],
     ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","5:00"],
@@ -485,14 +527,18 @@
   var index = -1, visible = 12;
   function fmt(t) { t = Math.max(0, t | 0); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
   function render() {
+    var focusedTrack = list.contains(document.activeElement) ? Array.from(list.children).indexOf(document.activeElement) : -1;
     list.innerHTML = '';
     TRACKS.forEach(function (t, i) {
       var li = document.createElement('li'); li.className = (i === index ? 'on ' : '') + (i >= visible ? 'hidden' : '');
+      li.tabIndex = 0; li.setAttribute('role', 'button'); li.setAttribute('aria-label', 'Play ' + t[1]); li.setAttribute('aria-pressed', String(i === index));
       li.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span><span>' + t[1] + '</span><span class="tag">' + t[2] + '</span><span class="len">' + t[3] + '</span>';
       li.addEventListener('click', function () { play(i); });
+      li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(i); } });
       list.appendChild(li);
     });
     document.getElementById('juke-more').hidden = visible >= TRACKS.length;
+    if (focusedTrack >= 0 && list.children[focusedTrack]) list.children[focusedTrack].focus({preventScroll:true});
   }
   function load(i) { index = (i + TRACKS.length) % TRACKS.length; audio.src = 'https://politicalarcades.com/horse/assets/music/' + TRACKS[index][0] + '.mp3'; title.textContent = TRACKS[index][1]; render(); }
   function play(i) { if (i !== undefined && i !== index) load(i); if (index < 0) load(0); audio.play().then(function () { toggle.textContent = '\u275A\u275A Pause'; }).catch(function () {}); }
@@ -504,7 +550,17 @@
   audio.addEventListener('timeupdate', function () { if (audio.duration) { fill.style.width = (audio.currentTime / audio.duration * 100) + '%'; bar.setAttribute('aria-valuenow', Math.round(audio.currentTime / audio.duration * 100)); } cur.textContent = fmt(audio.currentTime); dur.textContent = fmt(audio.duration || 0); });
   audio.addEventListener('ended', function () { play(index + 1); });
   audio.addEventListener('pause', function () { toggle.textContent = '\u25B6 Play'; });
-  bar.addEventListener('click', function (e) { if (!audio.duration) return; var r = bar.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
+  bar.addEventListener('click', function (e) { if (!Number.isFinite(audio.duration)) return; var r = bar.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration; });
+  bar.addEventListener('keydown', function (e) {
+    if (!Number.isFinite(audio.duration)) return;
+    var next = audio.currentTime;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next += 5;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next -= 5;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = audio.duration;
+    else return;
+    e.preventDefault(); audio.currentTime = Math.max(0, Math.min(audio.duration, next));
+  });
   render();
 
   // Read: the 43 pages, lazy, swipe or arrows.
@@ -515,7 +571,7 @@
   track.addEventListener('scroll', function () { count.textContent = 'Page ' + page() + ' of ' + PAGES; });
   document.getElementById('reader-prev').addEventListener('click', function () { go(-1); });
   document.getElementById('reader-next').addEventListener('click', function () { go(1); });
-  track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+  track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); go(e.key === 'ArrowRight' ? 1 : -1); } });
 })();
 </script>
 </body>
