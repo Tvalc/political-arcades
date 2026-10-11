@@ -1,4 +1,4 @@
-import {drawPerson,peopleReady} from './people-v7.mjs?v=7.0';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=7.1';
 import {drawActor} from './actors-v6.mjs?v=6.9';
 const labels={drop:['A family is welcomed','The crew sets up. Qualified providers handle the eye care.'],repair:['New glasses. New possibilities.','A fitting, a smile, and a whole afternoon ahead.'],pickup:['Back to the block','The family heads to the courtyard. Your worker rejoins the crew.'],early:['Give the provider time','This stop is unfinished. Bring the worker back to try again.']};
 export function createService(canvas,title,caption){

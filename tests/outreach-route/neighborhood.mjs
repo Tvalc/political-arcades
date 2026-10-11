@@ -1,7 +1,7 @@
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
 import {drawActor} from './actors-v6.mjs?v=6.4';
-import {drawPerson,peopleReady} from './people-v7.mjs?v=7.0';
-import {familyState,CLINIC} from './courtyard-life.mjs?v=7.0';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=7.1';
+import {familyState,CLINIC} from './courtyard-life.mjs?v=7.1';
 import {outreachStage} from './neighborhood-state.mjs';
 const images={};for(const [name,path] of Object.entries({world:'neighborhood-v6.webp',van:'clinic-van.webp',station:'station-v6.webp'})){const im=new Image();im.src=new URL(path,import.meta.url).href;images[name]=im;}
 function image(c,name,x,y,w){const im=images[name];if(!im.complete||!im.naturalWidth)return false;const h=w*im.naturalHeight/im.naturalWidth;c.save();if(name==='van'||name==='station'){c.beginPath();const pts=name==='station'?[[.055,.29],[.50,.017],[.927,.28],[.959,.94],[.79,.979],[.57,.958],[.26,.923],[.054,.911]]:[[.06,.25],[.12,.12],[.38,.055],[.65,.06],[.83,.14],[.9,.42],[.95,.56],[.95,.84],[.88,.95],[.14,.95],[.04,.8],[.04,.46]];pts.forEach(([a,b],i)=>i?c.lineTo(x+w*a,y+h*b):c.moveTo(x+w*a,y+h*b));c.closePath();c.clip();}c.drawImage(im,x,y,w,h);c.restore();return true;}
@@ -22,15 +22,15 @@ export class OutreachNeighborhood extends HTMLElement{
  const families=Math.min(9,2+Math.floor(n/2));
  for(let i=0;i<families;i++){
   const f=familyState(i,t,this.familyArrivals.get(i)??null);if(!f.opacity)continue;
-  const child=f.activity.kind==='reading'?'girl':i%2?'girl':'boy',h=33+(f.y-310)*.025;
+  const child=f.activity.kind==='reading'?'girl':f.activity.kind==='basketball'?'boy':i%2?'girl':'boy',h=33+(f.y-310)*.025;
   let x=f.x,y=f.y,state=f.moving?'walk':'idle',parentX=x+20,parentY=y+5;
   if(f.phase==='activity'){
-   state='activity';
+   state=f.activity.kind==='family'?'idle':'activity';
    if(f.activity.kind==='basketball'){x+=Math.sin(t*.65+i)*15;y+=Math.cos(t*.65+i)*5;parentX=f.activity.x+37;parentY=f.activity.y+13;}
    else if(f.activity.kind==='reading'){parentX=x+28;parentY=y+7;}
   }
   add(y,()=>{c.save();c.globalAlpha=f.opacity;shadow(c,x,y,7);drawPerson(c,child,x,y,{height:h,state,phase:f.age,flip:f.flip});if(f.phase==='glasses'&&f.u>.67){c.strokeStyle='#fff2ad';c.lineWidth=1.4;for(let k=0;k<4;k++){const a=k*Math.PI/2;c.beginPath();c.moveTo(x+Math.cos(a)*14,y-h*.75+Math.sin(a)*14);c.lineTo(x+Math.cos(a)*18,y-h*.75+Math.sin(a)*18);c.stroke();}}c.restore();});
-  add(parentY,()=>{c.save();c.globalAlpha=f.opacity;shadow(c,parentX,parentY,9);drawPerson(c,'parent',parentX,parentY,{height:46+(y-310)*.035,state:f.moving?'walk':f.phase==='glasses'&&f.u>.67?'activity':'idle',phase:f.age+.4,flip:f.flip});c.restore();});
+  add(parentY,()=>{c.save();c.globalAlpha=f.opacity;shadow(c,parentX,parentY,9);drawPerson(c,'parent',parentX,parentY,{height:46+(y-310)*.035,state:f.moving?'walk':f.phase==='glasses'&&f.u>.67||f.phase==='activity'&&f.activity.kind==='family'?'activity':'idle',phase:f.age+.4,flip:f.flip});c.restore();});
   if(f.phase==='activity'&&f.activity.kind==='basketball'){const ballX=x+11,ballFeet=y+2,ballY=ballFeet-4-Math.abs(Math.sin(t*3+i))*18;add(ballFeet,()=>{shadow(c,ballX,ballFeet,4);c.fillStyle='#db8436';c.strokeStyle='#653925';c.lineWidth=1.2;c.beginPath();c.arc(ballX,ballY,4.3,0,Math.PI*2);c.fill();c.stroke();c.beginPath();c.moveTo(ballX-4,ballY);c.lineTo(ballX+4,ballY);c.moveTo(ballX,ballY-4);c.lineTo(ballX,ballY+4);c.stroke();});}
  }
  if(n>=3){c.strokeStyle='#6d5a37';c.lineWidth=2;c.beginPath();c.moveTo(258,261);c.quadraticCurveTo(450,293,660,261);c.stroke();for(let i=0;i<14;i++){const x=266+i*28,y=264+Math.sin(i/13*Math.PI)*15;c.fillStyle=['#e4b546','#66b79f','#dc9873'][i%3];c.beginPath();c.moveTo(x,y);c.lineTo(x+12,y);c.lineTo(x+6,y+15);c.fill();}}
