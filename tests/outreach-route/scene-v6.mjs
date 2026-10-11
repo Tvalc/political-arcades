@@ -24,7 +24,7 @@ export function createScene(canvas){const resolution=Math.min(2,window.devicePix
  c.strokeStyle='#b69a6970';c.lineWidth=1;for(let i=0;i<=16;i++){const x=BOARD.x+i*BOARD.w/16,y=BOARD.y+i*BOARD.h/16;c.beginPath();c.moveTo(x,BOARD.y);c.lineTo(x,BOARD.y+BOARD.h);c.moveTo(BOARD.x,y);c.lineTo(BOARD.x+BOARD.w,y);c.stroke();}
  c.strokeStyle='#2d6d669e';c.lineWidth=4;c.setLineDash([8,8]);c.strokeRect(BOARD.x,BOARD.y,BOARD.w,BOARD.h);c.setLineDash([]);
  // Ambient residents stay outside the playable route, so decorative people cannot be mistaken for collision targets.
- const life=Math.min(8,visits);for(let i=0;i<life;i++){const phase=(time*.035+i*.19)%1,x=72+(i%2)*628,y=205+phase*400;shadow(c,x,y,8);drawResident(c,x,y,i%3,time,i%3===0,31);}
+ const life=Math.min(8,visits);for(let i=0;i<life;i++){const phase=(time*.035+i*.19)%1,x=72+(i%2)*628,y=205+phase*400;shadow(c,x,y,8);drawResident(c,x,y,i%3,time,false,31);}
  if(visits>=3){c.strokeStyle='#745c37';c.lineWidth=2;c.beginPath();c.moveTo(204,130);c.quadraticCurveTo(384,155,564,130);c.stroke();for(let i=0;i<12;i++){const x=214+i*29,y=132+Math.sin(i/11*Math.PI)*12;c.fillStyle=[palette.gold,'#61b8a3','#ee9b78'][i%3];c.beginPath();c.moveTo(x,y);c.lineTo(x+13,y);c.lineTo(x+6,y+14);c.fill();}}
  if(visits>=6){drawProp(c,1,79,650,52,35);drawProp(c,1,691,650,52,35);}if(visits>=12){drawProp(c,8,75,172,44,48);drawProp(c,8,698,172,44,48);}
  for(const p of g.patches.slice(-24)){const q=point(p);c.fillStyle='#42aa8525';c.beginPath();c.ellipse(q.x,q.y+6,12,7,0,0,Math.PI*2);c.fill();}
