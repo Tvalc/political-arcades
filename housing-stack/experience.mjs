@@ -119,7 +119,7 @@ function result(event){
   const now=performance.now();clearFx={rows:event.finishedRows,time:now};toastUntil=now+1700;heroReactionUntil=now+1500;
   const label=`+${event.cleared} ${event.cleared===1?'supply':'supplies'}`;
   $('#board-toast').textContent=label;$('#board-toast').hidden=false;
-  announce(`${event.cleared} ${event.cleared===1?'row':'rows'} cleared. ${label}${saveFailed?' earned. Saving unavailable—keep this page open.':' for your city.'}${event.comboBonus?' Combo: +'+event.comboBonus+' points.':''}`);
+  announce(`${event.cleared} ${event.cleared===1?'row':'rows'} cleared. ${label}${saveFailed?' earned. Saving unavailable—keep this page open.':' for your city.'}`);
   playBuilder('celebrate');tone(event.cleared===4?880:660);lastCityPaint=0;
  }else if(!event.held){tone(170);firstMoves++;if(firstMoves===3)announce('Keep filling rows. Hold a piece when you need a better fit.');}
  updateBest();hud();if(event.lost)finish();
