@@ -28,7 +28,7 @@ export function paintHousehold(c,group,state,time,reduced=false){
  const activity=phase==='activity',kind=group.kind;
  const members=[...(!group.hideChild?[{name:group.child??'girl',dx:0,dy:0,h}]:[]),{name:'parent',dx:23,dy:6,h:h*1.28}];
  if(group.sibling)members.push({name:'boy',dx:-18,dy:8,h:h*.9});
- for(const [i,m] of members.entries()){shadow(c,x+m.dx,y+m.dy,7);drawPerson(c,m.name,x+m.dx,y+m.dy,{height:m.h,state:moving?'walk':activity&&(kind==='dance'||group.celebrate)?'activity':'idle',phase:t+group.offset+i*.7,flip,motionKey:group.key+'-'+i});if(activity&&m.name!=='parent'&&i===0)activityDetail(c,group.activityKind??kind,x,y,t+group.offset,h);}
+ for(const [i,m] of members.entries()){shadow(c,x+m.dx,y+m.dy,7);drawPerson(c,m.name,x+m.dx,y+m.dy,{height:m.h,state:moving?'walk':activity&&(kind==='dance'||group.celebrate)?'activity':'idle',phase:t+group.offset+i*.7,flip,motionKey:group.key+'-'+(m.name==='parent'?'parent':'child-'+i)});if(activity&&m.name!=='parent'&&i===0)activityDetail(c,group.activityKind??kind,x,y,t+group.offset,h);}
  if(kind==='clinic'&&group.provider!==false){shadow(c,group.destination.x+39,group.destination.y+2,8);drawPerson(c,'provider',group.destination.x+39,group.destination.y+2,{height:h*1.3,state:activity?'activity':'idle',phase:t+.6});}
 }
 export function courtSurface(c,x,feet,w=120){
