@@ -49,23 +49,9 @@
   .cab-art .screenwrap { position: relative; display: block; width: 100%; line-height: 0; filter: drop-shadow(0 26px 30px rgba(0,0,0,.65)); transition: transform .25s ease, filter .25s ease; transform-origin: 50% 100%; }
   .cab-art .screenwrap > img:not(.shade) { position: relative; display: block; width: 100%; height: auto; margin: 0; }
   @media (prefers-reduced-motion: no-preference) { .cab-art:hover .screenwrap, .cab-art:focus-visible .screenwrap { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 34px 36px rgba(0,0,0,.7)) drop-shadow(0 0 28px rgba(25,230,255,.35)); } }
-  .cab-art .backing { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; background: #040308; opacity: 0; transition: opacity .6s ease; -webkit-mask-image: url(art/cabinets/screenmask-hard.png); mask-image: url(art/cabinets/screenmask-hard.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-  .cab-art .backing.on { opacity: 1; } .cab-art .backing.rest { opacity: 0; }
-  .cab-art .screenvid, .cab-art .crt, .cab-art .shade { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; backface-visibility: hidden; -webkit-mask-image: url(art/cabinets/screenmask.png); mask-image: url(art/cabinets/screenmask.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-  .cab-art .shade { mix-blend-mode: soft-light; opacity: 0; transition: opacity .6s ease; filter: none; }
-  .cab-art .shade.on { opacity: 1; }
-  .cab-art .shade.rest { opacity: 0; }
-  .cab-art .screenvid { object-fit: cover; background: #000; opacity: 0; transition: opacity .6s ease; }
-  .cab-art .screenvid.on { opacity: 1; }
-  .cab-art .screenvid.rest { opacity: 0; }
-  .cab-art .crt { opacity: 0; transition: opacity .6s ease;
-    background:
-      linear-gradient(118deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 18%, rgba(255,255,255,0) 34%),
-      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 66%, rgba(0,0,0,.22) 100%),
-      repeating-linear-gradient(180deg, rgba(0,0,0,.11) 0 2px, rgba(0,0,0,0) 2px 5px);
-    box-shadow: inset 0 0 14px rgba(0,0,0,.45); }
-  .cab-art .crt.on { opacity: 1; }
-  .cab-art .crt.rest { opacity: 0; }
+  /* One opaque display: never dissolve through to the painted placeholder. */
+  .cab-art .screenvid { display:block; object-fit:cover; background:#10151d; opacity:1; }
+  .cab-art .crt { pointer-events:none; background:linear-gradient(125deg,rgba(255,255,255,.035),transparent 36%); box-shadow:inset 0 0 8px rgba(0,0,0,.3); }
   .cab-art .coin { position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(7,6,11,.8); color: var(--gold); font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
   .cab-art .coin::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); vertical-align: middle; }
   @media (prefers-reduced-motion: no-preference) { .cab-art .coin::before { animation: blink 1.2s steps(2, end) infinite; } }
@@ -198,7 +184,7 @@
   footer a { color: var(--coin); }
   .stamp { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 
-  .cab-art .cab-screen { position:absolute; left:0; top:0; width:480px; height:480px; transform-origin:0 0; z-index:1; pointer-events:none; isolation:isolate; }
+  .cab-art .cab-screen { position:absolute; left:0; top:0; width:480px; height:480px; transform-origin:0 0; z-index:1; pointer-events:none; isolation:isolate; overflow:hidden; border-radius:26px 20px 22px 24px; background:#10151d; }
   .cab-art .cab-screen > * { position:absolute; inset:0; width:100%!important; height:100%!important; max-width:none; max-height:none; margin:0; padding:0; transform:none; }
   .cab-art .coin { z-index:2; }
   .quick-play { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px auto 0; }
@@ -242,7 +228,7 @@
         </div>
         <div class="machines">
           <figure class="machine" data-game="crashers" data-url="capitol-crashers/" data-name="Capitol Crashers" data-machine="Machine 01">
-            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/crashers-v2.webp" src="media/cabinets/crashers-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
               <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
@@ -250,7 +236,7 @@
             </figcaption>
           </figure>
           <figure class="machine" data-game="vote" data-url="horse/" data-name="VOTE" data-machine="Machine 02">
-            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/vote-v2.webp" src="media/cabinets/vote-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
               <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
@@ -258,7 +244,7 @@
             </figcaption>
           </figure>
           <figure class="machine" data-game="pothole" data-url="pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
-            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/pothole-v2.webp" src="media/cabinets/pothole-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
               <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
@@ -428,9 +414,9 @@
   }
   // Screen quads in the 600x900 cabinet art space: TL, TR, BR, BL.
   var quads = {
-    crashers: [[159, 257], [412, 248], [407, 487], [157, 493]],
-    vote:     [[161, 253], [415, 246], [410, 487], [159, 493]],
-    pothole:  [[163, 251], [420, 244], [413, 486], [159, 491]]
+    crashers: [[159,250],[409,245],[388,492],[125,485]],
+    vote:     [[159,250],[410,245],[387,492],[124,483]],
+    pothole:  [[160,250],[410,246],[387,490],[126,483]]
   };
   function homography(src, dst) { // 4 point pairs -> CSS matrix3d (from Hartley/Zisserman via adjugate), src is the 480 box
     function adj(m) { return [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]]; }
@@ -457,25 +443,15 @@
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var previewsPaused = reducedMotion.matches, previewButton = document.getElementById('preview-toggle');
   var previews = Array.from(document.querySelectorAll('.screenvid')).map(function (video) {
-    return {video:video, layers:Array.from(video.parentElement.children), visible:false, timer:null, resting:false};
+    return {video:video, visible:false};
   });
   function allowed(p) { return p.visible && !previewsPaused && !document.hidden && sit.hidden; }
-  function cancelRest(p) { if (p.timer !== null) { clearTimeout(p.timer); p.timer = null; } }
-  function startPreview(p) {
-    if (!allowed(p)) return;
-    if (p.video.ended || p.resting) p.video.currentTime = 0;
-    p.video.play().then(function () {
-      if (!allowed(p)) { p.video.pause(); return; }
-      p.resting = false;
-      p.layers.forEach(function (layer) { layer.classList.add('on'); layer.classList.remove('rest'); });
-    }).catch(function () { /* The painted screen stays visible when autoplay is unavailable. */ });
-  }
   function syncPreviews() {
     previewButton.textContent = previewsPaused ? 'Play previews' : 'Pause previews';
     previewButton.setAttribute('aria-pressed', String(previewsPaused));
     previews.forEach(function (p) {
-      if (!allowed(p)) { cancelRest(p); p.video.pause(); }
-      else if (!p.timer) startPreview(p);
+      if (!allowed(p)) p.video.pause();
+      else p.video.play().then(function () { if (!allowed(p)) p.video.pause(); }).catch(function () { /* Keep the real gameplay poster when autoplay is unavailable. */ });
     });
   }
   previewButton.addEventListener('click', function () { previewsPaused = !previewsPaused; syncPreviews(); });
@@ -488,14 +464,6 @@
     }, {threshold:0.25});
     previews.forEach(function (p) { io.observe(p.video); });
   } else { previews.forEach(function (p) { p.visible = true; }); }
-  previews.forEach(function (p) {
-    p.video.addEventListener('ended', function () {
-      p.resting = true;
-      p.layers.forEach(function (layer) { layer.classList.add('rest'); });
-      cancelRest(p);
-      if (allowed(p)) p.timer = setTimeout(function () { p.timer = null; startPreview(p); }, 2600);
-    });
-  });
   syncPreviews();
   document.querySelectorAll('[data-open-game]').forEach(function (link) {
     link.addEventListener('click', function (e) { e.preventDefault(); sitDown(document.querySelector('.machine[data-game="'+link.dataset.openGame+'"]')); });
@@ -585,4 +553,3 @@
 </script>
 </body>
 </html>
-
