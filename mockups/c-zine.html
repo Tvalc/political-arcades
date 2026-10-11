@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Direction C · Daylight Zine — Political Arcades mockup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  :root { --paper: #fff7e8; --ink: #15120f; --red: #e63329; --blue: #1f5fd6; --yellow: #ffd23f; --teal: #19b7a6; --dot: rgba(21,18,15,.14); --display: Bangers, Impact, sans-serif; --body: "Source Sans 3", system-ui, sans-serif; --gutter: clamp(16px, 4vw, 40px); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--body); font-size: 18px; line-height: 1.45; color: var(--ink); background: var(--paper); background-image: radial-gradient(var(--dot) 1px, transparent 1.2px); background-size: 7px 7px; }
+  img { max-width: 100%; display: block; }
+  h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 400; letter-spacing: .02em; line-height: .95; }
+  p { margin: 0; }
+  .wrap { width: min(1180px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+  .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px var(--gutter); background: var(--ink); color: var(--paper); border-bottom: 4px solid var(--red); }
+  .brand { font-family: var(--display); font-size: 22px; color: var(--paper); text-decoration: none; letter-spacing: .04em; }
+  .brand b { color: var(--yellow); }
+  .topnav { display: none; gap: 18px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
+  .topnav a { color: var(--paper); text-decoration: none; }
+  @media (min-width: 800px) { .topnav { display: flex; } }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 22px; border: 3px solid var(--ink); border-radius: 8px; background: var(--yellow); color: var(--ink); font-family: var(--display); font-size: 20px; letter-spacing: .04em; text-decoration: none; box-shadow: 4px 4px 0 var(--ink); transition: transform .1s, box-shadow .1s; }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 6px 6px 0 var(--ink); }
+  .btn.red { background: var(--red); color: #fff; } .btn.blue { background: var(--blue); color: #fff; } .btn.sm { min-height: 38px; font-size: 16px; padding: 6px 14px; box-shadow: 3px 3px 0 var(--ink); }
+
+  .hero { padding: 18px 0 26px; }
+  .masthead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; border-bottom: 3px solid var(--ink); padding-bottom: 8px; margin-bottom: 14px; font-weight: 700; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+  .masthead .issue { color: var(--red); }
+  .panels { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 820px) { .panels { grid-template-columns: 1.1fr 1.1fr 1.3fr; align-items: stretch; } }
+  .panel { position: relative; border: 4px solid var(--ink); background: #fff; box-shadow: 6px 6px 0 var(--ink); padding: 16px; min-height: 300px; overflow: hidden; }
+  .panel.sky { background: linear-gradient(180deg, #bfe3ff 0%, #e9f6ff 100%); }
+  .panel.sun { background: linear-gradient(180deg, #fff1a8 0%, #ffe066 100%); }
+  .panel .who { position: absolute; right: 8px; bottom: 0; height: 78%; filter: drop-shadow(0 6px 0 rgba(0,0,0,.18)); }
+  .panel.flipx .who { right: auto; left: 8px; transform: scaleX(-1); }
+  .bubble { position: relative; z-index: 2; display: inline-block; max-width: 62%; padding: 12px 14px; border: 3px solid var(--ink); border-radius: 18px; background: #fff; font-family: var(--display); font-size: clamp(22px, 2.6vw, 32px); line-height: 1; letter-spacing: .02em; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; width: 0; height: 0; border: 12px solid transparent; border-left: 16px solid var(--ink); }
+  .bubble::before { content: ""; position: absolute; right: -8px; bottom: 21px; z-index: 1; width: 0; height: 0; border: 9px solid transparent; border-left: 12px solid #fff; }
+  .flipx .bubble { margin-left: 40%; max-width: 58%; }
+  .panel.flipx .who { height: 70%; } .flipx .bubble::after { right: auto; left: -14px; border-left: 0; border-right: 16px solid var(--ink); } .flipx .bubble::before { right: auto; left: -8px; border-left: 0; border-right: 12px solid #fff; }
+  .bubble em { font-style: normal; color: var(--red); }
+  .cap { position: absolute; left: 10px; top: 10px; padding: 3px 8px; background: var(--yellow); border: 3px solid var(--ink); font-family: var(--display); font-size: 14px; letter-spacing: .06em; }
+  .panel.cta { display: grid; align-content: center; justify-items: center; gap: 12px; text-align: center; background: var(--red); color: #fff; }
+  .panel.cta .burst { position: relative; display: grid; place-items: center; width: 100%; }
+  .panel.cta .burst img { width: min(290px, 90%); }
+  .panel.cta .burst h1 { position: absolute; font-size: clamp(42px, 6vw, 72px); color: var(--ink); transform: rotate(-6deg); text-shadow: 2px 2px 0 #fff; }
+  .panel.cta .games { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .panel.cta .game { display: grid; gap: 6px; background: #fff; color: var(--ink); border: 3px solid var(--ink); padding: 6px; text-decoration: none; box-shadow: 4px 4px 0 var(--ink); transform: rotate(-2deg); }
+  .panel.cta .game:last-child { transform: rotate(2deg); }
+  .panel.cta .game img { aspect-ratio: 16/9; object-fit: cover; border: 2px solid var(--ink); }
+  .panel.cta .game b { font-family: var(--display); font-size: 18px; letter-spacing: .04em; }
+  .panel.cta .game span { background: var(--yellow); font-family: var(--display); font-size: 16px; padding: 4px; border: 2px solid var(--ink); }
+
+  .how { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
+  @media (min-width: 700px) { .how { grid-template-columns: repeat(3, 1fr); } }
+  .how div { border: 3px solid var(--ink); background: #fff; padding: 10px 12px; font-family: var(--display); font-size: 22px; letter-spacing: .03em; display: flex; align-items: center; gap: 10px; box-shadow: 4px 4px 0 var(--ink); }
+  .how div i { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--ink); background: var(--yellow); font-style: normal; font-size: 18px; flex: none; }
+  .how div:nth-child(2) i { background: var(--blue); color: #fff; } .how div:nth-child(3) i { background: var(--red); color: #fff; }
+  .fine { margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: #5a534b; }
+
+  .row { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 10px 0 40px; }
+  @media (min-width: 900px) { .row { grid-template-columns: 1.2fr 1fr 1fr; } }
+  .card { border: 4px solid var(--ink); background: #fff; box-shadow: 6px 6px 0 var(--ink); padding: 16px; }
+  .card h2 { font-size: 28px; margin-bottom: 8px; }
+  .card h2 span { background: var(--yellow); padding: 0 6px; }
+  .receipt { font-family: ui-monospace, "Courier New", monospace; font-size: 14px; background: #fff; border: 2px dashed var(--ink); padding: 12px; }
+  .receipt .big { font-family: var(--display); font-size: 42px; letter-spacing: .04em; }
+  .receipt table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .receipt td { padding: 3px 0; border-bottom: 1px dotted #999; }
+  .receipt td:last-child { text-align: right; color: var(--blue); font-weight: 700; }
+  .receipt tr.now td { background: var(--yellow); }
+  .fight { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 8px; }
+  .fight figure { margin: 0; text-align: center; }
+  .fight img { height: 140px; object-fit: contain; margin: 0 auto; }
+  .fight .vs { font-family: var(--display); font-size: 44px; color: var(--red); padding-bottom: 36px; }
+  .fight figcaption { font-family: var(--display); font-size: 16px; letter-spacing: .04em; }
+  .streak { display: flex; gap: 5px; margin: 8px 0; }
+  .streak i { width: 20px; height: 20px; border: 2px solid var(--ink); background: #fff; }
+  .streak i.on { background: var(--teal); }
+  .stat { font-family: var(--display); font-size: 48px; color: var(--blue); line-height: 1; }
+  .stat small { display: block; font-family: var(--body); font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #5a534b; margin-top: 4px; }
+
+  .stickybar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 30; display: flex; gap: 8px; }
+  .stickybar .btn { flex: 1; }
+  @media (min-width: 820px) { .stickybar { display: none; } }
+  main { padding-bottom: 86px; } @media (min-width: 820px) { main { padding-bottom: 0; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#">POLITICAL <b>ARCADES</b></a>
+  <nav class="topnav"><a href="#">Play</a><a href="#">Scores</a><a href="#">The Pot</a><a href="#">Comic</a><a href="#">Music</a><a href="#">Video</a></nav>
+  <a class="btn sm" href="#play">▶ Play free</a>
+</header>
+<main>
+  <section class="hero wrap">
+    <div class="masthead"><span>Free browser arcade · no download</span><span class="issue">Fan-made · not a campaign</span><span>Issue #1 · Oct 2026</span></div>
+    <div class="panels">
+      <div class="panel sky">
+        <span class="cap">1</span>
+        <div style="height:34px"></div>
+        <p class="bubble">You can't <em>buy</em> a politician.</p>
+        <img class="who" src="../art/cast/mamdani.webp" alt="">
+      </div>
+      <div class="panel sun flipx">
+        <span class="cap">2</span>
+        <div style="height:34px"></div>
+        <p class="bubble">But you can back what they back. <em>Just by playing.</em></p>
+        <img class="who" src="../art/cast/elsayed.webp" alt="">
+      </div>
+      <div class="panel cta" id="play">
+        <div class="burst"><img src="../art/chibi/impact.webp" alt=""><h1>Play free!</h1></div>
+        <div class="games">
+          <a class="game" href="#"><img src="../art/web/crashers-800.webp" alt=""><b>Capitol Crashers</b><span>▶ PLAY</span></a>
+          <a class="game" href="#"><img src="../art/web/vote-800.webp" alt=""><b>VOTE</b><span>▶ PLAY</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="how">
+      <div><i>1</i>You play</div>
+      <div><i>2</i>Advertisers pay</div>
+      <div><i>3</i>Half funds community programs</div>
+    </div>
+    <p class="fine">Independent, unofficial satire. Not authorized by any candidate, campaign, or party. Membership is not a campaign contribution. Community programs are chosen from what our featured politicians fight for; recipients are announced here when they are picked.</p>
+  </section>
+
+  <section class="wrap row">
+    <div class="card">
+      <h2><span>THE POT</span> · every dollar, public</h2>
+      <div class="receipt">
+        <div>POLITICAL ARCADES · GROSS AD REVENUE</div>
+        <div class="big">$0.00</div>
+        <div>ADS PENDING GOOGLE APPROVAL · UPDATED WHEN GOOGLE PAYS</div>
+        <table>
+          <tr class="now"><td>Tony received $0–$1M</td><td>50% community</td></tr>
+          <tr><td>$1M–$2M</td><td>75%</td></tr>
+          <tr><td>$2M–$3M</td><td>80%</td></tr>
+          <tr><td>$3M–$4M</td><td>85%</td></tr>
+          <tr><td>$4M–$5M</td><td>90%</td></tr>
+          <tr><td>$5M–$6M</td><td>95%</td></tr>
+          <tr><td>after $6M</td><td>99%</td></tr>
+        </table>
+        <div style="margin-top:8px">NO EMPLOYEES. NO COMPANY. REDISTRIBUTED.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span>FIGHT NIGHT</span> this week</h2>
+      <div class="fight">
+        <figure><img src="../art/cast/mamdani.webp" alt=""><figcaption>Mamdani</figcaption></figure>
+        <div class="vs">VS</div>
+        <figure><img src="../art/cast/trump.webp" alt=""><figcaption>The Landlord</figcaption></figure>
+      </div>
+      <p style="font-weight:600;margin-top:8px">Rent-freeze run, Street 1. Keep the witness standing to post a score.</p>
+      <a class="btn red" style="margin-top:12px" href="#">Play the card</a>
+    </div>
+    <div class="card">
+      <h2><span>DAILY COURT</span> · VOTE</h2>
+      <div class="stat">Court 07<small>today's challenge</small></div>
+      <div class="streak"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+      <p style="font-weight:600">3-day streak · 1,204 played today</p>
+      <div class="stat" style="margin-top:14px;color:var(--teal)">48,912<small>neighbors helped in-game</small></div>
+    </div>
+  </section>
+</main>
+<div class="stickybar"><a class="btn" href="#play">▶ Capitol Crashers</a><a class="btn blue" href="#play">▶ VOTE</a></div>
+</body>
+</html>

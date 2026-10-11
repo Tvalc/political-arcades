@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Direction A · The Flip — Political Arcades mockup</title>
+<link rel="stylesheet" href="../arcade.css">
+<style>
+  body { background: var(--night); }
+  .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px var(--gutter); background: rgba(7,6,11,.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .brand { font-family: var(--display); font-size: 15px; color: var(--ink); text-decoration: none; letter-spacing: .02em; }
+  .brand b { color: var(--pink); }
+  .topnav { display: none; gap: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+  .topnav a { color: var(--muted); text-decoration: none; }
+  @media (min-width: 800px) { .topnav { display: flex; } }
+  .btn-sm { min-height: 40px; padding: 8px 16px; font-size: 13px; }
+
+  .hero { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; isolation: isolate; }
+  .hero .bg { position: absolute; inset: 0; z-index: -2; object-fit: cover; width: 100%; height: 100%; object-position: 50% 20%; filter: saturate(1.15); }
+  .hero .shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(7,6,11,.35) 0%, rgba(7,6,11,.1) 30%, rgba(7,6,11,.86) 62%, var(--night) 100%); }
+  .hero .wrap { padding-top: 46svh; padding-bottom: 28px; }
+  @media (min-width: 900px) {
+    .hero .wrap { padding-top: 39svh; padding-bottom: 28px; }
+    .hero .bg { top: auto; bottom: 0; height: calc(100svh * 1.12); object-position: 50% 100%; }
+    .hero .shade { background: linear-gradient(180deg, rgba(7,6,11,.25) 0%, rgba(7,6,11,0) 25%, rgba(7,6,11,.78) 52%, rgba(7,6,11,.96) 100%); }
+    .hero h1.flip { font-size: clamp(38px, 5vw, 64px); }
+    .hero .sub { margin-top: 10px; max-width: none; font-size: 20px; }
+    .deal, .plays { margin-top: 12px; }
+    .play { grid-template-columns: 72px 1fr auto; padding: 6px; }
+    .play img { width: 72px; }
+    .pot { margin-top: 12px; }
+    .fine { display: none; }
+    .fine-desk { display: block !important; }
+  }
+  @media (max-width: 899px) {
+    .hero { display: block; min-height: 0; }
+    .hero .bg { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 16/10; object-position: 50% 12%; z-index: 0; }
+    .hero .shade { z-index: 1; background: linear-gradient(180deg, transparent 0%, transparent 28%, rgba(7,6,11,.75) 48%, var(--night) 60%); }
+    .hero .wrap { position: relative; z-index: 2; margin-top: -16vw; padding-top: 0; }
+    .hero .shade { background: linear-gradient(180deg, transparent 0%, transparent 34%, rgba(7,6,11,.8) 52%, var(--night) 62%); }
+  }
+  .tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--amber); padding: 6px 10px; border: 1px solid rgba(255,176,32,.35); border-radius: 999px; background: rgba(7,6,11,.6); }
+  .tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  h1.flip { margin-top: 14px; font-size: clamp(38px, 9.2vw, 96px); line-height: .9; text-transform: uppercase; text-shadow: 0 6px 0 rgba(0,0,0,.45), 0 0 40px rgba(0,0,0,.5); }
+  h1.flip .no { position: relative; display: inline-block; color: var(--dim); }
+  h1.flip .no::after { content: ""; position: absolute; left: -2%; right: -2%; top: 48%; height: .14em; background: var(--pink); transform: rotate(-4deg); box-shadow: 0 0 18px var(--pink); }
+  h1.flip .yes { color: var(--gold); text-shadow: 0 0 30px rgba(255,210,63,.55), 0 6px 0 rgba(0,0,0,.45); }
+  .sub { margin-top: 14px; max-width: 46ch; font-size: clamp(18px, 2.4vw, 24px); font-weight: 600; line-height: 1.3; color: var(--ink); text-shadow: 0 2px 10px rgba(0,0,0,.8); }
+  .sub em { font-style: normal; color: var(--cyan); }
+
+  .deal { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
+  @media (min-width: 700px) { .deal { grid-template-columns: repeat(3, 1fr); } }
+  .deal div { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(18,15,26,.85); border: 1px solid var(--line); font-family: var(--display); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+  .deal div span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--pink); color: #210a12; font-family: var(--mono); font-size: 13px; flex: none; }
+  .deal div:nth-child(2) span { background: var(--cyan); } .deal div:nth-child(3) span { background: var(--gold); }
+
+  .plays { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 18px; }
+  @media (min-width: 700px) { .plays { grid-template-columns: 1fr 1fr; } }
+  .play { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 12px; padding: 8px; border-radius: 16px; text-decoration: none; color: var(--ink); background: linear-gradient(180deg, rgba(30,24,44,.95), rgba(14,11,22,.95)); border: 1px solid var(--line); box-shadow: 0 14px 30px rgba(0,0,0,.5); }
+  .play img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; }
+  .play h2 { font-size: 18px; } .play p { font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .play .go { font-family: var(--display); font-size: 13px; text-transform: uppercase; padding: 12px 14px; border-radius: 10px; background: var(--amber); color: #251a0b; box-shadow: 0 4px 0 #7a3f00; }
+  .play.vote .go { background: var(--cyan); color: #06282d; box-shadow: 0 4px 0 #0a6d7a; }
+  @media (max-width: 420px) { .play { grid-template-columns: 80px 1fr; } .play .go { grid-column: 1 / -1; text-align: center; } }
+
+  .pot { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .pot b { color: var(--gold); font-size: 20px; font-family: var(--display); }
+  .pot a { color: var(--amber); }
+  .fine { margin-top: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--dim); }
+
+  .card-row { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 900px) { .card-row { grid-template-columns: 1.4fr 1fr 1fr; } .card-row.two { grid-template-columns: 1fr 1fr; } }
+  .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 18px; }
+  .panel .kicker { margin-bottom: 8px; }
+  .fight { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 10px; }
+  .fight figure { margin: 0; }
+  .fight img { height: 150px; object-fit: contain; margin: 0 auto; filter: drop-shadow(0 10px 14px rgba(0,0,0,.6)); }
+  .fight .vs { font-family: var(--display); font-size: 40px; color: var(--pink); text-shadow: 0 0 22px var(--pink); padding-bottom: 40px; }
+  .fight figcaption { text-align: center; font-family: var(--display); font-size: 13px; margin-top: 6px; }
+  .stat { font-family: var(--display); font-size: 44px; color: var(--cyan); line-height: 1; }
+  .stat small { display: block; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 6px; letter-spacing: .1em; text-transform: uppercase; }
+  .streak { display: flex; gap: 6px; margin: 10px 0; }
+  .streak i { width: 22px; height: 22px; border-radius: 6px; background: #1c1827; border: 1px solid var(--line); }
+  .streak i.on { background: var(--gold); box-shadow: 0 0 12px rgba(255,210,63,.6); }
+  .mono { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  table.sched { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+  .sched th, .sched td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  .sched th { color: var(--amber); font-weight: 400; letter-spacing: .1em; font-size: 11px; text-transform: uppercase; }
+  .sched td:last-child { color: var(--green); }
+  .sched tr.now td { color: var(--gold); }
+
+  .stickybar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 30; display: flex; gap: 8px; }
+  .stickybar a { flex: 1; text-align: center; }
+  @media (min-width: 800px) { .stickybar { display: none; } }
+  main { padding-bottom: 90px; }
+  @media (min-width: 800px) { main { padding-bottom: 0; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#">POLITICAL <b>ARCADES</b></a>
+  <nav class="topnav"><a href="#play">Play</a><a href="#tonight">Tonight</a><a href="#pot">The Pot</a><a href="#">Watch</a><a href="#">Listen</a><a href="#">Comic</a></nav>
+  <a class="btn btn-sm" href="#play">▶ Play free</a>
+</header>
+<main>
+  <section class="hero" id="top">
+    <img class="bg" src="../art/chibi/hero.webp" alt="">
+    <div class="shade"></div>
+    <div class="wrap">
+      <span class="tag"><i></i>Free browser arcade · no download · fan-made, not a campaign</span>
+      <h1 class="flip">You can't <span class="no">buy</span> a politician.<br><span class="yes">You can back what they back.</span></h1>
+      <p class="sub">Just by playing. The games are free. Ads pay the bill. <em>Half of the ad money funds community programs</em> picked from what our featured politicians fight for.</p>
+      <div class="deal">
+        <div><span>1</span>You play</div>
+        <div><span>2</span>Advertisers pay</div>
+        <div><span>3</span>Half funds community programs</div>
+      </div>
+      <div class="plays" id="play">
+        <a class="play" href="#"><img src="../art/web/crashers-800.webp" alt=""><div><h2>Capitol Crashers</h2><p>Street brawler. Feed the block, stop the Landlord.</p></div><span class="go">Play</span></a>
+        <a class="play vote" href="#"><img src="../art/web/vote-800.webp" alt=""><div><h2>VOTE</h2><p>Playground shoot-out. Spell it and you're out.</p></div><span class="go">Play</span></a>
+      </div>
+      <p class="pot"><b>$0.00</b> earned so far <span>·</span> ads pending Google approval <span>·</span> 50% pledged to community programs <a href="#pot">see the schedule →</a></p>
+      <p class="fine">Independent, unofficial satire. Not authorized by any candidate, campaign, or party. Membership is not a campaign contribution.</p>
+    </div>
+  </section>
+  <p class="wrap fine-desk" style="display:none;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);padding:10px 0">Independent, unofficial satire. Not authorized by any candidate, campaign, or party. Membership is not a campaign contribution.</p>
+
+  <section class="section" id="tonight">
+    <div class="wrap card-row">
+      <div class="panel">
+        <p class="kicker">Fight night · this week</p>
+        <div class="fight">
+          <figure><img src="../art/cast/mamdani.webp" alt=""><figcaption>Mamdani</figcaption></figure>
+          <div class="vs">VS</div>
+          <figure><img src="../art/cast/trump.webp" alt=""><figcaption>Trump the Landlord</figcaption></figure>
+        </div>
+        <p class="lede" style="font-size:16px;margin-top:10px">Rent-freeze run on Street 1. Beat the Landlord without losing the witness to post a score.</p>
+        <a class="btn" style="margin-top:12px" href="#">Play the card</a>
+      </div>
+      <div class="panel">
+        <p class="kicker">Daily court · VOTE</p>
+        <div class="stat">Court 07<small>today's challenge</small></div>
+        <div class="streak"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        <p class="mono">3-day streak · 1,204 played today · top: <b style="color:var(--gold)">BLOCKPARTY</b></p>
+        <a class="btn btn-teal" style="margin-top:12px" href="#">Take the shot</a>
+      </div>
+      <div class="panel">
+        <p class="kicker">Neighbors helped</p>
+        <div class="stat">48,912<small>meals, rent freezes, jobs delivered in-game</small></div>
+        <p class="mono" style="margin-top:8px">Every bout counts. Counter updates live.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pot">
+    <div class="wrap">
+      <div class="section-head"><div><p class="kicker">The pot · public</p><h2>Half now. <em>99% later.</em></h2></div><p class="lede">Every dollar of gross ad revenue is posted here when Google pays. Tony's share steps down as it adds up. No employees, no company, just redistribution.</p></div>
+      <div class="card-row two">
+        <div class="panel"><div class="stat" style="color:var(--gold)">$0.00<small>gross ad revenue to date · ads pending approval</small></div><p class="mono" style="margin-top:14px">Community programs: <b style="color:var(--green)">$0.00</b> · Tony: <b>$0.00</b> · last posted: never</p></div>
+        <div class="panel"><table class="sched"><tr><th>Tony has received</th><th>Tony</th><th>Community</th></tr>
+          <tr class="now"><td>$0 – $1M</td><td>50%</td><td>50%</td></tr><tr><td>$1M – $2M</td><td>25%</td><td>75%</td></tr><tr><td>$2M – $3M</td><td>20%</td><td>80%</td></tr><tr><td>$3M – $4M</td><td>15%</td><td>85%</td></tr><tr><td>$4M – $5M</td><td>10%</td><td>90%</td></tr><tr><td>$5M – $6M</td><td>5%</td><td>95%</td></tr><tr><td>after $6M</td><td>1%</td><td>99%</td></tr></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="stickybar"><a class="btn" href="#play">▶ Crashers</a><a class="btn btn-teal" href="#play">▶ VOTE</a></div>
+</body>
+</html>

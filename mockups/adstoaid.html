@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ads to Aid</title>
+<meta name="description" content="Free browser games that turn ad money into aid. You play, advertisers pay, half the profit goes to community programs. Every dollar posted publicly.">
+<link rel="preload" href="../fonts/bungee-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/source-sans-3-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../arcade.css">
+<link rel="stylesheet" href="adstoaid-brand.css">
+<style>
+  :root { --col: 1180px; }
+  .col { width: min(var(--col), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+  .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,6,11,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .topbar .col { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+  .topbar .a2a { --a2a-size: 18px; }
+  .topnav { display: none; gap: 20px; font-family: var(--mono); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+  .topnav a { color: var(--muted); text-decoration: none; padding: 10px 0; }
+  @media (min-width: 800px) { .topnav { display: flex; } }
+  .btn-top { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+
+  /* The floor: mural, headline, cabinets */
+  .floor { padding: clamp(24px, 4vw, 40px) 0 clamp(28px, 4vw, 44px); }
+  .floor-copy { margin-bottom: clamp(18px, 3vw, 28px); }
+  .floor-copy .kicker { color: var(--muted); border-color: var(--line); }
+  .floor-copy .kicker::before { content: none; }
+  .floor-copy .kicker b { color: var(--pink); font-weight: 400; }
+  .floor h1 { max-width: 24ch; margin-inline: auto; font-size: clamp(28px, 4.6vw, 50px); text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 0 30px rgba(0,0,0,.6); }
+  .floor h1 em { font-style: normal; color: var(--aid); text-shadow: 0 0 22px rgba(55,226,138,.5), 0 4px 0 rgba(0,0,0,.5); }
+  .floor .lede { font-size: clamp(16px, 1.6vw, 19px); max-width: 60ch; }
+  .floor .lede b { font-weight: 600; }
+
+  /* The arcade floor: illustrated machines, one tap to sit down */
+  .machines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.5vw, 28px); align-items: end; }
+  @media (max-width: 760px) { .machines { grid-template-columns: 1fr; gap: 28px; } }
+  .machine { margin: 0; display: grid; }
+  .cab-art { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+  .cab-art .screenwrap { position: relative; display: block; width: 100%; line-height: 0; filter: drop-shadow(0 26px 30px rgba(0,0,0,.65)); transition: transform .25s ease, filter .25s ease; transform-origin: 50% 100%; }
+  .cab-art .screenwrap > img:not(.shade) { position: relative; display: block; width: 100%; height: auto; margin: 0; }
+  @media (prefers-reduced-motion: no-preference) { .cab-art:hover .screenwrap, .cab-art:focus-visible .screenwrap { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 34px 36px rgba(0,0,0,.7)) drop-shadow(0 0 28px rgba(25,230,255,.35)); } }
+  .cab-art .backing { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; background: #040308; opacity: 0; transition: opacity .6s ease; -webkit-mask-image: url(../art/cabinets/screenmask-hard.png); mask-image: url(../art/cabinets/screenmask-hard.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .cab-art .backing.on { opacity: 1; } .cab-art .backing.rest { opacity: 0; }
+  .cab-art .screenvid, .cab-art .crt, .cab-art .shade { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; backface-visibility: hidden; -webkit-mask-image: url(../art/cabinets/screenmask.png); mask-image: url(../art/cabinets/screenmask.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .cab-art .shade { mix-blend-mode: soft-light; opacity: 0; transition: opacity .6s ease; filter: none; }
+  .cab-art .shade.on { opacity: 1; }
+  .cab-art .shade.rest { opacity: 0; }
+  .cab-art .screenvid { object-fit: cover; background: #000; opacity: 0; transition: opacity .6s ease; }
+  .cab-art .screenvid.on { opacity: 1; }
+  .cab-art .screenvid.rest { opacity: 0; }
+  .cab-art .crt { opacity: 0; transition: opacity .6s ease;
+    background:
+      linear-gradient(118deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 18%, rgba(255,255,255,0) 34%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 66%, rgba(0,0,0,.22) 100%),
+      repeating-linear-gradient(180deg, rgba(0,0,0,.11) 0 2px, rgba(0,0,0,0) 2px 5px);
+    box-shadow: inset 0 0 14px rgba(0,0,0,.45); }
+  .cab-art .crt.on { opacity: 1; }
+  .cab-art .crt.rest { opacity: 0; }
+  .cab-art .coin { position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(7,6,11,.8); color: var(--gold); font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
+  .cab-art .coin::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); vertical-align: middle; }
+  @media (prefers-reduced-motion: no-preference) { .cab-art .coin::before { animation: blink 1.2s steps(2, end) infinite; } }
+  .placard { margin-top: -10px; padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #1a1626, #0d0b14); border: 1px solid var(--line); box-shadow: 0 16px 30px rgba(0,0,0,.5); display: grid; gap: 8px; }
+  .placard-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .placard-top b { font-family: var(--display); font-weight: 400; font-size: 16px; color: var(--ink); }
+  .placard-top span { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+  .placard-mode { font-size: 14px; color: var(--muted); line-height: 1.35; }
+  .placard-mode .k { display: inline-block; margin-right: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
+  .placard-mode em { font-style: normal; color: var(--pink); }
+  .placard-scores { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-family: var(--mono); font-size: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+  .placard-scores .k { color: var(--cyan); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; }
+  .placard-scores .v { color: var(--muted); }
+  .placard .btn { justify-self: stretch; margin-top: 2px; }
+
+  /* Sit-down view: the chosen machine's screen, big */
+  .sitdown { margin-bottom: clamp(18px, 3vw, 30px); }
+  .sitdown[hidden] { display: none; }
+  .bezel { border-radius: 20px; padding: 10px; background: linear-gradient(180deg, #2a2240, #120f1a); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 30px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12); }
+  .bezel-marquee { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, #223a8a 0%, #15255f 60%, #0f1a46 100%); border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold); }
+  .bezel-name { font-family: var(--display); font-size: clamp(16px, 2.2vw, 24px); color: #fff; text-shadow: 0 0 14px rgba(25,230,255,.7); flex: 1; min-width: 0; }
+  .bezel-marquee .mtag { padding: 5px 9px; border-radius: 6px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,210,63,.45); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+  .bezel-screen { position: relative; aspect-ratio: 16/9; background: #000; }
+  .bezel-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+  .bezel-deck { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 6px 2px; }
+  .bezel-deck .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; min-height: 40px; font-family: var(--mono); font-size: 12px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: #0b0910; cursor: pointer; }
+  @keyframes blink { 50% { opacity: .2; } }
+
+  /* Statement bar */
+  .statement { margin-top: clamp(16px, 2.5vw, 26px); border: 1px solid rgba(55,226,138,.35); border-radius: 14px; background: rgba(18,15,26,.9); }
+  .statement .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .statement .row .k { color: var(--aid); letter-spacing: .14em; text-transform: uppercase; font-size: 12px; }
+  .statement .row b { font-family: var(--display); font-weight: 400; color: var(--ink); font-size: 15px; margin-left: 6px; }
+  .statement .row .aidv b { color: var(--coin); }
+  .statement details { border-top: 1px solid var(--line); }
+  .statement summary { cursor: pointer; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--coin); letter-spacing: .08em; list-style: none; }
+  .statement summary::-webkit-details-marker { display: none; }
+  .statement summary::before { content: "▸ "; } .statement details[open] summary::before { content: "▾ "; }
+  .statement .more { padding: 0 16px 16px; color: var(--muted); font-size: 15px; display: grid; gap: 8px; }
+  .statement .more a { color: var(--coin); }
+
+  .adslot { margin: 150px auto 0; max-width: 728px; min-height: 90px; display: grid; place-items: center; border: 1px dashed rgba(246,239,228,.25); border-radius: 8px; color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  @media (min-width: 800px) { .adslot { margin-top: 56px; } }
+
+  .more-sec { padding-top: 44px; }
+  .strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+  @media (min-width: 800px) { .strip { grid-template-columns: repeat(4, 1fr); } }
+  .tile { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4/3; border: 1px solid var(--line); text-decoration: none; color: var(--ink); background: var(--panel); }
+  .tile img { width: 100%; height: 100%; object-fit: cover; }
+  .tile::after { content: ""; position: absolute; inset: 40% 0 0; background: linear-gradient(180deg, transparent, rgba(7,6,11,.92)); }
+  .tile span { position: absolute; left: 12px; bottom: 12px; z-index: 1; font-family: var(--display); font-size: 14px; }
+  .tile .k { position: absolute; left: 12px; top: 10px; bottom: auto; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--coin); text-transform: uppercase; text-shadow: 0 1px 3px #000; }
+
+  .media-sec { padding-top: 48px; }
+  .theater { position: relative; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid var(--line); box-shadow: 0 30px 60px rgba(0,0,0,.6); aspect-ratio: 16/9; }
+  .theater img, .theater video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .theater .btn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .jukebox { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 16px; display: grid; gap: 12px; }
+  .juke-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .juke-now { display: grid; gap: 2px; min-width: 0; }
+  .juke-now .k { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); }
+  .juke-now b { font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--ink); }
+  .juke-time { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .juke-controls { display: flex; gap: 8px; }
+  .juke-bar { position: relative; height: 10px; border-radius: 999px; background: #1c1827; overflow: hidden; cursor: pointer; }
+  .juke-bar i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--pink), var(--amber)); }
+  .juke-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 4px; }
+  @media (min-width: 800px) { .juke-list { grid-template-columns: 1fr 1fr; } }
+  .juke-list li { display: grid; grid-template-columns: 28px 1fr auto auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 15px; }
+  .juke-list li:hover { background: rgba(255,255,255,.04); }
+  .juke-list li.on { background: rgba(255,77,141,.12); box-shadow: inset 0 0 0 1px rgba(255,77,141,.4); }
+  .juke-list li .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .juke-list li .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .juke-list li .len { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .juke-list li.hidden { display: none; }
+  .reader { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 12px; display: grid; gap: 10px; }
+  .reader-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .reader-track img { flex: 0 0 auto; width: min(100%, 720px); aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 10px; scroll-snap-align: center; }
+  .reader-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .reader-bar .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-inline: auto; }
+  .how { padding: 48px 0; border-top: 1px solid var(--line); margin-top: 44px; }
+  .how .steps { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+  @media (min-width: 800px) { .how .steps { grid-template-columns: repeat(3, 1fr); } }
+  .step { padding: 18px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); }
+  .step b { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--coin); color: #1a1205; font-family: var(--display); margin-bottom: 10px; }
+  .step:nth-child(2) b { background: var(--cyan); color: #06282d; } .step:nth-child(3) b { background: var(--aid); color: #06301b; }
+  .step h3 { font-size: 18px; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 15px; }
+  .two { display: grid; gap: 16px; margin-top: 16px; }
+  @media (min-width: 800px) { .two { grid-template-columns: 1fr 1fr; } }
+  .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 18px; }
+  .panel p { color: var(--muted); font-size: 15px; }
+  table.sched { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; margin-top: 10px; }
+  .sched td:nth-child(4) { font-family: var(--body); font-size: 14px; color: var(--muted); }
+  .sched td:nth-child(3) { color: var(--aid); }
+  .sched td:nth-child(4) { color: var(--muted); }
+  @media (max-width: 600px) { .sched { font-size: 12px; } .sched td:nth-child(4) { font-size: 12px; } }
+  .sched th, .sched td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); }
+  .sched th { color: var(--coin); font-weight: 400; letter-spacing: .1em; font-size: 12px; text-transform: uppercase; }
+  .sched tr.now td { color: var(--coin); }
+  .tiers { display: grid; gap: 6px; }
+  .tier { display: grid; grid-template-columns: 36px 1fr 1fr; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.25); border: 1px solid var(--line); }
+  .tier.head { background: none; border: 0; padding: 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .tier.head .c { color: var(--aid); } .tier.head .t { color: var(--coin); }
+  .tier.now { border-color: rgba(255,210,63,.45); box-shadow: inset 0 0 0 1px rgba(255,210,63,.2); }
+  .tier .n { font-family: var(--mono); font-size: 12px; color: var(--dim); padding-top: 6px; }
+  .tier .c, .tier .t { display: grid; gap: 2px; min-width: 0; }
+  .tier .c > b, .tier .t > b { font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1; }
+  .tier .c > b { color: var(--aid); } .tier .t > b { color: var(--coin); }
+  .tier .range { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .tier .for { font-size: 14px; color: var(--ink); line-height: 1.35; }
+  .tier .c .for { color: var(--muted); }
+  .tier .for .cause { font-weight: 700; color: var(--ink); }
+  .tier .for a { color: var(--coin); white-space: nowrap; }
+  @media (max-width: 640px) { .tier { grid-template-columns: 28px 1fr; } .tier .t { grid-column: 2; border-top: 1px dashed var(--line); padding-top: 8px; } .tier.head .t { display: none; } .tier .c > b, .tier .t > b { font-size: 22px; } }
+  .rules { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .rules li + li { margin-top: 6px; }
+
+  .who { padding: 40px 0; border-top: 1px solid var(--line); }
+  .who .inner { display: grid; gap: 14px; }
+  @media (min-width: 800px) { .who .inner { grid-template-columns: 1fr 1fr; gap: 32px; } }
+  .who h2 { font-size: 24px; margin-bottom: 8px; }
+  .who p { color: var(--muted); font-size: 16px; }
+  .who a { color: var(--coin); }
+  footer { padding: 24px 0 40px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  footer .col { display: grid; gap: 8px; }
+  footer a { color: var(--coin); }
+  .stamp { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="col">
+  <a class="a2a" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
+  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a></nav>
+  <a class="btn btn-top" href="#play">▶ Play free</a>
+</div></header>
+<main>
+  <section class="floor" id="play">
+    <img class="mural" src="../art/web/rally-1600.webp" srcset="../art/web/rally-800.webp 800w, ../art/web/rally-1200.webp 1200w, ../art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" decoding="async">
+    <div class="col">
+      <div class="floor-copy">
+        <p class="kicker">Free browser arcade · <b>Political Arcades</b> · no download, no sign-up</p>
+        <h1>Free games that turn <em>ad money into aid.</em></h1>
+        <p class="lede">Advertisers pay for the ads. <b>Half the profit goes to community programs</b>, and every dollar is posted on this page.</p>
+      </div>
+
+      <div class="arcade" id="arcade">
+        <div class="sitdown" id="sitdown" hidden>
+          <div class="bezel">
+            <div class="bezel-marquee"><span class="bezel-name" id="sd-name">Capitol Crashers</span><span class="mtag" id="sd-machine">Machine 01</span><button class="chip js-leave" type="button">&larr; Back to the floor</button></div>
+            <div class="bezel-screen" id="sd-screen"></div>
+            <div class="bezel-deck"><span class="mono">Ads pay for this arcade. Half the profit goes to community programs.</span><span class="acts"><a class="chip js-full" href="#">Full screen</a><a class="chip" id="sd-open" href="#" target="_blank" rel="noopener">Open in a new tab</a></span></div>
+          </div>
+        </div>
+        <div class="machines">
+          <figure class="machine" data-game="crashers" data-url="https://capitolcrashers.com/play/" data-name="Capitol Crashers" data-machine="Machine 01">
+            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="../art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
+              <div class="placard-mode"><span class="k">Fight night</span> Mamdani <em>vs</em> The Landlord &middot; top score takes the card Sunday</div>
+              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your best</span><span class="v">&mdash;</span></div>
+              <a class="btn btn-big js-play" href="https://capitolcrashers.com/play/">&#9654; Play</a>
+            </figcaption>
+          </figure>
+          <figure class="machine" data-game="vote" data-url="https://politicalarcades.com/horse/" data-name="VOTE" data-machine="Machine 02">
+            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="../art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
+              <div class="placard-mode"><span class="k">Daily court</span> Court <span id="daily-court">01</span> &middot; everyone plays the same court today</div>
+              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your streak</span><span class="v">0 days</span></div>
+              <a class="btn btn-big btn-teal js-play" href="https://politicalarcades.com/horse/">&#9654; Play</a>
+            </figcaption>
+          </figure>
+          <figure class="machine" data-game="pothole" data-url="https://politicalarcades.com/pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
+            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="../art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
+              <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
+              <div class="placard-scores"><span class="k">High score</span><span class="v">no scores posted yet</span><span class="k">Your best</span><span class="v">&mdash;</span></div>
+              <a class="btn btn-big js-play" href="https://politicalarcades.com/pothole-party/">&#9654; Play</a>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="statement" id="ledger">
+        <div class="row">
+          <span class="k">Statement #0 · Oct 8, 2026</span>
+          <span>Ad revenue<b>$0.00</b></span>
+          <span>Costs<b>$0.00</b></span>
+          <span>Profit<b>$0.00</b></span>
+          <span class="aidv">To aid<b>$0.00</b></span>
+        </div>
+        <details>
+          <summary>How the money works</summary>
+          <div class="more">
+            <p>Profit is ad revenue minus the bills to run the site: hosting, domains, art, tools. Every bill is listed with each statement.</p>
+            <p>Half of the profit goes to community programs picked from what the featured politicians fight for: food, care, rent, jobs. Recipients are named here when chosen, paid, and receipted.</p>
+            <p>Google pays about three weeks after each month closes. The first statement posts within 30 days of the first payment, with the payout notice and the bills attached. Numbers are counted when paid, never estimated.</p>
+            <p>Tony's half steps down to 1% as his total climbs. <a href="#how">See the schedule.</a></p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <div class="col"><div class="adslot" aria-label="Advertisement slot">Advertisement · 728×90 / 320×100 · dark until Google approves</div></div>
+
+  <section class="col more-sec" id="more">
+    <p class="kicker">Keep the floor open</p>
+    <div class="strip">
+      <a class="tile" href="#watch"><img src="../art/thumb/video-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Watch</span><span>Freeze the Rent &middot; 2:10</span></a>
+      <a class="tile" href="#read"><img src="../art/comic/p21.webp" width="640" height="360" loading="lazy" alt=""><span class="k">Read</span><span>Two Roads to the Capitol</span></a>
+      <a class="tile" href="#listen"><img src="../art/thumb/studio-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Listen</span><span>Twelve electronic mixes</span></a>
+      <a class="tile" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==" target="_blank" rel="noopener"><img src="../art/thumb/rally-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Weekly</span><span>The Dispatch &middot; sign up</span></a>
+    </div>
+  </section>
+
+
+  <section class="col media-sec" id="watch">
+    <div class="section-head"><div><p class="kicker">Watch</p><h2>Freeze the Rent, <em>the video</em></h2></div><p class="lede">Two minutes ten. Mamdani and El-Sayed on the block, cut with gameplay. Tap to load; nothing downloads until you do.</p></div>
+    <div class="theater" id="theater">
+      <img src="../art/web/video-poster.webp" width="1280" height="720" loading="lazy" alt="Freeze the Rent music video poster">
+      <button class="btn btn-big" type="button" id="theater-play">&#9654; Play the video</button>
+    </div>
+  </section>
+
+  <section class="col media-sec" id="listen">
+    <div class="section-head"><div><p class="kicker">Listen</p><h2>The <em>soundtrack</em></h2></div><p class="lede">Twelve electronic mixes of Freeze the Rent and Never Taken a Dime, the same music that plays in the games. Pick a track; sound only starts when you press play.</p></div>
+    <div class="jukebox">
+      <div class="juke-head">
+        <div class="juke-now"><span class="k">Now playing</span><b id="juke-title">Pick a track</b><span class="juke-time"><span id="juke-cur">0:00</span> / <span id="juke-dur">0:00</span></span></div>
+        <div class="juke-controls">
+          <button class="btn btn-ghost" type="button" id="juke-prev" aria-label="Previous track">&#9664;&#9664;</button>
+          <button class="btn" type="button" id="juke-toggle">&#9654; Play</button>
+          <button class="btn btn-ghost" type="button" id="juke-next" aria-label="Next track">&#9654;&#9654;</button>
+        </div>
+      </div>
+      <div class="juke-bar" id="juke-bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="juke-fill"></i></div>
+      <ol class="juke-list" id="juke-list"></ol>
+      <button class="chip" type="button" id="juke-more" hidden>Show all</button>
+    </div>
+  </section>
+
+  <section class="col media-sec" id="read">
+    <div class="section-head"><div><p class="kicker">Read</p><h2>Two Roads <em>to the Capitol</em></h2></div><p class="lede">The comic. Forty-three pages: how the two of them got to the street, and what they are fighting for. Swipe or use the arrows.</p></div>
+    <div class="reader" id="reader">
+      <div class="reader-track" id="reader-track" tabindex="0" aria-label="Comic pages"></div>
+      <div class="reader-bar">
+        <button class="chip" type="button" id="reader-prev">&larr; Prev</button>
+        <span class="mono" id="reader-count">Page 1 of 43</span>
+        <button class="chip" type="button" id="reader-next">Next &rarr;</button>
+        <a class="chip" href="https://capitolcrashers.com/story/" target="_blank" rel="noopener">Open the full comic</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how"><div class="col">
+    <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">No donations asked. No employees. No company to grow. The site earns from ads, pays its bills in the open, and sends half of what is left to community programs.</p></div>
+    <div class="steps">
+      <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers and VOTE now, more arcades later. No account needed.</p></div>
+      <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Ads run beside the games and between matches, never over the controls. That is the only money in the system.</p></div>
+      <div class="step"><b>3</b><h3>Half goes to aid</h3><p>Half the profit, after the bills, to community programs doing the work Mamdani, El-Sayed and Talarico fight for: rent, glasses for kids, food, childcare, insulin, schools, buses. Real examples are in the ledger below.</p></div>
+    </div>
+    <div class="two" style="grid-template-columns:1fr">
+      <div class="panel">
+        <p class="kicker">How the split moves</p>
+        <p style="color:var(--muted);font-size:15px;margin:6px 0 12px;max-width:70ch">Profit splits by the step Tony is in, and the step is set by what Tony has received in total. Every step moves money toward the community and it never moves back. The two totals are what each side has received once that step is complete. Each step names a real program you can look up, the kind of work the money goes to; the groups that receive it are named here when chosen, with receipts.</p>
+        <div class="tiers">
+          <div class="tier head"><div>Step</div><div class="c">The community gets</div><div class="t">Tony gets</div></div>
+          <div class="tier now"><div class="n">1</div>
+            <div class="c"><b>50%</b><span class="range">Community total reaches $0 &ndash; $550K</span><span class="for"><b class="cause">Rent and tenant defense.</b> The fight behind New York's 2026 rent freeze on one million rent-stabilized apartments, passed by the Rent Guidelines Board Mamdani appointed. <a href="https://thecrosscheck.org/factcheck/2026-08-26-mamdani-eight-months/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>50%</b><span class="range">Tony total reaches $0 &ndash; $550K</span><span class="for">Tony's 1,800 square foot house is paid off</span></div>
+          </div>
+          <div class="tier"><div class="n">2</div>
+            <div class="c"><b>60%</b><span class="range">Community total reaches $550K &ndash; $1.23M</span><span class="for"><b class="cause">Free eye exams and glasses for schoolkids.</b> Like Vision To Learn in Detroit and Wayne County, started under El-Sayed as health director; more than 10,000 pairs so far. <a href="https://visiontolearn.org/news/city-of-detroit-partners-with-vision-to-learn-to-provide-free-eye-exam-and-glasses-to-detroit-students/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>40%</b><span class="range">Tony total reaches $550K &ndash; $1M</span><span class="for">My only child's college and first house down payment</span></div>
+          </div>
+          <div class="tier"><div class="n">3</div>
+            <div class="c"><b>75%</b><span class="range">Community total reaches $1.23M &ndash; $4.22M</span><span class="for"><b class="cause">Food and grocery access.</b> The need behind Mamdani's city-owned grocery stores for New York; we fund the pantries and co-ops doing that work now. <a href="https://www.thecityreporter.nyc/2026/04/09/zohran-mamdani-100-days-rent-affordability-child-care/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>25%</b><span class="range">Tony total reaches $1M &ndash; $2M</span><span class="for">I'm getting a boat!</span></div>
+          </div>
+          <div class="tier"><div class="n">4</div>
+            <div class="c"><b>80%</b><span class="range">Community total reaches $4.22M &ndash; $8.22M</span><span class="for"><b class="cause">Free childcare.</b> Like New York's 2-K program, free care for two-year-olds, with a 2,000-seat pilot opening fall 2026. <a href="https://thecrosscheck.org/factcheck/2026-08-26-mamdani-eight-months/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>20%</b><span class="range">Tony total reaches $2M &ndash; $3M</span><span class="for">I'm buying a house near a college campus and paying college students to live in it and make video games throughout college</span></div>
+          </div>
+          <div class="tier"><div class="n">5</div>
+            <div class="c"><b>85%</b><span class="range">Community total reaches $8.22M &ndash; $13.89M</span><span class="for"><b class="cause">Insulin and medical debt.</b> Like the $25-a-month insulin copay cap Talarico passed in Texas, and Wayne County's medical-debt relief under El-Sayed. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>15%</b><span class="range">Tony total reaches $3M &ndash; $4M</span><span class="for">The college video game and content house gets a major upgrade</span></div>
+          </div>
+          <div class="tier"><div class="n">6</div>
+            <div class="c"><b>90%</b><span class="range">Community total reaches $13.89M &ndash; $22.89M</span><span class="for"><b class="cause">Public schools and teacher pay.</b> Like the 2019 Texas school-finance overhaul Talarico helped write, with billions for teacher raises and a first cap on pre-K class sizes. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>10%</b><span class="range">Tony total reaches $4M &ndash; $5M</span><span class="for">My grandkids get a house</span></div>
+          </div>
+          <div class="tier"><div class="n">7</div>
+            <div class="c"><b>99%</b><span class="range">Community total beyond $22.89M</span><span class="for"><b class="cause">Fast, free buses and good jobs.</b> The fight Mamdani is still waging for fare-free buses in New York; we fund the groups organizing riders and workers. <a href="https://en.wikipedia.org/wiki/Zohran_Mamdani" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>1%</b><span class="range">Tony total beyond $5M</span><span class="for">Making sure College Video Game Company, Inc. is the coolest internship you'll ever have and never graduate from</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="kicker">The rules</p>
+        <ul class="rules">
+          <li>Split applies to profit: ad revenue minus the bills to run the site. Every bill is listed.</li>
+          <li>Counted when Google pays, not when it estimates.</li>
+          <li>The split never changes quietly. Any change is posted here first, with the date.</li>
+          <li>Recipients are programs and groups, never campaigns or politicians.</li>
+          <li>Mistakes get a line in the corrections log, not a quiet edit.</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="who" id="who"><div class="col inner">
+    <div><h2>Who makes this</h2><p>One person, Tony, with chibi art from Makko. No company, no employees, no donations asked.</p></div>
+    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="#">Corrections</a></p></div>
+  </div></section>
+
+  <footer><div class="col">
+    <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · Political Arcades · Fan-made. Not a campaign.</div>
+    <div><a href="#">Privacy</a> · <a href="#">Corrections</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
+    <div class="stamp">Last updated Oct 9, 2026</div>
+  </div></footer>
+</main>
+<script>
+(function () {
+  // Daily court is set by the date (32 courts), so the label is true from day one.
+  document.getElementById('daily-court').textContent = String(Math.floor(Date.now() / 864e5) % 32 + 1).padStart(2, '0');
+  var arcade = document.getElementById('arcade'), sit = document.getElementById('sitdown'), scr = document.getElementById('sd-screen');
+  var frame = null;
+  function sitDown(m) {
+    if (frame) { frame.remove(); frame = null; }
+    document.getElementById('sd-name').textContent = m.dataset.name;
+    document.getElementById('sd-machine').textContent = m.dataset.machine;
+    document.getElementById('sd-open').href = m.dataset.url;
+    frame = document.createElement('iframe');
+    frame.src = m.dataset.url; frame.title = m.dataset.name; frame.setAttribute('allow', 'autoplay; fullscreen; gamepad');
+    scr.appendChild(frame);
+    sit.hidden = false; arcade.classList.add('playing');
+    sit.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    frame.focus();
+  }
+  // Screen quads in the 600x900 cabinet art space: TL, TR, BR, BL.
+  var quads = {
+    crashers: [[159, 257], [412, 248], [407, 487], [157, 493]],
+    vote:     [[161, 253], [415, 246], [410, 487], [159, 493]],
+    pothole:  [[163, 251], [420, 244], [413, 486], [159, 491]]
+  };
+  function homography(src, dst) { // 4 point pairs -> CSS matrix3d (from Hartley/Zisserman via adjugate), src is the 480 box
+    function adj(m) { return [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]]; }
+    function mul(a, b) { var c = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) { var t = 0; for (var k = 0; k < 3; k++) t += a[3*i+k]*b[3*k+j]; c[3*i+j] = t; } return c; }
+    function basis(p) { var m = [p[0][0], p[1][0], p[2][0], p[0][1], p[1][1], p[2][1], 1, 1, 1]; var v = mulv(adj(m), [p[3][0], p[3][1], 1]); return mul(m, [v[0],0,0, 0,v[1],0, 0,0,v[2]]); }
+    function mulv(m, v) { return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2], m[3]*v[0]+m[4]*v[1]+m[5]*v[2], m[6]*v[0]+m[7]*v[1]+m[8]*v[2]]; }
+    var h = mul(basis(dst), adj(basis(src)));
+    for (var i = 0; i < 9; i++) h[i] /= h[8];
+    return 'matrix3d(' + [h[0],h[3],0,h[6], h[1],h[4],0,h[7], 0,0,1,0, h[2],h[5],0,h[8]].join(',') + ')';
+  }
+  function fitVideos() {
+    document.querySelectorAll('.machine').forEach(function (m) {
+      var img = m.querySelector('.screenwrap > img:not(.shade)'); if (!img || !img.clientWidth) return;
+      var k = img.clientWidth / 600, ox = img.offsetLeft, oy = img.offsetTop;
+      var q = quads[m.dataset.game].map(function (pt) { return [ox + pt[0]*k, oy + pt[1]*k]; });
+      m.querySelectorAll('.backing, .screenvid, .crt, .shade').forEach(function (el) {
+        // Pin the layer box with !important so host stylesheets cannot shrink it, then map from the box the browser actually gives.
+        ['width','height'].forEach(function (k2) { el.style.setProperty(k2, '480px', 'important'); });
+        el.style.setProperty('max-width', 'none', 'important'); el.style.setProperty('max-height', 'none', 'important');
+        el.style.setProperty('min-width', '0', 'important'); el.style.setProperty('margin', '0', 'important'); el.style.setProperty('padding', '0', 'important');
+        el.style.setProperty('left', '0', 'important'); el.style.setProperty('top', '0', 'important'); el.style.setProperty('position', 'absolute', 'important');
+        var w = el.offsetWidth || 480, h = el.offsetHeight || 480;
+        el.style.transform = homography([[0,0],[w,0],[w,h],[0,h]], q);
+      });
+    });
+  }
+  fitVideos(); window.addEventListener('resize', fitVideos); window.addEventListener('load', fitVideos);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitVideos);
+  document.querySelectorAll('.screenwrap > img:not(.shade)').forEach(function (i) { i.addEventListener('load', fitVideos); });
+  if ('ResizeObserver' in window) { var ro = new ResizeObserver(fitVideos); document.querySelectorAll('.screenwrap').forEach(function (w) { ro.observe(w); }); }
+  var motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (motionOK && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { var v = e.target, c = v.nextElementSibling, sh = c.nextElementSibling, bk = v.previousElementSibling; if (e.isIntersecting) { v.play().then(function () { v.classList.add('on'); c.classList.add('on'); sh.classList.add('on'); bk.classList.add('on'); }).catch(function () {}); } else { v.pause(); } });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('.screenvid').forEach(function (v) {
+      io.observe(v);
+      // Gameplay plays through, then the screen rests on the cabinet's own painted hero shot before the next run.
+      v.addEventListener('ended', function () {
+        var c = v.nextElementSibling, sh = c.nextElementSibling, bk = v.previousElementSibling; [v, c, sh, bk].forEach(function (el) { el.classList.add('rest'); });
+        setTimeout(function () { v.currentTime = 0; v.play().then(function () { [v, c, sh, bk].forEach(function (el) { el.classList.remove('rest'); }); }).catch(function () {}); }, 2600);
+      });
+    });
+  }
+  document.querySelectorAll('.machine').forEach(function (m) {
+    m.querySelector('.cab-art').addEventListener('click', function () { sitDown(m); });
+    m.querySelector('.js-play').addEventListener('click', function (e) { e.preventDefault(); sitDown(m); });
+  });
+  document.querySelector('.js-leave').addEventListener('click', function () {
+    if (frame) { frame.remove(); frame = null; }
+    sit.hidden = true; arcade.classList.remove('playing');
+    document.getElementById('play').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.querySelector('.js-full').addEventListener('click', function (e) { e.preventDefault(); var el = frame || scr; if (el.requestFullscreen) el.requestFullscreen(); });
+})();
+
+(function () {
+  // Watch: nothing loads until the button is pressed.
+  var th = document.getElementById('theater');
+  document.getElementById('theater-play').addEventListener('click', function () {
+    var v = document.createElement('video'); v.controls = true; v.playsInline = true; v.poster = th.querySelector('img').src;
+    v.src = 'https://politicalarcades.com/media/freeze-the-rent.mp4';
+    th.innerHTML = ''; th.appendChild(v); v.play().catch(function () {});
+  });
+
+  // Listen: the 28-track jukebox. Sound starts only on a click.
+  var TRACKS = [
+    ["freeze-the-rent-full-spectrum","Freeze the Rent — Full Spectrum","Mix","5:00"],["never-taken-a-dime-full-spectrum","Never Taken a Dime — Full Spectrum","Mix","5:00"],
+    ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","5:00"],
+    ["freeze-the-rent-neon-synth","Freeze the Rent — Neon Synth","Mix","5:00"],["never-taken-a-dime-neon-synth","Never Taken a Dime — Neon Synth","Mix","4:40"],
+    ["freeze-the-rent-sunset-house","Freeze the Rent — Sunset House","Mix","5:10"],["never-taken-a-dime-sunset-house","Never Taken a Dime — Sunset House","Mix","5:05"],
+    ["freeze-the-rent-robot-sunset","Freeze the Rent — Robot Sunset","Mix","5:10"],["never-taken-a-dime-robot-sunset","Never Taken a Dime — Robot Sunset","Mix","5:04"],
+    ["freeze-the-rent-neon-disco","Freeze the Rent — Neon Disco","Mix","5:10"],["never-taken-a-dime-neon-disco","Never Taken a Dime — Neon Disco","Mix","4:40"]
+  ];
+  var audio = new Audio(); audio.preload = 'none'; audio.volume = 0.8;
+  var list = document.getElementById('juke-list'), title = document.getElementById('juke-title'), toggle = document.getElementById('juke-toggle');
+  var fill = document.getElementById('juke-fill'), bar = document.getElementById('juke-bar'), cur = document.getElementById('juke-cur'), dur = document.getElementById('juke-dur');
+  var index = -1, visible = 12;
+  function fmt(t) { t = Math.max(0, t | 0); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
+  function render() {
+    list.innerHTML = '';
+    TRACKS.forEach(function (t, i) {
+      var li = document.createElement('li'); li.className = (i === index ? 'on ' : '') + (i >= visible ? 'hidden' : '');
+      li.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span><span>' + t[1] + '</span><span class="tag">' + t[2] + '</span><span class="len">' + t[3] + '</span>';
+      li.addEventListener('click', function () { play(i); });
+      list.appendChild(li);
+    });
+    document.getElementById('juke-more').hidden = visible >= TRACKS.length;
+  }
+  function load(i) { index = (i + TRACKS.length) % TRACKS.length; audio.src = 'https://politicalarcades.com/horse/assets/music/' + TRACKS[index][0] + '.mp3'; title.textContent = TRACKS[index][1]; render(); }
+  function play(i) { if (i !== undefined && i !== index) load(i); if (index < 0) load(0); audio.play().then(function () { toggle.textContent = '\u275A\u275A Pause'; }).catch(function () {}); }
+  function pause() { audio.pause(); toggle.textContent = '\u25B6 Play'; }
+  toggle.addEventListener('click', function () { audio.paused ? play() : pause(); });
+  document.getElementById('juke-prev').addEventListener('click', function () { play(index - 1); });
+  document.getElementById('juke-next').addEventListener('click', function () { play(index + 1); });
+  document.getElementById('juke-more').addEventListener('click', function () { visible = TRACKS.length; render(); });
+  audio.addEventListener('timeupdate', function () { if (audio.duration) { fill.style.width = (audio.currentTime / audio.duration * 100) + '%'; bar.setAttribute('aria-valuenow', Math.round(audio.currentTime / audio.duration * 100)); } cur.textContent = fmt(audio.currentTime); dur.textContent = fmt(audio.duration || 0); });
+  audio.addEventListener('ended', function () { play(index + 1); });
+  audio.addEventListener('pause', function () { toggle.textContent = '\u25B6 Play'; });
+  bar.addEventListener('click', function (e) { if (!audio.duration) return; var r = bar.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
+  render();
+
+  // Read: the 43 pages, lazy, swipe or arrows.
+  var track = document.getElementById('reader-track'), count = document.getElementById('reader-count'), PAGES = 43;
+  for (var n = 1; n <= PAGES; n++) { var im = document.createElement('img'); im.loading = 'lazy'; im.decoding = 'async'; im.width = 640; im.height = 360; im.alt = 'Two Roads to the Capitol, page ' + n; im.src = 'https://capitolcrashers.com/art/story/chibi/p' + String(n).padStart(2, '0') + '.webp'; track.appendChild(im); }
+  function page() { var w = track.firstElementChild.getBoundingClientRect().width + 12; return Math.min(PAGES, Math.max(1, Math.round(track.scrollLeft / w) + 1)); }
+  function go(d) { var w = track.firstElementChild.getBoundingClientRect().width + 12; track.scrollTo({ left: (page() - 1 + d) * w, behavior: 'smooth' }); }
+  track.addEventListener('scroll', function () { count.textContent = 'Page ' + page() + ' of ' + PAGES; });
+  document.getElementById('reader-prev').addEventListener('click', function () { go(-1); });
+  document.getElementById('reader-next').addEventListener('click', function () { go(1); });
+  track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+})();
+</script>
+</body>
+</html>
