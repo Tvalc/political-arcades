@@ -1,6 +1,6 @@
-import {activeGroups} from './life-v13.mjs?v=13.3';
+import {activeGroups} from './life-v13.mjs?v=13.6';
 import {drawPerson} from '/tests/outreach-route/people-v7.mjs?v=10.0';
-import {householdState,paintHousehold,residentsReady} from './resident-life-v13.mjs?v=13.3';
+import {householdState,paintHousehold,residentsReady} from './resident-life-v13.mjs?v=13.6';
 import {drawActor,actorsReady} from '/tests/outreach-route/actors-v6.mjs?v=10.0';
 const names=['homes','park','court','clinic','kitchen','fountain'];
 const images={};for(const name of ['neighborhood-base','neighborhood-repaired',...names]){const im=new Image();im.src=new URL(name+'-v12.webp',import.meta.url).href;images[name]=im;}
@@ -25,7 +25,7 @@ export function paintWorld(canvas,block,index,time,reduced=false,simulation=null
  // The organizer or visiting hero works at the player's priority; the construction crew brings supplies.
  const focus=places.find(p=>p.slot===simulation?.focus),building=places.find(p=>p.construction),emptySlot=[0,1,2,3,4,5].find(n=>!places.some(p=>p.slot===n));
  const crewPlace=building??focus;
- if(simulation?.guides){for(const [id,g] of Object.entries(simulation.guides))if(!g.hidden)add(g.y,()=>{const pos=reduced?(g.route.at(-1)??g):g;shadow(c,pos.x,pos.y);drawActor(c,id==='sayed'?1:3,pos.x,pos.y,t,{height:pos.y<440?47:53,moving:!reduced&&g.moving,flip:!!g.flip,walkPhase:!reduced&&g.moving?g.distance*.14:null});if(simulation.focus===g.targetSlot){c.font='600 11px system-ui';c.textAlign='center';c.fillStyle='#18332dda';c.fillRect(pos.x-34,pos.y-72,68,17);c.fillStyle='#f5db9c';c.fillText(id==='sayed'?'El-Sayed':'Organizer',pos.x,pos.y-60);}});}else if(crewPlace||emptySlot!==undefined){const i=crewPlace?.slot??emptySlot,slot=SLOTS[i];add(slot.lane,()=>{shadow(c,slot.x+68,slot.lane);drawActor(c,3,slot.x+68,slot.lane,t,{height:i<3?47:53,moving:false});});}
+ if(simulation?.guides){for(const [id,g] of Object.entries(simulation.guides))if(!g.hidden)add(g.y,()=>{const pos=reduced?(g.route.at(-1)??g):g;shadow(c,pos.x,pos.y);drawActor(c,id==='sayed'?1:3,pos.x,pos.y,t,{height:47+Math.max(0,Math.min(1,(pos.y-393)/181))*6,moving:!reduced&&g.moving,flip:!!g.flip,walkPhase:!reduced&&g.moving?g.distance*.14:null});if(simulation.focus===g.targetSlot){c.font='600 11px system-ui';c.textAlign='center';c.fillStyle='#18332dda';c.fillRect(pos.x-34,pos.y-72,68,17);c.fillStyle='#f5db9c';c.fillText(id==='sayed'?'El-Sayed':'Organizer',pos.x,pos.y-60);}});}else if(crewPlace||emptySlot!==undefined){const i=crewPlace?.slot??emptySlot,slot=SLOTS[i];add(slot.lane,()=>{shadow(c,slot.x+68,slot.lane);drawActor(c,3,slot.x+68,slot.lane,t,{height:i<3?47:53,moving:false});});}
  if(building){const s=SLOTS[building.slot],u=Math.min(1,(12-building.construction)/4),x=80+(s.x-35-80)*u,y=574+(s.lane-574)*u;add(y,()=>{shadow(c,x,y);drawPerson(c,'parent',x,y,{height:54,state:u<1?'walk':'idle',phase:t,motionKey:'delivery-'+index+'-'+building.slot});c.fillStyle='#b9854e';c.fillRect(x-8,y-28,17,13);c.fillStyle='#e0b784';c.fillRect(x-1,y-28,3,13);});}
  if(simulation?.delivery?.remaining>0){const u=(7-simulation.delivery.remaining)/7,x=150+u*850,y=674;add(y,()=>{drawPerson(c,'parent',x,y,{height:55,state:'walk',phase:t,motionKey:'arcade-delivery-'+index});c.fillStyle='#b9854e';c.fillRect(x-8,y-28,17,13);c.fillStyle='#e0b784';c.fillRect(x-1,y-28,3,13);});}
  const groups=simulation?activeGroups(simulation):neighborhoodGroups(block,index),providerSlots=new Set();
