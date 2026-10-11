@@ -25,6 +25,6 @@ export function paintWorld(canvas,block,index,time,reduced=false){
  const clinic=block.lots.indexOf('clinic');if(clinic>=0){const slot=SLOTS[clinic];add(slot.y+10,()=>{shadow(c,slot.x+75,slot.y+10);drawActor(c,1,slot.x+75,slot.y+10,t,{height:clinic<3?47:53,moving:false,flip:true});});}
  objects.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());
  // Small water glints stay inside the painted fountain bowl.
- if(!reduced)for(let i=0;i<block.lots.length;i++)if(block.lots[i]==='fountain'){const s=SLOTS[i];c.strokeStyle='#e3f7ed80';c.lineWidth=1.2;for(let k=0;k<3;k++){c.beginPath();c.ellipse(s.x-10,s.y-72,18+k*9+Math.sin(t+k)*2,3+k,0,0,Math.PI*2);c.stroke();}}
+ if(!reduced)for(let i=0;i<block.lots.length;i++)if(block.lots[i]==='fountain'){const s=SLOTS[i],width=i<3?245:292;c.strokeStyle='#e3f7ed80';c.lineWidth=1.2;for(let k=0;k<3;k++){c.beginPath();c.ellipse(s.x-width*.02,s.y-width*.454,18+k*9+Math.sin(t+k)*2,3+k,0,0,Math.PI*2);c.stroke();}}
  c.restore();
 }
