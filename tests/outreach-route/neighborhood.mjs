@@ -1,7 +1,7 @@
 import {drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
-import {drawActor} from './actors-v6.mjs?v=9.0';
-import {drawPerson,peopleReady} from './people-v7.mjs?v=9.0';
-import {ACTIVITIES,familyState,CLINIC} from './courtyard-life.mjs?v=9.0';
+import {drawActor} from './actors-v6.mjs?v=9.2';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=9.2';
+import {ACTIVITIES,familyState,CLINIC} from './courtyard-life.mjs?v=9.2';
 import {outreachStage} from './neighborhood-state.mjs';
 const images={};for(const [name,path] of Object.entries({world:'neighborhood-v6.webp',van:'clinic-van.webp',station:'station-v6.webp'})){const im=new Image();im.src=new URL(path,import.meta.url).href;images[name]=im;}
 function image(c,name,x,y,w){const im=images[name];if(!im.complete||!im.naturalWidth)return false;const h=w*im.naturalHeight/im.naturalWidth;c.save();if(name==='van'||name==='station'){c.beginPath();const pts=name==='station'?[[.055,.29],[.50,.017],[.927,.28],[.959,.94],[.79,.979],[.57,.958],[.26,.923],[.054,.911]]:[[.06,.25],[.12,.12],[.38,.055],[.65,.06],[.83,.14],[.9,.42],[.95,.56],[.95,.84],[.88,.95],[.14,.95],[.04,.8],[.04,.46]];pts.forEach(([a,b],i)=>i?c.lineTo(x+w*a,y+h*b):c.moveTo(x+w*a,y+h*b));c.closePath();c.clip();}c.drawImage(im,x,y,w,h);c.restore();return true;}

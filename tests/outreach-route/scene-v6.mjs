@@ -1,6 +1,6 @@
-import {createFestival,drawFestival,festivalReady} from './festival-v8.mjs?v=9.0';
-import {drawPerson,peopleReady} from './people-v7.mjs?v=9.0';
-import {drawActor,actorsReady} from './actors-v6.mjs?v=9.0';
+import {createFestival,drawFestival,festivalReady} from './festival-v8.mjs?v=9.2';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=9.2';
+import {drawActor,actorsReady} from './actors-v6.mjs?v=9.2';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
 import {REPAIR_MS} from './snake-engine.mjs?v=6.4';
 export const BOARD={x:104,y:164,w:560,h:512};
