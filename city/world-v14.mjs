@@ -1,5 +1,5 @@
-import {horseReady,paintHorseActor,paintHorseBall} from './horse-scene-v16.mjs?v=16.0';
-import {horseState} from './horse-state-v16.mjs?v=16.0';
+import {horseReady,paintHorseActor,paintHorseBall} from './horse-scene-v16.mjs?v=17.0';
+import {horseState} from './horse-state-v16.mjs?v=17.0';
 import {courtLayout,courtRim,paintCourtFoundation,paintCourtSurface,paintCourtPost} from './court-geometry-v15.mjs?v=16.0';
 import {activeGroups} from './life-v14.mjs?v=16.1';
 import {drawPerson} from '/tests/outreach-route/people-v7.mjs?v=10.0';
@@ -20,7 +20,7 @@ export function neighborhoodGroups(block,index){
 }
 export function paintWorld(canvas,block,index,time,reduced=false,simulation=null){
  const c=canvas.getContext('2d'),t=reduced?0:time;c.clearRect(0,0,canvas.width,canvas.height);c.save();c.scale(canvas.width/1200,canvas.height/800);
- const world=images[block.road?'neighborhood-repaired':'neighborhood-base'];if(good(world))c.drawImage(world,0,0,1200,800);else{c.fillStyle='#16323a';c.fillRect(0,0,1200,800);c.fillStyle='#f3dca7';c.font='600 24px system-ui';c.textAlign='center';c.fillText('Preparing your neighborhood…',600,400);c.restore();return;}
+ const world=images[block.road?'neighborhood-repaired':'neighborhood-base'];if(good(world))c.drawImage(world,0,0,1200,800);else{c.fillStyle='#16323a';c.fillRect(0,0,1200,800);c.fillStyle='#f3dca7';c.font='600 24px system-ui';c.textAlign='center';c.fillText('Preparing your neighborhoodâ€¦',600,400);c.restore();return;}
  const objects=[],add=(depth,draw)=>objects.push({depth,draw});
  const places=simulation?.places??block.lots.map((kind,slot)=>({kind,slot,level:1,construction:0}));
  for(const p of places){if(p.kind==='court'){const layout=courtLayout(p.slot),progress=p.construction?1-p.construction/12:1;add(layout.y-layout.w*.7,()=>{c.save();c.globalAlpha=progress;paintCourtFoundation(c,p.slot);place(c,'court',layout.x,layout.y,layout.w);paintCourtSurface(c,p.slot);c.restore();});add(layout.y-layout.w*.279,()=>{if(!p.construction)paintCourtPost(c,images.court,p.slot);});continue;}const slot=SLOTS[p.slot],w=p.slot<3?245:292;add(slot.y,()=>{if(p.construction){const progress=reduced?1:1-p.construction/12,im=images[p.kind],h=w*im.naturalHeight/im.naturalWidth;c.save();c.globalAlpha=.15;place(c,p.kind,slot.x,slot.y,w);c.restore();c.save();c.beginPath();c.rect(slot.x-w/2,slot.y-h*progress,w,h*progress);c.clip();place(c,p.kind,slot.x,slot.y,w);c.restore();c.strokeStyle='#b99565';c.lineWidth=3;for(const dx of [-w*.44,w*.44]){c.beginPath();c.moveTo(slot.x+dx,slot.y);c.lineTo(slot.x+dx,slot.y-h*.9);c.stroke();}for(let y=slot.y-25;y>slot.y-h*.9;y-=35){c.beginPath();c.moveTo(slot.x-w*.44,y);c.lineTo(slot.x+w*.44,y);c.stroke();}}else{place(c,p.kind,slot.x,slot.y,w);if(p.level>1){c.strokeStyle='#b99b6e';c.lineWidth=1.5;c.beginPath();c.moveTo(slot.x-w*.32,slot.y-hFor(p.kind,w)*.55);c.quadraticCurveTo(slot.x,slot.y-hFor(p.kind,w)*.4,slot.x+w*.32,slot.y-hFor(p.kind,w)*.55);c.stroke();for(let k=0;k<7;k++){const x=slot.x-w*.28+k*w*.093,y=slot.y-hFor(p.kind,w)*(.45+Math.abs(k-3)*.025);c.fillStyle=k%2?'#e6b85f':'#74b3a0';c.beginPath();c.moveTo(x-4,y);c.lineTo(x+4,y);c.lineTo(x,y+9);c.fill();}}}});}
