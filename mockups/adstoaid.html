@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ads to Aid</title>
-<meta name="description" content="Free browser games that turn ad money into aid. You play, advertisers pay, half the profit goes to community programs. Every dollar posted publicly.">
+<title>AdsToAid — Free games. Growing community giving.</title>
+<meta name="description" content="Free browser games that turn ad money into aid. You play, advertisers pay, at least half of distributable profit goes to community programs. Read the giving policy and milestone schedule.">
 <link rel="preload" href="../fonts/bungee-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/source-sans-3-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../arcade.css">
 <link rel="stylesheet" href="adstoaid-brand.css">
 <style>
   :root { --col: 1180px; }
+  [id] { scroll-margin-top: 90px; }
+  @media(max-width:640px) { .tier .t::before { content:"Tony gets"; display:block; font:11px var(--mono); text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:6px; } }
+  .topnav { gap: 14px; font-size: 12px; }
   [hidden] { display: none !important; }
   .col { width: min(var(--col), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
   .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,6,11,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
@@ -33,7 +36,7 @@
   .floor .lede b { font-weight: 600; }
 
   /* The arcade floor: illustrated machines, one tap to sit down */
-  .machines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.5vw, 28px); align-items: end; }
+  .machines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.5vw, 28px); align-items: start; }
   @media (max-width: 760px) { .machines { grid-template-columns: 1fr; gap: 28px; } }
   .machine { margin: 0; display: grid; }
   .cab-art { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
@@ -204,7 +207,7 @@
 <body>
 <header class="topbar"><div class="col">
   <a class="a2a" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
-  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a></nav>
+  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a><a href="../city/">Your city</a></nav>
   <a class="btn btn-top" href="#play">▶ Play free</a>
 </div></header>
 <main>
@@ -214,11 +217,11 @@
       <div class="floor-copy">
         <p class="kicker">Free browser arcade · <b>AdsToAid</b> · no download, no sign-up</p>
         <h1>Free games that turn <em>ad money into aid.</em></h1>
-        <p class="lede">Advertisers pay for the ads. <b>Half the profit goes to community programs</b>, and every dollar is posted on this page.</p>
+        <p class="lede">Play for free. <b>At least half of distributable profit goes to community programs.</b> As Tony earns more, the community’s share grows to 99%.</p>
         <nav class="quick-play" aria-label="Choose a game">
-          <a class="chip" data-open-game="crashers" href="https://capitolcrashers.com/play/">Play Crashers</a>
-          <a class="chip" data-open-game="vote" href="https://politicalarcades.com/horse/">Play VOTE</a>
-          <a class="chip" data-open-game="pothole" href="https://politicalarcades.com/pothole-party/">Play Pothole</a>
+          <a class="chip" data-open-game="crashers" href="../capitol-crashers/">Play Crashers</a>
+          <a class="chip" data-open-game="vote" href="../horse/">Play VOTE</a>
+          <a class="chip" data-open-game="pothole" href="../pothole-party/">Play Pothole</a>
         </nav>
         <button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="false">Pause previews</button>
       </div>
@@ -228,32 +231,32 @@
           <div class="bezel">
             <div class="bezel-marquee"><span class="bezel-name" id="sd-name">Capitol Crashers</span><span class="mtag" id="sd-machine">Machine 01</span><button class="chip js-leave" type="button">&larr; Back to the floor</button></div>
             <div class="bezel-screen" id="sd-screen"></div>
-            <div class="bezel-deck"><span class="mono">Ads pay for this arcade. Half the profit goes to community programs.</span><span class="acts"><a class="chip js-full" href="#">Full screen</a><a class="chip" id="sd-open" href="#" target="_blank" rel="noopener">Open in a new tab</a></span></div>
+            <div class="bezel-deck"><span class="mono">At least half of distributable profit goes to community programs.</span><span class="acts"><a class="chip js-full" href="#">Full screen</a><a class="chip" id="sd-open" href="#" target="_blank" rel="noopener">Open in a new tab</a></span></div>
           </div>
         </div>
         <div class="machines">
-          <figure class="machine" data-game="crashers" data-url="https://capitolcrashers.com/play/" data-name="Capitol Crashers" data-machine="Machine 01">
+          <figure class="machine" data-game="crashers" data-url="../capitol-crashers/" data-name="Capitol Crashers" data-machine="Machine 01">
             <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="../art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
               <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
-              <a class="btn btn-big js-play" href="https://capitolcrashers.com/play/">&#9654; Play</a>
+              <a class="btn btn-big js-play" href="../capitol-crashers/">&#9654; Play</a>
             </figcaption>
           </figure>
-          <figure class="machine" data-game="vote" data-url="https://politicalarcades.com/horse/" data-name="VOTE" data-machine="Machine 02">
+          <figure class="machine" data-game="vote" data-url="../horse/" data-name="VOTE" data-machine="Machine 02">
             <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="../art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
               <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
-              <a class="btn btn-big btn-teal js-play" href="https://politicalarcades.com/horse/">&#9654; Play</a>
+              <a class="btn btn-big btn-teal js-play" href="../horse/">&#9654; Play</a>
             </figcaption>
           </figure>
-          <figure class="machine" data-game="pothole" data-url="https://politicalarcades.com/pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
+          <figure class="machine" data-game="pothole" data-url="../pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
             <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="../art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="../media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="../art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
               <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
-              <a class="btn btn-big js-play" href="https://politicalarcades.com/pothole-party/">&#9654; Play</a>
+              <a class="btn btn-big js-play" href="../pothole-party/">&#9654; Play</a>
             </figcaption>
           </figure>
         </div>
@@ -261,19 +264,18 @@
 
       <div class="statement" id="ledger">
         <div class="row">
-          <span class="k">Statement #0 · Oct 8, 2026</span>
-          <span>Ad revenue<b>$0.00</b></span>
-          <span>Costs<b>$0.00</b></span>
-          <span>Profit<b>$0.00</b></span>
-          <span class="aidv">To aid<b>$0.00</b></span>
+          <span class="k">Giving policy · first financial statement pending</span>
+          <span>Community share<b>50% → 99%</b></span>
+          <span>Tony’s share<b>50% → 1%</b></span>
+          <span class="aidv">Monthly giving floor<b>$50 with Tony’s top-up</b></span>
         </div>
         <details>
           <summary>How the money works</summary>
           <div class="more">
-            <p>Profit is ad revenue minus the bills to run the site: hosting, domains, art, tools. Every bill is listed with each statement.</p>
-            <p>Half of the profit goes to community programs picked from what the featured politicians fight for: food, care, rent, jobs. Recipients are named here when chosen, paid, and receipted.</p>
-            <p>Google pays about three weeks after each month closes. The first statement posts within 30 days of the first payment, with the payout notice and the bills attached. Numbers are counted when paid, never estimated.</p>
-            <p>Tony's half steps down to 1% as his total climbs. <a href="#how">See the schedule.</a></p>
+            <p>The split applies to distributable profit: money received from ads, Patreon and any merch sales, minus documented project costs and disclosed operating-reserve additions, plus reserve releases. Fees and refunds are counted once. The reserve and costs are explained in the <a href="../community-pot/">Community Pot</a>.</p>
+            <p>The community share starts at 50% and rises to 99%. Recipients support causes the featured politicians care about; they are not campaigns or politicians. We plan to invite their recommendations. No endorsement or participation is implied. Chosen recipients and payment receipts will appear in the Community Pot.</p>
+            <p>No reconciled financial statement is published yet. Reports will distinguish money received, expenses, reserves, allocated shares and actual payments. Unpaid allocations are not described as donations already delivered.</p>
+            <p>If the site gives less than $50 in a month, Tony personally covers the difference so total monthly giving reaches $50, with his top-up going to a local Seattle cause. For example, $30 from the site means $20 from Tony; $0 means $50. Personal top-ups are separate from site profit. <a href="#milestones">See the split and milestones.</a></p>
           </div>
         </details>
       </div>
@@ -288,7 +290,7 @@
       <a class="tile" href="#watch"><img src="../art/thumb/video-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Watch</span><span>Freeze the Rent &middot; 2:10</span></a>
       <a class="tile" href="#read"><img src="../art/comic/p21.webp" width="640" height="360" loading="lazy" alt=""><span class="k">Read</span><span>Two Roads to the Capitol</span></a>
       <a class="tile" href="#listen"><img src="../art/thumb/studio-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Listen</span><span>Twelve electronic mixes</span></a>
-      <a class="tile" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==" target="_blank" rel="noopener"><img src="../art/thumb/rally-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Weekly</span><span>The Dispatch &middot; sign up</span></a>
+      <a class="tile" id="dispatch" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==" target="_blank" rel="noopener"><img src="../art/thumb/rally-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Updates</span><span>The Dispatch &middot; sign up</span></a>
     </div>
   </section>
 
@@ -332,69 +334,70 @@
   </section>
 
   <section class="how" id="how"><div class="col">
-    <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">No donations asked. No employees. No company to grow. The site earns from ads, pays its bills in the open, and sends half of what is left to community programs.</p></div>
+    <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">Free games, optional support, and a growing share for the community. AdsToAid starts by allocating 50% of distributable profit to community programs. That share rises as Tony reaches the milestones below.</p></div>
     <div class="steps">
       <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers, VOTE and Pothole Party. No account needed.</p></div>
-      <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Ads run beside the games and between matches, never over the controls. That is the only money in the system.</p></div>
-      <div class="step"><b>3</b><h3>Half goes to aid</h3><p>Half the profit, after the bills, to community programs doing the work Mamdani, El-Sayed and Talarico fight for: rent, glasses for kids, food, childcare, insulin, schools, buses. Real examples are in the ledger below.</p></div>
+      <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Advertising is one way the arcade can earn. AdSense approval is pending. Optional $5 Patreon membership also supports the project; merch is planned. Playing never requires a purchase or an ad click.</p></div>
+      <div class="step"><b>3</b><h3>At least half goes to aid</h3><p>After documented costs and reserve movements, the community receives a 50%–99% share. The table shows the causes that inspire us and what Tony plans to pay for with his own share. These are goals, not donations already made.</p></div>
     </div>
     <div class="two" style="grid-template-columns:1fr">
       <div class="panel">
-        <p class="kicker">How the split moves</p>
-        <p style="color:var(--muted);font-size:15px;margin:6px 0 12px;max-width:70ch">Profit splits by the step Tony is in, and the step is set by what Tony has received in total. Every step moves money toward the community and it never moves back. The two totals are what each side has received once that step is complete. Each step names a real program you can look up, the kind of work the money goes to; the groups that receive it are named here when chosen, with receipts.</p>
+        <p class="kicker" id="milestones">How the split moves</p>
+        <p style="color:var(--muted);font-size:15px;margin:6px 0 12px;max-width:70ch">“The more I make, the smaller my cut.” Tony’s share of future profit drops as his lifetime profit payouts reach each milestone. His plans are paid from his share. The community’s percentage never steps backward.</p>
         <div class="tiers">
           <div class="tier head"><div>Step</div><div class="c">The community gets</div><div class="t">Tony gets</div></div>
           <div class="tier now"><div class="n">1</div>
-            <div class="c"><b>50%</b><span class="range">Community total reaches $0 &ndash; $550K</span><span class="for"><b class="cause">Rent and tenant defense.</b> The fight behind New York's 2026 rent freeze on one million rent-stabilized apartments, passed by the Rent Guidelines Board Mamdani appointed. <a href="https://thecrosscheck.org/factcheck/2026-08-26-mamdani-eight-months/" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>50%</b><span class="range">Tony total reaches $0 &ndash; $550K</span><span class="for">Tony's 1,800 square foot house is paid off</span></div>
+            <div class="c"><b>50%</b><span class="range">Projected community allocation $0 &ndash; $550K</span><span class="for"><b class="cause">Rent and tenant defense.</b> New York’s Rent Guidelines Board voted in June 2026 to freeze one- and two-year rent-stabilized leases. <a href="https://www.nyc.gov/mayors-office/news/2026/06/mayor-mamdani-s-statement-on-the-rent-guidelines-board-s-final-v" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>50%</b><span class="range">Tony’s cumulative profit payouts $0 &ndash; $550K</span><span class="for">Tony's 1,800 square foot house is paid off</span></div>
           </div>
           <div class="tier"><div class="n">2</div>
-            <div class="c"><b>60%</b><span class="range">Community total reaches $550K &ndash; $1.23M</span><span class="for"><b class="cause">Free eye exams and glasses for schoolkids.</b> Like Vision To Learn in Detroit and Wayne County, started under El-Sayed as health director; more than 10,000 pairs so far. <a href="https://visiontolearn.org/news/city-of-detroit-partners-with-vision-to-learn-to-provide-free-eye-exam-and-glasses-to-detroit-students/" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>40%</b><span class="range">Tony total reaches $550K &ndash; $1M</span><span class="for">My only child's college and first house down payment</span></div>
+            <div class="c"><b>60%</b><span class="range">Projected community allocation $550K &ndash; $1.225M</span><span class="for"><b class="cause">Free eye exams and glasses for schoolkids.</b> Like Detroit’s Vision To Learn partnership, which began in 2016 and provides students free eye exams and glasses. <a href="https://visiontolearn.org/news/vision-to-learn-in-detroit/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>40%</b><span class="range">Tony’s cumulative profit payouts $550K &ndash; $1M</span><span class="for">My only child's college and first house down payment</span></div>
           </div>
           <div class="tier"><div class="n">3</div>
-            <div class="c"><b>75%</b><span class="range">Community total reaches $1.23M &ndash; $4.22M</span><span class="for"><b class="cause">Food and grocery access.</b> The need behind Mamdani's city-owned grocery stores for New York; we fund the pantries and co-ops doing that work now. <a href="https://www.thecityreporter.nyc/2026/04/09/zohran-mamdani-100-days-rent-affordability-child-care/" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>25%</b><span class="range">Tony total reaches $1M &ndash; $2M</span><span class="for">I'm getting a boat!</span></div>
+            <div class="c"><b>75%</b><span class="range">Projected community allocation $1.225M &ndash; $4.225M</span><span class="for"><b class="cause">Food and grocery access.</b> The need behind New York’s planned public grocery stores; food access is one area we aim to support. <a href="https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-announces-the-peninsula-in-the-bronx-as-the-second" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>25%</b><span class="range">Tony’s cumulative profit payouts $1M &ndash; $2M</span><span class="for">I'm getting a boat!</span></div>
           </div>
           <div class="tier"><div class="n">4</div>
-            <div class="c"><b>80%</b><span class="range">Community total reaches $4.22M &ndash; $8.22M</span><span class="for"><b class="cause">Free childcare.</b> Like New York's 2-K program, free care for two-year-olds, with a 2,000-seat pilot opening fall 2026. <a href="https://thecrosscheck.org/factcheck/2026-08-26-mamdani-eight-months/" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>20%</b><span class="range">Tony total reaches $2M &ndash; $3M</span><span class="for">I'm buying a house near a college campus and paying college students to live in it and make video games throughout college</span></div>
+            <div class="c"><b>80%</b><span class="range">Projected community allocation $4.225M &ndash; $8.225M</span><span class="for"><b class="cause">Free childcare.</b> Like New York’s free 2-K program, which launched in September 2026 with 2,000 seats. <a href="https://www.nyc.gov/mayors-office/news/2026/09/transcript--mayor-mamdani-holds-a-press-conference-with-governor" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>20%</b><span class="range">Tony’s cumulative profit payouts $2M &ndash; $3M</span><span class="for">I'm buying a house near a college campus and paying college students to live in it and make video games throughout college</span></div>
           </div>
           <div class="tier"><div class="n">5</div>
-            <div class="c"><b>85%</b><span class="range">Community total reaches $8.22M &ndash; $13.89M</span><span class="for"><b class="cause">Insulin and medical debt.</b> Like the $25-a-month insulin copay cap Talarico passed in Texas, and Wayne County's medical-debt relief under El-Sayed. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>15%</b><span class="range">Tony total reaches $3M &ndash; $4M</span><span class="for">The college video game and content house gets a major upgrade</span></div>
+            <div class="c"><b>85%</b><span class="range">Projected community allocation $8.225M &ndash; $13.89M</span><span class="for"><b class="cause">Insulin and medical debt.</b> Inspired by Talarico’s work on Texas’s $25 monthly insulin copay cap and <a href="https://www.waynecountymi.gov/Government/Departments/Health-Human-Veterans-Services/Access-to-Care/Medical-Debt-Relief" target="_blank" rel="noopener">Wayne County’s medical-debt relief program</a>. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>15%</b><span class="range">Tony’s cumulative profit payouts $3M &ndash; $4M</span><span class="for">The college video game and content house gets a major upgrade</span></div>
           </div>
           <div class="tier"><div class="n">6</div>
-            <div class="c"><b>90%</b><span class="range">Community total reaches $13.89M &ndash; $22.89M</span><span class="for"><b class="cause">Public schools and teacher pay.</b> Like the 2019 Texas school-finance overhaul Talarico helped write, with billions for teacher raises and a first cap on pre-K class sizes. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>10%</b><span class="range">Tony total reaches $4M &ndash; $5M</span><span class="for">My grandkids get a house</span></div>
+            <div class="c"><b>90%</b><span class="range">Projected community allocation $13.89M &ndash; $22.89M</span><span class="for"><b class="cause">Public schools and teacher pay.</b> Inspired by Talarico’s work on school-finance reform and limits on pre-K class sizes. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>10%</b><span class="range">Tony’s cumulative profit payouts $4M &ndash; $5M</span><span class="for">My grandkids get a house</span></div>
           </div>
           <div class="tier"><div class="n">7</div>
-            <div class="c"><b>99%</b><span class="range">Community total beyond $22.89M</span><span class="for"><b class="cause">Fast, free buses and good jobs.</b> The fight Mamdani is still waging for fare-free buses in New York; we fund the groups organizing riders and workers. <a href="https://en.wikipedia.org/wiki/Zohran_Mamdani" target="_blank" rel="noopener">Look it up</a></span></div>
-            <div class="t"><b>1%</b><span class="range">Tony total beyond $5M</span><span class="for">Making sure College Video Game Company, Inc. is the coolest internship you'll ever have and never graduate from</span></div>
+            <div class="c"><b>99%</b><span class="range">Projected community allocation beyond $22.89M</span><span class="for"><b class="cause">Fast, free buses and good jobs.</b> Transit access and worker support are causes we aim to fund. Specific recipients will be named in the Community Pot once selected.</span></div>
+            <div class="t"><b>1%</b><span class="range">Tony’s cumulative profit payouts beyond $5M</span><span class="for">Making sure College Video Game Company, Inc. is the coolest internship you'll ever have and never graduate from</span></div>
           </div>
         </div>
       </div>
+      <div class="panel"><details><summary>How milestones and projected totals work</summary><p>Milestones do not reset each month or year. Earlier payouts are not recalculated. If a payout crosses a threshold, the next rate applies to the portion beyond it.</p><p>The community totals in the table are approximate projected allocations assuming shares are paid in full, not donations already delivered. They exclude Tony’s personal top-ups; payment holds can make actual paid totals differ. Cause examples show the work we aim to support, not confirmed recipients or endorsements.</p></details></div>
       <div class="panel">
         <p class="kicker">The rules</p>
         <ul class="rules">
-          <li>Split applies to profit: ad revenue minus the bills to run the site. Every bill is listed.</li>
-          <li>Counted when Google pays, not when it estimates.</li>
-          <li>The split never changes quietly. Any change is posted here first, with the date.</li>
+          <li>The split covers all project revenue: ads, Patreon and any merch sales, after documented costs and disclosed reserve movements. Tony’s personal milestone purchases come from his share, not operating expenses.</li>
+          <li>Revenue is counted when received. Allocations, payments, unpaid balances and personal top-ups are reported separately.</li>
+          <li>The community percentage rises at each milestone and never steps back. Policy changes are dated in the Community Pot.</li>
           <li>Recipients are programs and groups, never campaigns or politicians.</li>
-          <li>Mistakes get a line in the corrections log, not a quiet edit.</li>
+          <li><a href="../community-pot/#corrections">Policy updates and corrections</a> remain visible. Tony’s direct payments plus payments to his own businesses cannot exceed cumulative site-funded community payments; personal top-ups do not raise that limit.</li>
         </ul>
       </div>
     </div>
   </div></section>
 
   <section class="who" id="who"><div class="col inner">
-    <div><h2>Who makes this</h2><p>One person, Tony, with chibi art from Makko. No company, no employees, no donations asked.</p></div>
+    <div><h2>Who makes this</h2><p>Tony makes AdsToAid using ChatGPT, Claude and Cursor, with art from Makko and audio from ElevenLabs. Tony owns Makko. Games are free; Patreon support is optional. Actual project-paid costs and any payments to Tony’s businesses will be disclosed in the <a href="../community-pot/#costs">Community Pot</a>.</p></div>
     <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a></p></div>
   </div></section>
 
-  <footer><div class="col">
+  <footer id="support"><div class="col">
     <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
-    <div><a href="https://politicalarcades.com/privacy.html">Privacy</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
+    <div><a href="../community-pot/">Community Pot</a> · <a href="../city/">Your city</a> · <a href="../privacy.html">Privacy</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
     <div class="stamp">Last updated Oct 11, 2026</div>
   </div></footer>
 </main>
@@ -515,11 +518,11 @@
   // Listen: the twelve-track jukebox. Sound starts only on a click.
   var TRACKS = [
     ["freeze-the-rent-full-spectrum","Freeze the Rent — Full Spectrum","Mix","5:00"],["never-taken-a-dime-full-spectrum","Never Taken a Dime — Full Spectrum","Mix","5:00"],
-    ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","5:00"],
-    ["freeze-the-rent-neon-synth","Freeze the Rent — Neon Synth","Mix","5:00"],["never-taken-a-dime-neon-synth","Never Taken a Dime — Neon Synth","Mix","4:40"],
-    ["freeze-the-rent-sunset-house","Freeze the Rent — Sunset House","Mix","5:10"],["never-taken-a-dime-sunset-house","Never Taken a Dime — Sunset House","Mix","5:05"],
-    ["freeze-the-rent-robot-sunset","Freeze the Rent — Robot Sunset","Mix","5:10"],["never-taken-a-dime-robot-sunset","Never Taken a Dime — Robot Sunset","Mix","5:04"],
-    ["freeze-the-rent-neon-disco","Freeze the Rent — Neon Disco","Mix","5:10"],["never-taken-a-dime-neon-disco","Never Taken a Dime — Neon Disco","Mix","4:40"]
+    ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","4:52"],
+    ["freeze-the-rent-neon-synth","Freeze the Rent — Neon Synth","Mix","5:00"],["never-taken-a-dime-neon-synth","Never Taken a Dime — Neon Synth","Mix","5:00"],
+    ["freeze-the-rent-sunset-house","Freeze the Rent — Sunset House","Mix","5:10"],["never-taken-a-dime-sunset-house","Never Taken a Dime — Sunset House","Mix","5:02"],
+    ["freeze-the-rent-robot-sunset","Freeze the Rent — Robot Sunset","Mix","5:10"],["never-taken-a-dime-robot-sunset","Never Taken a Dime — Robot Sunset","Mix","5:00"],
+    ["freeze-the-rent-neon-disco","Freeze the Rent — Neon Disco","Mix","5:10"],["never-taken-a-dime-neon-disco","Never Taken a Dime — Neon Disco","Mix","5:10"]
   ];
   var audio = new Audio(); audio.preload = 'none'; audio.volume = 0.8;
   var list = document.getElementById('juke-list'), title = document.getElementById('juke-title'), toggle = document.getElementById('juke-toggle');
@@ -540,7 +543,7 @@
     document.getElementById('juke-more').hidden = visible >= TRACKS.length;
     if (focusedTrack >= 0 && list.children[focusedTrack]) list.children[focusedTrack].focus({preventScroll:true});
   }
-  function load(i) { index = (i + TRACKS.length) % TRACKS.length; audio.src = 'https://politicalarcades.com/horse/assets/music/' + TRACKS[index][0] + '.mp3'; title.textContent = TRACKS[index][1]; render(); }
+  function load(i) { index = (i + TRACKS.length) % TRACKS.length; audio.src = '../horse/assets/music/' + TRACKS[index][0] + '.mp3'; title.textContent = TRACKS[index][1]; render(); }
   function play(i) { if (i !== undefined && i !== index) load(i); if (index < 0) load(0); audio.play().then(function () { toggle.textContent = '\u275A\u275A Pause'; }).catch(function () {}); }
   function pause() { audio.pause(); toggle.textContent = '\u25B6 Play'; }
   toggle.addEventListener('click', function () { audio.paused ? play() : pause(); });
@@ -576,3 +579,4 @@
 </script>
 </body>
 </html>
+
