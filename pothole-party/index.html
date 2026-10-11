@@ -297,7 +297,7 @@ function mountDpad(pad,{onTurn,enabled,focus}){
  window.addEventListener('blur',release);document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
 }
 
-const $=s=>document.querySelector(s),canvas=$('#game'),ctx=canvas.getContext('2d');let levelIndex=0;let g=createGame(16,Math.random,0,LEVELS[0]),leader=0,started=false,last=0,acc=0,sound=false,audio,flash=0;let best=0;$('#best').textContent=best;let adHold=false,musicWasPlaying=false,extraShiftUsed=false,saveTimer=0;
+const $=s=>document.querySelector(s),canvas=$('#game'),ctx=canvas.getContext('2d');let levelIndex=0;let g=createGame(16,Math.random,0,LEVELS[0]),leader=0,started=false,last=0,acc=0,sound=false,audio,flash=0;let best=0;$('#best').textContent=best;let adHold=false,musicWasPlaying=false,extraShiftUsed=false,saveTimer=0;const PROGRESS_KEYS=['a2a-potholes-work-best','a2a-potholes-unlocked'];
 // CONTRACT.md: the ad module (and the Playgama Bridge inside it) boots before anything else; progress is restored through A2A.store in bootShift() at the end.
 A2A.ads.init({game:'pothole-party',pause:adPause,resume:adResume});
 let unlocked=0;
@@ -412,7 +412,6 @@ function adResume(){if(!adHold)return;adHold=false;const music=$('#street-music'
 // The player's own pause (button, Space, Esc) is a natural stop and asks for the pause break. Blur and tab switches never do.
 function userPause(){const wasPlaying=started&&g.status==='playing';pause();if(wasPlaying&&g.status==='paused')A2A.ads.break('pause',()=>{});}
 // Progress is saved through A2A.store (Bridge storage on Playgama, the browser store behind it elsewhere), coalesced so a hot streak is one write.
-const PROGRESS_KEYS=['a2a-potholes-work-best','a2a-potholes-unlocked'];
 function saveProgress(now=false){clearTimeout(saveTimer);const write=()=>{saveTimer=0;A2A.store.save(PROGRESS_KEYS,[String(best),String(unlocked)]).catch(()=>{})};if(now)write();else saveTimer=setTimeout(write,1500);}
 window.addEventListener('pagehide',()=>{if(saveTimer)saveProgress(true)});
 // The extra shift is the one rewarded ad: offered once per shift on the report, it regroups the same crew, score and neighborhood at the start line.

@@ -46,10 +46,15 @@ const brand = html.match(/<a class="brand" href="\/">([\s\S]*?)<\/a>/);
 if (!brand) fail("brand link: not found");
 html = html.replace(brand[0], () => `<span class="brand">${brand[1]}</span>`);
 html = once(html, '<a href="/community-pot/">See where the money goes →</a>', "", "community pot link");
-html = once(html, '<a href="/#listen">All twenty-seven songs →</a>', "", "soundtrack link");
+html = once(html, /<a href="\/#listen">[^<]*<\/a>/, "", "soundtrack link");
 html = once(html, /<div class="support-links">[\s\S]*?<\/div>/, "", "support links");
 html = once(html, /<nav class="more-machines"[\s\S]*?<\/nav>/, "", "more machines");
 html = once(html, /<footer class="site-foot"><p>[\s\S]*?<\/p>/, '<footer class="site-foot"><p>Political Arcades · Free to play</p>', "footer links");
+
+// The shared city-rewards script (site-wide progress bar) uses localStorage,
+// outbound links and a hostname check. The game calls it through optional
+// chaining, so the archive simply leaves it out.
+html = once(html, /<script src="\/shared\/city-rewards\.js[^"]*"><\/script>/, "", "city rewards script");
 
 // Provenance links inside the embedded cast manifest (metadata, never loaded).
 html = html.replace(/,"sourceUrl":"https?:[^"]*"/g, "");
