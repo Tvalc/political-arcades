@@ -1,4 +1,4 @@
-import {openingStatus,finishOpening,OPENING_DURATION} from './opening-day-v18.mjs?v=18.0';
+import {openingStatus,finishOpening,OPENING_DURATION} from './opening-day-v18.mjs?v=18.1';
 export const KITCHEN_PROGRAMS=['Community supper','Neighborhood pantry','Cooking club','Game-day catering'];
 export function ambition(b){
  if(!b.ambition||b.ambition.version!==1)b.ambition={version:1,mode:null,stage:'invitation',players:[],volunteers:[],coach:null,practice:0,eventTime:0,completed:false};
