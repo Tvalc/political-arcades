@@ -1,6 +1,6 @@
-import {createFestival,drawFestival} from './festival-v8.mjs?v=8.2';
-import {drawPerson,peopleReady} from './people-v7.mjs?v=7.1';
-import {drawActor,actorsReady} from './actors-v6.mjs?v=8.2';
+import {createFestival,drawFestival,festivalReady} from './festival-v8.mjs?v=9.0';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=9.0';
+import {drawActor,actorsReady} from './actors-v6.mjs?v=9.0';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
 import {REPAIR_MS} from './snake-engine.mjs?v=6.4';
 export const BOARD={x:104,y:164,w:560,h:512};
@@ -43,6 +43,6 @@ export function createScene(canvas){const resolution=Math.min(2,window.devicePix
  if(!active&&g.score===0){const p=point({x:8,y:8}),q=point(g.body[0]);c.strokeStyle='#21776b99';c.lineWidth=3;c.setLineDash([5,8]);c.beginPath();c.moveTo(q.x+20,q.y+12);c.lineTo(p.x-23,p.y+12);c.stroke();c.setLineDash([]);}
  pill(c,'SCHOOL OUTREACH / ROUTE '+(Math.floor(g.score/500)+1),384,735,palette.cream,13);c.restore();
  }
- const ready=Promise.all([bg.decode(),station.decode(),actorsReady(),peopleReady]);onSpritesReady(()=>{});
+ const ready=Promise.all([bg.decode(),station.decode(),actorsReady(),peopleReady,festivalReady]);onSpritesReady(()=>{});
  return{draw,event,ready,celebrate(g){const members=[...g.body,...g.jobs.filter(j=>j.worker).map(j=>({...j,...j.worker}))];festival=createFestival(members.map((p,i)=>{const last=lastActors.get(p.uid)||point(p);return{...p,x:last.x,y:last.y+14,height:i===0?54:46};}));},crash(){death=1;},clear(){effects.length=particles.length=0;faces.clear();strides.clear();handoffs.clear();lastActors.clear();motionTime=0;festival=null;death=0;}};
 }
