@@ -1,22 +1,23 @@
-import './neighborhood.mjs?v=6';
+import './neighborhood.mjs?v=6.1';
 import {outreachCount} from './neighborhood-state.mjs';
 import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs';
-import {createScene,point as worldPoint} from './scene-v6.mjs';
-import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs';
+import {createScene,point as worldPoint} from './scene-v6.mjs?v=6.1';
+import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=6.1';
 import {loadCity,award,KEY} from '/shared/city-state.mjs?v=outreach1';
 const $=id=>document.getElementById(id),SIZE=16,BEST='pa-outreach-snake-best-v1',scene=createScene($('map')),practice=new URLSearchParams(location.search).has('practice');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let artLoaded=false,artFailed=false;
 let g,started=false,paused=false,storyPaused=false,last=performance.now(),acc=0,time=0,best=0,runId,care=0,previous=[],saveFailure=false,visits=0,lossAt=0,hudSnapshot='';
 try{best=practice?0:Math.max(0,Number(localStorage.getItem(BEST))||0);visits=practice?0:outreachCount(loadCity(localStorage));}catch{}
-const portrait=new Image();portrait.src='./sayed-walk-v6.webp';portrait.onload=()=>{$('portrait').getContext('2d').drawImage(portrait,2,2,294,294,0,0,64,64);};
-const areas=['School outreach','Library outreach','Community outreach'];
+const portrait=new Image();portrait.src='./sayed-walk-v6.webp';portrait.onload=()=>{$('portrait').getContext('2d').drawImage(portrait,30,1,91,109,0,0,64,76);};
+
 function say(who,line){$('speaker').textContent=who;$('line').textContent=line;}
 function interval(){return Math.max(145,300-g.repairs*5);}
 function init(){g=createGame(SIZE,Math.random,1,null);g.food={x:8,y:8};runId=crypto.randomUUID();care=0;previous=g.body.map(p=>({...p}));acc=0;lossAt=0;scene.clear();hudSnapshot='';}
 function status(){$('best').textContent=best;$('save').textContent=practice?'PRACTICE RUN / City rewards and best score are not saved.':saveFailure?'City saving unavailable in this browser.':'City care this run: '+care+' / Your completed outreach stays after the run.';}
 function hud(){document.querySelector('outreach-neighborhood')?.setCount(visits);document.querySelectorAll('.milestone').forEach(e=>e.classList.toggle('done',visits>=Number(e.dataset.at)));$('count').textContent=g.score;const parts=['Crew '+g.body.length,'Working '+g.jobs.filter(j=>!j.open&&!j.ready).length,'Ready '+g.jobs.filter(j=>j.ready).length],snapshot=parts.join('|');if(snapshot!==hudSnapshot){hudSnapshot=snapshot;$('progress').replaceChildren(...parts.map(s=>{const e=document.createElement('span');e.textContent=s;return e;}));}status();}
 function show(title,label,copy){$('paused').hidden=false;$('overlay-title').textContent=title;$('resume').textContent=label;if(copy)$('overlay-copy').textContent=copy;}
-function start(){unlockSound();init();sound('start');started=true;paused=false;last=performance.now();$('paused').hidden=true;$('pause').textContent='Pause';$('tip').textContent='Gold: drop off. Keep circling. Green: collect.';say('EL-SAYED / WITH THE CREW','Let the providers do their thing. We keep the outreach moving.');hud();$('map').focus({preventScroll:true});}
+function start(){if(!artLoaded)return;unlockSound();init();sound('start');started=true;paused=false;last=performance.now();$('paused').hidden=true;$('pause').textContent='Pause';$('tip').textContent='Gold: drop off. Keep circling. Green: collect.';say('EL-SAYED / WITH THE CREW','Let the providers do their thing. We keep the outreach moving.');hud();$('map').focus({preventScroll:true});}
 function setPause(value){if(!started||g.status!=='playing')return;paused=value;acc=0;last=performance.now();$('pause').textContent=value?'Resume':'Pause';if(value)show('Crew break.','Resume run','Catch your breath. Resume when you are ready; the providers are paused too.');else $('paused').hidden=true;}
 function steer(d){if(storyPaused)return;if(!started||g.status==='lost'||g.status==='won'){start();}if(!paused&&turn(g,d)){unlockSound();sound('turn');}}
 function careFlight(event){if(reduced)return;const box=$('map').getBoundingClientRect(),target=document.querySelector('.outreach-total')?.getBoundingClientRect();if(!target||target.top>innerHeight)return;const p=worldPoint(event),orb=document.createElement('span'),x=box.left+p.x/768*box.width,y=box.top+p.y/768*box.height;orb.className='care-orb';orb.style.left=x+'px';orb.style.top=y+'px';document.body.append(orb);orb.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:'translate(0,-25px) scale(1)',opacity:1,offset:.18},{transform:`translate(${target.left+target.width/2-x}px,${target.top+target.height/2-y}px) scale(.5)`,opacity:0}],{duration:750,easing:'cubic-bezier(.2,.7,.2,1)'}).finished.then(()=>orb.remove());}
@@ -30,11 +31,11 @@ function events(){if(!g.events.length)return;for(const e of g.events.splice(0)){
  if(e.type==='empty')$('tip').textContent='Your crew is working. Collect a green worker before starting another stop.';
 }hud();}
 function lost(){started=true;paused=false;lossAt=time+.55;scene.crash();sound('loss');$('pause').textContent='Pause';$('tip').textContent='Run over. The city keeps the '+care+' care you earned.';say('TONY / END OF THE RUN','Solid work. We keep the good stuff. Want another go?');hud();}
-$('resume').onclick=()=>g.status!=='playing'||!started?start():setPause(false);$('again').onclick=start;$('pause').onclick=()=>setPause(!paused);
+$('resume').onclick=()=>artFailed?location.reload():g.status!=='playing'||!started?start():setPause(false);$('again').onclick=start;$('pause').onclick=()=>setPause(!paused);
 function audioUI(){$('audio').textContent=soundEnabled()?'Sound on':'Sound off';$('audio').setAttribute('aria-pressed',String(soundEnabled()));}audioUI();$('audio').onclick=()=>{toggleSound();audioUI();};
 $('story').onclick=()=>{storyPaused=true;$('history').showModal();};for(const id of ['close','continue'])$(id).onclick=()=>$('history').close();$('history').addEventListener('close',()=>{storyPaused=false;last=performance.now();acc=0;});
 const keys={ArrowUp:'up',ArrowRight:'right',ArrowDown:'down',ArrowLeft:'left',w:'up',d:'right',s:'down',a:'left'};
-window.addEventListener('keydown',e=>{if(storyPaused||e.target.closest('input,textarea,select'))return;const d=keys[e.key]||keys[e.key.toLowerCase()];if(d){e.preventDefault();if(!e.repeat)steer(d);}else if(e.key===' '&&!e.target.closest('button,a')){e.preventDefault();if(!started||g.status==='lost')start();else setPause(!paused);}});
+window.addEventListener('keydown',e=>{if(storyPaused||e.target.closest('input,textarea,select'))return;const d=keys[e.key]||keys[e.key.toLowerCase()];if(d){e.preventDefault();if(!e.repeat)steer(d);}else if(e.key===' '&&!e.target.closest('button,a')){e.preventDefault();if(!started||g.status==='lost'||g.status==='won')start();else setPause(!paused);}});
 window.addEventListener('blur',()=>setPause(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)setPause(true);});
 const stick=$('stick'),knob=$('knob');let pointer=null,stickDir=null;
 function point(e){const r=stick.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,mag=Math.hypot(dx,dy),scale=Math.min(1,23/Math.max(1,mag));knob.style.transform=`translate(${dx*scale}px,${dy*scale}px)`;const d=mag<13?null:Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';if(d&&d!==stickDir)steer(d);stickDir=d;}
@@ -44,4 +45,4 @@ let swipe=null;$('map').addEventListener('pointerdown',e=>{swipe={x:e.clientX,y:
 function render(dt=0){const active=started&&!paused&&!storyPaused&&g.status==='playing',blend=active?Math.min(1,acc/(interval()*.72)):1;scene.draw(g,{previous,blend,time,dt,active,reduced,visits});}
 function frame(now){const dt=Math.max(0,Math.min(100,now-last));last=now;time+=dt/1000;if(started&&!paused&&!storyPaused&&g.status==='playing'){advanceWork(g,dt);events();acc+=dt;while(acc>=interval()&&g.status==='playing'){acc-=interval();previous=g.body.map(p=>({...p}));if(step(g)==='lost')lost();events();hud();}if(g.status==='won')show('What a crew.','New run','Every available outreach stop handled. Your city keeps what you earned.');}if(lossAt&&time>=lossAt){lossAt=0;show(g.score+' points. Good run.','Try again',care+' city care earned. Your neighborhood keeps thriving. Best: '+best+'.');}render(dt);requestAnimationFrame(frame);}
 window.addEventListener('storage',e=>{if(!practice&&e.key===KEY){try{visits=outreachCount(loadCity(localStorage));hud();}catch{}}});
-init();hud();show("Let's get moving.",'Start run','Drop a worker at gold. Loop back for green. Every pickup grows the crew.');$('tip').textContent='Snake rules: keep moving. Avoid the route edge and your crew.';say('EL-SAYED / READY TO GO','Head right to the first gold stop. We need to circle back for the crew.');requestAnimationFrame(frame);
+init();hud();show("Meet your crew.",'Loading artwork...','Getting the school and outreach crew ready.');$('resume').disabled=true;$('again').disabled=true;scene.ready.then(()=>{artLoaded=true;$('resume').disabled=false;$('again').disabled=false;show("Let's get moving.",'Start run','Drop a worker at gold. Loop back for green. Every pickup grows the crew.');}).catch(()=>{artFailed=true;$('resume').disabled=false;show('Artwork interrupted.','Reload artwork','The school artwork could not finish loading. Reload to try again.');});$('tip').textContent='Snake rules: keep moving. Avoid the route edge and your crew.';say('EL-SAYED / READY TO GO','Head right to the first gold stop. We need to circle back for the crew.');requestAnimationFrame(frame);

@@ -1,4 +1,4 @@
-import {drawActor,actorsReady} from './actors-v6.mjs';
+import {drawActor,actorsReady} from './actors-v6.mjs?v=6.1';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
 import {REPAIR_MS} from './snake-engine.mjs';
 export const BOARD={x:104,y:164,w:560,h:512};
@@ -13,8 +13,8 @@ function marker(c,p,state,t,progress=0){const{x,y}=point(p),ready=state==='ready
  shadow(c,x,y+10,18);c.fillStyle=ready?'#3cca9a36':'#ffde783d';c.beginPath();c.ellipse(x,y+7,22,13,0,0,Math.PI*2);c.fill();
  c.strokeStyle=color;c.lineWidth=3;c.beginPath();c.ellipse(x,y+7,21,13,0,0,Math.PI*2);c.stroke();
  if(station.complete&&station.naturalWidth){const h=46,w=h*station.naturalWidth/station.naturalHeight,left=x-w/2,top=y-h+12;c.save();c.beginPath();const pts=[[.055,.29],[.50,.017],[.927,.28],[.959,.94],[.79,.979],[.57,.958],[.26,.923],[.054,.911]];pts.forEach(([a,b],i)=>i?c.lineTo(left+w*a,top+h*b):c.moveTo(left+w*a,top+h*b));c.closePath();c.clip();c.drawImage(station,left,top,w,h);c.restore();}else{c.fillStyle='#187f7d';c.beginPath();c.moveTo(x-20,y-20);c.lineTo(x,y-31);c.lineTo(x+20,y-20);c.closePath();c.fill();c.fillStyle='#fff0c7';c.fillRect(x-15,y-7,30,6);c.fillStyle='#246b65';c.fillRect(x-14,y-5,3,18);c.fillRect(x+11,y-5,3,18);}
- if(working){c.fillStyle='#164c46';c.beginPath();c.roundRect(x-23,y-48,46,12,5);c.fill();c.fillStyle=palette.gold;c.beginPath();c.roundRect(x-20,y-45,40*progress,6,3);c.fill();pill(c,Math.max(0,(REPAIR_MS*(1-progress)/1000)).toFixed(1)+'s',x,y-55,palette.gold,11);}
- else{const lift=ready?Math.sin(t*5)*2:Math.sin(t*3)*2;pill(c,ready?'PICK UP':state==='open'?'TRY AGAIN':'DROP OFF',x,y-42-lift,color,11);if(ready){c.fillStyle='#174d41';c.beginPath();c.arc(x+17,y-11,9,0,Math.PI*2);c.fill();c.strokeStyle='#9cf6c4';c.lineWidth=2;c.beginPath();c.moveTo(x+12,y-11);c.lineTo(x+16,y-7);c.lineTo(x+22,y-15);c.stroke();}else glasses(c,x,y-13,.48,color);}
+ if(working){c.fillStyle='#164c46';c.beginPath();c.roundRect(x-23,y-48,46,12,5);c.fill();c.fillStyle=palette.gold;c.beginPath();c.roundRect(x-20,y-45,40*progress,6,3);c.fill();pill(c,Math.max(0,(REPAIR_MS*(1-progress)/1000)).toFixed(1)+'s',x,y-55,palette.gold,16);}
+ else{const lift=ready?Math.sin(t*5)*2:Math.sin(t*3)*2;pill(c,ready?'PICK UP':state==='open'?'TRY AGAIN':'DROP OFF',x,y-42-lift,color,16);if(ready){c.fillStyle='#174d41';c.beginPath();c.arc(x+17,y-11,9,0,Math.PI*2);c.fill();c.strokeStyle='#9cf6c4';c.lineWidth=2;c.beginPath();c.moveTo(x+12,y-11);c.lineTo(x+16,y-7);c.lineTo(x+22,y-15);c.stroke();}else glasses(c,x,y-13,.48,color);}
 }
 export function createScene(canvas){const c=canvas.getContext('2d'),effects=[],particles=[];let death=0;
  function event(e,time){const p=point(e);effects.push({...p,time,text:e.type==='repair'?'+100':e.type==='pickup'?'+1 CARE':e.type==='early'?'GIVE THEM TIME':'CREW AT WORK',kind:e.type});if(e.type==='repair'||e.type==='pickup')for(let i=0;i<14;i++){const a=i/14*Math.PI*2;particles.push({...p,vx:Math.cos(a)*(30+Math.random()*30),vy:Math.sin(a)*35-20,life:.8,color:i%2?palette.gold:palette.green});}}
@@ -29,8 +29,8 @@ export function createScene(canvas){const c=canvas.getContext('2d'),effects=[],p
  if(visits>=6){drawProp(c,1,79,650,52,35);drawProp(c,1,691,650,52,35);}if(visits>=12){drawProp(c,8,75,172,44,48);drawProp(c,8,698,172,44,48);}
  for(const p of g.patches.slice(-24)){const q=point(p);c.fillStyle='#42aa8525';c.beginPath();c.ellipse(q.x,q.y+6,12,7,0,0,Math.PI*2);c.fill();}
  if(g.food)marker(c,g.food,'new',reduced?0:time);
- const actors=[];for(const j of g.jobs){marker(c,j,j.open?'open':j.ready?'ready':'working',reduced?0:time,j.progress/REPAIR_MS);if(!j.open){const p=point(j);actors.push({...p,id:j.worker.id,feet:p.y+14,moving:false,flip:false,working:!j.ready,height:38,uid:j.worker.uid});}}
- const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p,q=point({x:before.x+(p.x-before.x)*blend,y:before.y+(p.y-before.y)*blend});return{...q,feet:q.y+14,id:p.id,uid:p.uid,index:i,flip:p.x<before.x,height:i===0?46:42,moving:active};});
+ const actors=[];for(const j of g.jobs){marker(c,j,j.open?'open':j.ready?'ready':'working',reduced?0:time,j.progress/REPAIR_MS);if(!j.open){const p=point(j);actors.push({...p,id:j.worker.id,feet:p.y+14,moving:false,flip:false,working:!j.ready,height:46,uid:j.worker.uid});}}
+ const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p,q=point({x:before.x+(p.x-before.x)*blend,y:before.y+(p.y-before.y)*blend});return{...q,feet:q.y+14,id:p.id,uid:p.uid,index:i,flip:p.x<before.x,height:i===0?54:48,moving:active};});
  c.strokeStyle='#15776b50';c.lineWidth=7;c.lineCap='round';c.lineJoin='round';c.beginPath();positions.forEach((p,i)=>i?c.lineTo(p.x,p.y+8):c.moveTo(p.x,p.y+8));c.stroke();
  const head=positions[0];if(head){c.strokeStyle='#fff6d5';c.lineWidth=3;c.beginPath();c.ellipse(head.x,head.y+12,17,9,0,0,Math.PI*2);c.stroke();if(g.body[0].x<=1||g.body[0].x>=14||g.body[0].y<=1||g.body[0].y>=14){c.strokeStyle='#d77f4790';c.lineWidth=4;c.beginPath();c.ellipse(head.x,head.y+12,21,12,0,0,Math.PI*2);c.stroke();}}
  actors.push(...positions);actors.sort((a,b)=>a.feet-b.feet).forEach(p=>{shadow(c,p.x,p.feet,12);if(!drawActor(c,p.id,p.x,p.feet,reduced?0:time+p.uid*.11,p)){drawResident(c,p.x,p.feet,p.id,time,!p.moving,p.height);}if(p.working){glasses(c,p.x+10,p.feet-11,.3,'#fff0b9');}});
@@ -39,6 +39,6 @@ export function createScene(canvas){const c=canvas.getContext('2d'),effects=[],p
  if(!active&&g.score===0){const p=point({x:8,y:8}),q=point(g.body[0]);c.strokeStyle='#21776b99';c.lineWidth=3;c.setLineDash([5,8]);c.beginPath();c.moveTo(q.x+20,q.y+12);c.lineTo(p.x-23,p.y+12);c.stroke();c.setLineDash([]);}
  pill(c,'SCHOOL OUTREACH / ROUTE '+(Math.floor(g.score/500)+1),384,735,palette.cream,13);c.restore();
  }
- Promise.all([bg.decode(),actorsReady()]).catch(()=>{});onSpritesReady(()=>{});
- return{draw,event,crash(){death=1;},clear(){effects.length=particles.length=0;death=0;}};
+ const ready=Promise.all([bg.decode(),station.decode(),actorsReady()]);onSpritesReady(()=>{});
+ return{draw,event,ready,crash(){death=1;},clear(){effects.length=particles.length=0;death=0;}};
 }
