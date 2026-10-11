@@ -6,8 +6,8 @@ const mix=(a,b,u)=>a+(b-a)*u;
 export function householdState(group,time,reduced=false){
  const age=reduced?20:((time+group.offset)%56+56)%56;
  const start=group.home, end=group.destination, aisle=group.aisle??382;
- const path=[start,{x:start.x,y:aisle},{x:end.x,y:aisle},end];
- function route(u){const lengths=path.slice(1).map((p,i)=>Math.hypot(p.x-path[i].x,p.y-path[i].y)),total=lengths.reduce((a,b)=>a+b,0);let d=u*total;for(let i=0;i<3;i++){if(d<=lengths[i]||i===2){const f=lengths[i]?d/lengths[i]:0;return{x:mix(path[i].x,path[i+1].x,f),y:mix(path[i].y,path[i+1].y,f),flip:path[i+1].x<path[i].x};}d-=lengths[i];}}
+ const path=group.route??[start,{x:start.x,y:aisle},{x:end.x,y:aisle},end];
+ function route(u){const lengths=path.slice(1).map((p,i)=>Math.hypot(p.x-path[i].x,p.y-path[i].y)),total=lengths.reduce((a,b)=>a+b,0);let d=u*total;for(let i=0;i<lengths.length;i++){if(d<=lengths[i]||i===lengths.length-1){const f=lengths[i]?d/lengths[i]:0;return{x:mix(path[i].x,path[i+1].x,f),y:mix(path[i].y,path[i+1].y,f),flip:path[i+1].x<path[i].x};}d-=lengths[i];}}
  if(age<10)return{...route(age/10),phase:'arrive',moving:true,age};
  if(age<38)return{...end,phase:'activity',moving:false,flip:false,age};
  if(age<48)return{...route(1-(age-38)/10),phase:'return',moving:true,flip:end.x>start.x,age};
@@ -28,7 +28,7 @@ export function paintHousehold(c,group,state,time,reduced=false){
  const activity=phase==='activity',kind=group.kind;
  const members=[{name:group.child??'girl',dx:0,dy:0,h},{name:'parent',dx:23,dy:6,h:h*1.28}];
  if(group.sibling)members.push({name:'boy',dx:-18,dy:8,h:h*.9});
- for(const [i,m] of members.entries()){shadow(c,x+m.dx,y+m.dy,7);drawPerson(c,m.name,x+m.dx,y+m.dy,{height:m.h,state:moving?'walk':activity&&kind==='dance'?'activity':'idle',phase:t+group.offset+i*.7,flip,motionKey:group.key+'-'+i});if(activity&&i===0)activityDetail(c,kind,x,y,t+group.offset,h);}
+ for(const [i,m] of members.entries()){shadow(c,x+m.dx,y+m.dy,7);drawPerson(c,m.name,x+m.dx,y+m.dy,{height:m.h,state:moving?'walk':activity&&kind==='dance'?'activity':'idle',phase:t+group.offset+i*.7,flip,motionKey:group.key+'-'+i});if(activity&&i===0)activityDetail(c,group.activityKind??kind,x,y,t+group.offset,h);}
  if(kind==='clinic'){shadow(c,group.destination.x+39,group.destination.y+2,8);drawPerson(c,'provider',group.destination.x+39,group.destination.y+2,{height:h*1.3,state:activity?'activity':'idle',phase:t+.6});}
 }
 export function courtSurface(c,x,feet,w=120){
