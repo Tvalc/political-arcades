@@ -1,4 +1,4 @@
-import {paintWorld,worldReady} from './world-v12.mjs?v=12.1';
+import {paintWorld,worldReady} from './world-v12.mjs?v=12.2';
 import {KEY,RESOURCES,PROJECTS,loadCity,wallet,award,build,pave,expand,canExpand,canBuild,migrateHousing} from '../shared/city-state.mjs?v=1.1';
 const $=s=>document.querySelector(s),labels={housing:'Building supplies',streets:'Street work',recreation:'Court points',care:'Neighbors helped',policy:'Civic wins'},reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let storage;try{storage=localStorage;}catch{}
