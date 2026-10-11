@@ -3,7 +3,7 @@ const plots=[[[250,286],[462,286],[441,383],[181,383]],[[497,286],[702,286],[714
 const layouts=[{x:333,y:378,w:210},{x:600,y:378,w:220},{x:878,y:378,w:220},{x:274,y:532,w:280},{x:593,y:532,w:280},{x:946,y:532,w:280}];
 export function courtLayout(slot){return layouts[slot];}
 export function courtPoint(slot,u,v){const {x,y,w}=courtLayout(slot),corners=[[26,270],[321,211],[471,334],[189,393]],top={x:corners[0][0]+(corners[1][0]-corners[0][0])*u,y:corners[0][1]+(corners[1][1]-corners[0][1])*u},bottom={x:corners[3][0]+(corners[2][0]-corners[3][0])*u,y:corners[3][1]+(corners[2][1]-corners[3][1])*u};return{x:x-w/2+(top.x+(bottom.x-top.x)*v)*w/512,y:y-423*w/512+(top.y+(bottom.y-top.y)*v)*w/512};}
-export function courtPosition(slot,ordinal=0){return courtPoint(slot,.18+(ordinal%3)*.20,.42+Math.floor(ordinal%6/3)*.24);}
+export function courtPosition(slot,ordinal=0){return courtPoint(slot,.18+(ordinal%2)*.40,.30+Math.floor(ordinal%6/2)*.25);}
 export function courtEntrance(slot){return courtPoint(slot,.18,.98);}
 export function courtRim(slot){const {x,y,w}=courtLayout(slot);return{x:x-w/2+350*w/512,y:y-423*w/512+70*w/512};}
 function polygon(c,points){c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x??p[0],p.y??p[1]):c.moveTo(p.x??p[0],p.y??p[1]));c.closePath();}
