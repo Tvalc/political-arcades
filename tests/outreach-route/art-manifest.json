@@ -1,0 +1,16 @@
+{
+  "provider": "Makko",
+  "collection": "8b29307f-0f4d-430a-932b-5bd4ecffc114",
+  "newAssets": {
+    "campus-v6.webp": "c3a44532-4e6d-40cf-b616-16ad17d22084",
+    "station-v6.webp": "3bf8fef7-6891-4ef5-bfd6-c9b3b0008b72",
+    "neighborhood-v6.webp": "b5e9d729-bfa9-4f65-81c8-740a9da1d88a"
+  },
+  "reusedAnimations": {
+    "sayed-walk-v6.webp": "Tvalc/capitol-crashers/play/assets/sprites/chibi/abdul_el_sayed_walk.webp",
+    "mamdani-walk-v6.webp": "Tvalc/capitol-crashers/play/assets/sprites/chibi/zohran_mamdani_walk.webp",
+    "organizer-walk-v6.webp": "Tvalc/capitol-crashers/play/assets/sprites/chibi/citizens/witness_walk.webp"
+  },
+  "rendering": "Fixed body height and per-frame feet anchors. Aspect ratio preserved. Half-resolution atlas packing for El-Sayed and organizer; original Mamdani atlas retained.",
+  "setting": "Fictional, maintained Detroit school campus. No claim that the artwork depicts an actual school."
+}
