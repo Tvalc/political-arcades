@@ -89,7 +89,7 @@
   } catch (_) { progressSaved = false; }
   function courtById(id) { return COURTS.find(c => c.id === id) || COURTS[0]; }
   function courtUnlocked(id) { return marketingUnlock || courtById(id).wins <= careerWins; }
-  function creditCourtPoints(type,count=1){if(!match||match.practice||marketingUnlock||match.marketingSession)return false;const receipt=window.CityRewards?.credit(type,count);if(!receipt)return false;if(type==='vote:basket')match.cityBaskets+=count;else match.cityWinBonus+=count;match.cityPoints+=count;match.cityPointsEvent='+'+count+' court point'+(count===1?'':'s')+' - '+(type==='vote:basket'?'your made match basket':'match win');return true;}
+  function creditCourtPoints(type,count=1,label=''){if(!match||match.practice||marketingUnlock||match.marketingSession)return false;const receipt=window.CityRewards?.credit(type,count);if(!receipt)return false;const bucket=type==='vote:basket'?'cityBaskets':type==='vote:letter'?'cityLetterBonus':type==='vote:community'?'cityCommunity':'cityWinBonus';match[bucket]=(match[bucket]||0)+count;match.cityPoints+=count;match.cityPointsEvent='+'+count+' court points — '+(label||'match win');return true;}
   function recordCourtWin() {
     if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = creditCourtPoints('vote:win',4); }
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
@@ -202,9 +202,20 @@
 
   function loadImage(key, src) {
     const img = new Image();
+    img.crossOrigin="anonymous";
     const asset = { src, state: "loading" };
     assetStates.set(key, asset);
-    img.onload = () => { asset.state = "ready"; };
+    img.onload = () => {
+      // Measure opaque shoe contact, once per idle frame, instead of transparent canvas padding.
+      const id=key.endsWith('-idle')?key.slice(0,-5):null,clip=id&&CLIPS[id]?.idle;
+      if(clip){const savedFeet=clip.feet;try{const c=document.createElement('canvas');c.width=clip.fw;c.height=clip.fh;const g=c.getContext('2d',{willReadFrequently:true});clip.feet=[];clip.visibleHeights=[];
+        for(let f=0;f<clip.frames;f++){const cell=spriteCell(clip,f,{sy:0});g.clearRect(0,0,c.width,c.height);g.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,0,0,c.width,c.height);const rgba=g.getImageData(0,0,c.width,c.height).data;let top=c.height,bottom=0;
+          for(let y=0;y<c.height;y++){let n=0;for(let x=0;x<c.width;x++)if(rgba[(y*c.width+x)*4+3]>220)n++;if(n>=4){top=Math.min(top,y);bottom=y+1;}}
+          clip.feet.push(bottom/c.height);clip.visibleHeights.push(bottom-top);
+        }
+      }catch(error){clip.feet=savedFeet;console.warn('Idle contact measurement unavailable',key,error);}}
+      asset.state='ready';
+    };
     img.onerror = () => { asset.state = "failed"; };
     setTimeout(() => { if (asset.state === "loading") asset.state = "failed"; }, 20000);
     img.src = src.startsWith("assets/") ? `${src}${src.includes("?") ? "&" : "?"}v=talarico-motion-v15` : src;
@@ -1339,6 +1350,8 @@
     }
   }
 
+  for(const clip of Object.values(CLIPS.talarico)) clip.characterScale=.82;
+
   let crowdGain = null;
 
   function tone(freq, dur, type, gain) {
@@ -1573,7 +1586,7 @@
     const home = FIGHTERS[humanId];
     return {
       humanId,
-      cityPoints:0,cityBaskets:0,cityWinBonus:0,cityPointsEvent:'',
+      cityPoints:0,cityBaskets:0,cityWinBonus:0,cityLetterBonus:0,cityCommunity:0,cityPointsEvent:'',
       cpuId,
       spectatorId,
       players,
@@ -2022,6 +2035,7 @@
   }
 
   function addLetter(id) {
+    if(id!==match.round?.setter && match.localPlayers.includes(match.round?.setter)) creditCourtPoints('vote:letter',2,'your shot earned an opponent a letter');
     match.letters[id]+=1;match.pop[id]=1;tone(220,.18,"sawtooth",.05);
     if(match.letters[id]>=LETTERS.length && !match.eliminated.includes(id)) {
       match.eliminated.push(id);const left=remainingPlayers();
@@ -2046,7 +2060,7 @@
     match.basket = { life: 1.4, made: ball.made, dunk: ball.flair === "dunk" };
     const validCopy = match.phase !== 'copy' || (match.challenge && Math.hypot(ball.sx-match.challenge.x,ball.sy-match.challenge.y)<.11 && ball.flair===match.challenge.flair);
     reactToShot(id, ball.made && validCopy, ball.flair);
-    if (ball.made && validCopy && match.localPlayers.includes(id)){creditCourtPoints('vote:basket');}else if(match.localPlayers.includes(id)){match.cityPointsEvent=ball.made?'0 points - match the required spot and shot':'0 points - missed shot';}
+    if (ball.made && validCopy && match.localPlayers.includes(id)){const points=1+(distToHoop(ball.sx,ball.sy)>=.35?1:0)+(distToHoop(ball.sx,ball.sy)>=.6?1:0)+(ball.flair!=='none'?1:0);creditCourtPoints('vote:basket',points,'made '+FLAIR_NAME[ball.flair]);}else if(ball.made && !match.localPlayers.includes(id)){creditCourtPoints('vote:community',.25,'opponent scored — the whole court wins');}else if(match.localPlayers.includes(id)){match.cityPointsEvent=ball.made?'0 points - match the required spot and shot':'0 points - missed shot';}
     if(id===match.humanId && ball.made && validCopy && !match.practice){
       match.songShots ||= {};match.songShots[ball.flair]=(match.songShots[ball.flair]||0)+1;
     }
@@ -2443,8 +2457,8 @@
       const clip=CLIPS[id]?.idle, img=images[`${id}-idle`];
       if(clip && img?.naturalWidth) {
         const frame=Math.floor(performance.now()/1000*clip.fps)%clip.frames;
-        const cell=spriteCell(clip,frame,{sy:0}), height=270*(id==="talarico"?clip.fh/clip.body:1), width=height*clip.fw/clip.fh;
-        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+cardW/2-width/2,117,width,height);
+        const cell=spriteCell(clip,frame,{sy:0}), body=clip.visibleHeights?.[0]||clip.body||clip.fh, height=260*clip.fh/body, width=height*clip.fw/clip.fh;
+        ctx.drawImage(img,cell.x,cell.y,clip.fw,clip.fh,x+cardW/2-width/2,399-height*(clip.feet?.[frame]??1),width,height);
       }
       buttons.push({x,y:90,w:cardW,h:440,action:()=>{selectIndex=i;}});
       ctx.fillStyle=on?"#f5bc51":"#fff6d8";ctx.font="19px Bungee, sans-serif";
@@ -3256,7 +3270,7 @@
   }
 
   function updateMobileUi() {
-    window.VotePoints?.update({playing:screen==='play'&&!!match,over:!!match?.over,practice:!!match?.practice,preview:!!match?.marketingSession,total:match?.cityPoints||0,baskets:match?.cityBaskets||0,bonus:match?.cityWinBonus||0,event:match?.cityPointsEvent||''});
+    window.VotePoints?.update({playing:screen==='play'&&!!match,over:!!match?.over,practice:!!match?.practice,preview:!!match?.marketingSession,total:match?.cityPoints||0,baskets:match?.cityBaskets||0,bonus:match?.cityWinBonus||0,letters:match?.cityLetterBonus||0,community:match?.cityCommunity||0,event:match?.cityPointsEvent||''});
     const playing=screen === "play" && !!match, overlay=paused || guideOpen || courtOpen || !assetsReady();
     const human=playing && isHuman(match.active), available=human && !match.over && !match.ball && !match.pass && !overlay;
     const aiming=available && match.hold ? shotNeed() : null;
