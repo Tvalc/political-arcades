@@ -1,6 +1,6 @@
-import {drawActor,actorsReady} from './actors-v6.mjs?v=6.3';
+import {drawActor,actorsReady} from './actors-v6.mjs?v=6.4';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
-import {REPAIR_MS} from './snake-engine.mjs?v=6.3';
+import {REPAIR_MS} from './snake-engine.mjs?v=6.4';
 export const BOARD={x:104,y:164,w:560,h:512};
 const bg=new Image();bg.src=new URL('./campus-v6.webp',import.meta.url).href;
 const station=new Image();station.src=new URL('./station-v6.webp',import.meta.url).href;
@@ -16,13 +16,13 @@ function marker(c,p,state,t,progress=0){const{x,y}=point(p),ready=state==='ready
  if(working){c.fillStyle='#164c46';c.beginPath();c.roundRect(x-23,y-48,46,12,5);c.fill();c.fillStyle=palette.gold;c.beginPath();c.roundRect(x-20,y-45,40*progress,6,3);c.fill();pill(c,Math.max(0,(REPAIR_MS*(1-progress)/1000)).toFixed(1)+'s',x,y-55,palette.gold,16);}
  else{const lift=ready?Math.sin(t*5)*2:Math.sin(t*3)*2;pill(c,ready?'PICK UP':state==='open'?'TRY AGAIN':'DROP OFF',x,y-42-lift,color,16);if(ready){c.fillStyle='#174d41';c.beginPath();c.arc(x+17,y-11,9,0,Math.PI*2);c.fill();c.strokeStyle='#9cf6c4';c.lineWidth=2;c.beginPath();c.moveTo(x+12,y-11);c.lineTo(x+16,y-7);c.lineTo(x+22,y-15);c.stroke();}else glasses(c,x,y-13,.48,color);}
 }
-export function createScene(canvas){const c=canvas.getContext('2d'),effects=[],particles=[],faces=new Map();let death=0;
+export function createScene(canvas){const resolution=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(768*resolution);canvas.height=Math.round(768*resolution);const c=canvas.getContext('2d');c.setTransform(resolution,0,0,resolution,0,0);const effects=[],particles=[],faces=new Map();let death=0;
  function event(e,time){const p=point(e);effects.push({...p,time,text:e.type==='repair'?'+100':e.type==='pickup'?'+1 CARE':e.type==='early'?'GIVE THEM TIME':'CREW AT WORK',kind:e.type});if(e.type==='repair'||e.type==='pickup')for(let i=0;i<14;i++){const a=i/14*Math.PI*2;particles.push({...p,vx:Math.cos(a)*(30+Math.random()*30),vy:Math.sin(a)*35-20,life:.8,color:i%2?palette.gold:palette.green});}}
  function draw(g,{previous,blend,time,dt,active,reduced,visits}){c.clearRect(0,0,768,768);c.save();if(death>0&&!reduced)c.translate(Math.sin(death*50)*death*3,0);death=Math.max(0,death-dt/500);
  if(bg.complete&&bg.naturalWidth)c.drawImage(bg,0,0,768,768);else{c.fillStyle='#dcccaa';c.fillRect(0,0,768,768);}
  c.fillStyle='#f6e8c30a';c.fillRect(BOARD.x,BOARD.y,BOARD.w,BOARD.h);
  c.strokeStyle='#b69a6970';c.lineWidth=1;for(let i=0;i<=16;i++){const x=BOARD.x+i*BOARD.w/16,y=BOARD.y+i*BOARD.h/16;c.beginPath();c.moveTo(x,BOARD.y);c.lineTo(x,BOARD.y+BOARD.h);c.moveTo(BOARD.x,y);c.lineTo(BOARD.x+BOARD.w,y);c.stroke();}
- c.strokeStyle='#2d6d665c';c.lineWidth=3;c.setLineDash([8,8]);c.strokeRect(BOARD.x,BOARD.y,BOARD.w,BOARD.h);c.setLineDash([]);
+ c.strokeStyle='#2d6d669e';c.lineWidth=4;c.setLineDash([8,8]);c.strokeRect(BOARD.x,BOARD.y,BOARD.w,BOARD.h);c.setLineDash([]);
  // Ambient residents stay outside the playable route, so decorative people cannot be mistaken for collision targets.
  const life=Math.min(8,visits);for(let i=0;i<life;i++){const phase=(time*.035+i*.19)%1,x=72+(i%2)*628,y=205+phase*400;shadow(c,x,y,8);drawResident(c,x,y,i%3,time,i%3===0,31);}
  if(visits>=3){c.strokeStyle='#745c37';c.lineWidth=2;c.beginPath();c.moveTo(204,130);c.quadraticCurveTo(384,155,564,130);c.stroke();for(let i=0;i<12;i++){const x=214+i*29,y=132+Math.sin(i/11*Math.PI)*12;c.fillStyle=[palette.gold,'#61b8a3','#ee9b78'][i%3];c.beginPath();c.moveTo(x,y);c.lineTo(x+13,y);c.lineTo(x+6,y+14);c.fill();}}
