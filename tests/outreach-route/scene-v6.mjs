@@ -1,4 +1,4 @@
-import {drawActor,actorsReady} from './actors-v6.mjs?v=6.4';
+import {drawActor,actorsReady} from './actors-v6.mjs?v=6.9';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
 import {REPAIR_MS} from './snake-engine.mjs?v=6.4';
 export const BOARD={x:104,y:164,w:560,h:512};
@@ -16,7 +16,7 @@ function marker(c,p,state,t,progress=0,labelScale=1){const{x,y}=point(p),ready=s
  if(working){c.fillStyle='#164c46';c.beginPath();c.roundRect(x-23,y-48,46,12,5);c.fill();c.fillStyle=palette.gold;c.beginPath();c.roundRect(x-20,y-45,40*progress,6,3);c.fill();pill(c,Math.max(0,(REPAIR_MS*(1-progress)/1000)).toFixed(1)+'s',x,y-55,palette.gold,16*labelScale);}
  else{const lift=ready?Math.sin(t*5)*2:Math.sin(t*3)*2;pill(c,ready?'PICK UP':state==='open'?'TRY AGAIN':'DROP OFF',x,y-42-lift,color,16*labelScale);if(ready){c.fillStyle='#174d41';c.beginPath();c.arc(x+17,y-11,9,0,Math.PI*2);c.fill();c.strokeStyle='#9cf6c4';c.lineWidth=2;c.beginPath();c.moveTo(x+12,y-11);c.lineTo(x+16,y-7);c.lineTo(x+22,y-15);c.stroke();}else glasses(c,x,y-13,.48,color);}
 }
-export function createScene(canvas){const resolution=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(768*resolution);canvas.height=Math.round(768*resolution);const c=canvas.getContext('2d');c.setTransform(resolution,0,0,resolution,0,0);const effects=[],particles=[],faces=new Map();let death=0,labelScale=1;const resize=()=>{labelScale=Math.min(1.55,Math.max(1,600/(canvas.clientWidth||600)));};resize();new ResizeObserver(resize).observe(canvas);
+export function createScene(canvas){const resolution=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(768*resolution);canvas.height=Math.round(768*resolution);const c=canvas.getContext('2d');c.setTransform(resolution,0,0,resolution,0,0);const effects=[],particles=[],faces=new Map(),strides=new Map();let death=0,labelScale=1;const resize=()=>{labelScale=Math.min(1.55,Math.max(1,600/(canvas.clientWidth||600)));};resize();new ResizeObserver(resize).observe(canvas);
  function event(e,time){const p=point(e);effects.push({...p,time,text:e.type==='repair'?'+100':e.type==='pickup'?'+1 CARE':e.type==='early'?'GIVE THEM TIME':'CREW AT WORK',kind:e.type});if(e.type==='repair'||e.type==='pickup')for(let i=0;i<14;i++){const a=i/14*Math.PI*2;particles.push({...p,vx:Math.cos(a)*(30+Math.random()*30),vy:Math.sin(a)*35-20,life:.8,color:i%2?palette.gold:palette.green});}}
  function draw(g,{previous,blend,time,dt,active,reduced,visits}){c.clearRect(0,0,768,768);c.save();if(death>0&&!reduced)c.translate(Math.sin(death*50)*death*3,0);death=Math.max(0,death-dt/500);
  if(bg.complete&&bg.naturalWidth)c.drawImage(bg,0,0,768,768);else{c.fillStyle='#dcccaa';c.fillRect(0,0,768,768);}
@@ -30,7 +30,7 @@ export function createScene(canvas){const resolution=Math.min(2,window.devicePix
  for(const p of g.patches.slice(-24)){const q=point(p);c.fillStyle='#42aa8525';c.beginPath();c.ellipse(q.x,q.y+6,12,7,0,0,Math.PI*2);c.fill();}
  if(g.food)marker(c,g.food,'new',reduced?0:time,0,labelScale);
  const actors=[];for(const j of g.jobs){marker(c,j,j.open?'open':j.ready?'ready':'working',reduced?0:time,j.progress/REPAIR_MS,labelScale);if(!j.open){const p=point(j);actors.push({...p,id:j.worker.id,feet:p.y+14,moving:false,flip:false,working:!j.ready,height:46,uid:j.worker.uid});}}
- const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p,q=point({x:before.x+(p.x-before.x)*blend,y:before.y+(p.y-before.y)*blend});return{...q,feet:q.y+14,id:p.id,uid:p.uid,index:i,flip:(p.x===before.x?faces.get(p.uid):p.x<before.x)||false,height:i===0?54:48,moving:active};});
+ const positions=g.body.map((p,i)=>{const before=previous.find(q=>q.uid===p.uid)||p,q=point({x:before.x+(p.x-before.x)*blend,y:before.y+(p.y-before.y)*blend});const stride=strides.get(p.uid)||{x:q.x,y:q.y,phase:p.uid%12};if(active)stride.phase+=Math.hypot(q.x-stride.x,q.y-stride.y)*12/140;stride.x=q.x;stride.y=q.y;strides.set(p.uid,stride);return{...q,walkPhase:reduced?0:stride.phase,feet:q.y+14,id:p.id,uid:p.uid,index:i,flip:(p.x===before.x?faces.get(p.uid):p.x<before.x)||false,height:i===0?54:48,moving:active};});
  c.strokeStyle='#15776b50';c.lineWidth=7;c.lineCap='round';c.lineJoin='round';c.beginPath();positions.forEach((p,i)=>i?c.lineTo(p.x,p.y+8):c.moveTo(p.x,p.y+8));c.stroke();
  const head=positions[0];if(head){c.strokeStyle='#fff6d5';c.lineWidth=3;c.beginPath();c.ellipse(head.x,head.y+12,17,9,0,0,Math.PI*2);c.stroke();if(g.body[0].x<=1||g.body[0].x>=14||g.body[0].y<=1||g.body[0].y>=14){c.strokeStyle='#d77f4790';c.lineWidth=4;c.beginPath();c.ellipse(head.x,head.y+12,21,12,0,0,Math.PI*2);c.stroke();}}
  positions.forEach(p=>faces.set(p.uid,p.flip));actors.push(...positions);actors.sort((a,b)=>a.feet-b.feet).forEach(p=>{shadow(c,p.x,p.feet,12);if(!drawActor(c,p.id,p.x,p.feet,reduced?0:time+p.uid*.11,p)){drawResident(c,p.x,p.feet,p.id,time,!p.moving,p.height);}if(p.working){glasses(c,p.x+10,p.feet-11,.3,'#fff0b9');}});
@@ -40,5 +40,5 @@ export function createScene(canvas){const resolution=Math.min(2,window.devicePix
  pill(c,'SCHOOL OUTREACH / ROUTE '+(Math.floor(g.score/500)+1),384,735,palette.cream,13);c.restore();
  }
  const ready=Promise.all([bg.decode(),station.decode(),actorsReady()]);onSpritesReady(()=>{});
- return{draw,event,ready,crash(){death=1;},clear(){effects.length=particles.length=0;faces.clear();death=0;}};
+ return{draw,event,ready,crash(){death=1;},clear(){effects.length=particles.length=0;faces.clear();strides.clear();death=0;}};
 }
