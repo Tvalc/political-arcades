@@ -1,3 +1,4 @@
+import {createFestival,drawFestival} from './festival-v8.mjs?v=8.0';
 import {drawPerson,peopleReady} from './people-v7.mjs?v=7.1';
 import {drawActor,actorsReady} from './actors-v6.mjs?v=6.9';
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
@@ -17,9 +18,9 @@ function marker(c,p,state,t,progress=0,labelScale=1){const{x,y}=point(p),ready=s
  if(working){c.fillStyle='#164c46';c.beginPath();c.roundRect(x-23,y-48,46,12,5);c.fill();c.fillStyle=palette.gold;c.beginPath();c.roundRect(x-20,y-45,40*progress,6,3);c.fill();pill(c,Math.max(0,(REPAIR_MS*(1-progress)/1000)).toFixed(1)+'s',x,y-55,palette.gold,16*labelScale);}
  else{const lift=ready?Math.sin(t*5)*2:Math.sin(t*3)*2;pill(c,ready?'PICK UP':state==='open'?'TRY AGAIN':'DROP OFF',x,y-42-lift,color,16*labelScale);if(ready){c.fillStyle='#174d41';c.beginPath();c.arc(x+17,y-11,9,0,Math.PI*2);c.fill();c.strokeStyle='#9cf6c4';c.lineWidth=2;c.beginPath();c.moveTo(x+12,y-11);c.lineTo(x+16,y-7);c.lineTo(x+22,y-15);c.stroke();}else glasses(c,x,y-13,.48,color);}
 }
-export function createScene(canvas){const resolution=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(768*resolution);canvas.height=Math.round(768*resolution);const c=canvas.getContext('2d');c.setTransform(resolution,0,0,resolution,0,0);const effects=[],particles=[],faces=new Map(),strides=new Map(),handoffs=new Map(),lastActors=new Map();let motionTime=0;let death=0,labelScale=1;const resize=()=>{labelScale=Math.min(1.55,Math.max(1,600/(canvas.clientWidth||600)));};resize();new ResizeObserver(resize).observe(canvas);
+export function createScene(canvas){const resolution=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(768*resolution);canvas.height=Math.round(768*resolution);const c=canvas.getContext('2d');c.setTransform(resolution,0,0,resolution,0,0);const effects=[],particles=[],faces=new Map(),strides=new Map(),handoffs=new Map(),lastActors=new Map();let motionTime=0,festival=null;let death=0,labelScale=1;const resize=()=>{labelScale=Math.min(1.55,Math.max(1,600/(canvas.clientWidth||600)));};resize();new ResizeObserver(resize).observe(canvas);
  function event(e,time){const p=point(e);if(e.worker&&['drop','pickup','early'].includes(e.type)){const from=lastActors.get(e.worker.uid)||{x:p.x,y:p.y};handoffs.set(e.worker.uid,{from:{x:from.x,y:from.y},at:motionTime,duration:e.type==='drop'?.55:.65});}effects.push({...p,time,text:e.type==='repair'?'+100':e.type==='pickup'?'+1 CARE':e.type==='early'?'GIVE THEM TIME':'CREW AT WORK',kind:e.type});if(e.type==='repair'||e.type==='pickup')for(let i=0;i<14;i++){const a=i/14*Math.PI*2;particles.push({...p,vx:Math.cos(a)*(30+Math.random()*30),vy:Math.sin(a)*35-20,life:.8,color:i%2?palette.gold:palette.green});}}
- function draw(g,{previous,blend,time,dt,active,reduced,visits}){if(active)motionTime+=dt/1000;c.clearRect(0,0,768,768);c.save();if(death>0&&!reduced)c.translate(Math.sin(death*50)*death*3,0);death=Math.max(0,death-dt/500);
+ function draw(g,{previous,blend,time,dt,active,reduced,visits}){if(festival){drawFestival(c,festival,{dt,reduced,background:bg});return;}if(active)motionTime+=dt/1000;c.clearRect(0,0,768,768);c.save();if(death>0&&!reduced)c.translate(Math.sin(death*50)*death*3,0);death=Math.max(0,death-dt/500);
  if(bg.complete&&bg.naturalWidth)c.drawImage(bg,0,0,768,768);else{c.fillStyle='#dcccaa';c.fillRect(0,0,768,768);}
  c.fillStyle='#f6e8c30a';c.fillRect(BOARD.x,BOARD.y,BOARD.w,BOARD.h);
  c.strokeStyle='#b69a6970';c.lineWidth=1;for(let i=0;i<=16;i++){const x=BOARD.x+i*BOARD.w/16,y=BOARD.y+i*BOARD.h/16;c.beginPath();c.moveTo(x,BOARD.y);c.lineTo(x,BOARD.y+BOARD.h);c.moveTo(BOARD.x,y);c.lineTo(BOARD.x+BOARD.w,y);c.stroke();}
@@ -43,5 +44,5 @@ export function createScene(canvas){const resolution=Math.min(2,window.devicePix
  pill(c,'SCHOOL OUTREACH / ROUTE '+(Math.floor(g.score/500)+1),384,735,palette.cream,13);c.restore();
  }
  const ready=Promise.all([bg.decode(),station.decode(),actorsReady(),peopleReady]);onSpritesReady(()=>{});
- return{draw,event,ready,crash(){death=1;},clear(){effects.length=particles.length=0;faces.clear();strides.clear();handoffs.clear();lastActors.clear();motionTime=0;death=0;}};
+ return{draw,event,ready,celebrate(g){const members=[...g.body,...g.jobs.filter(j=>j.worker).map(j=>({...j,...j.worker}))];festival=createFestival(members.map((p,i)=>{const last=lastActors.get(p.uid)||point(p);return{...p,x:last.x,y:last.y+14,height:i===0?54:46};}));},crash(){death=1;},clear(){effects.length=particles.length=0;faces.clear();strides.clear();handoffs.clear();lastActors.clear();motionTime=0;festival=null;death=0;}};
 }
