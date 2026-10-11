@@ -1,4 +1,4 @@
-import {householdState,paintHousehold,residentsReady} from './resident-life.mjs?v=12.0';
+import {householdState,paintHousehold,residentsReady} from './resident-life.mjs?v=12.3';
 import {drawActor,actorsReady} from '/tests/outreach-route/actors-v6.mjs?v=10.0';
 const names=['homes','park','court','clinic','kitchen','fountain'];
 const images={};for(const name of ['neighborhood-base','neighborhood-repaired',...names]){const im=new Image();im.src=new URL(name+'-v12.webp',import.meta.url).href;images[name]=im;}
@@ -8,9 +8,9 @@ const good=im=>im.complete&&im.naturalWidth;
 function place(c,name,x,feet,width){const im=images[name];if(!good(im))return;const height=width*im.naturalHeight/im.naturalWidth;c.drawImage(im,x-width/2,feet-height,width,height);}
 function shadow(c,x,y,r=13){c.fillStyle='#263a3438';c.beginPath();c.ellipse(x,y,r,3.5,0,0,Math.PI*2);c.fill();}
 export function neighborhoodGroups(block,index){
- const homeIndex=block.lots.indexOf('homes'),homeSlot=homeIndex<0?{x:80,y:593,lane:574}:SLOTS[homeIndex];
- return block.lots.map((kind,i)=>{const slot=SLOTS[i],home={x:homeSlot.x+65,y:homeSlot.y+10},destination={x:slot.x+(kind==='court'?-50:kind==='kitchen'?-40:-30),y:slot.y-5};
- const route=homeSlot.lane===slot.lane?[home,{x:home.x,y:slot.lane},{x:destination.x,y:slot.lane},destination]:[home,{x:home.x,y:homeSlot.lane},{x:90,y:homeSlot.lane},{x:90,y:slot.lane},{x:destination.x,y:slot.lane},destination];
+ const homes=block.lots.map((kind,i)=>kind==='homes'?i:-1).filter(i=>i>=0);
+ return block.lots.map((kind,i)=>{const slot=SLOTS[i],homeSlot=homes.length?SLOTS[homes[i%homes.length]]:{x:80,y:593,lane:574},home={x:homeSlot.x+65,y:homeSlot.y+10},destination={x:slot.x+(kind==='court'?-50:kind==='kitchen'?-40:-30),y:slot.y-5};
+ const route=homeSlot.lane===slot.lane?[home,{x:home.x,y:slot.lane},{x:destination.x,y:slot.lane},destination]:[home,{x:home.x,y:homeSlot.lane},{x:homeSlot.lane<400?125:65,y:homeSlot.lane},{x:slot.lane<400?125:65,y:slot.lane},{x:destination.x,y:slot.lane},destination];
  return{key:'city-'+index+'-'+i,kind,slotIndex:i,offset:8+i*9,home,destination,route,height:i<3?41:46,activityKind:['court','fountain'].includes(kind)?'none':kind,sibling:kind==='park'||kind==='court',child:kind==='court'?'boy':'girl'};});
 }
 export function paintWorld(canvas,block,index,time,reduced=false){

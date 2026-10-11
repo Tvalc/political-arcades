@@ -10,7 +10,7 @@ export function householdState(group,time,reduced=false){
  function route(u){const lengths=path.slice(1).map((p,i)=>Math.hypot(p.x-path[i].x,p.y-path[i].y)),total=lengths.reduce((a,b)=>a+b,0);let d=u*total;for(let i=0;i<lengths.length;i++){if(d<=lengths[i]||i===lengths.length-1){const f=lengths[i]?d/lengths[i]:0;return{x:mix(path[i].x,path[i+1].x,f),y:mix(path[i].y,path[i+1].y,f),flip:path[i+1].x<path[i].x};}d-=lengths[i];}}
  if(age<10)return{...route(age/10),phase:'arrive',moving:true,age};
  if(age<38)return{...end,phase:'activity',moving:false,flip:false,age};
- if(age<48)return{...route(1-(age-38)/10),phase:'return',moving:true,flip:end.x>start.x,age};
+ if(age<48){const p=route(1-(age-38)/10);return{...p,phase:'return',moving:true,flip:!p.flip,age};}
  return{...start,phase:'home',moving:false,flip:false,age};
 }
 function shadow(c,x,y,r){c.fillStyle='#34453b30';c.beginPath();c.ellipse(x,y,r,2.6,0,0,Math.PI*2);c.fill();}

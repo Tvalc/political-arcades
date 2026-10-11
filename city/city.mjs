@@ -1,8 +1,8 @@
-import {paintWorld,worldReady} from './world-v12.mjs?v=12.2';
+import {paintWorld,worldReady} from './world-v12.mjs?v=12.3';
 import {KEY,RESOURCES,PROJECTS,loadCity,wallet,award,build,pave,expand,canExpand,canBuild,migrateHousing} from '../shared/city-state.mjs?v=1.1';
 const $=s=>document.querySelector(s),labels={housing:'Building supplies',streets:'Street work',recreation:'Court points',care:'Neighbors helped',policy:'Civic wins'},reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let storage;try{storage=localStorage;}catch{}
-let city=loadCity(storage),selected=city.blocks.length-1,failed=false,last=0,visible=true;
+let city=loadCity(storage),selected=city.blocks.length-1,failed=false,last=0,worldTime=0,visible=!document.hidden;
 function save(){try{storage.setItem(KEY,JSON.stringify(city));failed=false;return true;}catch{failed=true;return false;}}
 if(migrateHousing(city,storage))save();
 if(location.hash.startsWith('#rewards=')){try{const events=JSON.parse(decodeURIComponent(location.hash.slice(9)));if(Array.isArray(events)&&events.length<=1000){for(const e of events)if(['crashers:help','crashers:policy'].includes(e?.type))award(city,e);if(save())history.replaceState(null,'',location.pathname+location.search);}}catch{}}
@@ -21,7 +21,11 @@ $('#join').onclick=()=>{reload();city.name=$('#name').value.trim().slice(0,40)||
 $('#previous').onclick=()=>{selected=Math.max(0,selected-1);render();};$('#next').onclick=()=>{selected=Math.min(city.blocks.length-1,selected+1);render();};
 $('#pave').onclick=()=>{reload();if(pave(city,selected)){save();$('#feedback').textContent='Cracks filled. A safer street for the whole block.';render();}};
 $('#expand').onclick=()=>{reload();if(expand(city)){selected=city.blocks.length-1;save();$('#feedback').textContent='A new block is yours to build.';render();}};
-window.addEventListener('storage',e=>{if([KEY,'pa-housing-city-v1'].includes(e.key)){reload();render();}});window.addEventListener('focus',()=>{reload();render();});document.addEventListener('visibilitychange',()=>{visible=!document.hidden;if(visible){reload();render();}});
-function draw(now){if(!city.optedIn)return;const canvas=$('#city'),b=city.blocks[selected];paintWorld(canvas,b,selected,reduced.matches?0:now/1000,reduced.matches);canvas.setAttribute('aria-label',city.name+', Block '+(selected+1)+': '+(b.lots.map(id=>PROJECTS[id].name).join(', ')||'landscaped open plots')+'. '+(b.road?'Street repaired.':'Street ready for repair.')+' Families visit their homes and neighborhood activities.');}
-function frame(now){if(visible&&now-last>16){draw(now);last=now;}requestAnimationFrame(frame);}
+window.addEventListener('storage',e=>{if([KEY,'pa-housing-city-v1'].includes(e.key)){reload();render();}});window.addEventListener('focus',()=>{reload();render();});document.addEventListener('visibilitychange',()=>{visible=!document.hidden;last=0;if(visible){reload();render();}});
+function draw(now){if(!city.optedIn)return;const canvas=$('#city'),b=city.blocks[selected];paintWorld(canvas,b,selected,reduced.matches?0:worldTime,reduced.matches);canvas.setAttribute('aria-label',city.name+', Block '+(selected+1)+': '+(b.lots.map(id=>PROJECTS[id].name).join(', ')||'landscaped open plots')+'. '+(b.road?'Street repaired.':'Street ready for repair.')+' Families visit their homes and neighborhood activities.');}
+function frame(now){if(visible&&(!last||now-last>16)){if(last)worldTime+=Math.min((now-last)/1000,.05);draw(now);last=now;}requestAnimationFrame(frame);}
 render();worldReady.then(()=>draw(performance.now())).catch(()=>{$('#feedback').textContent='Neighborhood art is still loading. Reload to try again.';});requestAnimationFrame(frame);
+
+const map=$('.city-view');
+function setMapMode(detail){map.classList.toggle('detail',detail);map.classList.toggle('fit',!detail);$('#map-fit').setAttribute('aria-pressed',String(!detail));$('#map-detail').setAttribute('aria-pressed',String(detail));$('#map-hint').textContent=detail?'Swipe or use arrow keys to explore.':'Your neighborhood, alive.';map.scrollLeft=detail?Math.max(0,(map.scrollWidth-map.clientWidth)/2):0;}
+$('#map-fit').onclick=()=>setMapMode(false);$('#map-detail').onclick=()=>setMapMode(true);map.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();map.scrollBy({left:e.key==='ArrowLeft'?-100:100,behavior:reduced.matches?'instant':'smooth'});}});setMapMode(false);
