@@ -1,0 +1,19 @@
+{
+  "advertisement": {
+    "minimumDelayBetweenInterstitial": 180,
+    "interstitial": {
+      "placements": [
+        { "id": "preroll" },
+        { "id": "court_end" },
+        { "id": "pause" }
+      ]
+    },
+    "rewarded": {
+      "placements": [
+        { "id": "redo_shot" },
+        { "id": "unlock_court" }
+      ]
+    }
+  },
+  "platforms": {}
+}

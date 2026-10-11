@@ -1,0 +1,22 @@
+/* Playgama build only (loaded last by build-playgama.js). Makes the page a
+   single screen with no browser scrollbar: the court scales to the space left
+   by the top bar, the controls and the touch pad. The live site does not load it. */
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { display: flex; flex-direction: column; height: 100dvh; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.how-to, .site-foot, .brand-side { display: none !important; }
+.topbar, .session-controls { flex: none; }
+.topbar { padding: 6px 12px; }
+.session-controls { margin: 4px auto 0; }
+.stage {
+  flex: 1 1 auto; min-height: 0; width: 100%; max-width: none; margin: 4px 0 0; padding: 0 8px;
+  display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; align-items: center; box-sizing: border-box;
+  container-type: size;
+}
+/* Width-limited on phones in portrait, height-limited on desktop and landscape:
+   the court is never taller than the stage and always keeps 16:9. */
+.stage > canvas { display: block; width: min(100%, calc(100cqh * 16 / 9)); height: auto; aspect-ratio: 16 / 9; max-width: 100%; }
+.stage > .touch { margin: 6px 0 4px; }
+@media (orientation: landscape) and (max-height: 520px) {
+  .has-touch .stage { display: flex; height: auto; }
+  .has-touch .stage > canvas { width: min(100%, calc(100cqh * 16 / 9)); height: auto; max-height: none; }
+}
