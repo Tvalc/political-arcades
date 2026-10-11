@@ -17,5 +17,5 @@ export function createService(canvas,title,caption){
   if(kind==='repair'){const pulse=reduced?1:.6+Math.sin(age*5)*.3;c.strokeStyle=`rgba(255,255,225,${pulse})`;c.lineWidth=2.5;for(let i=0;i<5;i++){const a=i/5*Math.PI*2;c.beginPath();c.moveTo(kidX+Math.cos(a)*21,63+Math.sin(a)*20);c.lineTo(kidX+Math.cos(a)*29,63+Math.sin(a)*28);c.stroke();}}
  }
  peopleReady.then(()=>draw(0,false)).catch(()=>{});
- return{draw,event(e){if(!labels[e.type])return;moment=e;age=0;title.textContent=labels[e.type][0];caption.textContent=labels[e.type][1];canvas.setAttribute('aria-label',labels[e.type].join('. '));},clear(){moment=null;age=0;title.textContent='Every stop has a story';caption.textContent='Welcome a family. Give the provider time. Bring the crew back.';}};
+ return{draw,event(e){if(!labels[e.type])return;moment=e;age=0;title.textContent=labels[e.type][0];caption.textContent=labels[e.type][1];canvas.setAttribute('aria-label',labels[e.type].join('. '));},clear(){moment=null;age=0;canvas.setAttribute('aria-label','A family and provider at the outreach stop');title.textContent='Every stop has a story';caption.textContent='Welcome a family. Give the provider time. Bring the crew back.';}};
 }
