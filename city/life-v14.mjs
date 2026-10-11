@@ -1,4 +1,4 @@
-import {courtPosition,courtEntrance,courtPoint} from './court-geometry-v15.mjs?v=15.0';
+import {courtPosition,courtEntrance,courtPoint} from './court-geometry-v15.mjs?v=15.1';
 import {ambition,recordContribution,stepAmbition,projectDestination} from './ambitions-v14.mjs?v=14.1';
 export const LIFE_KEY='pa-city-life-v1';
 export const SLOTS=[{x:318,y:383,lane:393},{x:606,y:383,lane:393},{x:904,y:383,lane:393},{x:285,y:555,lane:574},{x:606,y:555,lane:574},{x:952,y:555,lane:574}];

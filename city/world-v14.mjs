@@ -1,7 +1,7 @@
-import {courtLayout,courtRim,paintCourtFoundation,paintCourtSurface,paintCourtPost} from './court-geometry-v15.mjs?v=15.0';
-import {activeGroups} from './life-v14.mjs?v=15.0';
+import {courtLayout,courtRim,paintCourtFoundation,paintCourtSurface,paintCourtPost} from './court-geometry-v15.mjs?v=15.1';
+import {activeGroups} from './life-v14.mjs?v=15.1';
 import {drawPerson} from '/tests/outreach-route/people-v7.mjs?v=10.0';
-import {householdState,paintHousehold,residentsReady} from './resident-life-v14.mjs?v=15.0';
+import {householdState,paintHousehold,residentsReady} from './resident-life-v14.mjs?v=15.1';
 import {drawActor,actorsReady} from '/tests/outreach-route/actors-v6.mjs?v=10.0';
 const names=['homes','park','court','clinic','kitchen','fountain'];
 const images={};for(const name of ['neighborhood-base','neighborhood-repaired',...names]){const im=new Image();im.src=new URL(name+'-v12.webp',import.meta.url).href;images[name]=im;}
@@ -38,3 +38,5 @@ export function paintWorld(canvas,block,index,time,reduced=false,simulation=null
  if(!reduced)for(const p of places)if(p.kind==='fountain'&&!p.construction){const s=SLOTS[p.slot],width=p.slot<3?245:292;c.strokeStyle='#e3f7ed80';c.lineWidth=1.2;for(let k=0;k<3;k++){c.beginPath();c.ellipse(s.x-width*.02,s.y-width*.454,18+k*9+Math.sin(t+k)*2,3+k,0,0,Math.PI*2);c.stroke();}}
  c.restore();
 }
+
+export function paintCourtPreview(canvas){const c=canvas.getContext('2d'),im=images.court;if(!good(im))return;c.clearRect(0,0,512,423);c.drawImage(im,0,0,512,423);const l=courtLayout(0);c.save();c.scale(512/l.w,512/l.w);c.translate(-l.x+l.w/2,-l.y+423*l.w/512);paintCourtSurface(c,0);paintCourtPost(c,im,0);c.restore();}
