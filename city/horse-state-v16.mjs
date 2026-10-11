@@ -2,7 +2,7 @@ import {courtPoint,courtBasketFloor,courtRim} from './court-geometry-v15.mjs?v=1
 export const HEROES=['mamdani','sayed','talarico'];
 export const HERO_NAMES={mamdani:'Mamdani',sayed:'El-Sayed',talarico:'Talarico',kid:'The neighborhood kid'};
 const PLAYERS=[...HEROES,'kid'],clamp=n=>Math.max(0,Math.min(1,n)),mix=(a,b,u)=>({x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u});
-function roles(turn){turn=Math.max(0,turn);const round=Math.floor(turn/4),rest=HEROES[round%3],order=[...HEROES.filter(id=>id!==rest),'kid',rest];return {active:order[turn%4],rebounder:turn%4===2?rest:'kid'};}
+function roles(turn){turn=Math.max(0,turn);const round=Math.floor(turn/4),rest=HEROES[round%3],order=[...HEROES,'kid'];return {active:order[turn%4],rebounder:turn%4===3?rest:'kid'};}
 function positions(slot,turn){const r=roles(turn),spot=courtPoint(slot,...[[.38,.56],[.44,.69],[.36,.40]][Math.floor(Math.max(0,turn)/4)%3]),floor=courtBasketFloor(slot);let queue=0;return PLAYERS.map(id=>({id,p:id===r.active?spot:id===r.rebounder?{x:floor.x-5,y:floor.y+4}:courtPoint(slot,.13,queue++===0?.85:.38)}));}
 export function horseState(slot,clock=0,reduced=false){
  clock=Math.max(0,Number(clock)||0);const turn=Math.floor(clock/12),age=clock-turn*12,r=roles(turn),next=roles(turn+1).active,made=turn%11!==5&&turn%13!==7;

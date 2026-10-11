@@ -1,5 +1,5 @@
 import {drawPerson,peopleReady} from '/tests/outreach-route/people-v7.mjs?v=10.0';
-import {horseState,HEROES} from './horse-state-v16.mjs?v=17.0';
+import {horseState,HEROES} from './horse-state-v16.mjs?v=17.1';
 import {courtRim,courtBasketFloor} from './court-geometry-v15.mjs?v=16.0';
 let clips={},images={};export const horseReady=fetch(new URL('./horse-clips-v16.json?v=16.0',import.meta.url)).then(r=>{if(!r.ok)throw Error('Basketball animation metadata unavailable');return r.json();}).then(async data=>{clips=data;await peopleReady;await Promise.all(HEROES.flatMap(id=>Object.entries(clips[id]).map(async([action,clip])=>{const im=new Image();im.src=clip.src;images[id+'-'+action]=im;await im.decode();})));});
 const clamp=n=>Math.max(0,Math.min(1,n));

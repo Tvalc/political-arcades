@@ -1,6 +1,6 @@
-import {horseState,HERO_NAMES} from '/city/horse-state-v16.mjs?v=17.0';
+import {horseState,HERO_NAMES} from '/city/horse-state-v16.mjs?v=17.1';
 import {ambition,leagueNeeds,beginLeague,startOpening,KITCHEN_PROGRAMS} from '/city/ambitions-v14.mjs?v=14.1';
-import {paintWorld,worldReady,paintCourtPreview} from '/city/world-v14.mjs?v=17.0';
+import {paintWorld,worldReady,paintCourtPreview} from '/city/world-v14.mjs?v=17.1';
 import {LIFE_KEY,SLOTS,PROGRAMS,loadLife,freshLife,syncBlock,stepLife,construct,improve,setFocus,serviceDuration} from '/city/life-v14.mjs?v=16.1';
 import {KEY,RESOURCES,PROJECTS,blankCity,loadCity,wallet,award,build,pave,expand,canExpand,canBuild,migrateHousing} from '/shared/city-state.mjs?v=1.2';
 const $=s=>document.querySelector(s),reduced=matchMedia('(prefers-reduced-motion:reduce)'),demo=document.body.dataset.demo==='true';

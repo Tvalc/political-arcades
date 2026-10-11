@@ -1,5 +1,5 @@
-import {horseReady,paintHorseActor,paintHorseBall} from './horse-scene-v16.mjs?v=17.0';
-import {horseState} from './horse-state-v16.mjs?v=17.0';
+import {horseReady,paintHorseActor,paintHorseBall} from './horse-scene-v16.mjs?v=17.1';
+import {horseState} from './horse-state-v16.mjs?v=17.1';
 import {courtLayout,courtRim,paintCourtFoundation,paintCourtSurface,paintCourtPost} from './court-geometry-v15.mjs?v=16.0';
 import {activeGroups} from './life-v14.mjs?v=16.1';
 import {drawPerson} from '/tests/outreach-route/people-v7.mjs?v=10.0';
