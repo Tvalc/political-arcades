@@ -24,11 +24,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=courts1" />
   <link rel="stylesheet" href="touch.css?v=launch1" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
+  
 <link rel="stylesheet" href="../chibi-ui.css?v=2">
 <link rel="stylesheet" href="court-layout.css?v=safe1">
 <link rel="stylesheet" href="mobile.css?v=23">
-<script src="/shared/city-rewards.js?v=1.1"></script></head>
+<script src="/shared/city-rewards.js?v=launch1"></script><link rel="stylesheet" href="/shared/city-session.css?v=launch1"><meta name="robots" content="noindex"></head>
 <body>
   <header class="topbar">
     <a class="brand" href="./"><img src="assets/ui/makko/logo.webp" alt="VOTE" width="110" height="37"></a>
@@ -40,7 +40,7 @@
   <main class="stage">
     <section class="launch-panel" id="asset-loading" role="status" aria-live="polite"><h2>Getting ready</h2><p id="asset-progress">Loading the court...</p><button id="asset-retry" type="button" hidden>Retry loading</button></section>
     <section class="launch-panel" id="first-play" hidden aria-labelledby="guide-title"><h2 id="guide-title">Make them match it.</h2><p>Make a shot. Everyone else must copy the spot and the shot.</p><p>Miss a copy? Earn a letter. Spell VOTE and you are out. Last player standing wins.</p><p><strong>Shooting takes two presses:</strong> one to aim, one to shoot in the gold zone.</p><button id="guide-learn" type="button">Try a guided shot</button><button id="guide-skip" type="button">I know the rules. Play!</button></section>
-    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>Take a breath. Your court is waiting.</p><button type="button" id="resume">Resume</button><button type="button" id="pause-restart">Restart game</button><button type="button" id="pause-choose">Change player</button></section>
+    <section class="pause-panel" id="pause-panel" hidden aria-labelledby="pause-title"><h2 id="pause-title">Paused</h2><p>Take a breath. Your court is waiting.</p><button type="button" id="resume">Resume</button><button type="button" id="pause-restart">Restart game</button><button type="button" id="pause-choose">Change player</button><div class="city-receipt"><p data-city-receipt>Your baskets earn court points.</p><a href="/city/" data-city-cta>My city &amp; supplies →</a><small>Match baskets earn 1 court point; a win earns 4. Practice does not earn city supplies.</small></div></section>
     <section id="court-select" class="court-select" hidden aria-labelledby="court-title"><header><h2 id="court-title">Choose your court</h2><p id="court-progress"></p></header><details class="court-songs"><summary id="court-songs-title">Court songs</summary><ol id="court-songs-list"></ol><p id="court-songs-note"></p></details><div id="court-grid" class="court-grid"></div><nav><button type="button" id="court-back">Back to players</button><button type="button" id="court-play">Play</button></nav></section>
     <canvas id="game" width="1280" height="720" tabindex="0" aria-label="VOTE, a playground shooting game"></canvas>
   </main>
@@ -63,5 +63,5 @@
   <script src="src/talarico-fixed-clips.js?v=21"></script>
   <script src="src/mobile-ui.js?v=23"></script>
   <script src="src/main.js?v=city1.2"></script>
-</body>
+<script type="module" src="/shared/city-session.mjs?v=launch1"></script></body>
 </html>

@@ -195,12 +195,13 @@
   @media(max-width:760px) { .floor { padding-top:20px; } .floor h1 { font-size:clamp(27px,7vw,38px); } .floor-copy .kicker { white-space:normal; font-size:10px; letter-spacing:.1em; } .quick-play { gap:8px; } .quick-play a { padding:10px 12px; font-size:12px; } .machines { gap:24px; } .machine { width:min(100%,420px); justify-self:center; } }
 
 </style>
+<link rel="stylesheet" href="/shared/arcade-hub.css?v=launch1">
 </head>
 <body>
 <header class="topbar"><div class="col">
   <a class="a2a" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
-  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a><a href="city/">Your city</a></nav>
-  <a class="btn btn-top" href="#play">▶ Play free</a>
+  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a></nav>
+  <a class="mobile-city" href="/city/">My city</a><a class="btn btn-top" href="#library">▶ Play free</a>
 </div></header>
 <main>
   <section class="floor" id="play">
@@ -208,16 +209,15 @@
     <div class="col">
       <div class="floor-copy">
         <p class="kicker">Free browser arcade · <b>AdsToAid</b> · no download, no sign-up</p>
-        <h1>Free games that turn <em>ad money into aid.</em></h1>
-        <p class="lede">Play for free. <b>At least half of distributable profit goes to community programs.</b> As Tony earns more, the community’s share grows to 99%.</p>
-        <nav class="quick-play" aria-label="Choose a game">
-          <a class="chip" data-open-game="crashers" href="capitol-crashers/">Play Crashers</a>
-          <a class="chip" data-open-game="vote" href="horse/">Play VOTE</a>
-          <a class="chip" data-open-game="pothole" href="pothole-party/">Play Pothole</a>
-        </nav>
+        <h1>Play the arcade.<br><em>Build your city.</em></h1>
+        <p class="lede">Earn supplies in free games. Build a neighborhood of your own. <b>At least half of distributable profit goes to community programs.</b> As Tony earns more, the community’s share grows to 99%.</p>
+        <nav class="quick-play" aria-label="Start playing"><a class="chip" href="#library">Explore all five games</a><a class="chip" href="/city/">Build your city →</a></nav>
         <button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="false">Pause previews</button>
       </div>
 
+      <section class="city-hub" aria-labelledby="hub-title"><div><p class="kicker">YOUR ARCADE. YOUR CITY.</p><h2 id="hub-title" data-hub-title>Build a place worth coming back to.</h2><p data-hub-copy>Five arcade games. One city. Earn supplies, build homes and courts, and watch your neighbors bring them to life.</p><a class="btn" href="/city/" data-hub-cta>Start your city →</a><small data-hub-save>Your first homes start with a free welcome delivery. No account needed.</small><small>City supplies are fictional game progress. Real giving is reported in the Community Pot.</small></div><div class="city-art" aria-hidden="true"><img src="/city/homes-v12.webp" width="477" height="456" alt=""><img src="/city/court-v12.webp" width="423" height="512" alt=""><img src="/city/park-v12.webp" width="446" height="463" alt=""></div></section>
+      <section id="library" aria-labelledby="library-title"><div class="library-heading"><h2 id="library-title">Find your next game.</h2><p>Every game brings something home.</p></div><div class="game-library" data-arcade-library></div><noscript><p><a href="/capitol-crashers/">Capitol Crashers</a> · <a href="/horse/">VOTE</a> · <a href="/pothole-party/">Pothole Party</a> · <a href="/housing-stack/">Housing Stack</a> · <a href="/outreach-route/">Every Kid Can See</a></p></noscript></section>
+      <p class="featured-label">ON THE ARCADE FLOOR</p>
       <div class="arcade" id="arcade">
         <div class="sitdown" id="sitdown" hidden>
           <div class="bezel">
@@ -228,7 +228,7 @@
         </div>
         <div class="machines">
           <figure class="machine" data-game="crashers" data-url="capitol-crashers/" data-name="Capitol Crashers" data-machine="Machine 01">
-            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/crashers-v2.webp" src="media/cabinets/crashers-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/crashers-v2.webp" data-src="media/cabinets/crashers-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
               <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
@@ -236,7 +236,7 @@
             </figcaption>
           </figure>
           <figure class="machine" data-game="vote" data-url="horse/" data-name="VOTE" data-machine="Machine 02">
-            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/vote-v2.webp" src="media/cabinets/vote-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/vote-v2.webp" data-src="media/cabinets/vote-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
               <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
@@ -244,7 +244,7 @@
             </figcaption>
           </figure>
           <figure class="machine" data-game="pothole" data-url="pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
-            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="metadata" poster="media/cabinets/pothole-v2.webp" src="media/cabinets/pothole-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><video class="screenvid" muted playsinline loop preload="none" poster="media/cabinets/pothole-v2.webp" data-src="media/cabinets/pothole-v2.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div></span></span><span class="coin">Insert coin &middot; free</span></button>
             <figcaption class="placard">
               <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
               <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
@@ -328,7 +328,7 @@
   <section class="how" id="how"><div class="col">
     <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">Free games, optional support, and a growing share for the community. AdsToAid starts by allocating 50% of distributable profit to community programs. That share rises as Tony reaches the milestones below.</p></div>
     <div class="steps">
-      <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers, VOTE and Pothole Party. No account needed.</p></div>
+      <div class="step"><b>1</b><h3>You play</h3><p>Five free games earn supplies for one shared city. Build homes, restore streets and open places for your neighbors. No account needed.</p></div>
       <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Advertising is one way the arcade can earn. AdSense approval is pending. Optional $5 Patreon membership also supports the project; merch is planned. Playing never requires a purchase or an ad click.</p></div>
       <div class="step"><b>3</b><h3>At least half goes to aid</h3><p>After documented costs and reserve movements, the community receives a 50%–99% share. The table shows the causes that inspire us and what Tony plans to pay for with his own share. These are goals, not donations already made.</p></div>
     </div>
@@ -384,12 +384,12 @@
 
   <section class="who" id="who"><div class="col inner">
     <div><h2>Who makes this</h2><p>Tony makes AdsToAid using ChatGPT, Claude and Cursor, with art from Makko and audio from ElevenLabs. Tony owns Makko. Games are free; Patreon support is optional. Actual project-paid costs and any payments to Tony’s businesses will be disclosed in the <a href="community-pot/#costs">Community Pot</a>.</p></div>
-    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a></p></div>
+    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="mailto:tony@makko.ai?subject=AdsToAid%20question">Write to us</a> · <a href="mailto:tony@makko.ai?subject=AdsToAid%20game%20issue">Report a problem</a></p></div>
   </div></section>
 
   <footer id="support"><div class="col">
     <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
-    <div><a href="community-pot/">Community Pot</a> · <a href="city/">Your city</a> · <a href="privacy.html">Privacy</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
+    <div><a href="community-pot/">Community Pot</a> · <a href="city/">Your city</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:tony@makko.ai?subject=AdsToAid%20game%20issue">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
     <div class="stamp">Last updated Oct 11, 2026</div>
   </div></footer>
 </main>
@@ -451,7 +451,7 @@
     previewButton.setAttribute('aria-pressed', String(previewsPaused));
     previews.forEach(function (p) {
       if (!allowed(p)) p.video.pause();
-      else p.video.play().then(function () { if (!allowed(p)) p.video.pause(); }).catch(function () { /* Keep the real gameplay poster when autoplay is unavailable. */ });
+      else { if (!p.video.getAttribute("src")) p.video.src = p.video.dataset.src; p.video.play().then(function () { if (!allowed(p)) p.video.pause(); }).catch(function () { /* Keep the real gameplay poster when autoplay is unavailable. */ }); }
     });
   }
   previewButton.addEventListener('click', function () { previewsPaused = !previewsPaused; syncPreviews(); });
@@ -551,5 +551,6 @@
   track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); go(e.key === 'ArrowRight' ? 1 : -1); } });
 })();
 </script>
+<script type="module" src="/shared/arcade-hub.mjs?v=launch1"></script>
 </body>
 </html>
