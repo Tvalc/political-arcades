@@ -13,7 +13,8 @@ export function spawn(g){
  if(g.level&&g.pendingLevel){g.food=null;return;}
 
  const free=[];for(let y=1;y<g.size-1;y++)for(let x=1;x<g.size-1;x++){const p={x,y};if(!g.body.some(b=>same(b,p))&&!g.jobs.some(j=>same(j,p))&&(!g.site||!same(g.site,p)))free.push(p);}
- g.food=free.length?free[Math.floor(g.rng()*free.length)]:null;
+ const spaced=g.level?free:free.filter(p=>g.jobs.every(j=>Math.abs(p.x-j.x)+Math.abs(p.y-j.y)>=4)&&Math.abs(p.x-g.body[0].x)+Math.abs(p.y-g.body[0].y)>=4);
+ const pool=spaced.length?spaced:free;g.food=pool.length?pool[Math.floor(g.rng()*pool.length)]:null;
  if(!g.level&&!g.food&&!g.jobs.length)g.status='won';
 }
 function nextSite(g){

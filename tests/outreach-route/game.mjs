@@ -1,8 +1,8 @@
-import './neighborhood.mjs?v=6.2';
+import './neighborhood.mjs?v=6.3';
 import {outreachCount} from './neighborhood-state.mjs';
-import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs';
-import {createScene,point as worldPoint} from './scene-v6.mjs?v=6.2';
-import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=6.2';
+import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs?v=6.3';
+import {createScene,point as worldPoint} from './scene-v6.mjs?v=6.3';
+import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=6.3';
 import {loadCity,award,KEY} from '/shared/city-state.mjs?v=outreach1';
 const $=id=>document.getElementById(id),SIZE=16,BEST='pa-outreach-snake-best-v1',scene=createScene($('map')),practice=new URLSearchParams(location.search).has('practice');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -44,6 +44,6 @@ stick.addEventListener('pointerdown',e=>{if(pointer!==null||storyPaused)return;e
 for(const b of stick.querySelectorAll('button'))b.addEventListener('click',e=>{if(e.detail===0)steer(b.dataset.dir);});
 let swipe=null;$('map').addEventListener('pointerdown',e=>{swipe={x:e.clientX,y:e.clientY};$('map').setPointerCapture(e.pointerId);});$('map').addEventListener('pointermove',e=>{if(!swipe)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;if(Math.max(Math.abs(dx),Math.abs(dy))>18){steer(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up');swipe={x:e.clientX,y:e.clientY};}});for(const n of ['pointerup','pointercancel'])$('map').addEventListener(n,()=>swipe=null);
 function render(dt=0){const active=started&&!paused&&!storyPaused&&g.status==='playing',blend=active?Math.min(1,acc/(interval()*.72)):1;scene.draw(g,{previous,blend,time,dt,active,reduced,visits});}
-function frame(now){const dt=Math.max(0,Math.min(100,now-last));last=now;time+=dt/1000;if(started&&!paused&&!storyPaused&&g.status==='playing'){advanceWork(g,dt);events();acc+=dt;while(acc>=interval()&&g.status==='playing'){acc-=interval();previous=g.body.map(p=>({...p}));if(step(g)==='lost')lost();events();hud();}if(g.status==='won')show('What a crew.','New run','Every available outreach stop handled. Your city keeps what you earned.');}if(lossAt&&time>=lossAt){lossAt=0;show(g.score+' points. Good run.','Try again',care+' city care earned. Your neighborhood keeps thriving. Best: '+best+'.');}render(dt);requestAnimationFrame(frame);}
+function frame(now){const dt=Math.max(0,Math.min(100,now-last));last=now;time+=dt/1000;if(started&&!paused&&!storyPaused&&g.status==='playing'){advanceWork(g,dt);events();acc+=dt;while(acc>=interval()&&g.status==='playing'){acc-=interval();previous=g.body.map(p=>({...p}));if(step(g)==='lost')lost();events();hud();}if(g.status==='won')show('What a crew.','New run','Every available outreach stop handled. Your city keeps what you earned.');}if(lossAt&&time>=lossAt){lossAt=0;show(g.score?g.score+' points. Care delivered.':'Crew reset.','Try again',care?care+' city care earned. Your neighborhood keeps thriving. Best: '+best+'.':'Try a wide loop. Give the worker time to finish before returning. Best: '+best+'.');}render(dt);requestAnimationFrame(frame);}
 window.addEventListener('storage',e=>{if(!practice&&e.key===KEY){try{visits=outreachCount(loadCity(localStorage));hud();}catch{}}});
 init();hud();show("Meet your crew.",'Loading artwork...','Getting the school and outreach crew ready.');$('resume').disabled=true;$('again').disabled=true;scene.ready.then(()=>{artLoaded=true;$('resume').disabled=false;$('again').disabled=false;show("Let's get moving.",'Start run','Drop a worker at gold. Loop back for green. Every pickup grows the crew.');}).catch(()=>{artFailed=true;$('resume').disabled=false;show('Artwork interrupted.','Reload artwork','The school artwork could not finish loading. Reload to try again.');});$('tip').textContent='Snake rules: keep moving. Avoid the route edge and your crew.';say('EL-SAYED / READY TO GO','Head right to the first gold stop. We need to circle back for the crew.');requestAnimationFrame(frame);
