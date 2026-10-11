@@ -3,3 +3,5 @@
 .lot-target>span{position:absolute;top:0;transform:translateY(-48%)}.lot-target.empty>span{top:50%;transform:translateY(-50%)}.lot-target{align-items:initial}.lot-target:hover,.lot-target[aria-pressed=true]{border-color:#ffe3a755}.city-heading{padding:14px 0}.site-head{padding-top:13px;padding-bottom:13px}.district-head{padding-top:14px;padding-bottom:10px}.inspector{max-height:calc(100dvh - 32px);overflow:auto}.inspector-top{position:sticky;top:0;background:#192f33;z-index:1;padding-bottom:5px}.project-choice:has(button){border-left:2px solid #d9bd7455;padding-left:10px}@media(max-width:760px){.inspector{max-height:none}.inspector.selected{max-height:47vh}}
 
 @media(max-width:760px){.city-view{max-height:480px}.town-shell:has(.inspector.selected) .city-view{max-height:calc(53dvh - 65px)}.map-toolbar>span{line-height:1.5}}
+
+.arcade-action{display:block;text-align:center;text-decoration:none;background:var(--gold);color:#192b2e;border-radius:9px;padding:11px 13px;font-size:12px;font-weight:800;margin:12px 0}

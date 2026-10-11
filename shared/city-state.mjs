@@ -16,6 +16,6 @@ export function award(s,event){if(!event||typeof event.id!=='string'||event.id.l
 export function canBuild(s,id,index){if(!Object.hasOwn(PROJECTS,id))return false;const b=s.blocks[index],p=PROJECTS[id],w=wallet(s);return Boolean(s.optedIn&&b&&p&&b.lots.length<6&&Object.entries(p.cost).every(([k,n])=>w[k]>=n));}
 export function build(s,id,index){if(!canBuild(s,id,index))return false;s.blocks[index].lots.push(id);return true;}
 export function pave(s,index){const b=s.blocks[index];if(!s.optedIn||!b||b.road||wallet(s).streets<6)return false;b.road=true;return true;}
-export function canExpand(s){const b=s.blocks.at(-1);return b.road&&b.lots.length>=4&&b.lots.includes('homes')&&b.lots.includes('court');}
+export function canExpand(s){const b=s.blocks.at(-1);return b.road&&b.lots.length>=4&&(b.lots.length===6||(b.lots.includes('homes')&&b.lots.includes('court')));}
 export function expand(s){if(!s.optedIn||!canExpand(s)||s.blocks.length>=10000)return false;s.blocks.push({lots:[],road:false});return true;}
 export function migrateHousing(s,storage){try{const old=JSON.parse(storage.getItem('pa-housing-city-v1'));if(old?.version!==1||!Number.isSafeInteger(old.floors)||old.floors<0)return false;const imported=s.imports.housing||0;if(old.floors<=imported)return false;s.earned.housing+=old.floors-imported;s.imports.housing=old.floors;return true;}catch{return false;}}
