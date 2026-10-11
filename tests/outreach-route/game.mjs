@@ -1,7 +1,7 @@
 import './neighborhood.mjs?v=6.4';
 import {outreachCount} from './neighborhood-state.mjs';
 import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs?v=6.4';
-import {createScene,point as worldPoint} from './scene-v6.mjs?v=6.4';
+import {createScene,point as worldPoint} from './scene-v6.mjs?v=6.7';
 import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=6.4';
 import {loadCity,award,KEY} from '/shared/city-state.mjs?v=outreach1';
 const $=id=>document.getElementById(id),SIZE=16,BEST='pa-outreach-snake-best-v1',scene=createScene($('map')),practice=new URLSearchParams(location.search).has('practice');
