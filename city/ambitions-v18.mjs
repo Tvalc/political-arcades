@@ -1,4 +1,4 @@
-import {openingStatus,finishOpening,OPENING_DURATION} from './opening-day-v18.mjs?v=18.1';
+import {openingStatus,finishOpening,OPENING_DURATION} from './opening-day-v18.mjs?v=18.2';
 export const KITCHEN_PROGRAMS=['Community supper','Neighborhood pantry','Cooking club','Game-day catering'];
 export function ambition(b){
  if(!b.ambition||b.ambition.version!==1)b.ambition={version:1,mode:null,stage:'invitation',players:[],volunteers:[],coach:null,practice:0,eventTime:0,completed:false};
@@ -13,7 +13,7 @@ export function recordContribution(b,r,p){if(p.kind==='kitchen'){r.kitchenVisits
  if(['homes','kitchen','park'].includes(p.kind)&&!a.volunteers.includes(r.id)){a.volunteers.push(r.id);r.role=r.role||'League volunteer';return r.parent+' signed up to help on opening day.';}
  return null;
 }
-export function startOpening(b){const a=ambition(b);if(a.stage!=='preparing'||!leagueNeeds(b).ready)return false;a.stage='opening';a.eventTime=0;a.playTime=0;a.gathered=false;a.phase='gathering';a.leagueName=a.leagueName||'Neighborhood HORSE Club';a.partyVersion=18;return true;}
+export function startOpening(b,replay=false){const a=ambition(b);if(replay){if(!a.completed||!leagueNeeds(b).ready)return false;a.replaying=true;a.completed=false;}else if(a.stage!=='preparing'||!leagueNeeds(b).ready)return false;a.stage='opening';a.eventTime=0;a.afterPartyTime=0;a.playTime=0;a.gathered=false;a.phase='gathering';a.leagueName=a.leagueName||'Neighborhood HORSE Club';a.partyVersion=18;for(const r of b.residents)r.partyVersion=0;return true;}
 export function stepAmbition(b,dt){const a=ambition(b);if(a.stage==='preparing'){const g=b.guides?.organizer;if(b.hero==='organizer'&&b.focus!==null&&!g?.moving&&g?.targetSlot===b.focus){a.recruitTime=(a.recruitTime||0)+dt;if(a.recruitTime>=24&&a.volunteers.length<2){const r=b.residents.find(r=>!a.volunteers.includes(r.id));if(r){a.volunteers.push(r.id);r.role=r.role||'League volunteer';a.recruitTime=0;return true;}}}return false;}if(a.stage!=='opening')return false;a.eventTime+=dt;
  // The party clock begins after the actual households arrive. Arrival routes stay continuous.
  const p=leagueNeeds(b).court,players=b.residents.filter(r=>a.players.includes(r.id));const oldPhase=a.phase;

@@ -1,6 +1,6 @@
 import {drawPerson,peopleReady} from '/tests/outreach-route/people-v7.mjs?v=10.0';
 import {activityDetail} from './resident-life-v14.mjs?v=16.1';
-import {partyStations,openingStatus} from './opening-day-v18.mjs?v=18.1';
+import {partyStations,openingStatus} from './opening-day-v18.mjs?v=18.2';
 const props=new Image();props.src='/art/housing-stack/props-v6.webp';
 export const partyReady=Promise.all([props.decode(),peopleReady]);
 const mix=(a,b,u)=>({x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u}),clamp=n=>Math.max(0,Math.min(1,n));

@@ -1,6 +1,6 @@
-import {openingAssignment,partyStations} from './opening-day-v18.mjs?v=18.1';
+import {openingAssignment,partyStations} from './opening-day-v18.mjs?v=18.2';
 import {courtPosition,courtEntrance,courtPoint} from './court-geometry-v15.mjs?v=16.0';
-import {ambition,recordContribution,stepAmbition,projectDestination} from './ambitions-v18.mjs?v=18.1';
+import {ambition,recordContribution,stepAmbition,projectDestination} from './ambitions-v18.mjs?v=18.2';
 export const LIFE_KEY='pa-city-life-v1';
 export const SLOTS=[{x:318,y:383,lane:393},{x:606,y:383,lane:393},{x:904,y:383,lane:393},{x:285,y:555,lane:574},{x:606,y:555,lane:574},{x:952,y:555,lane:574}];
 export const PROGRAMS={
