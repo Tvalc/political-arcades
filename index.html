@@ -1,719 +1,588 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Political Arcades</title>
-  <link rel="canonical" href="https://politicalarcades.com/" />
-  <meta name="description" content="A free browser arcade. Capitol Crashers, VOTE and Pothole Party, plus the soundtrack, the music video, the comic and the platform they're fighting for." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Political Arcades" />
-  <meta property="og:title" content="Political Arcades" />
-  <meta property="og:description" content="Three free games, twelve songs, one comic, one platform. Pick your fight." />
-  <meta property="og:url" content="https://politicalarcades.com/" />
-  <meta property="og:image" content="https://politicalarcades.com/art/chibi/hero.webp" />
-  <meta property="og:image:width" content="1600" />
-  <meta property="og:image:height" content="900" />
-  <meta property="og:image:alt" content="Chibi Zohran Mamdani and Abdul El-Sayed on a rainy street in front of the Capitol." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#07060b" />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/bungee-400.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/source-sans-3-400.woff2" crossorigin />
-  <style>
-/* Self-hosted fonts (latin subsets from Google Fonts). swap keeps text visible while they load. */
-@font-face { font-family: Bungee; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/bungee-400.woff2") format("woff2"); }
-@font-face { font-family: "Share Tech Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/share-tech-mono-400.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/source-sans-3-400.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/source-sans-3-600.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/source-sans-3-700.woff2") format("woff2"); }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AdsToAid — Free games. Growing community giving.</title>
+<link rel="canonical" href="https://politicalarcades.com/">
+<meta property="og:site_name" content="AdsToAid">
+<meta property="og:title" content="AdsToAid — Free games. Growing community giving.">
+<meta property="og:description" content="Play free. At least half of distributable profit supports community causes, rising to 99% as Tony reaches his milestones.">
+<meta property="og:image" content="https://politicalarcades.com/art/web/rally-1200.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Free browser games that turn ad money into aid. You play, advertisers pay, at least half of distributable profit goes to community programs. Read the giving policy and milestone schedule.">
+<link rel="preload" href="fonts/bungee-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/source-sans-3-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="arcade.css">
+<link rel="stylesheet" href="mockups/adstoaid-brand.css">
+<style>
+  :root { --col: 1180px; }
+  [id] { scroll-margin-top: 90px; }
+  @media(max-width:640px) { .tier .t::before { content:"Tony gets"; display:block; font:11px var(--mono); text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:6px; } }
+  .topnav { gap: 14px; font-size: 12px; }
+  [hidden] { display: none !important; }
+  .col { width: min(var(--col), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+  .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,6,11,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .topbar .col { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+  .topbar .a2a { --a2a-size: 18px; }
+  .topnav { display: none; gap: 20px; font-family: var(--mono); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+  .topnav a { color: var(--muted); text-decoration: none; padding: 10px 0; }
+  @media (min-width: 800px) { .topnav { display: flex; } }
+  .btn-top { min-height: 44px; padding: 10px 18px; font-size: 14px; }
 
-/* Political Arcades design system — neon arcade at night.
-   Shared by politicalarcades.com and capitolcrashers.com (keep the two copies identical). */
+  /* The floor: mural, headline, cabinets */
+  .floor { padding: clamp(24px, 4vw, 40px) 0 clamp(28px, 4vw, 44px); }
+  .floor-copy { margin-bottom: clamp(18px, 3vw, 28px); }
+  .floor-copy .kicker { color: var(--muted); border-color: var(--line); }
+  .floor-copy .kicker::before { content: none; }
+  .floor-copy .kicker b { color: var(--pink); font-weight: 400; }
+  .floor h1 { max-width: 24ch; margin-inline: auto; font-size: clamp(28px, 4.6vw, 50px); text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 0 30px rgba(0,0,0,.6); }
+  .floor h1 em { font-style: normal; color: var(--aid); text-shadow: 0 0 22px rgba(55,226,138,.5), 0 4px 0 rgba(0,0,0,.5); }
+  .floor .lede { font-size: clamp(16px, 1.6vw, 19px); max-width: 60ch; }
+  .floor .lede b { font-weight: 600; }
 
-:root {
-  color-scheme: dark;
-  --night: #07060b;
-  --night-2: #0d0b14;
-  --panel: #120f1a;
-  --line: rgba(246, 239, 228, 0.12);
-  --ink: #f6efe4;
-  --muted: #b9b0a3;
-  --dim: #7d766c;
-  --pink: #ff4d8d;
-  --cyan: #19e6ff;
-  --amber: #ffb020;
-  --gold: #ffd23f;
-  --green: #37e28a;
-  --display: Bungee, "Arial Black", sans-serif;
-  --mono: "Share Tech Mono", ui-monospace, SFMono-Regular, monospace;
-  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --wrap: 1180px;
-  --gutter: clamp(16px, 4vw, 40px);
-  --radius: 18px;
-}
+  /* The arcade floor: illustrated machines, one tap to sit down */
+  .machines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.5vw, 28px); align-items: start; }
+  @media (max-width: 760px) { .machines { grid-template-columns: 1fr; gap: 28px; } }
+  .machine { margin: 0; display: grid; }
+  .cab-art { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+  .cab-art .screenwrap { position: relative; display: block; width: 100%; line-height: 0; filter: drop-shadow(0 26px 30px rgba(0,0,0,.65)); transition: transform .25s ease, filter .25s ease; transform-origin: 50% 100%; }
+  .cab-art .screenwrap > img:not(.shade) { position: relative; display: block; width: 100%; height: auto; margin: 0; }
+  @media (prefers-reduced-motion: no-preference) { .cab-art:hover .screenwrap, .cab-art:focus-visible .screenwrap { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 34px 36px rgba(0,0,0,.7)) drop-shadow(0 0 28px rgba(25,230,255,.35)); } }
+  .cab-art .backing { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; background: #040308; opacity: 0; transition: opacity .6s ease; -webkit-mask-image: url(art/cabinets/screenmask-hard.png); mask-image: url(art/cabinets/screenmask-hard.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .cab-art .backing.on { opacity: 1; } .cab-art .backing.rest { opacity: 0; }
+  .cab-art .screenvid, .cab-art .crt, .cab-art .shade { position: absolute; left: 0; top: 0; width: 480px; max-width: none; height: 480px; transform-origin: 0 0; pointer-events: none; backface-visibility: hidden; -webkit-mask-image: url(art/cabinets/screenmask.png); mask-image: url(art/cabinets/screenmask.png); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .cab-art .shade { mix-blend-mode: soft-light; opacity: 0; transition: opacity .6s ease; filter: none; }
+  .cab-art .shade.on { opacity: 1; }
+  .cab-art .shade.rest { opacity: 0; }
+  .cab-art .screenvid { object-fit: cover; background: #000; opacity: 0; transition: opacity .6s ease; }
+  .cab-art .screenvid.on { opacity: 1; }
+  .cab-art .screenvid.rest { opacity: 0; }
+  .cab-art .crt { opacity: 0; transition: opacity .6s ease;
+    background:
+      linear-gradient(118deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 18%, rgba(255,255,255,0) 34%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 66%, rgba(0,0,0,.22) 100%),
+      repeating-linear-gradient(180deg, rgba(0,0,0,.11) 0 2px, rgba(0,0,0,0) 2px 5px);
+    box-shadow: inset 0 0 14px rgba(0,0,0,.45); }
+  .cab-art .crt.on { opacity: 1; }
+  .cab-art .crt.rest { opacity: 0; }
+  .cab-art .coin { position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(7,6,11,.8); color: var(--gold); font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
+  .cab-art .coin::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); vertical-align: middle; }
+  @media (prefers-reduced-motion: no-preference) { .cab-art .coin::before { animation: blink 1.2s steps(2, end) infinite; } }
+  .placard { margin-top: -10px; padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #1a1626, #0d0b14); border: 1px solid var(--line); box-shadow: 0 16px 30px rgba(0,0,0,.5); display: grid; gap: 8px; }
+  .placard-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .placard-top b { font-family: var(--display); font-weight: 400; font-size: 16px; color: var(--ink); }
+  .placard-top span { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+  .placard-mode { font-size: 14px; color: var(--muted); line-height: 1.35; }
+  .placard-mode .k { display: inline-block; margin-right: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
+  .placard-mode em { font-style: normal; color: var(--pink); }
+  .placard-scores { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-family: var(--mono); font-size: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+  .placard-scores .k { color: var(--cyan); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; }
+  .placard-scores .v { color: var(--muted); }
+  .placard .btn { justify-self: stretch; margin-top: 2px; }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; overflow-x: clip; }
-html, body { margin: 0; }
-body {
-  min-height: 100dvh;
-  color: var(--ink);
-  background: var(--night);
-  font-family: var(--body);
-  font-size: 18px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-img, video { max-width: 100%; display: block; }
-a { color: var(--amber); }
-h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 400; line-height: 0.92; letter-spacing: 0.01em; }
-p { margin: 0; }
-button { font: inherit; }
-:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  /* Sit-down view: the chosen machine's screen, big */
+  .sitdown { margin-bottom: clamp(18px, 3vw, 30px); }
+  .sitdown[hidden] { display: none; }
+  .bezel { border-radius: 20px; padding: 10px; background: linear-gradient(180deg, #2a2240, #120f1a); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 30px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12); }
+  .bezel-marquee { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, #223a8a 0%, #15255f 60%, #0f1a46 100%); border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold); }
+  .bezel-name { font-family: var(--display); font-size: clamp(16px, 2.2vw, 24px); color: #fff; text-shadow: 0 0 14px rgba(25,230,255,.7); flex: 1; min-width: 0; }
+  .bezel-marquee .mtag { padding: 5px 9px; border-radius: 6px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,210,63,.45); font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+  .bezel-screen { position: relative; aspect-ratio: 16/9; background: #000; }
+  .bezel-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+  .bezel-deck { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 6px 2px; }
+  .bezel-deck .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; min-height: 40px; font-family: var(--mono); font-size: 12px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: #0b0910; cursor: pointer; }
+  @keyframes blink { 50% { opacity: .2; } }
 
-/* ---------- layout ---------- */
-.wrap { width: min(var(--wrap), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
-.section { padding: clamp(56px, 8vw, 104px) 0; position: relative; }
-.section + .section { border-top: 1px solid var(--line); }
-.section-head { display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 16px 40px; margin-bottom: clamp(24px, 4vw, 40px); }
-@media (min-width: 900px) { .section-head { grid-template-columns: minmax(0, 1.2fr) minmax(0, 48ch); } .section-head .lede { padding-bottom: 6px; } }
-.kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); }
-.kicker::before { content: "▸ "; color: var(--pink); }
-.section h2 { font-size: clamp(32px, 4.6vw, 56px); margin-top: 8px; }
-.section h2 em { font-style: normal; color: var(--pink); text-shadow: 0 0 22px rgba(255, 77, 141, 0.55); }
-.lede { max-width: 62ch; color: var(--muted); font-size: clamp(17px, 1.4vw, 20px); }
-.grid { display: grid; gap: 20px; }
-.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 900px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  /* Statement bar */
+  .statement { margin-top: clamp(16px, 2.5vw, 26px); border: 1px solid rgba(55,226,138,.35); border-radius: 14px; background: rgba(18,15,26,.9); }
+  .statement .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .statement .row .k { color: var(--aid); letter-spacing: .14em; text-transform: uppercase; font-size: 12px; }
+  .statement .row b { font-family: var(--display); font-weight: 400; color: var(--ink); font-size: 15px; margin-left: 6px; }
+  .statement .row .aidv b { color: var(--coin); }
+  .statement details { border-top: 1px solid var(--line); }
+  .statement summary { cursor: pointer; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--coin); letter-spacing: .08em; list-style: none; }
+  .statement summary::-webkit-details-marker { display: none; }
+  .statement summary::before { content: "▸ "; } .statement details[open] summary::before { content: "▾ "; }
+  .statement .more { padding: 0 16px 16px; color: var(--muted); font-size: 15px; display: grid; gap: 8px; }
+  .statement .more a { color: var(--coin); }
 
-/* ---------- buttons ---------- */
-.btn {
-  --b1: #ffe36b; --b2: #ffb020; --b3: #d97f00; --b4: #7a3f00; --fg: #251a0b;
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  min-height: 50px; padding: 11px 24px; border: 0; border-radius: 10px; cursor: pointer; white-space: nowrap;
-  font-family: var(--display); font-size: 15px; letter-spacing: 0.02em; text-decoration: none; text-transform: uppercase; line-height: 1;
-  color: var(--fg);
-  background: linear-gradient(180deg, var(--b1) 0%, var(--b2) 52%, var(--b3) 100%);
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 0 rgba(0, 0, 0, 0.18), 0 5px 0 var(--b4), 0 12px 22px rgba(0, 0, 0, 0.45);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
-}
-.btn:hover { filter: brightness(1.07); transform: translateY(-1px); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 0 rgba(0, 0, 0, 0.18), 0 6px 0 var(--b4), 0 16px 26px rgba(0, 0, 0, 0.5); }
-.btn:active { transform: translateY(4px); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), 0 1px 0 var(--b4), 0 4px 10px rgba(0, 0, 0, 0.4); }
-.btn-big { min-height: 62px; padding: 15px 32px; font-size: clamp(16px, 1.6vw, 20px); }
-.btn-teal { --b1: #7ff6ff; --b2: #19e6ff; --b3: #0aa9c2; --b4: #06586a; --fg: #052a30; }
-.btn-patreon { --b1: #ff8a93; --b2: #ff424d; --b3: #d32532; --b4: #6e0f17; --fg: #fff5f5; }
-.btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px rgba(246, 239, 228, 0.35); }
-.btn-ghost:hover { background: transparent; box-shadow: inset 0 0 0 2px var(--cyan); color: var(--cyan); filter: none; transform: none; }
-.btn-ghost:active { transform: translateY(1px); box-shadow: inset 0 0 0 2px var(--cyan); }
-@media (max-width: 600px) { .btn-big { width: 100%; } }
-.btn .key { font-family: var(--mono); font-size: 13px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,0.25); }
-@media (prefers-reduced-motion: reduce) { .btn, .btn:hover, .btn:active { transition: none; transform: none; } }
+  .adslot { margin: 150px auto 0; max-width: 728px; min-height: 90px; display: grid; place-items: center; border: 1px dashed rgba(246,239,228,.25); border-radius: 8px; color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  @media (min-width: 800px) { .adslot { margin-top: 56px; } }
 
-/* ---------- top bar ---------- */
-.topbar {
-  position: sticky; top: 0; z-index: 20;
-  display: flex; align-items: center; gap: 18px;
-  min-height: 64px; padding: 10px var(--gutter);
-  background: rgba(7, 6, 11, 0.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-}
-.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: var(--display); font-size: 15px; text-decoration: none; white-space: nowrap; }
-.brand .lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
-.brand .sub { color: var(--dim); font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
-.nav { display: flex; gap: 4px; margin-left: 8px; }
-.nav a { padding: 8px 12px; border-radius: 999px; color: var(--muted); font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
-.nav a:hover { color: var(--ink); background: rgba(246, 239, 228, 0.06); }
-.topbar .btn { margin-left: auto; min-height: 38px; padding: 6px 14px; font-size: 12px; border-radius: 999px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 var(--b4); }
-.topbar .btn:hover, .topbar .btn:active { transform: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 var(--b4); }
-.topbar .btn-patreon { margin-left: auto; }
-.topbar .btn + .btn { margin-left: 0; }
-@media (max-width: 860px) { .nav { display: none; } .brand .sub { display: none; } }
-@media (max-width: 600px) {
-  .topbar { gap: 8px; min-height: 56px; }
-  .brand { font-size: 13px; min-width: 0; }
-  .topbar .btn { min-height: 34px; padding: 5px 10px; font-size: 11px; letter-spacing: 0; }
-}
+  .more-sec { padding-top: 44px; }
+  .strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+  @media (min-width: 800px) { .strip { grid-template-columns: repeat(4, 1fr); } }
+  .tile { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4/3; border: 1px solid var(--line); text-decoration: none; color: var(--ink); background: var(--panel); }
+  .tile img { width: 100%; height: 100%; object-fit: cover; }
+  .tile::after { content: ""; position: absolute; inset: 40% 0 0; background: linear-gradient(180deg, transparent, rgba(7,6,11,.92)); }
+  .tile span { position: absolute; left: 12px; bottom: 12px; z-index: 1; font-family: var(--display); font-size: 14px; }
+  .tile .k { position: absolute; left: 12px; top: 10px; bottom: auto; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--coin); text-transform: uppercase; text-shadow: 0 1px 3px #000; }
 
-/* ---------- hero / floor ---------- */
-.floor {
-  position: relative; isolation: isolate; overflow: hidden;
-  padding: clamp(40px, 7vw, 96px) 0 clamp(40px, 6vw, 72px);
-}
-.floor .mural { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; filter: saturate(1.05); }
-.floor::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(60% 50% at 50% 0%, rgba(255, 77, 141, 0.28), transparent 70%),
-    linear-gradient(180deg, rgba(7, 6, 11, 0.55) 0%, rgba(7, 6, 11, 0.72) 45%, var(--night) 100%);
-}
-.floor-copy { text-align: center; margin-bottom: clamp(24px, 4vw, 44px); }
-.floor-copy .kicker { display: inline-block; padding: 6px 12px; border: 1px solid rgba(255, 176, 32, 0.4); border-radius: 999px; background: rgba(7, 6, 11, 0.55); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-@media (max-width: 600px) { .hide-m { display: none; } .floor-copy .kicker { letter-spacing: 0.14em; } }
-.floor h1 {
-  margin: 14px auto 0; max-width: 12ch;
-  font-size: clamp(56px, 11vw, 132px);
-  color: #fff;
-  text-shadow: 0 0 2px #fff, 0 0 18px rgba(255, 77, 141, 0.95), 0 0 46px rgba(255, 77, 141, 0.55), 0 10px 30px rgba(0,0,0,0.6);
-}
-.floor .lede { margin: 18px auto 0; text-align: center; color: var(--ink); text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
-.floor .acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 22px; }
+  .media-sec { padding-top: 48px; }
+  .theater { position: relative; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid var(--line); box-shadow: 0 30px 60px rgba(0,0,0,.6); aspect-ratio: 16/9; }
+  .theater img, .theater video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .theater .btn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .jukebox { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 16px; display: grid; gap: 12px; }
+  .juke-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .juke-now { display: grid; gap: 2px; min-width: 0; }
+  .juke-now .k { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); }
+  .juke-now b { font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--ink); }
+  .juke-time { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .juke-controls { display: flex; gap: 8px; }
+  .juke-bar { position: relative; height: 10px; border-radius: 999px; background: #1c1827; overflow: hidden; cursor: pointer; }
+  .juke-bar i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--pink), var(--amber)); }
+  .juke-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 4px; }
+  @media (min-width: 800px) { .juke-list { grid-template-columns: 1fr 1fr; } }
+  .juke-list li { display: grid; grid-template-columns: 28px 1fr auto auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 15px; }
+  .juke-list li:hover, .juke-list li:focus-visible { background: rgba(255,255,255,.04); }
+  .juke-list li:focus-visible { outline: 2px solid var(--aid); outline-offset: 2px; }
+  .juke-list li.on { background: rgba(255,77,141,.12); box-shadow: inset 0 0 0 1px rgba(255,77,141,.4); }
+  .juke-list li .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .juke-list li .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .juke-list li .len { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .juke-list li.hidden { display: none; }
+  .reader { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 12px; display: grid; gap: 10px; }
+  .reader-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .reader-track img { flex: 0 0 auto; width: min(100%, 720px); aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 10px; scroll-snap-align: center; }
+  .reader-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .reader-bar .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-inline: auto; }
+  .how { padding: 48px 0; border-top: 1px solid var(--line); margin-top: 44px; }
+  .how .steps { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+  @media (min-width: 800px) { .how .steps { grid-template-columns: repeat(3, 1fr); } }
+  .step { padding: 18px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); }
+  .step b { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--coin); color: #1a1205; font-family: var(--display); margin-bottom: 10px; }
+  .step:nth-child(2) b { background: var(--cyan); color: #06282d; } .step:nth-child(3) b { background: var(--aid); color: #06301b; }
+  .step h3 { font-size: 18px; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 15px; }
+  .two { display: grid; gap: 16px; margin-top: 16px; }
+  @media (min-width: 800px) { .two { grid-template-columns: 1fr 1fr; } }
+  .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 18px; }
+  .panel p { color: var(--muted); font-size: 15px; }
+  table.sched { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; margin-top: 10px; }
+  .sched td:nth-child(4) { font-family: var(--body); font-size: 14px; color: var(--muted); }
+  .sched td:nth-child(3) { color: var(--aid); }
+  .sched td:nth-child(4) { color: var(--muted); }
+  @media (max-width: 600px) { .sched { font-size: 12px; } .sched td:nth-child(4) { font-size: 12px; } }
+  .sched th, .sched td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); }
+  .sched th { color: var(--coin); font-weight: 400; letter-spacing: .1em; font-size: 12px; text-transform: uppercase; }
+  .sched tr.now td { color: var(--coin); }
+  .tiers { display: grid; gap: 6px; }
+  .tier { display: grid; grid-template-columns: 36px 1fr 1fr; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.25); border: 1px solid var(--line); }
+  .tier.head { background: none; border: 0; padding: 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .tier.head .c { color: var(--aid); } .tier.head .t { color: var(--coin); }
+  .tier.now { border-color: rgba(255,210,63,.45); box-shadow: inset 0 0 0 1px rgba(255,210,63,.2); }
+  .tier .n { font-family: var(--mono); font-size: 12px; color: var(--dim); padding-top: 6px; }
+  .tier .c, .tier .t { display: grid; gap: 2px; min-width: 0; }
+  .tier .c > b, .tier .t > b { font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1; }
+  .tier .c > b { color: var(--aid); } .tier .t > b { color: var(--coin); }
+  .tier .range { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .tier .for { font-size: 14px; color: var(--ink); line-height: 1.35; }
+  .tier .c .for { color: var(--muted); }
+  .tier .for .cause { font-weight: 700; color: var(--ink); }
+  .tier .for a { color: var(--coin); white-space: nowrap; }
+  @media (max-width: 640px) { .tier { grid-template-columns: 28px 1fr; } .tier .t { grid-column: 2; border-top: 1px dashed var(--line); padding-top: 8px; } .tier.head .t { display: none; } .tier .c > b, .tier .t > b { font-size: 22px; } }
+  .rules { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .rules li + li { margin-top: 6px; }
 
-.cabinets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.5vw, 28px); }
-@media (max-width: 760px) { .cabinets { grid-template-columns: 1fr; } }
-.cab {
-  position: relative; display: flex; flex-direction: column;
-  border-radius: var(--radius); overflow: hidden;
-  background: linear-gradient(180deg, #1a1626, #0d0b14 60%);
-  box-shadow: 0 0 0 1px var(--line), 0 30px 60px rgba(0, 0, 0, 0.55);
-  color: inherit; text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.cab:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(25, 230, 255, 0.5), 0 0 40px rgba(25, 230, 255, 0.18), 0 34px 70px rgba(0, 0, 0, 0.6); }
-.cab .marquee {
-  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  padding: 14px 18px; min-height: 62px;
-  background: linear-gradient(180deg, #223a8a 0%, #15255f 60%, #0f1a46 100%);
-  border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.4);
-}
-.cab .marquee::before, .cab .marquee::after { content: ""; position: absolute; left: 50%; width: 10px; height: 10px; background: var(--gold); transform: translateX(-50%) rotate(45deg); box-shadow: 0 0 10px rgba(255, 210, 63, 0.7); }
-.cab .marquee::before { top: -8px; } .cab .marquee::after { bottom: -8px; }
-.cab .marquee h2 { font-size: clamp(18px, 2.2vw, 28px); color: #fff; text-shadow: 0 0 14px rgba(25, 230, 255, 0.7), 0 2px 0 rgba(0,0,0,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.cab .marquee .machine { flex: 0 0 auto; padding: 5px 9px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255, 210, 63, 0.45); font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--gold); text-transform: uppercase; white-space: nowrap; }
-.cab .screen { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
-.cab .screen img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transition: transform 0.6s ease; }
-.cab:hover .screen img { transform: scale(1.04); }
-.cab .screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(0,0,0,0.09) 0 2px, transparent 2px 5px); pointer-events: none; }
-.cab .coin {
-  position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 12px 9px; text-align: center;
-  background: linear-gradient(180deg, rgba(7, 6, 11, 0) 0%, rgba(7, 6, 11, 0.85) 100%);
-  color: var(--gold); font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap;
-}
-.cab .coin::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); vertical-align: middle; animation: blink 1.2s steps(2, end) infinite; }
-@keyframes blink { 50% { opacity: 0.2; } }
-.cab .deck { display: grid; gap: 14px; padding: 18px; }
-.cab .deck p { color: var(--muted); font-size: 17px; }
-.cab .deck .meta { display: flex; flex-wrap: wrap; gap: 8px; }
-.cab .deck .meta span { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
-.cab .deck .btn { justify-self: start; }
-@media (max-width: 600px) { .cab .deck .btn { justify-self: stretch; } }
-@media (prefers-reduced-motion: reduce) { .cab, .cab:hover, .cab .screen img { transition: none; transform: none; } .cab .coin { animation: none; } }
+  .who { padding: 40px 0; border-top: 1px solid var(--line); }
+  .who .inner { display: grid; gap: 14px; }
+  @media (min-width: 800px) { .who .inner { grid-template-columns: 1fr 1fr; gap: 32px; } }
+  .who h2 { font-size: 24px; margin-bottom: 8px; }
+  .who p { color: var(--muted); font-size: 16px; }
+  .who a { color: var(--coin); }
+  footer { padding: 24px 0 40px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  footer .col { display: grid; gap: 8px; }
+  footer a { color: var(--coin); }
+  .stamp { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 
-/* ---------- slogan ticker ---------- */
-.ticker { overflow: hidden; border-block: 1px solid var(--line); background: var(--night-2); }
-.ticker .track { display: flex; width: max-content; gap: 48px; padding: 14px 0; animation: ticker 48s linear infinite; }
-.ticker span { font-family: var(--display); font-size: 15px; letter-spacing: 0.04em; color: var(--gold); white-space: nowrap; }
-.ticker span::after { content: "✦"; margin-left: 48px; color: var(--pink); }
-@keyframes ticker { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .ticker .track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; } }
+  .cab-art .cab-screen { position:absolute; left:0; top:0; width:480px; height:480px; transform-origin:0 0; z-index:1; pointer-events:none; isolation:isolate; }
+  .cab-art .cab-screen > * { position:absolute; inset:0; width:100%!important; height:100%!important; max-width:none; max-height:none; margin:0; padding:0; transform:none; }
+  .cab-art .coin { z-index:2; }
+  .quick-play { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px auto 0; }
+  .quick-play a { min-height:44px; padding:10px 16px; font-size:13px; }
+  .preview-toggle { display:block; margin:14px auto 0; min-height:44px; padding:8px 14px; border:1px solid var(--line); border-radius:999px; background:#100d18; color:var(--muted); font:13px var(--body); cursor:pointer; }
+  .cab-art:focus-visible,.preview-toggle:focus-visible,.quick-play a:focus-visible { outline:3px solid var(--cyan); outline-offset:5px; }
+  .sitdown { scroll-margin-top:90px; }
+  @media(max-width:760px) { .floor { padding-top:20px; } .floor h1 { font-size:clamp(27px,7vw,38px); } .floor-copy .kicker { white-space:normal; font-size:10px; letter-spacing:.1em; } .quick-play { gap:8px; } .quick-play a { padding:10px 12px; font-size:12px; } .machines { gap:24px; } .machine { width:min(100%,420px); justify-self:center; } }
 
-/* ---------- cards ---------- */
-.card { border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
-.card .pad { padding: 20px; }
-.card h3 { font-size: 20px; }
-.card p { color: var(--muted); font-size: 16px; }
-
-/* ---------- video ---------- */
-.theater { border-radius: var(--radius); overflow: hidden; background: #000; box-shadow: 0 0 0 1px var(--line), 0 0 60px rgba(255, 77, 141, 0.12), 0 30px 70px rgba(0,0,0,0.6); }
-.theater video { width: 100%; aspect-ratio: 16 / 9; }
-.theater-poster { all: unset; display: block; position: relative; width: 100%; aspect-ratio: 16 / 9; cursor: pointer; background: #000; }
-.theater-poster img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: opacity 0.2s ease; }
-.theater-poster:hover img { opacity: 1; }
-.theater-poster .btn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-.theater-poster:hover .btn { transform: translate(-50%, -50%) translateY(-1px); }
-.theater-poster .theater-meta { position: absolute; right: 14px; bottom: 12px; padding: 4px 9px; border-radius: 6px; background: rgba(7, 6, 11, 0.7); color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; }
-.theater-poster:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
-.theater-caption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; margin-top: 14px; color: var(--muted); font-size: 16px; }
-.theater-caption b { color: var(--ink); font-family: var(--mono); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; font-size: 13px; }
-
-/* ---------- jukebox ---------- */
-.jukebox { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 28px; align-items: start; }
-.tracks .tag:empty { display: none; }
-@media (max-width: 860px) { .jukebox { grid-template-columns: 1fr; } }
-.now { position: sticky; top: 84px; padding: 22px; border-radius: var(--radius); background: linear-gradient(180deg, #1b1430, #0d0b14); box-shadow: 0 0 0 1px var(--line), inset 0 0 60px rgba(255, 77, 141, 0.08); }
-.now .kicker { margin-bottom: 8px; }
-.now .title { font-family: var(--display); font-size: clamp(22px, 3vw, 34px); color: #fff; min-height: 1.1em; }
-.now .artist { color: var(--muted); font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
-.now .controls { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
-.now .controls .btn { min-height: 46px; padding: 8px 18px; }
-.now .bar { position: relative; height: 10px; margin-top: 16px; border-radius: 999px; background: rgba(246, 239, 228, 0.12); cursor: pointer; overflow: hidden; }
-.now .bar i { position: absolute; inset: 0 auto 0 0; width: 0%; background: linear-gradient(90deg, var(--pink), var(--cyan)); border-radius: 999px; }
-.now .time { display: flex; justify-content: space-between; margin-top: 8px; color: var(--dim); font-family: var(--mono); font-size: 12px; }
-.tracks li[hidden] { display: none; }
-.tracks-more { margin-top: 14px; }
-.tracks-more[hidden] { display: none; }
-.tracks { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
-.tracks button {
-  display: grid; grid-template-columns: 28px 1fr auto auto; align-items: center; gap: 12px; width: 100%;
-  padding: 9px 12px; border: 0; border-radius: 12px; background: transparent; color: var(--ink); text-align: left; cursor: pointer;
-}
-.tracks button:hover { background: rgba(246, 239, 228, 0.05); }
-.tracks li.on button { background: rgba(255, 77, 141, 0.12); box-shadow: inset 0 0 0 1px rgba(255, 77, 141, 0.45); }
-.tracks .n { font-family: var(--mono); font-size: 13px; color: var(--dim); }
-.tracks li.on .n { color: var(--pink); }
-.tracks .t { font-weight: 600; }
-.tracks .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
-.tracks .d { font-family: var(--mono); font-size: 12px; color: var(--dim); }
-.tracks li.on .d { color: var(--ink); }
-.now .hint { margin-top: 18px; color: var(--dim); font-size: 14px; line-height: 1.45; }
-
-/* ---------- comic ---------- */
-.comic-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-@media (max-width: 760px) { .comic-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.comic-strip a { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; border: 3px solid #1b1726; box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 14px 30px rgba(0,0,0,0.5); background: #000; }
-.comic-strip img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-.comic-strip a:hover img { transform: scale(1.05); }
-.comic-strip .cap { position: absolute; left: 10px; bottom: 10px; padding: 5px 10px; background: #f6efe4; color: #1a1208; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; border: 2px solid #1a1208; }
-
-/* ---------- cast ---------- */
-.cast-group { margin-top: 28px; }
-.cast-group:first-of-type { margin-top: 0; }
-.cast-group > h3 { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; font-size: 15px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
-.cast-group > h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-.cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
-.cast figure {
-  margin: 0; padding: 18px 16px 16px; border-radius: var(--radius); text-align: center;
-  background: radial-gradient(80% 60% at 50% 100%, rgba(25, 230, 255, 0.14), transparent 70%), var(--panel);
-  box-shadow: 0 0 0 1px var(--line);
-}
-.cast figure.foe { background: radial-gradient(80% 60% at 50% 100%, rgba(255, 77, 141, 0.16), transparent 70%), var(--panel); }
-.cast img { height: 170px; width: auto; max-width: 100%; margin: 0 auto; object-fit: contain; filter: drop-shadow(0 18px 14px rgba(0, 0, 0, 0.55)); }
-.cast figcaption { margin-top: 12px; }
-.cast figcaption b { display: block; font-family: var(--display); font-weight: 400; font-size: 16px; color: #fff; }
-.cast figcaption span { display: block; margin-top: 4px; color: var(--muted); font-size: 14px; line-height: 1.35; }
-.cast figcaption .role { color: var(--cyan); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
-.cast figure.foe .role { color: var(--pink); }
-.cast [hidden] { display: none !important; }
-
-/* ---------- platform / stages ---------- */
-.stages { counter-reset: stage; }
-.stage { display: grid; grid-template-columns: 110px 1fr; gap: 20px; padding: 22px 0; border-top: 1px solid var(--line); }
-.stage:last-child { border-bottom: 1px solid var(--line); }
-@media (max-width: 600px) { .stage { grid-template-columns: 1fr; } }
-.stage .num { font-family: var(--display); font-size: 44px; line-height: 1; color: var(--pink); text-shadow: 0 0 18px rgba(255, 77, 141, 0.5); }
-.stage .num small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--dim); text-shadow: none; margin-bottom: 4px; }
-.stage h3 { font-size: clamp(22px, 2.6vw, 30px); color: #fff; }
-.stage .where { margin-top: 4px; color: var(--dim); font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
-.stage ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.stage li { position: relative; padding-left: 22px; color: var(--muted); font-size: 16px; }
-.stage li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 10px; height: 10px; border-radius: 2px; background: var(--gold); transform: rotate(45deg); }
-.stage .boss { display: inline-block; margin-top: 12px; padding: 4px 10px; border-radius: 6px; background: rgba(255, 77, 141, 0.14); color: var(--pink); font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
-
-/* ---------- support ---------- */
-.support { text-align: center; padding: clamp(48px, 7vw, 88px) var(--gutter); border-radius: var(--radius); background: radial-gradient(70% 90% at 50% 0%, rgba(255, 66, 77, 0.22), transparent 70%), var(--panel); box-shadow: 0 0 0 1px var(--line); }
-.support h2 { font-size: clamp(30px, 4.6vw, 54px); }
-.support .lede { margin: 14px auto 0; }
-.support .acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
-
-/* ---------- footer ---------- */
-.foot { padding: 40px 0 56px; color: var(--dim); font-size: 15px; }
-.foot .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; }
-.foot a { color: var(--muted); }
-.foot .fine { max-width: 72ch; margin-top: 14px; line-height: 1.5; }
-
-/* ---------- in-page helpers ---------- */
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
-.step { padding: 20px; border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px var(--line); }
-.step .n { font-family: var(--display); font-size: 30px; color: var(--cyan); text-shadow: 0 0 16px rgba(25, 230, 255, 0.5); }
-.step h3 { margin-top: 8px; font-size: 19px; }
-.step p { margin-top: 8px; color: var(--muted); font-size: 16px; }
-.keys { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.keys kbd { padding: 5px 9px; border-radius: 6px; border: 1px solid rgba(246, 239, 228, 0.25); border-bottom-width: 3px; background: #1a1626; font-family: var(--mono); font-size: 12px; color: var(--ink); }
-
-  .cabinets{grid-template-columns:repeat(3,minmax(0,1fr))}.cab .deck{flex:1;grid-template-rows:1fr auto auto}.cab .marquee{gap:6px;padding:12px}.cab .marquee h2{font-size:clamp(16px,1.55vw,22px)}.cab .marquee .machine{font-size:9px;letter-spacing:.1em}.cab .deck .btn-big{font-size:13px;padding:14px 16px;min-height:54px}@media(max-width:980px){.cabinets{grid-template-columns:1fr}.cab .marquee h2{font-size:clamp(20px,4vw,28px)}.cab .deck .btn-big{font-size:16px}}
 </style>
-  <link rel="preload" as="image" href="art/web/rally-1600.webp" imagesrcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" imagesizes="100vw" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="./"><span class="lamp" aria-hidden="true"></span>Political Arcades <span class="sub">· floor open</span></a>
-    <nav class="nav" aria-label="Sections"><a href="city/">Your City</a>
-      <a href="#play">Play</a>
-      <a href="#watch">Watch</a>
-      <a href="#listen">Listen</a>
-      <a href="#read">Read</a>
-      <a href="#cast">Cast</a>
-      <a href="#platform">Platform</a>
-      <a href="community-pot/">Community Pot</a>
-    </nav>
-    <a class="btn btn-patreon" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
-  </header>
+<header class="topbar"><div class="col">
+  <a class="a2a" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a>
+  <nav class="topnav"><a href="#play">Play</a><a href="#how">How it works</a><a href="#more">Watch · Listen · Read</a><a href="#who">About</a><a href="city/">Your city</a></nav>
+  <a class="btn btn-top" href="#play">▶ Play free</a>
+</div></header>
+<main>
+  <section class="floor" id="play">
+    <img class="mural" src="art/web/rally-1600.webp" srcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" decoding="async">
+    <div class="col">
+      <div class="floor-copy">
+        <p class="kicker">Free browser arcade · <b>AdsToAid</b> · no download, no sign-up</p>
+        <h1>Free games that turn <em>ad money into aid.</em></h1>
+        <p class="lede">Play for free. <b>At least half of distributable profit goes to community programs.</b> As Tony earns more, the community’s share grows to 99%.</p>
+        <nav class="quick-play" aria-label="Choose a game">
+          <a class="chip" data-open-game="crashers" href="capitol-crashers/">Play Crashers</a>
+          <a class="chip" data-open-game="vote" href="horse/">Play VOTE</a>
+          <a class="chip" data-open-game="pothole" href="pothole-party/">Play Pothole</a>
+        </nav>
+        <button class="preview-toggle" id="preview-toggle" type="button" aria-pressed="false">Pause previews</button>
+      </div>
 
-  <main>
-    <section class="floor" id="play">
-      <img class="mural" src="art/web/rally-1600.webp" srcset="art/web/rally-800.webp 800w, art/web/rally-1200.webp 1200w, art/web/rally-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
-      <div class="wrap">
-        <div class="floor-copy">
-          <p class="kicker">Three machines · free<span class="hide-m"> · in your browser</span></p>
-          <h1>Political Arcades</h1>
-          <p class="lede">Zohran Mamdani, Abdul El-Sayed and James Talarico, chibi-sized, fighting for the block. Pick a cabinet.</p>
+      <div class="arcade" id="arcade">
+        <div class="sitdown" id="sitdown" hidden>
+          <div class="bezel">
+            <div class="bezel-marquee"><span class="bezel-name" id="sd-name">Capitol Crashers</span><span class="mtag" id="sd-machine">Machine 01</span><button class="chip js-leave" type="button">&larr; Back to the floor</button></div>
+            <div class="bezel-screen" id="sd-screen"></div>
+            <div class="bezel-deck"><span class="mono">At least half of distributable profit goes to community programs.</span><span class="acts"><a class="chip js-full" href="#">Full screen</a><a class="chip" id="sd-open" href="#" target="_blank" rel="noopener">Open in a new tab</a></span></div>
+          </div>
         </div>
-
-        <div class="cabinets">
-          <a class="cab" href="capitol-crashers/">
-            <div class="marquee">
-              <h2>Capitol Crashers</h2>
-              <span class="machine">Machine 01</span>
-            </div>
-            <div class="screen">
-              <img src="art/web/crashers-1200.webp" srcset="art/web/crashers-800.webp 800w, art/web/crashers-1200.webp 1200w" sizes="(max-width: 760px) 100vw, 50vw" width="1200" height="675" alt="Mamdani and El-Sayed square up on a rainy street in front of the Capitol." decoding="async" />
-              <span class="coin" aria-hidden="true">Insert coin · press start</span>
-            </div>
-            <div class="deck">
-              <p>Belt scroller. Feed the block, freeze the rent, keep the witness standing, and stop the Landlord at the end of the street.</p>
-              <div class="meta"><span>1 player</span><span>Keyboard + touch</span><span>4 streets</span></div>
-              <span class="btn btn-big">Play Capitol Crashers</span>
-            </div>
-          </a>
-
-          <a class="cab" href="horse/">
-            <div class="marquee">
-              <h2>VOTE</h2>
-              <span class="machine">Machine 02</span>
-            </div>
-            <div class="screen">
-              <img src="art/web/vote-1200.webp" srcset="art/web/vote-800.webp 800w, art/web/vote-1200.webp 1200w" sizes="(max-width: 760px) 100vw, 50vw" width="1200" height="675" alt="Mamdani and El-Sayed on a New York playground court at night." decoding="async" />
-              <span class="coin" aria-hidden="true">Insert coin · press start</span>
-            </div>
-            <div class="deck">
-              <p>Playground shoot-out. Call a shot, add the flair, make them match it. Spell V-O-T-E and you're out. Thirty courts to unlock.</p>
-              <div class="meta"><span>You vs. the CPU</span><span>30 courts</span><span>Soundtrack rewards</span></div>
-              <span class="btn btn-big btn-teal">Play VOTE</span>
-            </div>
-          </a>
-
-          <a class="cab" href="pothole-party/">
-            <div class="marquee"><h2>Pothole Party</h2><span class="machine">Machine 03</span></div>
-            <div class="screen"><img src="art/pothole-party/banner-1200.webp" srcset="art/pothole-party/banner-800.webp 800w, art/pothole-party/banner-1200.webp 1200w" sizes="(max-width: 980px) 100vw, 33vw" width="1200" height="675" alt="Mamdani leads the crew, El-Sayed fills a pothole and Talarico compacts a fresh patch while detractors complain." decoding="async"><span class="coin" aria-hidden="true">Free play · press start</span></div>
-            <div class="deck"><p>Snake, with a shift to finish. Drop off workers, circle back after the repair, and collect them to grow the crew. The complaint department can cope.</p><div class="meta"><span>1 player</span><span>Keys + touch</span><span>3 heroes</span></div><span class="btn btn-big">Play Pothole Party</span></div>
-          </a>
-        </div>
-
-        <div class="acts" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:22px">
-          <a class="btn btn-ghost" href="#watch">Watch the music video</a>
-          <a class="btn btn-ghost" href="https://capitolcrashers.com/story/">Read the comic</a>
+        <div class="machines">
+          <figure class="machine" data-game="crashers" data-url="capitol-crashers/" data-name="Capitol Crashers" data-machine="Machine 01">
+            <button class="cab-art" type="button" aria-label="Play Capitol Crashers"><span class="screenwrap"><img src="art/cabinets/crashers.webp" width="600" height="900" alt="Capitol Crashers arcade cabinet" fetchpriority="high"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/crashers.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-crashers.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>Capitol Crashers</b><span>Machine 01</span></div>
+              <div class="placard-mode"><span class="k">Street brawler</span> Help your neighbors. Take on the bosses.</div>
+              <a class="btn btn-big js-play" href="capitol-crashers/">&#9654; Play</a>
+            </figcaption>
+          </figure>
+          <figure class="machine" data-game="vote" data-url="horse/" data-name="VOTE" data-machine="Machine 02">
+            <button class="cab-art" type="button" aria-label="Play VOTE"><span class="screenwrap"><img src="art/cabinets/vote.webp" width="600" height="900" alt="VOTE arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/vote.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-vote.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>VOTE</b><span>Machine 02</span></div>
+              <div class="placard-mode"><span class="k">Make them match it</span> Solo or pass &amp; play &middot; three players, one court</div>
+              <a class="btn btn-big btn-teal js-play" href="horse/">&#9654; Play</a>
+            </figcaption>
+          </figure>
+          <figure class="machine" data-game="pothole" data-url="pothole-party/" data-name="Pothole Party" data-machine="Machine 03">
+            <button class="cab-art" type="button" aria-label="Play Pothole Party"><span class="screenwrap"><img src="art/cabinets/pothole.webp" width="600" height="900" alt="Pothole Party arcade cabinet"><span class="cab-screen" aria-hidden="true"><div class="backing" aria-hidden="true"></div><video class="screenvid" muted playsinline preload="metadata" src="media/cabinets/pothole.mp4" aria-hidden="true"></video><div class="crt" aria-hidden="true"></div><img class="shade" src="art/cabinets/shade-pothole.png" width="480" height="480" alt="" aria-hidden="true"></span></span><span class="coin">Insert coin &middot; free</span></button>
+            <figcaption class="placard">
+              <div class="placard-top"><b>Pothole Party</b><span>Machine 03</span></div>
+              <div class="placard-mode"><span class="k">This shift</span> Three heroes, one long shift &middot; the complaint department can cope</div>
+              <a class="btn btn-big js-play" href="pothole-party/">&#9654; Play</a>
+            </figcaption>
+          </figure>
         </div>
       </div>
-    </section>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="track">
-        <span>Freeze the Rent</span><span>Healthcare for All</span><span>Money Out of Politics</span><span>Money in Your Pocket</span><span>Free Buses</span><span>Town Hall</span><span>I've Got Receipts</span><span>This City Belongs to You</span>
-        <span>Freeze the Rent</span><span>Healthcare for All</span><span>Money Out of Politics</span><span>Money in Your Pocket</span><span>Free Buses</span><span>Town Hall</span><span>I've Got Receipts</span><span>This City Belongs to You</span>
+      <div class="statement" id="ledger">
+        <div class="row">
+          <span class="k">Giving policy · first financial statement pending</span>
+          <span>Community share<b>50% → 99%</b></span>
+          <span>Tony’s share<b>50% → 1%</b></span>
+          <span class="aidv">Monthly giving floor<b>$50 with Tony’s top-up</b></span>
+        </div>
+        <details>
+          <summary>How the money works</summary>
+          <div class="more">
+            <p>The split applies to distributable profit: money received from ads, Patreon and any merch sales, minus documented project costs and disclosed operating-reserve additions, plus reserve releases. Fees and refunds are counted once. The reserve and costs are explained in the <a href="community-pot/">Community Pot</a>.</p>
+            <p>The community share starts at 50% and rises to 99%. Recipients support causes the featured politicians care about; they are not campaigns or politicians. We plan to invite their recommendations. No endorsement or participation is implied. Chosen recipients and payment receipts will appear in the Community Pot.</p>
+            <p>No reconciled financial statement is published yet. Reports will distinguish money received, expenses, reserves, allocated shares and actual payments. Unpaid allocations are not described as donations already delivered.</p>
+            <p>If the site gives less than $50 in a month, Tony personally covers the difference so total monthly giving reaches $50, with his top-up going to a local Seattle cause. For example, $30 from the site means $20 from Tony; $0 means $50. Personal top-ups are separate from site profit. <a href="#milestones">See the split and milestones.</a></p>
+          </div>
+        </details>
       </div>
     </div>
+  </section>
 
-    <section class="section" id="watch">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Watch</p>
-            <h2>Freeze the Rent, <em>the video</em></h2>
-          </div>
-          <p class="lede">Cut from real gameplay, the Makko cast, and the comic panels brought to life. Two minutes and ten seconds, one song.</p>
-        </div>
-        <!-- To switch to YouTube once the video is uploaded: set data-youtube to the video id. The MP4 stays as the fallback. -->
-        <div class="theater" id="theater" data-youtube="" data-mp4="media/freeze-the-rent.mp4">
-          <button type="button" class="theater-poster" aria-label="Play the Freeze the Rent music video">
-            <img src="art/web/video-poster.webp" width="1280" height="720" alt="" loading="lazy" decoding="async" />
-            <span class="btn btn-big">▶ Play the video</span>
-            <span class="theater-meta">2:10 · 20 MB</span>
-          </button>
-        </div>
-        <div class="theater-caption">
-          <span><b>Track 01</b> · Freeze the Rent · from the Political Arcades soundtrack</span>
-          <span><a href="#listen">All twelve songs below</a></span>
-        </div>
-      </div>
-    </section>
+  <!-- Ad placement is added only after approval; no empty placeholder for visitors. -->
 
-    <section class="section" id="listen">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Listen</p>
-            <h2>The <em>soundtrack</em></h2>
-          </div>
-          <p class="lede">Nine originals, three remixes, and twelve new hip-hop and R&B editions. They play inside VOTE as you unlock courts, and they play here for free.</p>
-        </div>
-        <div class="jukebox">
-          <div class="now" aria-live="polite">
-            <p class="kicker">Now playing</p>
-            <p class="title" id="now-title">Pick a track</p>
-            <p class="artist">Political Arcades soundtrack</p>
-            <div class="controls">
-              <button class="btn" id="play-toggle" type="button" aria-label="Play">▶ Play</button>
-              <button class="btn btn-ghost" id="prev" type="button" aria-label="Previous track">◀◀</button>
-              <button class="btn btn-ghost" id="next" type="button" aria-label="Next track">▶▶</button>
-            </div>
-            <div class="bar" id="bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
-            <div class="time"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
-            <p class="hint">Twelve tracks. Space bar plays and pauses. The music keeps going while you scroll.</p>
-          </div>
-          <div>
-            <ol class="tracks" id="tracks"></ol>
-            <button class="btn btn-ghost tracks-more" id="show-more-tracks" type="button" aria-controls="tracks">Show 5 more</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="read">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Read</p>
-            <h2>Two Roads <em>to the Capitol</em></h2>
-          </div>
-          <p class="lede">Issue #1. Kampala to Queens, Detroit to Lansing, and the fights that put them on the same street. Every caption is sourced.</p>
-        </div>
-        <div class="comic-strip">
-          <a href="https://capitolcrashers.com/story/#p08"><img loading="lazy" src="art/comic/p08.webp" alt="Mamdani in Queens, early days." /><span class="cap">Queens</span></a>
-          <a href="https://capitolcrashers.com/story/#p09"><img loading="lazy" src="art/comic/p09.webp" alt="El-Sayed in Detroit, early days." /><span class="cap">Detroit</span></a>
-          <a href="https://capitolcrashers.com/story/#p21"><img loading="lazy" src="art/comic/p21.webp" alt="The crowd celebrates the rent freeze." /><span class="cap">Rent frozen</span></a>
-          <a href="https://capitolcrashers.com/story/#p26"><img loading="lazy" src="art/comic/p26.webp" alt="The two walk toward the Capitol at night." /><span class="cap">The road</span></a>
-        </div>
-        <p style="margin-top:20px"><a class="btn" href="https://capitolcrashers.com/story/">Read the whole comic</a></p>
-      </div>
-    </section>
-
-    <section class="section" id="cast">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Cast</p>
-            <h2>Who's on <em>the street</em></h2>
-          </div>
-          <p class="lede">Two fighters, the neighbors they stop for, and the machine standing in the way. All drawn in Makko, all chibi.</p>
-        </div>
-        <div class="cast-group">
-          <h3>The fighters</h3>
-          <div class="cast">
-          <figure><img src="art/cast/mamdani.webp" alt="Chibi Zohran Mamdani in a dark suit." loading="lazy" decoding="async" /><figcaption><span class="role">Player 1</span><b>Zohran Mamdani</b><span>Long reach, heavy hits, slow feet. Walked the length of Manhattan in one night.</span></figcaption></figure>
-          <figure><img src="art/cast/elsayed.webp" alt="Chibi Abdul El-Sayed in a black shirt with a stethoscope." loading="lazy" decoding="async" /><figcaption><span class="role">Player 2</span><b>Abdul El-Sayed</b><span>Fast feet, short combo window, lighter hits. Captained wrestling, football and lacrosse.</span></figcaption></figure>
-          </div>
-        </div>
-        <div class="cast-group">
-          <h3>The block</h3>
-          <div class="cast">
-          <figure><img src="art/cast/hungry.webp" alt="A woman in a beanie holding an empty paper bowl." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a meal</span><b>The hungry neighbor</b><span>Walk up, press strike, she eats. City-owned groceries in the platform.</span></figcaption></figure>
-          <figure><img src="art/cast/sick.webp" alt="A man with a cane, glasses and a crumpled medical bill." loading="lazy" decoding="async" /><figcaption><span class="role">Needs care</span><b>The sick neighbor</b><span>Care with no bill. Medicare for All in the platform.</span></figcaption></figure>
-          <figure><img src="art/cast/evicted.webp" alt="A woman beside moving boxes holding a pink eviction notice." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a home</span><b>The evicted tenant</b><span>A RENT FROZEN notice goes up on her building.</span></figcaption></figure>
-          <figure><img src="art/cast/worker.webp" alt="A worker in a hi-vis vest turning out an empty pocket." loading="lazy" decoding="async" /><figcaption><span class="role">Needs a job</span><b>The broke worker</b><span>A good job and a tax break. Money in your pocket.</span></figcaption></figure>
-          <figure><img src="art/cast/witness.webp" alt="A woman clutching a fat folder of receipts." loading="lazy" decoding="async" /><figcaption><span class="role">Follows you</span><b>The witness</b><span>Get her to the boss standing and the receipts go on the record.</span></figcaption></figure>
-          </div>
-        </div>
-        <div class="cast-group">
-          <h3>The machine</h3>
-          <div class="cast">
-          <figure class="foe"><img src="art/cast/trump.webp" alt="Chibi Donald Trump in a blue suit." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Landlord</span><b>Donald Trump</b><span>End of street one. Rent goes up until he goes down.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/hegseth.webp" alt="Chibi Pete Hegseth in an open camo jacket, can in one hand, bottle in the other." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Secretary of War</span><b>Pete Hegseth</b><span>Street two. Weekend warrior. Swings the bottle, calls it a war plan.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/vance.webp" alt="Chibi JD Vance in a navy suit." loading="lazy" decoding="async" /><figcaption><span class="role">Boss · The Lobbyist</span><b>JD Vance</b><span>Runs the studio. Charges when you are not looking.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/cruz.webp" alt="Chibi Ted Cruz in a sombrero." loading="lazy" decoding="async" /><figcaption><span class="role">Roaming</span><b>Ted Cruz</b><span>Throws the hat, flees the fight, comes back for more.</span></figcaption></figure>
-          <figure class="foe"><img src="art/cast/greene.webp" alt="Chibi Marjorie Taylor Greene in a white blazer." loading="lazy" decoding="async" /><figcaption><span class="role">Roaming</span><b>Marjorie Taylor Greene</b><span>Calls down the satellite lock. Dodge it.</span></figcaption></figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="platform">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Platform</p>
-            <h2>What they're <em>fighting for</em></h2>
-          </div>
-          <p class="lede">Each street in Capitol Crashers is one fight from the real platforms. Win the street and the policy passes on the block. Planks shortened from their campaign sites, sourced in the comic's back matter.</p>
-        </div>
-        <div class="stages">
-          <article class="stage">
-            <div class="num"><small>Street</small>01</div>
-            <div>
-              <h3>Freeze the Rent</h3>
-              <p class="where">The block · Mamdani</p>
-              <ul>
-                <li>Freeze the rent for every stabilized tenant. More than two million New Yorkers live in those apartments.</li>
-                <li>200,000 permanently affordable, union-built, rent-stabilized homes over ten years. Fully affordable projects get fast-tracked.</li>
-                <li>One office for code enforcement. If the owner won't make the repair, the city does and sends the bill. In the worst cases, the city takes the building.</li>
-              </ul>
-              <span class="boss">Boss · The Landlord</span>
-            </div>
-          </article>
-          <article class="stage">
-            <div class="num"><small>Street</small>02</div>
-            <div>
-              <h3>Healthcare for All</h3>
-              <p class="where">The clinic block · El-Sayed</p>
-              <ul>
-                <li>Medicare for every American, cradle to grave, with vision, dental and hearing. No premiums, copays or deductibles.</li>
-                <li>Medical debt abolished.</li>
-                <li>At least 50 gallons of clean water a person a day, bills capped at 2% of income, every lead pipe in Michigan out by 2030.</li>
-              </ul>
-              <span class="boss">Boss · The Secretary of War</span>
-            </div>
-          </article>
-          <article class="stage">
-            <div class="num"><small>Street</small>03</div>
-            <div>
-              <h3>Money Out of Politics</h3>
-              <p class="where">The cable studio · El-Sayed</p>
-              <ul>
-                <li>Never taken a dime of corporate money, never will. Overturn Citizens United.</li>
-                <li>Ban outside spending by corporate 501(c)(4)s, super PACs and 527s. Public election funding and spending caps.</li>
-                <li>Tax capital gains over $1 million like wages, tax wealth over $1 billion, exempt the first $50,000. One good job should raise a family.</li>
-              </ul>
-              <span class="boss">Boss · The Lobbyist</span>
-            </div>
-          </article>
-          <article class="stage">
-            <div class="num"><small>Street</small>04</div>
-            <div>
-              <h3>Accountability</h3>
-              <p class="where">The Capitol approach · both</p>
-              <ul>
-                <li>Witnesses with receipts walk the street with you. Keep them standing and the record gets read.</li>
-                <li>Who pays: match New Jersey's 11.5% corporate tax, a 2% city tax on income over $1 million, fines on corrupt landlords.</li>
-                <li>Free childcare from six weeks to five, a $30 minimum wage by 2030, fare-free buses, city-owned groceries.</li>
-              </ul>
-              <span class="boss">Finale · every boss returns</span>
-            </div>
-          </article>
-        </div>
-        <p class="lede" style="margin-top:20px;font-size:15px;color:var(--dim)">Sources and the full plank list: <a href="https://capitolcrashers.com/story/#planks">the comic's back matter</a>. Political Arcades is an unofficial cartoon and is not authorized by any candidate or committee.</p>
-      </div>
-    </section>
-
-
-    <section class="section" id="dispatch" aria-labelledby="dispatch-title">
-      <div class="wrap">
-        <div class="support">
-          <p class="kicker">The Weekly Dispatch</p>
-          <h2 id="dispatch-title">New games.<br><em>Fresh chaos.</em></h2>
-          <p class="lede">Get the week’s new games, tracks and political satire, plus a clear look at the Community Pot. One email a week. Unsubscribe whenever you want.</p>
-          <div class="acts">
-            <a class="btn btn-big" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==">Join the Weekly Dispatch</a>
-            <a class="btn btn-ghost btn-big" href="privacy.html">Privacy</a>
-          </div>
-          <p class="lede" style="margin-top:22px;font-size:15px">You choose to subscribe, then confirm by email. Creating an arcade account never adds you to the newsletter.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="support">
-      <div class="wrap">
-        <div class="support">
-          <p class="kicker">Keep the floor open</p>
-          <h2>Free to play. <em>Patreon</em> pays the light bill.</h2>
-          <p class="lede">New streets, new courts, new songs and new issues of the comic ship first to patrons. Everything stays free for everyone.</p>
-          <div class="acts">
-            <a class="btn btn-patreon btn-big" href="https://www.patreon.com/c/PoliticalArcade" target="_blank" rel="noopener noreferrer">Support on Patreon</a>
-            <a class="btn btn-ghost btn-big" href="community-pot/">Where the money goes</a>
-            <a class="btn btn-ghost btn-big" href="#play">Back to the floor</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <div class="wrap">
-      <div class="row">
-        <span>© Political Arcades · Art and animation made in <a href="https://www.makko.ai/" rel="noopener">Makko</a></span>
-        <span><a href="https://capitolcrashers.com/">capitolcrashers.com</a> · <a href="horse/">VOTE</a> · <a href="pothole-party/">Pothole Party</a> · <a href="community-pot/">Community Pot</a> · <a href="privacy.html">Privacy</a></span>
-      </div>
-      <p class="fine">Capitol Crashers, VOTE and Pothole Party are original games. They are unofficial cartoons, not authorized, paid for or reviewed by Zohran Mamdani, Abdul El-Sayed, James Talarico, or any candidate or campaign committee. Not affiliated with any other publisher.</p>
+  <section class="col more-sec" id="more">
+    <p class="kicker">Keep the floor open</p>
+    <div class="strip">
+      <a class="tile" href="#watch"><img src="art/thumb/video-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Watch</span><span>Freeze the Rent &middot; 2:10</span></a>
+      <a class="tile" href="#read"><img src="art/comic/p21.webp" width="640" height="360" loading="lazy" alt=""><span class="k">Read</span><span>Two Roads to the Capitol</span></a>
+      <a class="tile" href="#listen"><img src="art/thumb/studio-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Listen</span><span>Twelve electronic mixes</span></a>
+      <a class="tile" id="dispatch" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==" target="_blank" rel="noopener"><img src="art/thumb/rally-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Updates</span><span>The Dispatch &middot; sign up</span></a>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // ---- Jukebox: one audio element, a track list, a seek bar.
-    const TRACKS = [
-      ["freeze-the-rent-full-spectrum", "Freeze the Rent — Full Spectrum", "Mix", "5:00"],
-      ["never-taken-a-dime-full-spectrum", "Never Taken a Dime — Full Spectrum", "Mix", "5:00"],
-      ["freeze-the-rent-robot-disco", "Freeze the Rent — Robot Disco", "Mix", "5:10"],
-      ["never-taken-a-dime-robot-disco", "Never Taken a Dime — Robot Disco", "Mix", "4:52"],
-      ["freeze-the-rent-neon-synth", "Freeze the Rent — Neon Synth", "Mix", "5:00"],
-      ["never-taken-a-dime-neon-synth", "Never Taken a Dime — Neon Synth", "Mix", "5:00"],
-      ["freeze-the-rent-sunset-house", "Freeze the Rent — Sunset House", "Mix", "5:10"],
-      ["never-taken-a-dime-sunset-house", "Never Taken a Dime — Sunset House", "Mix", "5:02"],
-      ["freeze-the-rent-robot-sunset", "Freeze the Rent — Robot Sunset", "Mix", "5:10"],
-      ["never-taken-a-dime-robot-sunset", "Never Taken a Dime — Robot Sunset", "Mix", "5:00"],
-      ["freeze-the-rent-neon-disco", "Freeze the Rent — Neon Disco", "Mix", "5:10"],
-      ["never-taken-a-dime-neon-disco", "Never Taken a Dime — Neon Disco", "Mix", "5:10"],
-    ];
-    const audio = new Audio(); audio.preload = "none"; audio.volume = 0.8;
-    const list = document.getElementById("tracks");
-    const nowTitle = document.getElementById("now-title");
-    const toggle = document.getElementById("play-toggle");
-    const fill = document.getElementById("fill"), bar = document.getElementById("bar");
-    const tCur = document.getElementById("t-cur"), tDur = document.getElementById("t-dur");
-    let index = -1;
-    const fmt = (s) => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
-    TRACKS.forEach(([file, title, tag, len], i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<button type="button"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${title}</span><span class="tag">${tag === "Remix" ? "Remix" : ""}</span><span class="d">${len}</span></button>`;
-      li.querySelector("button").addEventListener("click", () => (i === index ? playPause() : load(i, true)));
-      list.append(li);
-    });
-    let visibleTracks = 5;
-    const moreTracks = document.getElementById("show-more-tracks");
-    function updateVisibleTracks() {
-      [...list.children].forEach((li, i) => { li.hidden = i >= visibleTracks; });
-      const remaining = TRACKS.length - visibleTracks;
-      moreTracks.hidden = remaining <= 0;
-      moreTracks.textContent = `Show ${Math.min(5, remaining)} more`;
-    }
-    moreTracks.addEventListener("click", () => {
-      visibleTracks = Math.min(TRACKS.length, visibleTracks + 5);
-      updateVisibleTracks();
-    });
-    updateVisibleTracks();
-    function load(i, autoplay) {
-      index = (i + TRACKS.length) % TRACKS.length;
-      const [file, title] = TRACKS[index];
-      audio.src = `horse/assets/music/${file}.mp3`;
-      nowTitle.textContent = title;
-      [...list.children].forEach((li, k) => li.classList.toggle("on", k === index));
-      if (autoplay) audio.play().catch(() => {});
-    }
-    function playPause() { if (index < 0) return load(0, true); if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }
-    toggle.addEventListener("click", playPause);
-    document.getElementById("next").addEventListener("click", () => load(index + 1, true));
-    document.getElementById("prev").addEventListener("click", () => load(index - 1, true));
-    audio.addEventListener("play", () => { toggle.textContent = "❚❚ Pause"; toggle.setAttribute("aria-label", "Pause"); });
-    audio.addEventListener("pause", () => { toggle.textContent = "▶ Play"; toggle.setAttribute("aria-label", "Play"); });
-    audio.addEventListener("ended", () => load(index + 1, true));
-    audio.addEventListener("timeupdate", () => {
-      const p = audio.duration ? audio.currentTime / audio.duration * 100 : 0;
-      fill.style.width = p + "%"; bar.setAttribute("aria-valuenow", Math.round(p));
-      tCur.textContent = fmt(audio.currentTime); tDur.textContent = fmt(audio.duration);
-    });
-    bar.addEventListener("click", (e) => { const r = bar.getBoundingClientRect(); if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
-    bar.addEventListener("keydown", (e) => { if (!audio.duration) return; if (e.key === "ArrowRight") audio.currentTime += 5; if (e.key === "ArrowLeft") audio.currentTime -= 5; });
 
-    // ---- YouTube swap: fill data-youtube with the id and the embed replaces the MP4 (click-to-load, no tracking until played).
-    const theater = document.getElementById("theater");
-    const yt = theater?.dataset.youtube;
-    theater?.querySelector(".theater-poster")?.addEventListener("click", () => {
-      if (yt) {
-        theater.innerHTML = `<iframe style="display:block;width:100%;aspect-ratio:16/9;border:0" src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0" title="Freeze the Rent" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-        return;
-      }
-      const v = document.createElement("video");
-      v.controls = true; v.playsInline = true; v.autoplay = true; v.poster = "art/web/video-poster.webp";
-      v.src = theater.dataset.mp4; v.style.cssText = "display:block;width:100%;aspect-ratio:16/9";
-      theater.replaceChildren(v);
-      v.play().catch(() => {});
-      if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { if (!en.isIntersecting && !v.paused) v.pause(); }, { threshold: 0.2 }).observe(v);
-    });
+  <section class="col media-sec" id="watch">
+    <div class="section-head"><div><p class="kicker">Watch</p><h2>Freeze the Rent, <em>the video</em></h2></div><p class="lede">Two minutes ten. Mamdani and El-Sayed on the block, cut with gameplay. Tap to load; nothing downloads until you do.</p></div>
+    <div class="theater" id="theater">
+      <img src="art/web/video-poster.webp" width="1280" height="720" loading="lazy" alt="Freeze the Rent music video poster">
+      <button class="btn btn-big" type="button" id="theater-play">&#9654; Play the video</button>
+    </div>
+  </section>
 
-  </script>
+  <section class="col media-sec" id="listen">
+    <div class="section-head"><div><p class="kicker">Listen</p><h2>The <em>soundtrack</em></h2></div><p class="lede">Twelve electronic mixes of Freeze the Rent and Never Taken a Dime, the same music that plays in the games. Pick a track; sound only starts when you press play.</p></div>
+    <div class="jukebox">
+      <div class="juke-head">
+        <div class="juke-now"><span class="k">Now playing</span><b id="juke-title">Pick a track</b><span class="juke-time"><span id="juke-cur">0:00</span> / <span id="juke-dur">0:00</span></span></div>
+        <div class="juke-controls">
+          <button class="btn btn-ghost" type="button" id="juke-prev" aria-label="Previous track">&#9664;&#9664;</button>
+          <button class="btn" type="button" id="juke-toggle">&#9654; Play</button>
+          <button class="btn btn-ghost" type="button" id="juke-next" aria-label="Next track">&#9654;&#9654;</button>
+        </div>
+      </div>
+      <div class="juke-bar" id="juke-bar" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="juke-fill"></i></div>
+      <ol class="juke-list" id="juke-list"></ol>
+      <button class="chip" type="button" id="juke-more" hidden>Show all</button>
+    </div>
+  </section>
+
+  <section class="col media-sec" id="read">
+    <div class="section-head"><div><p class="kicker">Read</p><h2>Two Roads <em>to the Capitol</em></h2></div><p class="lede">The comic. Forty-three pages: how the two of them got to the street, and what they are fighting for. Swipe or use the arrows.</p></div>
+    <div class="reader" id="reader">
+      <div class="reader-track" id="reader-track" tabindex="0" aria-label="Comic pages"></div>
+      <div class="reader-bar">
+        <button class="chip" type="button" id="reader-prev">&larr; Prev</button>
+        <span class="mono" id="reader-count">Page 1 of 43</span>
+        <button class="chip" type="button" id="reader-next">Next &rarr;</button>
+        <a class="chip" href="https://capitolcrashers.com/story/" target="_blank" rel="noopener">Open the full comic</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how"><div class="col">
+    <div class="section-head"><div><p class="kicker">How it works</p><h2>You can't buy a politician. <em>You can back what they fight for.</em></h2></div><p class="lede">Free games, optional support, and a growing share for the community. AdsToAid starts by allocating 50% of distributable profit to community programs. That share rises as Tony reaches the milestones below.</p></div>
+    <div class="steps">
+      <div class="step"><b>1</b><h3>You play</h3><p>Free games in your browser. Capitol Crashers, VOTE and Pothole Party. No account needed.</p></div>
+      <div class="step"><b>2</b><h3>Advertisers pay</h3><p>Advertising is one way the arcade can earn. AdSense approval is pending. Optional $5 Patreon membership also supports the project; merch is planned. Playing never requires a purchase or an ad click.</p></div>
+      <div class="step"><b>3</b><h3>At least half goes to aid</h3><p>After documented costs and reserve movements, the community receives a 50%–99% share. The table shows the causes that inspire us and what Tony plans to pay for with his own share. These are goals, not donations already made.</p></div>
+    </div>
+    <div class="two" style="grid-template-columns:1fr">
+      <div class="panel">
+        <p class="kicker" id="milestones">How the split moves</p>
+        <p style="color:var(--muted);font-size:15px;margin:6px 0 12px;max-width:70ch">“The more I make, the smaller my cut.” Tony’s share of future profit drops as his lifetime profit payouts reach each milestone. His plans are paid from his share. The community’s percentage never steps backward.</p>
+        <div class="tiers">
+          <div class="tier head"><div>Step</div><div class="c">The community gets</div><div class="t">Tony gets</div></div>
+          <div class="tier now"><div class="n">1</div>
+            <div class="c"><b>50%</b><span class="range">Projected community allocation $0 &ndash; $550K</span><span class="for"><b class="cause">Rent and tenant defense.</b> New York’s Rent Guidelines Board voted in June 2026 to freeze one- and two-year rent-stabilized leases. <a href="https://www.nyc.gov/mayors-office/news/2026/06/mayor-mamdani-s-statement-on-the-rent-guidelines-board-s-final-v" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>50%</b><span class="range">Tony’s cumulative profit payouts $0 &ndash; $550K</span><span class="for">Tony's 1,800 square foot house is paid off</span></div>
+          </div>
+          <div class="tier"><div class="n">2</div>
+            <div class="c"><b>60%</b><span class="range">Projected community allocation $550K &ndash; $1.225M</span><span class="for"><b class="cause">Free eye exams and glasses for schoolkids.</b> Like Detroit’s Vision To Learn partnership, which began in 2016 and provides students free eye exams and glasses. <a href="https://visiontolearn.org/news/vision-to-learn-in-detroit/" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>40%</b><span class="range">Tony’s cumulative profit payouts $550K &ndash; $1M</span><span class="for">My only child's college and first house down payment</span></div>
+          </div>
+          <div class="tier"><div class="n">3</div>
+            <div class="c"><b>75%</b><span class="range">Projected community allocation $1.225M &ndash; $4.225M</span><span class="for"><b class="cause">Food and grocery access.</b> The need behind New York’s planned public grocery stores; food access is one area we aim to support. <a href="https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-announces-the-peninsula-in-the-bronx-as-the-second" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>25%</b><span class="range">Tony’s cumulative profit payouts $1M &ndash; $2M</span><span class="for">I'm getting a boat!</span></div>
+          </div>
+          <div class="tier"><div class="n">4</div>
+            <div class="c"><b>80%</b><span class="range">Projected community allocation $4.225M &ndash; $8.225M</span><span class="for"><b class="cause">Free childcare.</b> Like New York’s free 2-K program, which launched in September 2026 with 2,000 seats. <a href="https://www.nyc.gov/mayors-office/news/2026/09/transcript--mayor-mamdani-holds-a-press-conference-with-governor" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>20%</b><span class="range">Tony’s cumulative profit payouts $2M &ndash; $3M</span><span class="for">I'm buying a house near a college campus and paying college students to live in it and make video games throughout college</span></div>
+          </div>
+          <div class="tier"><div class="n">5</div>
+            <div class="c"><b>85%</b><span class="range">Projected community allocation $8.225M &ndash; $13.89M</span><span class="for"><b class="cause">Insulin and medical debt.</b> Inspired by Talarico’s work on Texas’s $25 monthly insulin copay cap and <a href="https://www.waynecountymi.gov/Government/Departments/Health-Human-Veterans-Services/Access-to-Care/Medical-Debt-Relief" target="_blank" rel="noopener">Wayne County’s medical-debt relief program</a>. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>15%</b><span class="range">Tony’s cumulative profit payouts $3M &ndash; $4M</span><span class="for">The college video game and content house gets a major upgrade</span></div>
+          </div>
+          <div class="tier"><div class="n">6</div>
+            <div class="c"><b>90%</b><span class="range">Projected community allocation $13.89M &ndash; $22.89M</span><span class="for"><b class="cause">Public schools and teacher pay.</b> Inspired by Talarico’s work on school-finance reform and limits on pre-K class sizes. <a href="https://house.texas.gov/members/3685/biography" target="_blank" rel="noopener">Look it up</a></span></div>
+            <div class="t"><b>10%</b><span class="range">Tony’s cumulative profit payouts $4M &ndash; $5M</span><span class="for">My grandkids get a house</span></div>
+          </div>
+          <div class="tier"><div class="n">7</div>
+            <div class="c"><b>99%</b><span class="range">Projected community allocation beyond $22.89M</span><span class="for"><b class="cause">Fast, free buses and good jobs.</b> Transit access and worker support are causes we aim to fund. Specific recipients will be named in the Community Pot once selected.</span></div>
+            <div class="t"><b>1%</b><span class="range">Tony’s cumulative profit payouts beyond $5M</span><span class="for">Making sure College Video Game Company, Inc. is the coolest internship you'll ever have and never graduate from</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel"><details><summary>How milestones and projected totals work</summary><p>Milestones do not reset each month or year. Earlier payouts are not recalculated. If a payout crosses a threshold, the next rate applies to the portion beyond it.</p><p>The community totals in the table are approximate projected allocations assuming shares are paid in full, not donations already delivered. They exclude Tony’s personal top-ups; payment holds can make actual paid totals differ. Cause examples show the work we aim to support, not confirmed recipients or endorsements.</p></details></div>
+      <div class="panel">
+        <p class="kicker">The rules</p>
+        <ul class="rules">
+          <li>The split covers all project revenue: ads, Patreon and any merch sales, after documented costs and disclosed reserve movements. Tony’s personal milestone purchases come from his share, not operating expenses.</li>
+          <li>Revenue is counted when received. Allocations, payments, unpaid balances and personal top-ups are reported separately.</li>
+          <li>The community percentage rises at each milestone and never steps back. Policy changes are dated in the Community Pot.</li>
+          <li>Recipients are programs and groups, never campaigns or politicians.</li>
+          <li><a href="community-pot/#corrections">Policy updates and corrections</a> remain visible. Tony’s direct payments plus payments to his own businesses cannot exceed cumulative site-funded community payments; personal top-ups do not raise that limit.</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="who" id="who"><div class="col inner">
+    <div><h2>Who makes this</h2><p>Tony makes AdsToAid using ChatGPT, Claude and Cursor, with art from Makko and audio from ElevenLabs. Tony owns Makko. Games are free; Patreon support is optional. Actual project-paid costs and any payments to Tony’s businesses will be disclosed in the <a href="community-pot/#costs">Community Pot</a>.</p></div>
+    <div><h2>Independent. Not a campaign.</h2><p>Fan-made, unofficial satire with no ties to any candidate, campaign, or party, and not authorized by one. Membership is not a campaign contribution. <a href="https://www.patreon.com/c/PoliticalArcade">Write to us</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a></p></div>
+  </div></section>
+
+  <footer id="support"><div class="col">
+    <div><a class="a2a small" href="#"><span class="ads">ADS</span><span class="arrow">➜</span><span class="aid">AID</span></a> · AdsToAid · Fan-made. Not a campaign.</div>
+    <div><a href="community-pot/">Community Pot</a> · <a href="city/">Your city</a> · <a href="privacy.html">Privacy</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Report a problem</a> · <a href="https://www.patreon.com/c/PoliticalArcade">Patreon, $5, optional</a></div>
+    <div class="stamp">Last updated Oct 11, 2026</div>
+  </div></footer>
+</main>
+<script>
+(function () {
+  var arcade = document.getElementById('arcade'), sit = document.getElementById('sitdown'), scr = document.getElementById('sd-screen');
+  var frame = null;
+  function sitDown(m) {
+    // Give phones the game's full viewport and native touch controls.
+    if (window.matchMedia('(max-width: 760px)').matches) { window.location.assign(m.dataset.url); return; }
+
+    if (frame) { frame.remove(); frame = null; }
+    document.getElementById('sd-name').textContent = m.dataset.name;
+    document.getElementById('sd-machine').textContent = m.dataset.machine;
+    document.getElementById('sd-open').href = m.dataset.url;
+    frame = document.createElement('iframe');
+    frame.src = m.dataset.url; frame.title = m.dataset.name; frame.setAttribute('allow', 'autoplay; fullscreen; gamepad');
+    scr.appendChild(frame);
+    sit.hidden = false; arcade.classList.add('playing'); syncPreviews();
+    sit.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    frame.focus();
+  }
+  // Screen quads in the 600x900 cabinet art space: TL, TR, BR, BL.
+  var quads = {
+    crashers: [[159, 257], [412, 248], [407, 487], [157, 493]],
+    vote:     [[161, 253], [415, 246], [410, 487], [159, 493]],
+    pothole:  [[163, 251], [420, 244], [413, 486], [159, 491]]
+  };
+  function homography(src, dst) { // 4 point pairs -> CSS matrix3d (from Hartley/Zisserman via adjugate), src is the 480 box
+    function adj(m) { return [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]]; }
+    function mul(a, b) { var c = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) { var t = 0; for (var k = 0; k < 3; k++) t += a[3*i+k]*b[3*k+j]; c[3*i+j] = t; } return c; }
+    function basis(p) { var m = [p[0][0], p[1][0], p[2][0], p[0][1], p[1][1], p[2][1], 1, 1, 1]; var v = mulv(adj(m), [p[3][0], p[3][1], 1]); return mul(m, [v[0],0,0, 0,v[1],0, 0,0,v[2]]); }
+    function mulv(m, v) { return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2], m[3]*v[0]+m[4]*v[1]+m[5]*v[2], m[6]*v[0]+m[7]*v[1]+m[8]*v[2]]; }
+    var h = mul(basis(dst), adj(basis(src)));
+    for (var i = 0; i < 9; i++) h[i] /= h[8];
+    return 'matrix3d(' + [h[0],h[3],0,h[6], h[1],h[4],0,h[7], 0,0,1,0, h[2],h[5],0,h[8]].join(',') + ')';
+  }
+  function fitVideos() {
+    document.querySelectorAll('.machine').forEach(function (m) {
+      var img = m.querySelector('.screenwrap > img:not(.shade)'); if (!img || !img.clientWidth) return;
+      var k = parseFloat(getComputedStyle(img).width) / 600, ox = img.offsetLeft, oy = img.offsetTop;
+      var q = quads[m.dataset.game].map(function (pt) { return [ox + pt[0]*k, oy + pt[1]*k]; });
+      var plane = m.querySelector('.cab-screen');
+      plane.style.transform = homography([[0,0],[480,0],[480,480],[0,480]], q);
+    });
+  }
+  fitVideos(); window.addEventListener('resize', fitVideos); window.addEventListener('load', fitVideos);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitVideos);
+  document.querySelectorAll('.screenwrap > img:not(.shade)').forEach(function (i) { i.addEventListener('load', fitVideos); });
+  if ('ResizeObserver' in window) { var ro = new ResizeObserver(fitVideos); document.querySelectorAll('.screenwrap').forEach(function (w) { ro.observe(w); }); }
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var previewsPaused = reducedMotion.matches, previewButton = document.getElementById('preview-toggle');
+  var previews = Array.from(document.querySelectorAll('.screenvid')).map(function (video) {
+    return {video:video, layers:Array.from(video.parentElement.children), visible:false, timer:null, resting:false};
+  });
+  function allowed(p) { return p.visible && !previewsPaused && !document.hidden && sit.hidden; }
+  function cancelRest(p) { if (p.timer !== null) { clearTimeout(p.timer); p.timer = null; } }
+  function startPreview(p) {
+    if (!allowed(p)) return;
+    if (p.video.ended || p.resting) p.video.currentTime = 0;
+    p.video.play().then(function () {
+      if (!allowed(p)) { p.video.pause(); return; }
+      p.resting = false;
+      p.layers.forEach(function (layer) { layer.classList.add('on'); layer.classList.remove('rest'); });
+    }).catch(function () { /* The painted screen stays visible when autoplay is unavailable. */ });
+  }
+  function syncPreviews() {
+    previewButton.textContent = previewsPaused ? 'Play previews' : 'Pause previews';
+    previewButton.setAttribute('aria-pressed', String(previewsPaused));
+    previews.forEach(function (p) {
+      if (!allowed(p)) { cancelRest(p); p.video.pause(); }
+      else if (!p.timer) startPreview(p);
+    });
+  }
+  previewButton.addEventListener('click', function () { previewsPaused = !previewsPaused; syncPreviews(); });
+  document.addEventListener('visibilitychange', syncPreviews);
+  reducedMotion.addEventListener('change', function (e) { previewsPaused = e.matches; syncPreviews(); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { var p = previews.find(function (item) { return item.video === entry.target; }); p.visible = entry.isIntersecting && entry.intersectionRatio >= 0.25; });
+      syncPreviews();
+    }, {threshold:0.25});
+    previews.forEach(function (p) { io.observe(p.video); });
+  } else { previews.forEach(function (p) { p.visible = true; }); }
+  previews.forEach(function (p) {
+    p.video.addEventListener('ended', function () {
+      p.resting = true;
+      p.layers.forEach(function (layer) { layer.classList.add('rest'); });
+      cancelRest(p);
+      if (allowed(p)) p.timer = setTimeout(function () { p.timer = null; startPreview(p); }, 2600);
+    });
+  });
+  syncPreviews();
+  document.querySelectorAll('[data-open-game]').forEach(function (link) {
+    link.addEventListener('click', function (e) { e.preventDefault(); sitDown(document.querySelector('.machine[data-game="'+link.dataset.openGame+'"]')); });
+  });
+  document.querySelectorAll('.machine').forEach(function (m) {
+    m.querySelector('.cab-art').addEventListener('click', function () { sitDown(m); });
+    m.querySelector('.js-play').addEventListener('click', function (e) { e.preventDefault(); sitDown(m); });
+  });
+  document.querySelector('.js-leave').addEventListener('click', function () {
+    if (frame) { frame.remove(); frame = null; }
+    sit.hidden = true; arcade.classList.remove('playing'); syncPreviews();
+    document.getElementById('play').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.querySelector('.js-full').addEventListener('click', function (e) { e.preventDefault(); var el = frame || scr; if (el.requestFullscreen) el.requestFullscreen(); });
+})();
+
+(function () {
+  // Watch: nothing loads until the button is pressed.
+  var th = document.getElementById('theater');
+  document.getElementById('theater-play').addEventListener('click', function () {
+    var v = document.createElement('video'); v.controls = true; v.playsInline = true; v.poster = th.querySelector('img').src;
+    v.src = 'https://politicalarcades.com/media/freeze-the-rent.mp4';
+    th.innerHTML = ''; th.appendChild(v); v.play().catch(function () {});
+  });
+
+  // Listen: the twelve-track jukebox. Sound starts only on a click.
+  var TRACKS = [
+    ["freeze-the-rent-full-spectrum","Freeze the Rent — Full Spectrum","Mix","5:00"],["never-taken-a-dime-full-spectrum","Never Taken a Dime — Full Spectrum","Mix","5:00"],
+    ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","4:52"],
+    ["freeze-the-rent-neon-synth","Freeze the Rent — Neon Synth","Mix","5:00"],["never-taken-a-dime-neon-synth","Never Taken a Dime — Neon Synth","Mix","5:00"],
+    ["freeze-the-rent-sunset-house","Freeze the Rent — Sunset House","Mix","5:10"],["never-taken-a-dime-sunset-house","Never Taken a Dime — Sunset House","Mix","5:02"],
+    ["freeze-the-rent-robot-sunset","Freeze the Rent — Robot Sunset","Mix","5:10"],["never-taken-a-dime-robot-sunset","Never Taken a Dime — Robot Sunset","Mix","5:00"],
+    ["freeze-the-rent-neon-disco","Freeze the Rent — Neon Disco","Mix","5:10"],["never-taken-a-dime-neon-disco","Never Taken a Dime — Neon Disco","Mix","5:10"]
+  ];
+  var audio = new Audio(); audio.preload = 'none'; audio.volume = 0.8;
+  var list = document.getElementById('juke-list'), title = document.getElementById('juke-title'), toggle = document.getElementById('juke-toggle');
+  var fill = document.getElementById('juke-fill'), bar = document.getElementById('juke-bar'), cur = document.getElementById('juke-cur'), dur = document.getElementById('juke-dur');
+  var index = -1, visible = 12;
+  function fmt(t) { t = Math.max(0, t | 0); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
+  function render() {
+    var focusedTrack = list.contains(document.activeElement) ? Array.from(list.children).indexOf(document.activeElement) : -1;
+    list.innerHTML = '';
+    TRACKS.forEach(function (t, i) {
+      var li = document.createElement('li'); li.className = (i === index ? 'on ' : '') + (i >= visible ? 'hidden' : '');
+      li.tabIndex = 0; li.setAttribute('role', 'button'); li.setAttribute('aria-label', 'Play ' + t[1]); li.setAttribute('aria-pressed', String(i === index));
+      li.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span><span>' + t[1] + '</span><span class="tag">' + t[2] + '</span><span class="len">' + t[3] + '</span>';
+      li.addEventListener('click', function () { play(i); });
+      li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(i); } });
+      list.appendChild(li);
+    });
+    document.getElementById('juke-more').hidden = visible >= TRACKS.length;
+    if (focusedTrack >= 0 && list.children[focusedTrack]) list.children[focusedTrack].focus({preventScroll:true});
+  }
+  function load(i) { index = (i + TRACKS.length) % TRACKS.length; audio.src = 'horse/assets/music/' + TRACKS[index][0] + '.mp3'; title.textContent = TRACKS[index][1]; render(); }
+  function play(i) { if (i !== undefined && i !== index) load(i); if (index < 0) load(0); audio.play().then(function () { toggle.textContent = '\u275A\u275A Pause'; }).catch(function () {}); }
+  function pause() { audio.pause(); toggle.textContent = '\u25B6 Play'; }
+  toggle.addEventListener('click', function () { audio.paused ? play() : pause(); });
+  document.getElementById('juke-prev').addEventListener('click', function () { play(index - 1); });
+  document.getElementById('juke-next').addEventListener('click', function () { play(index + 1); });
+  document.getElementById('juke-more').addEventListener('click', function () { visible = TRACKS.length; render(); });
+  audio.addEventListener('timeupdate', function () { if (audio.duration) { fill.style.width = (audio.currentTime / audio.duration * 100) + '%'; bar.setAttribute('aria-valuenow', Math.round(audio.currentTime / audio.duration * 100)); } cur.textContent = fmt(audio.currentTime); dur.textContent = fmt(audio.duration || 0); });
+  audio.addEventListener('ended', function () { play(index + 1); });
+  audio.addEventListener('pause', function () { toggle.textContent = '\u25B6 Play'; });
+  bar.addEventListener('click', function (e) { if (!Number.isFinite(audio.duration)) return; var r = bar.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration; });
+  bar.addEventListener('keydown', function (e) {
+    if (!Number.isFinite(audio.duration)) return;
+    var next = audio.currentTime;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next += 5;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next -= 5;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = audio.duration;
+    else return;
+    e.preventDefault(); audio.currentTime = Math.max(0, Math.min(audio.duration, next));
+  });
+  render();
+
+  // Read: the 43 pages, lazy, swipe or arrows.
+  var track = document.getElementById('reader-track'), count = document.getElementById('reader-count'), PAGES = 43;
+  for (var n = 1; n <= PAGES; n++) { var im = document.createElement('img'); im.loading = 'lazy'; im.decoding = 'async'; im.width = 640; im.height = 360; im.alt = 'Two Roads to the Capitol, page ' + n; im.src = 'https://capitolcrashers.com/art/story/chibi/p' + String(n).padStart(2, '0') + '.webp'; track.appendChild(im); }
+  function page() { var w = track.firstElementChild.getBoundingClientRect().width + 12; return Math.min(PAGES, Math.max(1, Math.round(track.scrollLeft / w) + 1)); }
+  function go(d) { var w = track.firstElementChild.getBoundingClientRect().width + 12; track.scrollTo({ left: (page() - 1 + d) * w, behavior: 'smooth' }); }
+  track.addEventListener('scroll', function () { count.textContent = 'Page ' + page() + ' of ' + PAGES; });
+  document.getElementById('reader-prev').addEventListener('click', function () { go(-1); });
+  document.getElementById('reader-next').addEventListener('click', function () { go(1); });
+  track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); go(e.key === 'ArrowRight' ? 1 : -1); } });
+})();
+</script>
 </body>
 </html>
 

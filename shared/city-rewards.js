@@ -4,7 +4,7 @@
  let pending=[];try{pending=JSON.parse(localStorage.getItem(queueKey))||[];}catch{}if(!Array.isArray(pending))pending=[];
  const saveQueue=()=>{try{localStorage.setItem(queueKey,JSON.stringify(pending));}catch{}};
  let state,api,ready=false,storage;try{storage=localStorage;}catch{}
- const status=document.createElement('aside');status.className='city-reward-bar';status.innerHTML='<strong>Your city</strong><span data-city-status>All four games build one city.</span><a data-city-link href="'+CENTRAL+'/city/">Visit your city →</a>';
+ const status=document.createElement('aside');status.className='city-reward-bar';status.innerHTML='<strong>Your city</strong><span data-city-status>Your arcade progress builds one city.</span><a data-city-link href="'+CENTRAL+'/city/">Visit your city →</a>';
  const style=document.createElement('style');style.textContent='.city-reward-bar{box-sizing:border-box;max-width:1100px;margin:20px auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#142b33;border:1px solid #5bc1ac70;border-radius:12px;color:#fff0cc;font:14px system-ui}.city-reward-bar a{color:#ffda78;font-weight:800}.city-reward-bar span{flex:1;min-width:170px}.city-reward-bar strong{color:#7fdbc2}';document.head.append(style);
  const mount=()=>{const footer=document.querySelector('footer');if(footer)footer.before(status);else document.body.append(status);};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
  const message=text=>status.querySelector('[data-city-status]').textContent=text;
