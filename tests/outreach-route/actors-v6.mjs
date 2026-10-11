@@ -3,7 +3,7 @@ const images=Object.fromEntries(Object.entries(META).map(([id,m])=>{const image=
 export function drawActor(c,id,x,feet,time,{height=44,moving=true,flip=false,walkPhase=null}={}){
  const name=id===1?'sayed':id===0?'mamdani':'organizer',m=META[name],im=images[name];
  if(!im.complete||!im.naturalWidth)return false;
- const f=m.frames[walkPhase!==null?Math.floor(walkPhase)%m.frames.length:moving?Math.floor(time*m.fps)%m.frames.length:0],s=height/m.body;
+ const f=m.frames[walkPhase!==null?((Math.floor(walkPhase)%m.frames.length)+m.frames.length)%m.frames.length:moving?((Math.floor(time*m.fps)%m.frames.length)+m.frames.length)%m.frames.length:0],s=height/m.body;
  c.save();c.translate(x,feet);if(flip)c.scale(-1,1);
  c.drawImage(im,f.x,f.y,f.w,f.h,-f.ax*s,-f.ay*s,f.w*s,f.h*s);c.restore();return true;
 }

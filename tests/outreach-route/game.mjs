@@ -1,9 +1,9 @@
-import {createService} from './service-v7.mjs?v=8.0';
-import './neighborhood.mjs?v=8.0';
+import {createService} from './service-v7.mjs?v=8.1';
+import './neighborhood.mjs?v=8.1';
 import {outreachCount} from './neighborhood-state.mjs';
 import {createGame,turn,step,advanceWork,REPAIR_MS} from './snake-engine.mjs?v=6.4';
-import {createScene,point as worldPoint} from './scene-v6.mjs?v=8.0';
-import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=8.0';
+import {createScene,point as worldPoint} from './scene-v6.mjs?v=8.1';
+import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=8.1';
 import {loadCity,award,KEY} from '/shared/city-state.mjs?v=outreach1';
 const $=id=>document.getElementById(id),SIZE=16,BEST='pa-outreach-snake-best-v1',scene=createScene($('map')),practice=new URLSearchParams(location.search).has('practice');
 const service=createService($('service-scene'),$('service-title'),$('service-caption'));
@@ -15,9 +15,9 @@ const portrait=new Image();portrait.src='./sayed-walk-v6.webp';portrait.onload=(
 
 function say(who,line){$('speaker').textContent=who;$('line').textContent=line;}
 function interval(){return Math.max(145,300-g.repairs*5);}
-function init(){g=createGame(SIZE,Math.random,1,null);g.food={x:8,y:8};runId=crypto.randomUUID();care=0;previous=g.body.map(p=>({...p}));acc=0;tickMs=300;lossAt=0;festivalStarted=false;scene.clear();service.clear();hudSnapshot='';}
+function init(){$('map').closest('.arcade-play').classList.remove('festival');g=createGame(SIZE,Math.random,1,null);g.food={x:8,y:8};runId=crypto.randomUUID();care=0;previous=g.body.map(p=>({...p}));acc=0;tickMs=300;lossAt=0;festivalStarted=false;scene.clear();service.clear();hudSnapshot='';}
 function status(){$('best').textContent=best;$('block-count').textContent=visits+' block '+(visits===1?'visit':'visits');$('save').textContent=practice?'PRACTICE RUN / City rewards and best score are not saved.':saveFailure?'City saving unavailable in this browser.':'City care this run: '+care+' / Your completed outreach stays after the run.';}
-function hud(){document.querySelector('outreach-neighborhood')?.setCount(visits);document.querySelectorAll('.milestone').forEach(e=>e.classList.toggle('done',visits>=Number(e.dataset.at)));$('count').textContent=g.score;const parts=['Crew '+g.body.length,'Working '+g.jobs.filter(j=>!j.open&&!j.ready).length,'Ready '+g.jobs.filter(j=>j.ready).length],snapshot=parts.join('|');if(snapshot!==hudSnapshot){hudSnapshot=snapshot;$('progress').replaceChildren(...parts.map(s=>{const e=document.createElement('span');e.textContent=s;return e;}));}status();}
+function hud(){document.querySelector('outreach-neighborhood')?.setCount(visits);document.querySelectorAll('.milestone').forEach(e=>e.classList.toggle('done',visits>=Number(e.dataset.at)));$('count').textContent=g.score;const parts=festivalStarted?['Crew '+(g.body.length+g.jobs.filter(j=>j.worker).length),'OFF DUTY','BLOCK PARTY']:['Crew '+g.body.length,'Working '+g.jobs.filter(j=>!j.open&&!j.ready).length,'Ready '+g.jobs.filter(j=>j.ready).length],snapshot=parts.join('|');if(snapshot!==hudSnapshot){hudSnapshot=snapshot;$('progress').replaceChildren(...parts.map(s=>{const e=document.createElement('span');e.textContent=s;return e;}));}status();}
 function show(title,label,copy){$('paused').dataset.mode='';$('paused').hidden=false;$('overlay-title').textContent=title;$('resume').textContent=label;if(copy)$('overlay-copy').textContent=copy;}
 function start(){if(!artLoaded)return;unlockSound();init();document.querySelector('outreach-neighborhood')?.endFestival();sound('start');started=true;paused=false;last=performance.now();$('paused').hidden=true;$('pause').textContent='Pause';$('pause').setAttribute('aria-label','Pause outreach');$('tip').textContent='Gold: drop off. Keep circling. Green: collect.';say('EL-SAYED / WITH THE CREW','Let the providers do their thing. We keep the outreach moving.');hud();$('map').setAttribute('aria-label','Snake outreach route. Drop workers at gold, collect green, and avoid your crew and the boundary.');$('map').focus({preventScroll:true});}
 function setPause(value){if(!started||g.status!=='playing')return;paused=value;last=performance.now();$('pause').textContent=value?'Resume':'Pause';$('pause').setAttribute('aria-label',value?'Resume outreach':'Pause outreach');if(value){show('Crew break.','Resume run','Route paused. The providers are paused too.');$('paused').dataset.mode='pause';}else $('paused').hidden=true;}
@@ -32,8 +32,8 @@ function events(){if(!g.events.length)return;for(const e of g.events.splice(0)){
  if(e.type==='pickup'){reward(e);careFlight(e);$('tip').textContent='+1 city care. A neighbor joins the crew. Watch your tail!';say('TONY / WITH THE CREW','Look at this block go. Now bring everybody home in one piece.');}
  if(e.type==='empty')$('tip').textContent='Your crew is working. Collect a green worker before starting another stop.';
 }hud();}
-function finale(){if(festivalStarted)return;festivalStarted=true;scene.celebrate(g);document.querySelector('outreach-neighborhood')?.celebrate([...g.crew,...g.jobs.filter(j=>j.worker).map(j=>j.worker)]);sound('festival');$('map').setAttribute('aria-label','The conga line breaks apart and joins families in a courtyard festival. Run score: '+g.score+'.');lossAt=time+4;}
-function lost(){started=true;paused=false;finale();$('pause').textContent='Pause';$('pause').setAttribute('aria-label','Pause outreach');$('tip').textContent='Run over. The city keeps the '+care+' care you earned.';say('TONY / END OF THE RUN','Clock out. Grab a plate. This whole block is celebrating!');hud();}
+function finale(){if(festivalStarted)return;festivalStarted=true;$('map').closest('.arcade-play').classList.add('festival');scene.celebrate(g);document.querySelector('outreach-neighborhood')?.celebrate([...g.crew,...g.jobs.filter(j=>j.worker).map(j=>j.worker)]);sound('festival');$('map').setAttribute('aria-label','The conga line breaks apart and joins families in a courtyard festival. Run score: '+g.score+'.');lossAt=time+4;}
+function lost(){started=true;paused=false;finale();$('pause').textContent='Pause';$('pause').setAttribute('aria-label','Pause outreach');$('tip').textContent='The crew is joining the block party. Your city keeps '+care+' care.';say('TONY / END OF THE RUN','Clock out. Grab a plate. This whole block is celebrating!');hud();}
 $('resume').onclick=()=>artFailed?location.reload():g.status!=='playing'||!started?start():setPause(false);$('again').onclick=start;$('pause').onclick=()=>setPause(!paused);
 function audioUI(){$('audio').textContent=soundEnabled()?'Sound on':'Sound off';$('audio').setAttribute('aria-pressed',String(soundEnabled()));}audioUI();$('audio').onclick=()=>{toggleSound();audioUI();};
 $('story').onclick=()=>{storyPaused=true;$('history').showModal();};for(const id of ['close','continue'])$(id).onclick=()=>$('history').close();$('history').addEventListener('close',()=>{storyPaused=false;last=performance.now();});

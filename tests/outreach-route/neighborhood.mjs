@@ -1,5 +1,5 @@
 import {drawResident,drawProp,onSpritesReady} from '/city/makko-sprites.mjs';
-import {drawActor} from './actors-v6.mjs?v=6.4';
+import {drawActor} from './actors-v6.mjs?v=8.1';
 import {drawPerson,peopleReady} from './people-v7.mjs?v=7.1';
 import {ACTIVITIES,familyState,CLINIC} from './courtyard-life.mjs?v=7.1';
 import {outreachStage} from './neighborhood-state.mjs';

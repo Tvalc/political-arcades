@@ -1,4 +1,4 @@
-import {drawActor} from './actors-v6.mjs?v=6.9';
+import {drawActor} from './actors-v6.mjs?v=8.1';
 import {drawPerson} from './people-v7.mjs?v=7.1';
 import {drawProp} from '/city/makko-sprites.mjs';
 const colors=['#f6c454','#6bdab3','#ef947d','#98b8ea'];
@@ -8,7 +8,7 @@ export function festivalTarget(i,total){
 }
 export function festivalMember(member,i,total,age,reduced=false){
  const target=festivalTarget(i,total),delay=reduced?0:Math.min(1.4,i*.075),u=reduced?1:Math.max(0,Math.min(1,(age-delay)/2.4)),ease=u*u*(3-2*u);
- return{...member,x:member.x+(target.x-member.x)*ease,y:member.y+(target.y-member.y)*ease,moving:u<1,kind:target.kind,phase:age-delay,flip:target.x<member.x};
+ return{...member,x:member.x+(target.x-member.x)*ease,y:member.y+(target.y-member.y)*ease,moving:u<1,kind:target.kind,phase:Math.max(0,age-delay),flip:target.x<member.x};
 }
 export function createFestival(members){return{members:members.map(p=>({...p})),age:0};}
 export function drawFestival(c,festival,{dt,reduced,background}){
