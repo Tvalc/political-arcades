@@ -1,5 +1,5 @@
-import {drawActor} from './actors-v6.mjs?v=9.2';
-import {drawPerson} from './people-v7.mjs?v=9.2';
+import {drawActor} from './actors-v6.mjs?v=10.0';
+import {drawPerson} from './people-v7.mjs?v=10.0';
 const festivalArt=new Image();festivalArt.src=new URL('./festival-courtyard-v9.webp',import.meta.url).href;
 export const festivalReady=festivalArt.decode();
 const colors=['#f6c454','#6bdab3','#ef947d','#98b8ea'];

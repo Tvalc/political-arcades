@@ -1,5 +1,5 @@
-import {drawPerson,peopleReady} from './people-v7.mjs?v=9.2';
-import {drawActor} from './actors-v6.mjs?v=6.9';
+import {drawPerson,peopleReady} from './people-v7.mjs?v=10.0';
+import {drawActor} from './actors-v6.mjs?v=10.0';
 const labels={drop:['A family is welcomed','The crew sets up. Qualified providers handle the eye care.'],repair:['New glasses. New possibilities.','A fitting, a smile, and a whole afternoon ahead.'],pickup:['Back to the block','The family heads to the courtyard. Your worker rejoins the crew.'],early:['Give the provider time','This stop is unfinished. Bring the worker back to try again.']};
 export function createService(canvas,title,caption){
  const c=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;let moment=null,age=0;
@@ -9,7 +9,7 @@ export function createService(canvas,title,caption){
   const kind=moment?.type||'idle',move=Math.min(1,age/1.3),leave=kind==='pickup',welcoming=kind==='drop';
   // Large grounded poses make the handoff readable without interrupting Snake.
   const kidX=leave?420+Math.min(age,3)*65:welcoming?482-move*62:420;
-  const parentX=kidX+43,walking=leave||welcoming&&move<1;
+  const parentX=kidX+43,walking=leave&&age<3||welcoming&&move<1;
   person('provider',355,116,{height:90,state:kind==='repair'||welcoming&&move===1?'activity':'idle',phase:age});
   person(moment?.task%2?'girl':'boy',kidX,116,{height:70,state:walking?'walk':kind==='repair'?'activity':'idle',phase:age,flip:welcoming});
   person('parent',parentX,119,{height:88,state:walking?'walk':kind==='repair'?'activity':'idle',phase:age+.4,flip:welcoming});
