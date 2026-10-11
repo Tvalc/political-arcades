@@ -36,6 +36,9 @@ html = html
   .replace(/\s*<link rel="canonical"[^>]*>/, "")
   .replace(/\s*<meta (?:property="og:|name="twitter:)[^>]*>/g, "")
   .replace(/href="\.\.\/chibi-ui\.css[^"]*"/, 'href="chibi-ui.css"')
+  // The shared city-rewards bar is a politicalarcades.com feature (links to /city/, talks to the
+  // central site); the game only calls it through optional chaining, so the build leaves it out.
+  .replace(/\s*<script src="\/shared\/city-rewards\.js[^"]*"><\/script>/, "")
   .replace(/<link rel="stylesheet" href="court-layout\.css[^"]*">/, m => m + '\n<link rel="stylesheet" href="playgama.css">')
   .replace(/<a class="brand" href="\.\/">(.*?)<\/a>/, '<span class="brand">$1</span>')
   .replace(/\s*<a class="brand-side" href="\.\.\/">Political Arcades<\/a>/, "")
@@ -57,21 +60,25 @@ for (const [family, file] of fonts) {
 }
 write(path.join(STAGE, "fonts.css"), fontCss);
 
-// 3. Stylesheets and scripts. court-layout.css reaches ../art for the gold
-//    button sheet, so that sheet is copied to art/chibi inside the archive and
-//    the path rewritten; chibi-ui.css (site-wide button skin) already uses art/chibi.
-copy(path.join(HORSE, "styles.css"), path.join(STAGE, "styles.css"));
-copy(path.join(HORSE, "touch.css"), path.join(STAGE, "touch.css"));
+// 3. Exactly the stylesheets and scripts index.html references (not every file
+//    under src/: review builds and the mobile preview stay out). court-layout.css
+//    reaches ../art for the gold button sheet, so that sheet is copied to
+//    art/chibi inside the archive and the path rewritten; chibi-ui.css
+//    (site-wide button skin) already uses art/chibi.
+const refs = [...html.matchAll(/(?:<script src|<link rel="stylesheet" href)="([^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1]);
+for (const ref of refs) {
+  if (ref === "fonts.css" || ref === "playgama.css") continue;
+  // chibi-ui.css and shared/* live at the site root and are copied in under the same relative path.
+  const src = ref === "chibi-ui.css" || ref.startsWith("shared/") ? path.join(SITE, ref) : path.join(HORSE, ref);
+  must(fs.existsSync(src), `index.html references ${ref} but it does not exist`);
+  if (ref === "court-layout.css") write(path.join(STAGE, ref), read(src).replace(/\.\.\/art\//g, "art/"));
+  else copy(src, path.join(STAGE, ref));
+}
 copy(path.join(HORSE, "playgama.css"), path.join(STAGE, "playgama.css"));
-write(path.join(STAGE, "court-layout.css"), read(path.join(HORSE, "court-layout.css")).replace(/\.\.\/art\//g, "art/"));
-copy(path.join(SITE, "chibi-ui.css"), path.join(STAGE, "chibi-ui.css"));
 for (const sheet of ["button-gold.webp", "button-teal.webp", "panel.webp", "rally.webp"]) {
   const src = path.join(SITE, "art", "chibi", sheet);
   if (fs.existsSync(src)) copy(src, path.join(STAGE, "art", "chibi", sheet));
 }
-copy(path.join(HORSE, "touch.js"), path.join(STAGE, "touch.js"));
-copy(path.join(HORSE, "src"), path.join(STAGE, "src"));
-copy(path.join(HORSE, "ads", "a2a-ads.js"), path.join(STAGE, "ads", "a2a-ads.js"));
 copy(path.join(HORSE, "playgama-bridge-config.json"), path.join(STAGE, "playgama-bridge-config.json"));
 
 // 4. Sponsors: house creatives stay, links go (no outbound links in the build).
@@ -82,8 +89,19 @@ for (const row of sponsors) {
 }
 write(path.join(STAGE, "ads", "sponsors.json"), JSON.stringify(sponsors, null, 2));
 
-// 5. Every asset the game loads: court art, sprites, UI, music.
+// 5. Every asset the game loads: court art, sprites, UI, and only the music the
+//    playlists name (music.js and court-songs.js), not every mp3 in the folder.
 copy(path.join(HORSE, "assets"), path.join(STAGE, "assets"));
+const playlistSource = ["src/music.js", "src/court-songs.js"].map(f => read(path.join(HORSE, f))).join("\n");
+const musicDir = path.join(STAGE, "assets", "music");
+const musicFiles = fs.readdirSync(musicDir).filter(f => f.endsWith(".mp3"));
+const kept = [];
+for (const file of musicFiles) {
+  const track = file.replace(/\.mp3$/, "");
+  if (new RegExp(`['"\`]${track.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}['"\`]`).test(playlistSource)) kept.push(file);
+  else fs.unlinkSync(path.join(musicDir, file));
+}
+must(kept.length > 0, "no playlist tracks found in assets/music");
 
 // 6. Checks: Latin-only names, no live-site or analytics references in text files, size.
 const files = [];
@@ -102,8 +120,6 @@ for (const f of files) {
     must(!banned.test(read(f)), `live-site, font or analytics reference in ${path.relative(STAGE, f)}`);
   }
 }
-const musicCount = fs.readdirSync(path.join(STAGE, "assets", "music")).filter(f => f.endsWith(".mp3")).length;
-must(musicCount >= 28, `expected 28 music files, found ${musicCount}`);
 must(fs.existsSync(path.join(STAGE, "index.html")), "index.html missing at archive root");
 
 // 7. Zip. bsdtar (Windows 10+, macOS) writes zip with -a (relative paths, so a
@@ -131,3 +147,4 @@ const zipMb = fs.statSync(ZIP).size / 1048576;
 must(zipMb < LIMIT_MB, `archive is ${zipMb.toFixed(1)} MB, over the ${LIMIT_MB} MB limit`);
 console.log(`built ${ZIP}`);
 console.log(`${files.length} files, ${(bytes / 1048576).toFixed(1)} MB unpacked, ${zipMb.toFixed(1)} MB zipped (limit ${LIMIT_MB} MB)`);
+console.log(`music: ${kept.length} playlist tracks kept of ${musicFiles.length} in assets/music: ${kept.map(f => f.replace(/\.mp3$/, "")).join(", ")}`);
