@@ -1,6 +1,6 @@
-import {ambition,leagueNeeds,beginLeague,startOpening,KITCHEN_PROGRAMS} from '/city/ambitions-v14.mjs?v=14.0';
-import {paintWorld,worldReady} from '/city/world-v14.mjs?v=14.0';
-import {LIFE_KEY,SLOTS,PROGRAMS,loadLife,freshLife,syncBlock,stepLife,construct,improve,setFocus,serviceDuration} from '/city/life-v14.mjs?v=14.0';
+import {ambition,leagueNeeds,beginLeague,startOpening,KITCHEN_PROGRAMS} from '/city/ambitions-v14.mjs?v=14.1';
+import {paintWorld,worldReady} from '/city/world-v14.mjs?v=14.1';
+import {LIFE_KEY,SLOTS,PROGRAMS,loadLife,freshLife,syncBlock,stepLife,construct,improve,setFocus,serviceDuration} from '/city/life-v14.mjs?v=14.1';
 import {KEY,RESOURCES,PROJECTS,blankCity,loadCity,wallet,award,build,pave,expand,canExpand,canBuild,migrateHousing} from '/shared/city-state.mjs?v=1.2';
 const $=s=>document.querySelector(s),reduced=matchMedia('(prefers-reduced-motion:reduce)'),demo=document.body.dataset.demo==='true';
 const LABELS={housing:'Building supplies',streets:'Street work',recreation:'Court points',care:'Care',policy:'Civic wins'},SHORT={homes:'Homes',park:'Garden',court:'Court',clinic:'Clinic',kitchen:'Kitchen',fountain:'Plaza'};
