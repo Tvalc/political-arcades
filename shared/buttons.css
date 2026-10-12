@@ -11,3 +11,7 @@ html body :is(#a2a-button-system,button)[aria-pressed=true]{outline:2px solid #f
 html body :is(#a2a-button-system,.dialog-close,#help-close,#close-inspector,#music-next,[data-close-dialog],.touch-btn,[data-dir]){padding:8px!important}
 html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button)[hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button){transition:none!important;transform:none!important}}
+
+/* Spatial hit areas stay transparent; only their visible label uses the secondary treatment. */
+html body #lot-targets button:not([data-native-auth]){background:transparent!important;border-color:transparent!important;box-shadow:none!important;padding:0!important;transform:none!important}
+html body #lot-targets button>span{background:#17121f!important;color:#fff0d4!important;border:2px solid #ffd23f!important;border-radius:8px!important;box-shadow:0 3px 0 #09070d!important}
