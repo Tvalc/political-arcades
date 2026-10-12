@@ -2664,6 +2664,7 @@
     const dribbling = match.owner === id && !match.hold && !match.ball && !match.pass;
     if (flairPose && set[pose]) key = pose;
     else if (shooting && set.shot) key = "shot";
+    else if (pose === "move" && set.walk && !dribbling) key = "walk";
     else if (pose === "move" && set.move) key = "move";
     else if (dribbling && set.dribble) key = "dribble";
     else if (set[pose] && pose !== "move") key = pose;
@@ -2734,7 +2735,7 @@
         frame = dribbleIndex(clip, id);
       } else if (["celebrate", "mock", "shocked"].includes(key)) {
         frame = Math.min(clip.frames - 1, Math.floor((match.t - (reaction?.start ?? match.t)) * clip.fps));
-      } else if (key === "idle") {
+      } else if (key === "idle" || key === "walk") {
         frame = Math.floor(match.t * (clip.fps || 8)) % clip.frames;
       } else {
         const air = Math.min(1, (match.jump[id] || 0) / (match.jumpDur[id] || 1));
