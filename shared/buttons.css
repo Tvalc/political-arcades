@@ -1,7 +1,8 @@
 /* AdsToAid buttons: primary gold / secondary outline. Keep game-specific geometry. */
 :root{--a2a-button-fill:#ffd23f;--a2a-button-dark:#17121f;--a2a-button-ink:#20180a;--a2a-button-radius:8px}
 html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in){background:#17121f!important;background-image:none!important;color:#fff0d4!important;border:2px solid #ffd23f!important;border-radius:8px!important;box-shadow:0 3px 0 #09070d!important;text-shadow:none!important;font-family:system-ui,-apple-system,'Segoe UI',sans-serif!important;font-weight:750!important;letter-spacing:.01em!important;text-decoration:none!important;cursor:pointer;transition:background-color .12s,color .12s,transform .12s!important;min-height:44px;line-height:1.2}
-html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in):not(.court-card):not(.hold-panel){padding:11px 18px!important}
+/* Theme colors must not resize joystick hit areas, character cards, or touch controls. */
+html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in):where(:not(.court-card,.hold-panel,.touch-btn,.touch-controls button,[data-dir],.mobile-player,.fighter,#heroes button)){padding:10px 14px!important}
 html body :is(#a2a-button-primary,.btn:not(.btn-ghost),.primary-button,button.primary,.drop-button,a.arcade-button,a.patreon,a.go,a.play,a.start,.button-link,#start,#join,#resume,#court-play,#goal-action,#help-done,#theater-play,#juke-toggle,[data-confirm],[data-guest]):not(.google-sign-in){background:#ffd23f!important;color:#20180a!important;border-color:#ffd23f!important;box-shadow:0 3px 0 #806320!important}
 html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in):hover:not(:disabled){filter:brightness(1.08)!important;transform:translateY(-1px)!important}
 html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in):active:not(:disabled){transform:translateY(2px)!important;box-shadow:none!important}
@@ -15,3 +16,97 @@ html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-butt
 /* Spatial hit areas stay transparent; only their visible label uses the secondary treatment. */
 html body #lot-targets button:not([data-native-auth]){background:transparent!important;border-color:transparent!important;box-shadow:none!important;padding:0!important;transform:none!important}
 html body #lot-targets button>span{background:#17121f!important;color:#fff0d4!important;border:2px solid #ffd23f!important;border-radius:8px!important;box-shadow:0 3px 0 #09070d!important}
+
+/* Predictable dimensions, including pages without a global border-box reset. */
+html body :is(#a2a-button-system,button,a.btn,a.chip,a.button-link,a.arcade-button,a.button,a.cta,a.patreon,a.go,a.play,a.start,a.back,.arcade-site-menu>summary):not(.google-sign-in){box-sizing:border-box;border-image:none!important}
+html body :is(#a2a-button-system,.touch-btn,.touch-controls button,[data-dir]):not(.google-sign-in){padding:4px!important;touch-action:none;transform:none!important}
+html body :is(#a2a-button-system,.dialog-close,#help-close,#help-open,#close-inspector,#music-next,[data-close-dialog]):not(.google-sign-in){padding:8px!important;min-width:44px;min-height:44px}
+html:has(dialog[open]){overflow:hidden}
+dialog{box-sizing:border-box;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+@media(max-width:760px){
+ html body :is(#a2a-button-system,header button,.arcade-site-menu>summary):not(.google-sign-in){padding:8px 10px!important;min-height:44px}
+ .has-arcade-menu{align-items:center}
+ .arcade-site-menu>summary{font-size:12px!important}
+ .arcade-site-menu,.arcade-site-menu *{box-sizing:border-box}
+ .arcade-site-menu>nav{max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .city-reward-bar{padding:8px 12px!important;gap:10px!important;flex-wrap:nowrap!important;border-radius:8px!important;font-size:12px!important}
+ .city-reward-bar>strong{display:none}
+ .city-reward-bar>span{min-width:0!important;overflow-wrap:anywhere;line-height:1.35}
+ .city-reward-bar>a{display:flex;align-items:center;min-height:44px;flex:none;font-size:12px}
+ /* A page must keep scrolling even when a game handles drag gestures. */
+ .stage-overlay,.mobile-menu,.pause-panel,.court-select,.inspector,.paused{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .mobile-menu{justify-content:safe center;padding-top:max(72px,calc(env(safe-area-inset-top) + 64px));padding-bottom:max(20px,env(safe-area-inset-bottom))}
+ .mobile-menu>*{flex-shrink:0}
+ .has-touch .topbar{left:auto;right:max(12px,env(safe-area-inset-right));width:auto}
+ html.has-touch body #sound-toggle{min-height:44px!important}
+ html.has-touch.mobile-playing body #sound-toggle{width:44px;font-size:0!important;padding:8px!important}
+ html.has-touch.mobile-playing body #sound-toggle:after{content:'♪';font:20px/1 system-ui}
+ /* Stockpile labels and amounts share a column instead of squeezing each other. */
+ .city-dialog .supply{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;min-width:0}
+ .city-dialog .supply>*{min-width:0;max-width:100%;overflow-wrap:anywhere}
+ .city-dialog .supply-bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .city-dialog .city-preferences{display:flex;gap:8px;flex-wrap:wrap}.city-dialog #city-text-size{margin:0}
+ .city-dialog .block-actions{gap:8px}
+ .city-dialog .block-actions>*{flex:1 1 140px}
+ .city-tools{position:static;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ html body #builder .city-tools button{padding:8px 4px!important;min-width:0;overflow-wrap:anywhere}
+ .city-tools .save-progress-button{grid-column:span 2}
+ .goal-strip{position:static}
+ .world-panel{scroll-margin-top:12px}
+ .map-toolbar{height:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+ .map-toolbar>span{max-width:none;flex:1 0 100%}
+ .map-toolbar>div{display:flex;gap:8px;flex:1}
+ .map-toolbar button{flex:1}
+ .city-topbar{flex-wrap:wrap}
+ .city-dialog{max-height:calc(100dvh - 24px);scroll-padding-block:16px}
+ /* Outreach: put movement next to gameplay, then show the family story. */
+ .arcade-play{display:flex;flex-direction:column}
+ .arcade-play>.service-story{order:1;margin:0;border-radius:0;border-width:1px 0 0}
+ .arcade-play .playbar{gap:16px}
+ .arcade-play .joystick{width:144px;height:144px;flex:0 0 144px}
+ .arcade-play .joystick button{width:44px;height:44px;min-height:44px}
+ .arcade-play .joystick .up,.arcade-play .joystick .down{left:48px}
+ .arcade-play .joystick .left,.arcade-play .joystick .right{top:48px}
+ .arcade-play .joystick .knob{left:52px;top:52px}
+ .arcade-play .paused{overflow:auto;place-content:start center}
+ .arcade-play .overlay-card{margin-block:auto}
+ /* Compact headers retain a single aligned row when space permits. */
+ body:has(.arcade-play) header{gap:6px}
+ body:has(.arcade-play) .header-actions{gap:4px}
+ body:has(.arcade-play) .header-actions button{min-width:44px}
+ body:has(.arcade-play) .title{margin:10px 0}
+ body:has(.arcade-play) .title-note{font-size:11px}
+ /* Pothole Party: title and hero selector cannot overlap at phone widths. */
+ body:has(#dpad) .intro{grid-template-columns:1fr;gap:12px}
+ body:has(#dpad) #heroes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+ html body #heroes button{padding:6px!important;min-width:0}
+ body:has(#dpad) .cabinet{display:flex;flex-direction:column}
+ body:has(#dpad) .cabinet-status{display:contents}
+ body:has(#dpad) .sidelines{order:2;margin-top:16px}
+ body:has(#dpad) .controls{touch-action:auto}
+ body:has(#dpad) #overlay{justify-content:flex-start;overscroll-behavior:contain}
+ body:has(#dpad) #overlay>*{flex-shrink:0}
+ body:has(#dpad) .header-audio{margin-left:0}
+ body:has(#dpad) .topbar .brand{margin-right:auto}
+ body:has(#dpad) .topbar .arcade-site-menu{margin-left:auto!important}
+ .game-header h1{white-space:normal;flex:1;font-size:17px}
+ .game-header{gap:8px!important}
+ .game-header .arcade-site-menu>summary{font-size:11px!important}
+ .touch-controls button{min-width:0}
+ .mobile-rotate{bottom:240px}
+}
+@media(orientation:landscape) and (max-height:520px){
+ .arcade-site-menu,.arcade-site-menu *{box-sizing:border-box}
+ .arcade-site-menu>nav{max-height:calc(100dvh - 70px);overflow:auto;overscroll-behavior:contain}
+ .mobile-menu{justify-content:safe center;padding-top:64px;padding-bottom:16px}
+ .mobile-menu>*{flex-shrink:0}
+ .has-touch.mobile-playing .topbar{left:auto;right:10px;width:136px;display:flex;flex-direction:column;align-items:stretch;gap:8px!important}
+ .has-touch.mobile-playing .topbar .arcade-site-menu{margin:0!important}
+ html.has-touch.mobile-playing body #sound-toggle{min-height:44px!important}
+ .has-touch .mobile-hud{right:160px}
+}
+@media(max-width:380px){
+ .library-heading{flex-wrap:wrap;gap:10px}
+ .library-heading>div{flex:1 0 100%}
+ .library-heading .preview-toggle{margin-left:auto}
+}
