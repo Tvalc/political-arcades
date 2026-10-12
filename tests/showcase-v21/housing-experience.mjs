@@ -111,7 +111,7 @@ function resume(){if(phase!=='paused'||$('#help-dialog').open||$('.arcade-site-m
 }
 function togglePause(){if(phase==='playing')pause();else if(phase==='paused')resume();}
 function finish(){
- const record={id:recordId,game:'housing',score:g.score,metrics:{lines:g.lines}};import('/shared/records-ui.mjs?v=21.1').then(m=>m.completeRun(record)).catch(()=>{});
+ const record={id:recordId,game:'housing',score:g.score,metrics:{lines:g.lines}};import('/shared/records-ui.mjs?v=21.2').then(m=>m.completeRun(record)).catch(()=>{});
  release();updateBest();setPhase('over');playBuilder('shocked');overlay('over');
  announce(`${g.lines} ${g.lines===1?'supply':'supplies'} earned this shift. ${saveFailed?'Saving is unavailable.':'Your supplies stay saved.'}`);
 }

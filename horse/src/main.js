@@ -92,7 +92,7 @@
   function creditCourtPoints(type,count=1,label=''){if(!match||match.practice||marketingUnlock||match.marketingSession)return false;const receipt=window.CityRewards?.credit(type,count);if(!receipt)return false;const bucket=type==='vote:basket'?'cityBaskets':type==='vote:letter'?'cityLetterBonus':type==='vote:community'?'cityCommunity':'cityWinBonus';match[bucket]=(match[bucket]||0)+count;match.cityPoints+=count;match.cityPointsEvent='+'+count+' court points — '+(label||'match win');return true;}
   function recordCourtWin() {
     if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.cityWinRecorded && match.localPlayers.includes(match.over)) { match.cityWinRecorded = creditCourtPoints('vote:win',4); }
-    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.recordSubmitted) {match.recordSubmitted=true;const record={id:match.recordId,game:'vote',mode:match.mode==='local'?'local':'solo',score:match.cityPoints||0,won:match.over===match.humanId};import('/shared/records-ui.mjs?v=21.1').then(m=>m.completeRun(record)).catch(()=>{});}
+    if (match && !match.practice && !marketingUnlock && !match.marketingSession && !match.recordSubmitted) {match.recordSubmitted=true;const record={id:match.recordId,game:'vote',mode:match.mode==='local'?'local':'solo',score:match.cityPoints||0,won:match.over===match.humanId};import('/shared/records-ui.mjs?v=21.2').then(m=>m.completeRun(record)).catch(()=>{});}
     if (!match || match.practice || marketingUnlock || match.marketingSession || match.winRecorded || match.over !== match.humanId) return;
     match.winRecorded = true;
     careerWins++;

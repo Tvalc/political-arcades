@@ -1,5 +1,5 @@
 
-import {blankRecords,recordRun,loadRecords,importLegacy,saveRecords,loadProfile,PROFILE_KEY,GAME_META,cityFacts,achievements,profileTitle,makeSnapshot,encodeSnapshot,decodeSnapshot,localBoard,cleanName} from '/shared/arcade-records.mjs?v=21.1';
+import {blankRecords,recordRun,loadRecords,importLegacy,saveRecords,loadProfile,PROFILE_KEY,GAME_META,cityFacts,achievements,profileTitle,makeSnapshot,encodeSnapshot,decodeSnapshot,localBoard,cleanName} from '/shared/arcade-records.mjs?v=21.2';
 import {loadCity,blankCity,KEY} from '/shared/city-state.mjs?v=19.2';
 import {LIFE_KEY,loadLife,freshLife,syncBlock,stopPoint} from '/city/life-v19.mjs?v=19.2';
 import {paintHorseActor} from '/city/horse-scene-v19.mjs?v=19.2';
