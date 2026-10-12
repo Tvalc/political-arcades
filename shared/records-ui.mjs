@@ -1,6 +1,7 @@
 
-import {loadRecords,importLegacy,saveRecords,recordRun,RECORD_KEY,GAME_META} from './arcade-records.mjs?v=21.0';
+import {loadRecords,importLegacy,saveRecords,recordRun,RECORD_KEY,GAME_META} from './arcade-records.mjs?v=21.1';
 let storage;try{storage=localStorage;}catch{}
+if(document.body.dataset.demo==='true'){const scratch=new Map();storage={getItem:k=>scratch.get(k)??null,setItem:(k,v)=>scratch.set(k,v)};}
 saveRecords(storage,importLegacy(storage,loadRecords(storage)));
 export function completeRun(input,{quiet=false,update=false}={}){const state=importLegacy(storage,loadRecords(storage));const result=recordRun(state,input,{update});if(!result)return null;const saved=saveRecords(storage,state);window.dispatchEvent(new CustomEvent('arcade-records-updated',{detail:{game:input.game}}));if(!quiet)receipt(result,saved);return result;}
 function receipt(r,saved){document.querySelector('.record-receipt')?.remove();const a=document.createElement('aside');a.className='record-receipt';a.setAttribute('role','status');const b=document.createElement('strong');b.textContent=r.isRecord?'PERSONAL BEST!':r.first?'FIRST RUN IN THE BOOKS':'RUN RECORDED';const p=document.createElement('span');p.textContent=r.run.score.toLocaleString()+' '+GAME_META[r.run.game].unit+(r.isRecord&&r.previous?' · previous best '+r.previous.toLocaleString():'')+(saved?' · saved here':' · saving unavailable');const link=document.createElement('a');link.href='/city/#trophy-case';link.textContent='See my trophy case →';const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Dismiss record celebration');close.onclick=()=>a.remove();a.append(b,p,link,close);document.body.append(a);setTimeout(()=>a.remove(),12000);}

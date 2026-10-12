@@ -16,6 +16,7 @@ let storage,prefs={};try{storage=localStorage;prefs=JSON.parse(storage.getItem(P
 let hasChosen=Object.hasOwn(names,prefs.builder),hero=hasChosen?prefs.builder:'mamdani';
 let touchMode=['auto','on','off'].includes(prefs.touch)?prefs.touch:'auto';
 let calm=typeof prefs.calm==='boolean'?prefs.calm:reduced.matches;
+let recordId=crypto.randomUUID();
 let g=createGame(),phase='setup',last=0,gravity=0,best=0,sound=false,audio,saveFailed=!storage;
 let clearFx=null,toastUntil=0,heroReactionUntil=0,lastCityPaint=0,cityVisible=true,helpReturnFocus=null,boardDirty=true;
 let firstMoves=0,choiceMode=false,choiceReturnPhase='setup',lastAnnouncement='',sessionInput=null;
@@ -95,7 +96,7 @@ function overlay(kind){
 function start(){
  window.ArcadeAnalytics?.capture('game_started',{game:'housing_stack'});
  hasChosen=true;savePreferences();
- release();g=createGame();gravity=0;last=performance.now();firstMoves=0;clearFx=null;toastUntil=0;heroReactionUntil=0;
+ release();recordId=crypto.randomUUID();g=createGame();gravity=0;last=performance.now();firstMoves=0;clearFx=null;toastUntil=0;heroReactionUntil=0;
  choiceMode=false;setPhase('playing');$('#overlay').hidden=true;$('#board-toast').hidden=true;
  playBuilder();hud();focusBoard();revealBoard();announce('Fill a horizontal row. The outline shows where your piece will land.');
 }
@@ -109,6 +110,7 @@ function resume(){if(phase!=='paused'||$('#help-dialog').open||$('.arcade-site-m
 }
 function togglePause(){if(phase==='playing')pause();else if(phase==='paused')resume();}
 function finish(){
+ const record={id:recordId,game:'housing',score:g.score,metrics:{lines:g.lines}};import('/shared/records-ui.mjs?v=21.1').then(m=>m.completeRun(record)).catch(()=>{});
  release();updateBest();setPhase('over');playBuilder('shocked');overlay('over');
  announce(`${g.lines} ${g.lines===1?'supply':'supplies'} earned this shift. ${saveFailed?'Saving is unavailable.':'Your supplies stay saved.'}`);
 }

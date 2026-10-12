@@ -1,0 +1,48 @@
+{
+  "release": 21,
+  "firstRelease": [
+    "Personal run records separated by game and mode",
+    "All-time and weekly browser-local tables",
+    "Earned badge titles and three featured pins",
+    "Favorite hero and three freely selectable banner treatments",
+    "Downloadable postcard and opt-in read-only share snapshot"
+  ],
+  "competitionPrinciples": {
+    "noCombinedLeaderboard": "No conversion of court points, care and Tetris scores into an arbitrary overall rank",
+    "noPayToWin": "Purchases and advertising do not affect competitive scores",
+    "city": "Milestones, mentors and distinct projects; time-dependent visits are not ranked competitively"
+  },
+  "publicPhase": {
+    "required": [
+      "Account identity",
+      "Durable server data",
+      "Replay verification for seeded games",
+      "VOTE shot/input validation",
+      "Separate categories for modes and rule versions",
+      "Rate limits, moderation and abuse reporting"
+    ],
+    "boards": [
+      "Weekly seeded challenges",
+      "Per-game all-time records",
+      "Creative city showcases"
+    ],
+    "status": "Not connected in this GitHub Pages release"
+  },
+  "shareContract": {
+    "contents": [
+      "Player-chosen name, title, hero, banner",
+      "Featured plot layout and upgrades",
+      "Aggregate city accomplishments",
+      "Personal bests and earned pins"
+    ],
+    "excluded": [
+      "Raw save",
+      "Supply ledger",
+      "Event IDs",
+      "Private credentials",
+      "Account information"
+    ],
+    "mutations": "Viewer never imports or modifies a city",
+    "label": "Fixed, read-only, browser-reported snapshot"
+  }
+}

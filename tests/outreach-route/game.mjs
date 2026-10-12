@@ -6,6 +6,7 @@ import {createScene,point as worldPoint} from './scene-v6.mjs?v=10.0';
 import {sound,unlockSound,toggleSound,soundEnabled} from './audio-v6.mjs?v=10.0';
 import {loadCity,award,KEY} from '/shared/city-state.mjs?v=outreach1';
 const $=id=>document.getElementById(id),SIZE=16,BEST='pa-outreach-care-best-v1',scene=createScene($('map')),practice=new URLSearchParams(location.search).has('practice');
+if(!practice)import('/shared/records-ui.mjs?v=21.1').catch(()=>{});
 const service=createService($('service-scene'),$('service-title'),$('service-caption'));
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
 let artLoaded=false,artFailed=false;
@@ -32,7 +33,7 @@ function events(){if(!g.events.length)return;for(const e of g.events.splice(0)){
  if(e.type==='pickup'){reward(e);careFlight(e);$('tip').textContent=practice?'Practice pickup. A neighbor joins the crew.':saveFailure?'City saving unavailable. No care was saved for this pickup.':'+1 care for your city. A neighbor joins the crew. Watch your tail!';say('TONY / WITH THE CREW','Look at this block go. Now bring everybody home in one piece.');}
  if(e.type==='empty')$('tip').textContent='Your crew is working. Collect a green worker before starting another stop.';
 }hud();}
-function finale(){if(festivalStarted)return;festivalStarted=true;$('map').closest('.arcade-play').classList.add('festival');scene.celebrate(g);document.querySelector('outreach-neighborhood')?.celebrate([...g.crew,...g.jobs.filter(j=>j.worker).map(j=>j.worker)]);sound('festival');$('map').setAttribute('aria-label','The conga line breaks apart and joins families in a courtyard festival. Care earned: '+care+'.');lossAt=time+4;}
+function finale(){if(festivalStarted)return;festivalStarted=true;if(!practice){const record={id:runId,game:'outreach',score:care,metrics:{care,repairs:g.repairs}};import('/shared/records-ui.mjs?v=21.1').then(m=>m.completeRun(record)).catch(()=>{});}$('map').closest('.arcade-play').classList.add('festival');scene.celebrate(g);document.querySelector('outreach-neighborhood')?.celebrate([...g.crew,...g.jobs.filter(j=>j.worker).map(j=>j.worker)]);sound('festival');$('map').setAttribute('aria-label','The conga line breaks apart and joins families in a courtyard festival. Care earned: '+care+'.');lossAt=time+4;}
 function lost(){started=true;paused=false;finale();$('pause').textContent='Pause';$('pause').setAttribute('aria-label','Pause outreach');$('tip').textContent='The crew is joining the block party. Your city keeps '+care+' care.';say('TONY / END OF THE RUN','Clock out. Grab a plate. This whole block is celebrating!');hud();}
 $('resume').onclick=()=>artFailed?location.reload():g.status!=='playing'||!started?start():setPause(false);$('again').onclick=start;$('pause').onclick=()=>setPause(!paused);
 function audioUI(){$('audio').textContent=soundEnabled()?'Sound on':'Sound off';$('audio').setAttribute('aria-pressed',String(soundEnabled()));}audioUI();$('audio').onclick=()=>{toggleSound();audioUI();};
