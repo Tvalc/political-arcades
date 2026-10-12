@@ -4,7 +4,7 @@ export function mountArcadeNavigation(){
  const details=document.createElement('details');details.className='arcade-site-menu';
  const summary=document.createElement('summary');summary.textContent='Arcade menu';
  const nav=document.createElement('nav');nav.setAttribute('aria-label','AdsToAid navigation');
- for(const [name,href] of [['All games','/#library'],['My city','/city/'],['How giving works','/#how'],['Watch, listen & read','/#more'],['Community Pot','/community-pot/']]){const a=document.createElement('a');a.textContent=name;a.href=href;nav.append(a);}
+ for(const [name,href] of [['All games','/#library'],['My city','/city/'],['How giving works','/#how'],['Greatest Hits','/greatest-hits/'],['Watch, listen & read','/#more'],['Community Pot','/community-pot/']]){const a=document.createElement('a');a.textContent=name;a.href=href;nav.append(a);}
  details.append(summary,nav);host.classList.add('has-arcade-menu');host.append(details);
  // Menu keyboard input must not also shoot, drop a block, or move a player.
  details.addEventListener('keydown',e=>{if(['Enter',' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(e.key))e.stopPropagation();});
