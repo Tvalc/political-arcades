@@ -1,5 +1,5 @@
 import {enableCitySound,cityCue} from '/city/sound-v19.mjs?v=19.2';
-import {goalFor,upgradeSpec,helperEffect,residentMilestone,courtCitizen,chapterProgress,capacity} from '/city/design-v19.mjs?v=19.2';
+import {goalFor,upgradeSpec,helperEffect,residentMilestone,courtCitizen,chapterProgress,capacity} from '/city/design-v19.mjs?v=19.6';
 import {REGIONS,regionFor} from '/city/regions-v19.mjs?v=19.2';
 import {openingStatus,finishOpening,openingAssignment} from '/city/opening-day-v18.mjs?v=18.2';
 import {horseState,HERO_NAMES} from '/city/horse-state-v19.mjs?v=19.2';
