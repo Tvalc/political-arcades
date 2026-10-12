@@ -2418,10 +2418,12 @@
     ctx.filter = `brightness(${1 + hover * 0.16})`;
     ctx.shadowColor = "rgba(0,0,0,.3)";
     ctx.shadowBlur = hover * 4;
-    skin(hot ? "primary" : "secondary", x, y, w, h);
+    ctx.fillStyle = hot ? "#ffd23f" : "#17121f";
+    ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 2;
+    roundRect(x, y, w, h, 8); ctx.fill(); ctx.stroke();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = hot ? "#10182b" : "#fff6d8";
-    ctx.font = "20px Bungee, sans-serif";
+    ctx.fillStyle = hot ? "#20180a" : "#fff0d4";
+    ctx.font = "750 20px system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(label, x + w / 2, y + h / 2 + 1);
