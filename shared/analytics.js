@@ -7,7 +7,8 @@
  const embedded=location.origin===FRAME&&window.parent!==window;
  const paths={'/horse/':'vote','/housing-stack/':'housing_stack','/outreach-route/':'every_kid_can_see','/pothole-party/':'pothole_party','/capitol-crashers/':'capitol_crashers','/play/':'capitol_crashers'};
  const game=paths[location.pathname]||null;
- const allowed=new Set(['game_started','resources_earned','city_built','city_created','return_visit','patreon_clicked','analytics_ready']);
+ const allowed=new Set(['game_started','game_finished','share_clicked','resources_earned','city_built','city_created','return_visit','patreon_clicked','analytics_ready']);
+ const channels=new Set(['native','copy']);
  const resources=new Set(['housing','streets','recreation','care','policy']);
  const games=new Set(Object.values(paths));
  const kinds=new Set(['homes','park','court','clinic','kitchen','fountain','road']);
@@ -22,6 +23,9 @@
   if(resources.has(data.resource))out.resource=data.resource;
   if(kinds.has(data.kind))out.kind=data.kind;
   if(Number.isFinite(data.amount)&&data.amount>0&&data.amount<=10000)out.amount=data.amount;
+  if(Number.isFinite(data.score)&&data.score>=0)out.score=Math.min(1e7,Math.floor(data.score));
+  if(data.personal_best===true)out.personal_best=true;
+  if(channels.has(data.channel))out.channel=data.channel;
   if(Number.isFinite(data.days_since_visit))out.days_since_visit=Math.min(3650,Math.max(0,Math.floor(data.days_since_visit)));
   return out;
  }
