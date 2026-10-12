@@ -169,5 +169,24 @@
     "treatment": "Original publisher edit; transcoded for web playback. No cuts, added narration, or altered audio.",
     "sourceIn": 0,
     "sourceOut": 170
+  },
+  {
+    "id": "7507467479485091114",
+    "hero": "talarico",
+    "shelf": "policy",
+    "title": "Who gets to decide? The Texas THC debate",
+    "topic": "Civil liberties",
+    "context": "Talarico argues against a Texas THC ban during a May 2025 legislative debate. This is his argument at the time, not a description of current Texas law.",
+    "sourceTitle": "Republicans just banned all THC products in the state of Texas.",
+    "source": "https://www.tiktok.com/@jamestalarico/video/7507467479485091114",
+    "uploader": "James Talarico",
+    "channel": "https://www.tiktok.com/@jamestalarico",
+    "published": "2025-05-22",
+    "duration": 139,
+    "media": "media/7507467479485091114.mp4",
+    "poster": "media/7507467479485091114.jpg",
+    "treatment": "Original publisher edit; transcoded for web playback. No cuts, added narration, or altered audio.",
+    "sourceIn": 0,
+    "sourceOut": 139
   }
 ]
