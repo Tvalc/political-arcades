@@ -1,0 +1,10 @@
+V1 review package — October 11, 2026
+Main film: 38.00 seconds. Teaser: 15.00 seconds. Both 720x1280 H.264, 30fps, AAC 48kHz, faststart.
+Saved Tony Valcarcel voice in ElevenLabs v4. Upbeat/playful tags; no music added. Main voiceover is uncut, ending around 34.3 seconds, followed by a gameplay CTA hold.
+Real gameplay from the least-compressed local cabinet source exports. Existing Makko game art. Native text/vector editorial graphics. Housing Stack and city are still captures from the current live site, not video or generated gameplay.
+Source gameplay is 640x640, displayed at native size in a vertical layout. Screenshots are lower-resolution sources; no claim of recovered detail through enlargement.
+Full decode checks passed for both complete films. Visual inspection of opening, every scene and ending; local speech recognition matches the intended script. I could not independently listen to the generated voice, so vocal tone/pronunciation remains for Tony's review.
+Optional companion captions cover graphic cards only, deliberately omitting gameplay showcases under the established video-workflow preference. Full transcripts are provided separately.
+Actual credit-funded giving and no completed financial report are not misrepresented as delivered donations. No passive-ad-viewing language or ad-click request.
+AdsToAid.com redirect verified to politicalarcades.com. Share image is 1200x630 PNG. Metadata is patched separately without changing homepage layout.
+No social publishing or messages to friends.
