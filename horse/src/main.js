@@ -1584,7 +1584,7 @@
     const players=[humanId,...ROSTER.filter(id=>id!==humanId)];
     const spectatorId=null;
     const home = FIGHTERS[humanId];
-    return {
+    const next = {
       humanId,
       cityPoints:0,cityBaskets:0,cityWinBonus:0,cityLetterBonus:0,cityCommunity:0,cityPointsEvent:'',
       cpuId,
@@ -1631,6 +1631,8 @@
       dribU: null,
       pop: Object.fromEntries(ROSTER.map(id => [id, 0])),
     };
+    queueMicrotask(()=>{if(match===next&&!match.practice&&!match.marketingSession&&!marketingUnlock)window.ArcadeAnalytics?.capture('game_started',{game:'vote'});});
+    return next;
   }
 
   function punch(text, hot) {
