@@ -93,6 +93,7 @@ function overlay(kind){
  if(!setup&&!$('.arcade-site-menu')?.open)$('#start').focus({preventScroll:true});
 }
 function start(){
+ window.ArcadeAnalytics?.capture('game_started',{game:'housing_stack'});
  hasChosen=true;savePreferences();
  release();g=createGame();gravity=0;last=performance.now();firstMoves=0;clearFx=null;toastUntil=0;heroReactionUntil=0;
  choiceMode=false;setPhase('playing');$('#overlay').hidden=true;$('#board-toast').hidden=true;
