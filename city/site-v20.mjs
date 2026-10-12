@@ -72,8 +72,10 @@ function highlight(){const title=document.querySelector('#goal-title')?.textCont
 new MutationObserver(highlight).observe(document.querySelector('.goal-strip'),{subtree:true,childList:true,characterData:true});highlight();
 
 import {drawPerson,peopleReady} from '/tests/outreach-route/people-v7.mjs?v=10.0';
-const neighborhoodDemo=document.querySelector('#growth-neighbors'),demoCtx=neighborhoodDemo.getContext('2d');let demoVisible=false,demoLoaded=false;
+const neighborhoodDemo=document.querySelector('#growth-neighbors'),demoCtx=neighborhoodDemo.getContext('2d');let demoVisible=false,demoLoaded=false,demoFrame=0;
 new IntersectionObserver(entries=>{demoVisible=entries[0].isIntersecting;if(demoVisible)paintGrowth(performance.now());}).observe(neighborhoodDemo);
 peopleReady.then(()=>{demoLoaded=true;paintGrowth(performance.now());}).catch(()=>{neighborhoodDemo.hidden=true;});
-function paintGrowth(ms){if(!demoLoaded||!demoVisible)return;const t=reduced.matches?12:ms/1000;demoCtx.clearRect(0,0,400,240);drawPerson(demoCtx,'parent',140,186,{height:74,state:'activity',phase:t});drawPerson(demoCtx,'girl',194,190,{height:54,state:'activity',phase:t});const u=(t%18)/18,x=u<.25?25+u*240:u>.75?85-(u-.75)*240:85;drawPerson(demoCtx,'boy',x,198,{height:54,state:u<.25||u>.75?'walk':'activity',phase:t,flip:u>.75,motionKey:'growth-reader'});if(!reduced.matches&&!document.hidden)requestAnimationFrame(paintGrowth);}
+function paintGrowth(ms){cancelAnimationFrame(demoFrame);demoFrame=0;if(!demoLoaded||!demoVisible)return;const t=reduced.matches?12:ms/1000;demoCtx.clearRect(0,0,400,240);drawPerson(demoCtx,'parent',200,186,{height:74,state:'activity',phase:t});drawPerson(demoCtx,'girl',260,190,{height:54,state:'activity',phase:t});const u=(t%18)/18,x=u<.25?100+u*160:u>.75?140-(u-.75)*160:140;drawPerson(demoCtx,'boy',x,198,{height:54,state:u<.25||u>.75?'walk':'activity',phase:t,flip:u>.75,motionKey:'growth-reader'});if(!reduced.matches&&!document.hidden)demoFrame=requestAnimationFrame(paintGrowth);}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&demoVisible)paintGrowth(performance.now());});
+
+reduced.addEventListener('change',()=>paintGrowth(performance.now()));
