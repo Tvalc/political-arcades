@@ -1,4 +1,4 @@
-import {PROJECTS} from '../shared/city-state.mjs?v=19.1';
+import {PROJECTS} from '../shared/city-state.mjs?v=19.2';
 export const RESOURCE_NAMES={housing:'Building supplies',streets:'Street work',recreation:'Court points',care:'Care',policy:'Civic wins'};
 export const GAME_NAMES={housing:'Housing Stack',streets:'Pothole Party',recreation:'VOTE',care:'Every Kid Can See',policy:'Capitol Crashers'};
 export const GAME_PATHS={housing:'/housing-stack/',streets:'/pothole-party/',recreation:'/horse/',care:'/outreach-route/',policy:'/capitol-crashers/'};
@@ -22,6 +22,7 @@ export function residentMilestone(r){const g=r.growth||{};const kinds=Object.key
 export function courtCitizen(b,clock=0){const ids=b.ambition?.players||[],pool=b.residents.filter(r=>ids.includes(r.id)),roster=pool.length?pool:b.residents;if(!roster.length)return{name:'Neighborhood kid',art:'boy'};const r=roster[Math.floor(Math.max(0,clock)/48)%roster.length];return{name:r.child,art:r.childArt||'boy',id:r.id,skill:r.skill||'New player'};}
 export function chapterProgress(city,life){const completed=city.blocks.reduce((n,_,i)=>n+(life.blocks[i]?.ambition?.completed||life.blocks[i]?.wishDelivered?1:0),0);return {completed,target:(Math.floor(completed/3)+1)*3,chapter:Math.floor(completed/3)+1};}
 export function goalFor(city,b,index,wallet){const a=b.ambition||{},block=city.blocks[index],wish=['park','clinic'].includes(block.wish)?block.wish:null,p=b.places.find(p=>p.kind===wish);let kind=null;
+ if(index>0&&!block.lots.length&&!wish&&!a.mode)return {title:'What should this neighborhood grow?',detail:'Choose an after-school garden or care close to home. Your earlier neighborhood keeps thriving.',action:'Choose a neighborhood project',type:'direction'};
  if(a.stage==='opening')return {title:'Opening day is happening',detail:'Your coach, volunteers and neighbors are at their stations.',action:'Watch the block party',type:'watch'};
  if(wish&&!b.wishDelivered){kind=wish;if(p?.construction)return{title:'Your '+(wish==='park'?'garden':'care team')+' is taking shape',detail:'Supplies delivered. Neighbors will visit when the crew finishes.',action:'Watch construction',type:'place',slot:p.slot};if(p)return{title: wish==='park'?'Open the after-school garden':'Bring care close to home',detail:Math.min(3,p.completed)+' / 3 family visits · their visits unlock the next neighborhood',action:'Help the first families',type:'place',slot:p.slot,progress:Math.min(1,p.completed/3)};}
  else if(a.completed||b.wishDelivered)return {title:'This block can welcome another neighborhood',detail:'Your places and familiar neighbors keep thriving here.',action:'Choose what grows next',type:'next',progress:1};
