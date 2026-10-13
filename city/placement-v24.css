@@ -1,0 +1,65 @@
+/* Building placement: keep the whole block visible and one decision at a time. */
+.game-bezel{padding:0;background:none;border:0;box-shadow:none}
+#builder{padding:0;background:none}
+.goal-strip{background:#193b35;border:0;box-shadow:none;padding:16px 18px}
+.world-panel{border:1px solid #526e6455;box-shadow:none;border-radius:12px}
+.city-view.fit{overflow:hidden}
+.city-view.fit .world-stage{width:min(100%,calc((100svh - 320px)*1.5));min-width:0}
+.placing-building .goal-strip{border-left:4px solid #ffd23f}
+.placing-building .goal-actions{max-width:400px;gap:8px}
+.placing-building .goal-actions #goal-action{flex:1;min-width:0}
+.placing-building .goal-actions .placement-cancel{flex:none;min-width:80px}
+.placing-building .goal-copy{min-width:0}
+.placing-building .goal-copy h2{font-size:22px}
+.placing-building .city-tools,.placing-building .district-head nav,.placing-building .map-toolbar>div{display:none}
+.placing-building .town-shell,.placing-building .town-shell:has(.inspector.selected){grid-template-columns:1fr;padding-bottom:0}
+.placing-building #inspector{display:none!important}
+.placing-building .map-toolbar{padding:10px 14px;min-height:40px}
+.placing-building .world-status{display:none}
+html body.placing-building #builder #lot-targets button:not(.empty){visibility:hidden}
+html body.placing-building #builder #lot-targets button.empty{transform:translate(-50%,-100%)!important;border:2px dashed #ffe9a0!important;background:#ffd23f1a!important;border-radius:12px!important;width:16%;height:19%;min-width:44px;min-height:44px;box-shadow:0 0 12px #0005!important;align-items:center}
+html body.placing-building #builder #lot-targets button.empty[aria-pressed=true]{background:#ffd23f55!important;border-style:solid!important;border-width:3px!important;outline:2px solid #142a23;outline-offset:2px}
+html body.placing-building #builder #lot-targets button.empty>span{width:32px;height:32px;display:grid;place-items:center;padding:0;border:0!important;background:#182b26f5!important;color:#fff5dd!important;box-shadow:none!important;border-radius:50%!important}
+.placing-building .city-view.fit .lot-target.empty>span b{font-size:16px;line-height:1}
+.placing-building .city-view.fit .lot-target.empty>span b::after{content:none}
+.build-picker{width:min(820px,calc(100vw - 24px))}
+.build-picker h2{padding-right:48px;margin-bottom:20px}
+.build-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.build-option{padding:16px;background:#203c38;border-radius:10px;min-width:0}
+.build-option img{width:70px;height:66px;object-fit:contain;float:right;margin:0 0 8px 12px}
+.build-option h3{margin:0 0 8px;font-size:19px}
+.build-option p{font-size:14px!important;line-height:1.4;margin:8px 0}
+.build-option .build-cost{font-weight:700;color:#fff2c7}
+.build-option button{width:100%;clear:both}
+.build-option a{display:block;padding:12px 0;min-height:44px;color:#fbe7ae}
+.build-picker .dialog-close{position:sticky;top:0;z-index:1}
+@media(max-width:760px){
+ .city-view.fit .world-stage{width:100%}
+ .placing-building .goal-strip{display:block;padding:12px 14px}
+ .placing-building .goal-copy h2{font-size:20px}
+ .placing-building .goal-actions{display:flex;width:100%;max-width:none;margin-top:10px}
+ .placing-building .goal-actions #goal-action{width:auto;max-width:none;min-height:48px}
+ .placing-building .goal-actions .placement-cancel{width:auto;max-width:none}
+ .placing-building .map-toolbar>span{max-width:none!important}
+ .build-picker-grid{grid-template-columns:1fr}
+ .build-option{padding:14px}
+ .build-picker h2{font-size:22px}
+}
+.placing-building .goal-actions{flex-direction:row}
+@media(max-width:760px){.placing-building .goal-actions{flex-direction:row;align-items:stretch}.placing-building .goal-actions .placement-cancel{min-width:76px}.placing-building .goal-actions #goal-action{flex:1}}
+/* Inspect a building without resizing or zooming the neighborhood behind it. */
+.building-dialog{width:min(580px,calc(100vw - 24px));padding:20px}
+.building-dialog #inspector{position:static;display:block!important;max-height:none;overflow:visible;padding:0;background:none;border:0;box-shadow:none;border-radius:0}
+.building-dialog .inspector-top{padding:0;position:sticky;top:0;z-index:2;background:#152d30}
+.building-dialog #inspect-content{padding:14px 0 0}
+.building-dialog .place-art{float:right;width:110px;height:100px;margin:0 0 12px 16px}
+.building-dialog .visitor-list{max-height:none;overflow:visible}
+.building-dialog .hero-switch{grid-template-columns:1fr}
+.building-dialog #close-inspector{min-width:44px;min-height:44px}
+@media(max-width:760px){.building-dialog{padding:16px}.building-dialog .place-art{width:90px;height:85px}}
+.town-shell{grid-template-columns:1fr!important}
+
+/* Map hit areas use bottom-center world anchors, including before placement.
+   Override generic button hover/active/reduced-motion transforms as well. */
+html body #builder #lot-targets button{transform:translate(-50%,-100%)!important;transition:none!important}
+html body #builder #lot-targets button.empty{width:16%;height:19%;min-width:44px;min-height:44px;align-items:center}

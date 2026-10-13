@@ -7,7 +7,7 @@
  const embedded=location.origin===FRAME&&window.parent!==window;
  const paths={'/horse/':'vote','/housing-stack/':'housing_stack','/outreach-route/':'every_kid_can_see','/pothole-party/':'pothole_party','/capitol-crashers/':'capitol_crashers','/play/':'capitol_crashers'};
  const game=paths[location.pathname]||null;
- const allowed=new Set(['game_started','game_finished','share_clicked','resources_earned','city_built','city_created','return_visit','patreon_clicked','analytics_ready']);
+ const allowed=new Set(['game_started','game_finished','share_clicked','resources_earned','city_built','city_created','return_visit','patreon_clicked','city_project_completed','city_project_started','city_crew_assigned','city_story_chosen','city_delivery_selected','city_meaningful_return','analytics_ready']);
  const channels=new Set(['native','copy']);
  const resources=new Set(['housing','streets','recreation','care','policy']);
  const games=new Set(Object.values(paths));
