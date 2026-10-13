@@ -1,6 +1,6 @@
 (()=>{
  'use strict';
- if(!location.hostname.endsWith('capitolcrashers.com'))import('/shared/records-ui.mjs?v=21.2').catch(()=>{});
+ if(!location.hostname.endsWith('capitolcrashers.com'))import('/shared/records-ui.mjs?v=overlays74').catch(()=>{});
  const CENTRAL='https://politicalarcades.com',foreign=location.hostname.endsWith('capitolcrashers.com'),script=document.currentScript.src,queueKey='pa-city-reward-outbox-v1';
  let pending=[];try{pending=JSON.parse(localStorage.getItem(queueKey))||[];}catch{}if(!Array.isArray(pending))pending=[];
  const saveQueue=()=>{try{localStorage.setItem(queueKey,JSON.stringify(pending));}catch{}};

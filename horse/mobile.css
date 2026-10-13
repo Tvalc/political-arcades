@@ -29,3 +29,12 @@
 
 /* Four-player roster */
 .mobile-players{grid-template-columns:repeat(2,minmax(0,1fr))}.mobile-scores{grid-template-columns:repeat(4,minmax(0,1fr))}.mobile-score>span{gap:4px}.mobile-player strong{white-space:normal}.mobile-score strong{font-size:10px}
+
+/* Menus own the screen. Gameplay rewards must never float over a dialog. */
+html:has(#pause-panel:not([hidden]),#first-play:not([hidden]),#court-select:not([hidden]),#asset-loading:not([hidden])) .vote-points{display:none!important}
+.has-touch .pause-panel{justify-content:safe center;gap:12px}
+.has-touch .pause-panel>*{flex-shrink:0;max-width:100%}
+.has-touch .pause-panel>button{width:100%}
+.has-touch .pause-panel .city-receipt{margin:8px 0 0;width:100%;font:14px/1.45 system-ui}
+.has-touch .mobile-result{max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain}
+.has-touch:has(.mobile-result:not([hidden])) .mobile-hud,.has-touch:has(.mobile-result:not([hidden])) .mobile-rotate{display:none}
