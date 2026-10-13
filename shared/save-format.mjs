@@ -1,11 +1,15 @@
 
 import {KEY,validCity,blankCity} from './city-state.mjs';
+import {validNeighborhood} from '../city/neighborhood-v23.mjs';
 export const SAVE_KEYS=[KEY,'pa-city-life-v1','pa-housing-city-v1','pa-city-goal-v1','pa-housing-best','a2a-potholes-work-best','a2a-potholes-unlocked','pa-outreach-care-best-v1','vote-court-progress-v1','vote-song-unlocks-v1','a2a-arcade-records-v1','a2a-player-showcase-v1','adstoaid-housing-preferences-v1'];
 export const LINEAGE_KEY='a2a-save-lineage-v1',RECOVERY_KEY='a2a-save-recovery-v2',MAX_SAVE_BYTES=2_000_000;
 const kinds=['homes','park','court','clinic','kitchen','fountain'],games=['housing','pothole','outreach','vote','crashers'],integer=(n,max=1e9)=>Number.isSafeInteger(n)&&n>=0&&n<=max;
 const plain=o=>!!o&&typeof o==='object'&&!Array.isArray(o);
 function lifeValid(life,city){if(!plain(life)||life.version!==1||!integer(life.spirit,1e8)||!plain(life.blocks)||!Array.isArray(life.events)||life.events.length>100||life.events.some(e=>!plain(e)||typeof e.text!=='string'||e.text.length>2000)||life.totalVisits!==undefined&&!integer(life.totalVisits,1e8))return false;
+ if(life.deliveryTarget!==undefined&&(!plain(life.deliveryTarget)||!integer(life.deliveryTarget.block,city.blocks.length-1)||!['supper','reading','league'].includes(life.deliveryTarget.job)))return false;
+ if(life.deliveryWatermark!==undefined&&(!plain(life.deliveryWatermark)||Object.entries(life.deliveryWatermark).some(([k,n])=>!['housing','streets','recreation','care','policy'].includes(k)||!Number.isFinite(n)||n<0||n>Number.MAX_SAFE_INTEGER)))return false;
  for(const [key,b]of Object.entries(life.blocks)){if(!/^\d{1,5}$/.test(key)||Number(key)>=city.blocks.length||!plain(b)||!Array.isArray(b.places)||b.places.length>6||!Array.isArray(b.residents)||b.residents.length>100)return false;
+ if(b.neighborhood!==undefined&&!validNeighborhood(b.neighborhood))return false;
  if(b.places.some(p=>!plain(p)||!kinds.includes(p.kind)||!integer(p.slot,5)||!integer(p.level,3)||p.level<1||!integer(p.completed,1e8)||!Number.isFinite(p.construction)||p.construction<0||p.construction>12)||new Set(b.places.map(p=>p.slot)).size!==b.places.length)return false;
  for(const r of b.residents){if(!plain(r)||typeof r.id!=='string'||r.id.length>100||!Number.isFinite(r.x)||!Number.isFinite(r.y)||!['home','arrive','activity','return'].includes(r.phase)||!integer(r.visits,1e8)||!Array.isArray(r.route)||r.route.length>20||r.route.some(p=>!Number.isFinite(p?.x)||!Number.isFinite(p?.y)))return false;if(r.growth!==undefined&&(!plain(r.growth)||Object.entries(r.growth).some(([k,n])=>!kinds.includes(k)||!integer(n,1e8))))return false;}
  }return true;}
