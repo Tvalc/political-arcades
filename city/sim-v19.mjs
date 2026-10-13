@@ -11,7 +11,7 @@ import {LIFE_KEY,SLOTS,PROGRAMS,loadLife,freshLife,syncBlock,stepLife,construct,
 import {KEY,RESOURCES,PROJECTS,blankCity,loadCity,wallet,award,build,pave,expand,canExpand,canBuild,migrateHousing,welcomeSupplies} from '/shared/city-state.mjs?v=19.2';
 const $=s=>document.querySelector(s),reduced=matchMedia('(prefers-reduced-motion:reduce)'),demo=document.body.dataset.demo==='true';
 // Older sandbox pages share this module; keep their placement UI styled too.
-if(!document.querySelector('link[href^="/city/placement-v24.css"]')){const style=document.createElement('link');style.rel='stylesheet';style.href='/city/placement-v24.css?v=24.0';document.head.append(style);}
+if(!document.querySelector('link[href^="/city/placement-v24.css"]')){const style=document.createElement('link');style.rel='stylesheet';style.href='/city/placement-v24.css?v=24.1';document.head.append(style);}
 const LABELS={housing:'Building supplies',streets:'Street work',recreation:'Court points',care:'Care',policy:'Civic wins'},SHORT={homes:'Homes',park:'Garden',court:'Court',clinic:'Clinic',kitchen:'Kitchen',fountain:'Plaza'};
 const GAMES={housing:{name:'Housing Stack',href:'/housing-stack/'},streets:{name:'Pothole Party',href:'/pothole-party/'},recreation:{name:'VOTE',href:'/horse/'},care:{name:'Every Kid Can See',href:'/outreach-route/'},policy:{name:'Capitol Crashers',href:'/capitol-crashers/'}};
 let storage;try{storage=localStorage;}catch{}
