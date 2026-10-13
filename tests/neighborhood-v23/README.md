@@ -27,3 +27,19 @@ Browser checks: starter supplies and home construction, project creation, automa
 The existing `tests/city-launch/state.test.mjs` reaches its stale homepage assertions after the city-state checks. It currently tries to parse the homepage JSON-LD as JavaScript and fails. That unrelated test was left unchanged.
 
 Consent-controlled PostHog events: `city_project_started`, `city_project_completed`, `city_crew_assigned`, `city_story_chosen`, `city_delivery_selected`, and `city_meaningful_return`. No resident or city names are sent.
+
+## Building placement regression check
+
+Open `/tests/neighborhood-v23/?scenario=court-placement` for the reported second-block scenario with exactly 12 court points. This fixture is in memory and never touches a real city.
+
+At 880px desktop and 390px phone widths:
+
+1. Choose a court location. All open plots highlight; the map stays in whole-block mode and no building catalog or sidebar appears.
+2. Select a plot, then another. The selected outline and confirmation name must match the most recent plot. Nothing is built yet.
+3. Cancel and inspect Supplies: 12 court points remain, with 0 used.
+4. Click an empty plot directly. The current court goal must carry through to the same confirmation.
+5. Confirm once. Only the chosen plot gets a court; the stockpile reports 0 available and 12 used.
+6. Inspect a building. Its details open in one closable dialog without changing map width. Escape returns to the map.
+7. Use City menu > Build a place to explicitly choose another building. That choice must survive plot selection.
+
+Also exercised the fresh-city home flow, automatic construction completion, and undo returning to the map. Syntax checks and all 12 neighborhood engine tests pass. No browser console errors in the checked flows.
