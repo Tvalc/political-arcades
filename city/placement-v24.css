@@ -58,3 +58,8 @@ html body.placing-building #builder #lot-targets button.empty>span{width:32px;he
 .building-dialog #close-inspector{min-width:44px;min-height:44px}
 @media(max-width:760px){.building-dialog{padding:16px}.building-dialog .place-art{width:90px;height:85px}}
 .town-shell{grid-template-columns:1fr!important}
+
+/* Map hit areas use bottom-center world anchors, including before placement.
+   Override generic button hover/active/reduced-motion transforms as well. */
+html body #builder #lot-targets button{transform:translate(-50%,-100%)!important;transition:none!important}
+html body #builder #lot-targets button.empty{width:16%;height:19%;min-width:44px;min-height:44px;align-items:center}
