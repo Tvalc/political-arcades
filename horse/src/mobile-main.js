@@ -37,6 +37,7 @@
   let playMode = "solo";
   const selectedFighter = () => ROSTER[selectIndex];
   const selectedOpponent = () => ROSTER.filter(id => id !== selectedFighter())[opponentIndex % 2];
+  const matchPlayers = humanId => [humanId, ...ROSTER.filter(id => id !== humanId)];
 
   const FLAIR_NAME = {
     none: "plain jumper",
@@ -52,6 +53,13 @@
   const buttons = [];
   const images = {};
   const assetStates = new Map();
+  // The title and select screens need only idle sheets; each match fetches its players' other sheets.
+  const matchSheets = {};
+  function deferSheet(id, key, src) { (matchSheets[id] ||= {})[key] = src; }
+  function loadMatchSheets(ids) {
+    for (const id of ids) for (const [key, src] of Object.entries(matchSheets[id] || {}))
+      if (!assetStates.has(`${id}-${key}`)) loadImage(`${id}-${key}`, src);
+  }
   let guideSeen = false;
   let guideOpen = false;
   function assetProgress() {
@@ -135,6 +143,7 @@
     if (!courtUnlocked(selectedCourt)) return;
     const court=courtById(selectedCourt);
     if (court.wins>0) loadImage('selected-court',court.src);
+    loadMatchSheets(matchPlayers(selectedFighter()));
     courtOpen=false; document.getElementById('court-select').hidden=true;
     pendingCourtStart=true;
   });
@@ -214,21 +223,21 @@
   loadImage("ball", "assets/sprites/ball-chibi.webp");
   loadImage("hoop", "assets/sprites/hoop.webp");
   loadImage("mamdani-idle", "assets/sprites/chibi/mamdani-idle.webp");
-  loadImage("mamdani-move", "assets/sprites/chibi/mamdani-move.webp");
-  loadImage("mamdani-shot", "assets/sprites/chibi/mamdani-shot.webp");
-  loadImage("mamdani-dunk", "assets/sprites/chibi/mamdani-dunk.webp");
-  loadImage("mamdani-spin", "assets/sprites/chibi/mamdani-spin.webp");
-  loadImage("mamdani-fade", "assets/sprites/chibi/mamdani-fade.webp");
-  loadImage("mamdani-hook", "assets/sprites/chibi/mamdani-hook.webp");
-  loadImage("mamdani-dribble", "assets/sprites/chibi/mamdani-dribble.webp");
+  deferSheet("mamdani", "move", "assets/sprites/chibi/mamdani-move.webp");
+  deferSheet("mamdani", "shot", "assets/sprites/chibi/mamdani-shot.webp");
+  deferSheet("mamdani", "dunk", "assets/sprites/chibi/mamdani-dunk.webp");
+  deferSheet("mamdani", "spin", "assets/sprites/chibi/mamdani-spin.webp");
+  deferSheet("mamdani", "fade", "assets/sprites/chibi/mamdani-fade.webp");
+  deferSheet("mamdani", "hook", "assets/sprites/chibi/mamdani-hook.webp");
+  deferSheet("mamdani", "dribble", "assets/sprites/chibi/mamdani-dribble.webp");
   loadImage("sayed-idle", "assets/sprites/chibi/sayed-idle.webp");
-  loadImage("sayed-shot", "assets/sprites/chibi/sayed-shot.webp");
-  loadImage("sayed-dunk", "assets/sprites/chibi/sayed-dunk.webp");
-  loadImage("sayed-spin", "assets/sprites/chibi/sayed-spin.webp");
-  loadImage("sayed-fade", "assets/sprites/chibi/sayed-fade.webp");
-  loadImage("sayed-hook", "assets/sprites/chibi/sayed-hook.webp?v=natural2");
-  loadImage("sayed-dribble", "assets/sprites/chibi/sayed-dribble.webp");
-  loadImage("sayed-move", "assets/sprites/chibi/sayed-move.webp");
+  deferSheet("sayed", "shot", "assets/sprites/chibi/sayed-shot.webp");
+  deferSheet("sayed", "dunk", "assets/sprites/chibi/sayed-dunk.webp");
+  deferSheet("sayed", "spin", "assets/sprites/chibi/sayed-spin.webp");
+  deferSheet("sayed", "fade", "assets/sprites/chibi/sayed-fade.webp");
+  deferSheet("sayed", "hook", "assets/sprites/chibi/sayed-hook.webp?v=natural2");
+  deferSheet("sayed", "dribble", "assets/sprites/chibi/sayed-dribble.webp");
+  deferSheet("sayed", "move", "assets/sprites/chibi/sayed-move.webp");
   loadImage("skin-board", "assets/ui/makko/board.webp");
   ["score-left", "score-right", "score-center", "score-mamdani", "score-sayed"].forEach(name => loadImage(`skin-${name}`, `assets/ui/makko/${name}.webp`));
   loadImage("skin-primary", "assets/ui/makko/primary.webp");
@@ -1333,7 +1342,8 @@
     CLIPS[id] ||= {};
     for (const [key, clip] of Object.entries(clips)) {
       CLIPS[id][key] = clip;
-      loadImage(`${id}-${key}`, clip.image || `assets/sprites/chibi/${id}-${key}.webp`);
+      const src = clip.image || `assets/sprites/chibi/${id}-${key}.webp`;
+      if (key === "idle") loadImage(`${id}-${key}`, src); else deferSheet(id, key, src);
     }
   }
 
@@ -1566,7 +1576,8 @@
 
   function freshMatch(humanId) {
     const cpuId = ROSTER.filter(id => id !== humanId)[opponentIndex % 2];
-    const players=[humanId,...ROSTER.filter(id=>id!==humanId)];
+    const players=matchPlayers(humanId);
+    loadMatchSheets(players);
     const spectatorId=null;
     const home = FIGHTERS[humanId];
     return {
