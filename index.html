@@ -255,7 +255,7 @@
   <section class="col more-sec" id="more">
     <p class="kicker">Keep the floor open</p>
     <div class="strip">
-      <a class="tile" href="#watch"><img src="art/thumb/video-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Watch</span><span>Freeze the Rent &middot; 2:10</span></a>
+      <a class="tile" href="#watch"><img src="media/name-the-day-poster.jpg" width="600" height="338" loading="lazy" alt=""><span class="k">Watch</span><span>Name the Day &middot; 5:14</span></a>
       <a class="tile" href="#read"><img src="art/comic/p21.webp" width="640" height="360" loading="lazy" alt=""><span class="k">Read</span><span>Three Roads to the Capitol</span></a>
       <a class="tile" href="#listen"><img src="art/thumb/studio-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Listen</span><span>Twelve electronic mixes</span></a>
       <a class="tile" id="dispatch" href="https://2c13208b.sibforms.com/serve/MUIFACVOHQ4gGKscfBVbSqESN1kewF2vpHv9Zh4YcEttANqYx9llMEdNz9vK6ErTuOBIT-uT9NHTACEPgsyi7gVXBLGmbjSbEwXPXe-lczOzhZsC-zW95DN179nf8EHVlgzeoi9vN_5jqiHJCqbSvWOGAUymlo5pFBM26d2J0Xjnw3lyFu5N93_vLk3lcm30OqUo4k5Chsva69XTaQ==" target="_blank" rel="noopener"><img src="art/thumb/rally-600.webp" width="600" height="338" loading="lazy" alt=""><span class="k">Updates</span><span>The Dispatch &middot; sign up</span></a>
@@ -264,15 +264,15 @@
 
 
   <section class="hits-home-preview" aria-labelledby="hits-home-title"><div><p class="kicker">GREATEST HITS</p><h2 id="hits-home-title">Good policy.<br>Great lines.</h2><p>Mamdani, El-Sayed and Talarico, in their own words. 134 original clips organized into Policy Clarity and Sick Burns.</p><a class="btn" href="/greatest-hits/">Watch the greatest hits →</a></div><div class="hits-home-faces" aria-hidden="true"><img src="/greatest-hits/media/ayG-4CPpI0w-hero.jpg" alt="" loading="lazy"><img src="/greatest-hits/media/eu9NaNgu_aY-hero.jpg" alt="" loading="lazy"><img src="/greatest-hits/media/iPc8jIMI7XE-hero.jpg" alt="" loading="lazy"></div></section><section class="col media-sec" id="watch">
-    <div class="section-head"><div><p class="kicker">Watch</p><h2>Freeze the Rent, <em>the video</em></h2></div></div>
+    <div class="section-head"><div><p class="kicker">Watch</p><h2>Name the Day, <em>the video</em></h2></div></div>
     <div class="theater" id="theater">
-      <img src="art/web/video-poster.webp" width="1280" height="720" loading="lazy" alt="Freeze the Rent music video poster">
+      <img src="media/name-the-day-poster.jpg" width="1280" height="720" loading="lazy" alt="Name the Day: James Talarico at a Texas dance hall">
       <button class="btn btn-big" type="button" id="theater-play">&#9654; Play the video</button>
     </div>
   </section>
 
   <section class="col media-sec" id="listen">
-    <div class="section-head"><div><p class="kicker">Listen</p><h2>The <em>soundtrack</em></h2></div><p class="lede">Twelve electronic mixes of Freeze the Rent and Never Taken a Dime, the same music that plays in the games. Pick a track; sound only starts when you press play.</p></div>
+    <div class="section-head"><div><p class="kicker">Listen</p><h2>The <em>soundtrack</em></h2></div><p class="lede">Name the Day, plus twelve electronic mixes of Freeze the Rent and Never Taken a Dime from the games. Pick a track; sound only starts when you press play.</p></div>
     <div class="jukebox">
       <div class="juke-head">
         <div class="juke-now"><span class="k">Now playing</span><b id="juke-title">Pick a track</b><span class="juke-time"><span id="juke-cur">0:00</span> / <span id="juke-dur">0:00</span></span></div>
@@ -378,12 +378,13 @@
   var th = document.getElementById('theater');
   document.getElementById('theater-play').addEventListener('click', function () {
     var v = document.createElement('video'); v.controls = true; v.playsInline = true; v.poster = th.querySelector('img').src;
-    v.src = 'https://politicalarcades.com/media/freeze-the-rent.mp4';
+    v.src = 'media/name-the-day-v37.mp4';
     th.innerHTML = ''; th.appendChild(v); v.play().catch(function () {});
   });
 
-  // Listen: the twelve-track jukebox. Sound starts only on a click.
+  // Listen: the jukebox. Sound starts only on a click.
   var TRACKS = [
+    ["name-the-day","Name the Day","Country","3:47"],
     ["freeze-the-rent-full-spectrum","Freeze the Rent — Full Spectrum","Mix","5:00"],["never-taken-a-dime-full-spectrum","Never Taken a Dime — Full Spectrum","Mix","5:00"],
     ["freeze-the-rent-robot-disco","Freeze the Rent — Robot Disco","Mix","5:10"],["never-taken-a-dime-robot-disco","Never Taken a Dime — Robot Disco","Mix","4:52"],
     ["freeze-the-rent-neon-synth","Freeze the Rent — Neon Synth","Mix","5:00"],["never-taken-a-dime-neon-synth","Never Taken a Dime — Neon Synth","Mix","5:00"],
