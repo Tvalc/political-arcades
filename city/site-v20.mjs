@@ -1,4 +1,5 @@
-import {GAMES} from '/shared/arcade-catalog.mjs?v=launch1';
+import {GAMES,currentGoal,goalProgress} from '/shared/arcade-catalog.mjs?v=journey1';
+import {loadCity} from '/shared/city-state.mjs';
 // Ordinary disclosure navigation: same destinations at every screen size.
 const toggle=document.getElementById('menu-toggle'), nav=document.getElementById('site-nav'), more=nav.querySelector('details');
 const phone=matchMedia('(max-width:799px)');
@@ -68,8 +69,8 @@ const observer=new IntersectionObserver(entries=>{for(const e of entries){const 
 
 const benefits={crashers:['/city/clinic-v12.webp','Care + civic wins','Care spaces and civic improvements'],vote:['/city/court-v12.webp','Court points','A court for your neighbors'],pothole:['/city/neighborhood-repaired-v12.webp','Street work','A repaired neighborhood street'],housing:['/city/homes-v12.webp','Building supplies','Homes and community spaces'],outreach:['/city/clinic-v12.webp','Care','A place to get the help you need']};
 for(const card of grid.children){const [src,resource,result]=benefits[card.dataset.game];const outcome=el('div','machine-outcome');const im=el('img');im.src=src;im.alt='';im.loading='lazy';const copy=el('div');copy.append(el('span','resource-name',resource+' →'),el('strong','',result));outcome.append(im,copy);card.querySelector('.placard').insertBefore(outcome,card.querySelector('.play-label'));}
-function highlight(){const title=document.querySelector('#goal-title')?.textContent||'',detail=document.querySelector('#goal-detail')?.textContent||'';const active=Object.entries({housing:'building supplies',pothole:'street work',vote:'court point',outreach:'care',crashers:'civic win'}).find(([,word])=>detail.toLowerCase().includes(word))?.[0];for(const c of grid.children){c.classList.toggle('recommended',c.dataset.game===active);c.querySelector('.play-label').firstChild.textContent=c.dataset.game===active?'Play for this project':'Play free';}document.querySelector('#engine-goal').textContent=title?'Your next opportunity: '+title:'Choose a game. Every round brings something home.';}
-new MutationObserver(highlight).observe(document.querySelector('.goal-strip'),{subtree:true,childList:true,characterData:true});highlight();
+function highlight(){let storage;try{storage=localStorage;}catch{}const city=loadCity(storage),id=document.querySelector('#build-next select')?.value||currentGoal(city,storage),g=goalProgress(city,id),missing=g.parts.filter(p=>p.missing).map(p=>p.key);for(const c of grid.children){const game=GAMES.find(v=>v.id===c.dataset.game),recommended=game.resources.some(r=>missing.includes(r));c.classList.toggle('recommended',recommended);c.querySelector('.play-label').firstChild.textContent=recommended?'Play for this build':'Play free';}document.querySelector('#engine-goal').textContent='Build next: '+g.name+' · '+g.text+(g.ready?' · Supplies ready.':'');}
+const goalHost=document.querySelector('#build-next')||document.querySelector('.goal-strip');new MutationObserver(highlight).observe(goalHost,{subtree:true,childList:true,characterData:true});window.addEventListener('focus',highlight);highlight();
 
 import {drawPerson,peopleReady} from '/tests/outreach-route/people-v7.mjs?v=10.0';
 const neighborhoodDemo=document.querySelector('#growth-neighbors'),demoCtx=neighborhoodDemo.getContext('2d');let demoVisible=false,demoLoaded=false,demoFrame=0;
