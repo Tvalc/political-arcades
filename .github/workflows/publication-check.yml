@@ -13,3 +13,8 @@ jobs:
           python-version: '3.12'
       - name: Check public pages, module dependencies and catalogue
         run: python scripts/check-publication.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check city rewards, project goals and backup restoration
+        run: node scripts/check-city-journey.mjs

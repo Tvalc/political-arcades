@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-19",
+  "scope": "Discover city, choose build, enter arcade, earn supplies, return, build, restore",
+  "findings": [
+    {
+      "issue": "First visit exposed a naming form with no visible neighborhood",
+      "fix": "Reuse existing home, court and garden artwork and explain starter home and optional saves."
+    },
+    {
+      "issue": "Homepage city invitation was below the arcade cabinets",
+      "fix": "Move the new-player invitation and returning-player city card above cabinets."
+    },
+    {
+      "issue": "Builder arcade intent and shared selected goal could disagree",
+      "fix": "Persist the chosen goal from placement and arcade launch; carry the requested block on return."
+    },
+    {
+      "issue": "Next arcade build was buried under simulation management",
+      "fix": "Show a project selector, visible resource progress, resident outcome and direct play/build action."
+    },
+    {
+      "issue": "Per-visit receipt omitted fractional court progress and Housing Stack had no shared receipt",
+      "fix": "Calculate receipts from lifetime earnings including quarter points; show shared objective across all five games and add Housing Stack result receipt."
+    },
+    {
+      "issue": "Arcade recommendations parsed unrelated simulation goal copy",
+      "fix": "Recommend games using actual selected project resource deficits."
+    }
+  ],
+  "verification": {
+    "browser": "Chrome at 430px phone width; desktop source and earlier layout audit",
+    "checked": [
+      "Fresh city creation and starter home placement",
+      "Court objective travels from builder to VOTE and back",
+      "All five game routes expose expected selected objective and correct resource requirements",
+      "Local fixture using production award() -> +12 court points return receipt -> court placement on plot 2 -> court persists after reload",
+      "Next build changes after construction",
+      "Fresh onboarding artwork and mobile panel layout",
+      "Node checks: all resource paths, fractional rewards, duplicate protection, spent-vs-earned receipts, chosen goal backup/restore",
+      "Publication integrity: 26 pages, 64 module dependencies, 134 editorial entries"
+    ],
+    "limits": [
+      "No full scored VOTE match completed in this audit; return/build browser test used an explicitly labeled localhost reward fixture.",
+      "Physical iOS Safari and account OAuth sign-in were not tested.",
+      "Guest/account backup packets verified at model level; remote account service unchanged.",
+      "No Google approval or Search Console verification is implied."
+    ]
+  }
+}
