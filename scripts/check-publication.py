@@ -17,10 +17,13 @@ class Page(HTMLParser):
         self.styles = []
         self.scripts = []
         self.meta = {}
+        self.base = None
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        if tag == "base":
+            self.base = a.get("href")
         if tag == "meta":
             self.meta[a.get("name", "")] = a.get("content", "")
         for key in ("src", "href"):
@@ -49,15 +52,20 @@ for url in urls:
         errors.append(f"Missing published page: {url}")
         continue
     page = Page(path.read_text(encoding="utf-8"))
+    owner = path
+    if page.base:
+        base = local_file(page.base, path)
+        if base:
+            owner = base / "index.html" if page.base.endswith("/") else base
     if not page.meta.get("description"):
         errors.append(f"Missing page description: {url}")
     for ref in page.refs:
-        target = local_file(ref, path)
+        target = local_file(ref, owner)
         if target and not target.exists():
             errors.append(f"{path.relative_to(ROOT)} -> missing {ref}")
     if any(ref.startswith("/mockups/") for ref in page.styles):
         errors.append(f"Crawl-blocked production stylesheet: {url}")
-    modules.extend(local_file(ref, path) for ref in page.scripts)
+    modules.extend(local_file(ref, owner) for ref in page.scripts)
 
 # Resolve the actual module graph used by public pages, including promoted games.
 while modules:
