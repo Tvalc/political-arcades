@@ -4,3 +4,5 @@
 body>.topbar>.col{display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:0 auto;padding:12px 24px;gap:24px}body>.topbar{position:relative;border-bottom:1px solid #ffffff15;background:#0b0910}@media(max-width:799px){body>.topbar>.col{flex-wrap:wrap;padding:8px 18px;gap:0}}
 
 .topbar .site-nav[hidden],.topbar .menu-toggle[hidden]{display:none!important}
+
+.comic-preview{display:block;position:relative;max-width:820px;border:1px solid #66556f;border-radius:14px;overflow:hidden}.comic-preview img{display:block;width:100%;height:auto}.comic-preview .btn{display:inline-flex;margin:18px}.comparison{border-top:1px solid #51415f;padding-top:14px}
