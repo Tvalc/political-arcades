@@ -1,0 +1,41 @@
+{
+  "created": [
+    "/games/",
+    "/games/capitol-crashers/",
+    "/games/every-kid-can-see/",
+    "/games/housing-stack/",
+    "/games/pothole-party/",
+    "/games/vote/",
+    "/watch/",
+    "/watch/freeze-the-rent/",
+    "/watch/name-the-day/",
+    "/comics/",
+    "/comics/four-roads-to-the-capitol/",
+    "/about/",
+    "/editorial/",
+    "/contact/",
+    "/greatest-hits/policy-clarity/",
+    "/greatest-hits/sick-burns/"
+  ],
+  "clip_count": 134,
+  "comic_source": "https://capitolcrashers.com/story/",
+  "comic_attribution": "Existing authored comic, source notes and illustrations preserved. Connected-origin artwork remains credited at source.",
+  "policy_references": [
+    "https://support.google.com/publisherpolicies/answer/11112688",
+    "https://support.google.com/publisherpolicies/answer/11190248",
+    "https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics"
+  ],
+  "status": "Editorial and accessibility improvements; not a guarantee of AdSense acceptance. No application submitted.",
+  "development_pages": "noindex,follow on test/showcase HTML, excluded from sitemap, crawler access retained so noindex can be read. Existing /mockups/ robots rule preserved.",
+  "qa": {
+    "static_pages": 18,
+    "static_clip_cards": 134,
+    "sitemap_entries": 26,
+    "local_references": "passed",
+    "mobile_menu": "open and close verified",
+    "mobile_game_guide": "play link above artwork; no horizontal overflow",
+    "comic": "84 illustrations, 125 source anchors, 6038 words in original authored book; source content preserved",
+    "media": "Name the Day duration and Greatest Hits media metadata verified in browser",
+    "limitations": "Google account review status and H5 application not submitted."
+  }
+}
