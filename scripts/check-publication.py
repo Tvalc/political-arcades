@@ -17,11 +17,14 @@ class Page(HTMLParser):
         self.styles = []
         self.scripts = []
         self.meta = {}
+        self.nodes = {}
         self.base = None
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        if a.get("id"):
+            self.nodes[a["id"]] = a
         if tag == "base":
             self.base = a.get("href")
         if tag == "meta":
@@ -68,6 +71,13 @@ for url in urls:
     if any(ref.startswith("/mockups/") for ref in page.styles):
         errors.append(f"Crawl-blocked production stylesheet: {url}")
     modules.extend(local_file(ref, owner) for ref in page.scripts)
+
+# Slow or failed game modules must not leave the entire city introduction hidden.
+city_page = Page((ROOT / "city/index.html").read_text(encoding="utf-8"))
+if "opt-in" not in city_page.nodes or "hidden" in city_page.nodes["opt-in"]:
+    errors.append("City introduction must be visible before JavaScript loads")
+if not {"city-start-status", "city-retry"}.issubset(city_page.nodes):
+    errors.append("City loading recovery controls are missing")
 
 # Test screens can remain accessible without entering the public search index.
 for path in (ROOT / "tests").rglob("*.html"):
