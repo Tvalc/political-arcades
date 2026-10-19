@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-19",
+  "scope": "PoliticalArcades site-side readiness; not a Google approval certification",
+  "verified_issues_fixed": [
+    "Every Kid Can See production route missing runtime, CSS and artwork (four direct 404 references; complete runtime promoted)",
+    "City page used stylesheet under robots-blocked /mockups/",
+    "Privacy incorrectly denied implemented guest/account saves and asserted an unverified Google consent message",
+    "Unconditional Google advertising loaders on native game and archived test pages; companion Capitol Crashers loaders also paused"
+  ],
+  "delivery": {
+    "youtube": 131,
+    "tiktok": 3,
+    "method": "Official player after explicit user action, with original-source links; no hosted video URLs in the active catalogue",
+    "limits": "YouTube player loaded in browser QA. TikTok frame configured and source fallback retained; actual TikTok playback was not confirmed. Publisher embedding, login and region restrictions can change."
+  },
+  "checks": {
+    "sitemap_pages": 26,
+    "local_module_dependencies": 63,
+    "clip_editorial_entries": 134,
+    "javascript_syntax": "Passed for new outreach runtime and changed clip player",
+    "browser": "Desktop outreach and Housing Stack start/pause; VOTE entry and Pothole Party start/pause; 390px privacy and clip entry; YouTube official player; Next removes frame",
+    "not_checked": "Not a complete playthrough of every game or every source video; no account-level AdSense/CMP settings changed"
+  },
+  "before_ads_enable": [
+    "Confirm approval in the AdSense account owning pub-4762698707947194",
+    "Configure and verify the required Google-certified consent message/CMP for relevant regions",
+    "Review ad placements outside game controls, player controls and navigation; no ad-click fundraising incentives"
+  ],
+  "review_submitted": false,
+  "policy_sources": [
+    "https://support.google.com/adsense/answer/10502938",
+    "https://support.google.com/adsense/answer/1346295",
+    "https://support.google.com/publisherpolicies/answer/11035931",
+    "https://developers.google.com/youtube/player_parameters",
+    "https://developers.tiktok.com/docs/en/embed-player"
+  ]
+}
