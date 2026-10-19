@@ -57,6 +57,8 @@ for url in urls:
         base = local_file(page.base, path)
         if base:
             owner = base / "index.html" if page.base.endswith("/") else base
+    if "noindex" in page.meta.get("robots", "").lower():
+        errors.append(f"Published page is excluded from search: {url}")
     if not page.meta.get("description"):
         errors.append(f"Missing page description: {url}")
     for ref in page.refs:
@@ -66,6 +68,11 @@ for url in urls:
     if any(ref.startswith("/mockups/") for ref in page.styles):
         errors.append(f"Crawl-blocked production stylesheet: {url}")
     modules.extend(local_file(ref, owner) for ref in page.scripts)
+
+# Test screens can remain accessible without entering the public search index.
+for path in (ROOT / "tests").rglob("*.html"):
+    if "noindex" not in Page(path.read_text(encoding="utf-8")).meta.get("robots", "").lower():
+        errors.append(f"Test page needs noindex: {path.relative_to(ROOT)}")
 
 # Resolve the actual module graph used by public pages, including promoted games.
 while modules:
