@@ -2,7 +2,7 @@
   "date": "2026-10-19",
   "scope": "PoliticalArcades site-side readiness; not a Google approval certification",
   "verified_issues_fixed": [
-    "Every Kid Can See production route missing runtime, CSS and artwork (four direct 404 references; complete runtime promoted)",
+    "Every Kid Can See public page depended on /tests/outreach-route/ via its base tag. Runtime promoted and base switched to /outreach-route/.",
     "City page used stylesheet under robots-blocked /mockups/",
     "Privacy incorrectly denied implemented guest/account saves and asserted an unverified Google consent message",
     "Unconditional Google advertising loaders on native game and archived test pages; companion Capitol Crashers loaders also paused"
@@ -33,5 +33,6 @@
     "https://support.google.com/publisherpolicies/answer/11035931",
     "https://developers.google.com/youtube/player_parameters",
     "https://developers.tiktok.com/docs/en/embed-player"
-  ]
+  ],
+  "audit_correction": "Initial audit resolved relative URLs without honoring the base element. Four production asset URLs returned 404 when requested directly, but the original rendered page used the test directory. Do not describe that as a verified gameplay outage."
 }
