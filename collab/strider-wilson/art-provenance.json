@@ -43,7 +43,7 @@
   },
   "motionProcessing": "Native generated motion, chroma key, constant scale across each action, horizontal upper-body root stabilization and common foot baseline. No individual frame resizing. No generated gameplay footage.",
   "fiction": "Original fictional venue, dialogue and gameplay. No Strider involvement or endorsement implied. No real event, church or company is alleged to have committed misconduct.",
-  "currentVersion": "v4 social bluff: approaching staff, cover stories, confidence delivery, referrals, escort and callback",
+  "currentVersion": "v4.2 social bluff: stationary venue crew, cover stories, confidence delivery, radio referrals and callback. Following escort figure removed.",
   "reusedAnimatedVenueCrew": {
     "nora": "Existing Makko Maya portrait performance from Ben Palmer fictional interview cast",
     "dana": "Existing Makko Brett headset portrait performance from Ben Palmer fictional interview cast",
