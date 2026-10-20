@@ -1,0 +1,25 @@
+{
+  "pipeline": "Makko",
+  "rootCollection": "ffd5056f-88c8-4d1e-85c6-7d311304bff8",
+  "characterCollection": "2f156c24-acd6-40f6-a170-8b17719879eb",
+  "reference": "https://linktr.ee/benjaminpalmer",
+  "sourcePhoto": "https://ugc.production.linktr.ee/vbtYOYKR7ux00VT3mDyh_BYGh4afhRzI6b6sb?io=true&size=avatar-v3_0",
+  "likenessStatus": "Draft for Tony review; not approved by Ben",
+  "art": "Generated likeness and office backdrop. Animation exports retained in Makko.",
+  "emailSent": false,
+  "animations": {
+    "typing": "254cbc6c-8c6d-4667-94b9-6197bd4105cd",
+    "reaction": "b4a68a7f-ea84-44d5-a988-33369fde32e1"
+  },
+  "frameExport": {
+    "framesPerClip": 96,
+    "fps": 24,
+    "atlasCell": 320,
+    "reviewVideo": [
+      720,
+      720
+    ],
+    "reviewDecode": "full decode passed",
+    "alignment": "one fixed crop and scale across each action"
+  }
+}
