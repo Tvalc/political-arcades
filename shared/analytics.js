@@ -7,7 +7,7 @@
  const embedded=location.origin===FRAME&&window.parent!==window;
  const paths={'/horse/':'vote','/housing-stack/':'housing_stack','/outreach-route/':'every_kid_can_see','/pothole-party/':'pothole_party','/capitol-crashers/':'capitol_crashers','/play/':'capitol_crashers'};
  const game=paths[location.pathname]||null;
- const allowed=new Set(['game_started','game_finished','share_clicked','resources_earned','city_built','city_created','return_visit','patreon_clicked','city_project_completed','city_project_started','city_crew_assigned','city_story_chosen','city_delivery_selected','city_meaningful_return','analytics_ready']);
+ const allowed=new Set(['game_started','game_finished','share_clicked','resources_earned','city_built','city_created','return_visit','patreon_clicked','city_project_completed','city_project_started','city_crew_assigned','city_story_chosen','city_delivery_selected','city_meaningful_return','analytics_ready','makko_promotion_clicked']);
  const channels=new Set(['native','copy']);
  const resources=new Set(['housing','streets','recreation','care','policy']);
  const games=new Set(Object.values(paths));
@@ -19,6 +19,8 @@
  if(signal())consent='no';
  function clean(data={}){
   const out={};
+  if(['home_arcade','home_stories','greatest_hits','watch'].includes(data.placement))out.placement=data.placement;
+  if(['world','art'].includes(data.creative))out.creative=data.creative;
   if(games.has(data.game))out.game=data.game;
   if(resources.has(data.resource))out.resource=data.resource;
   if(kinds.has(data.kind))out.kind=data.kind;
@@ -107,7 +109,9 @@
   if(e.data.name==='game_started')capture('game_started',{game:'capitol_crashers'});
   if(e.data.name==='patreon_clicked')capture('patreon_clicked',{game:'capitol_crashers'});
  });
- document.addEventListener('click',e=>{const a=e.target.closest?.('a[href]');if(!a)return;try{const host=new URL(a.href).hostname;if(host==='patreon.com'||host==='www.patreon.com')capture('patreon_clicked',{game});}catch{}});
+ document.addEventListener('click',e=>{const a=e.target.closest?.('a[href]');if(!a)return;
+  if(a.matches('[data-makko-creative]')&&new URL(a.href).hostname==='www.makko.ai')capture('makko_promotion_clicked',{placement:a.closest('[data-makko-placement]')?.dataset.makkoPlacement,creative:a.dataset.makkoCreative});
+  try{const host=new URL(a.href).hostname;if(host==='patreon.com'||host==='www.patreon.com')capture('patreon_clicked',{game});}catch{}});
  window.ArcadeAnalytics={capture,choices};
  const mount=()=>{
   if(embedded)return;

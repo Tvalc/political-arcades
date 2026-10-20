@@ -1,0 +1,14 @@
+{
+  "logo": "https://www.makko.ai/MakkoWebsiteLogo.png",
+  "world": {
+    "source": "https://www.makko.ai/videos/home-page/hero-video.mp4",
+    "frame_seconds": 9
+  },
+  "character_views": {
+    "source": "https://www.makko.ai/videos/home-page/bring-them-to-life.mp4",
+    "frame_seconds": 0.7,
+    "treatment": "Crops of original front, side and back reference art. No generated replacement artwork."
+  },
+  "product_copy_checked": "https://www.makko.ai/",
+  "checked": "2026-10-19"
+}
