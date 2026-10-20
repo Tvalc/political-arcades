@@ -9,7 +9,8 @@
   "emailSent": false,
   "animations": {
     "typing": "254cbc6c-8c6d-4667-94b9-6197bd4105cd",
-    "reaction": "b4a68a7f-ea84-44d5-a988-33369fde32e1"
+    "reaction": "b4a68a7f-ea84-44d5-a988-33369fde32e1",
+    "speaking": "ad29357c-cae7-43bf-b1d3-8c2898d87624"
   },
   "frameExport": {
     "framesPerClip": 96,
@@ -21,5 +22,11 @@
     ],
     "reviewDecode": "full decode passed",
     "alignment": "one fixed crop and scale across each action"
+  },
+  "interviewCast": {
+    "collection": "b8468854-3c57-4909-af0a-354ed92c7e6a",
+    "animation": "5b03766b-9c86-4386-9d05-147942b143f9",
+    "nativeVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/b8468854-3c57-4909-af0a-354ed92c7e6a/videos/1792514376185_animation.mp4",
+    "export": "Three fixed crops from 96 genuine generated frames; chroma removal; no per-frame rescaling"
   }
 }

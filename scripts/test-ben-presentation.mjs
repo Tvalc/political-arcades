@@ -1,0 +1,7 @@
+import assert from 'node:assert/strict';
+import {create,choosePersona,ask,recall,pin,challenge,topics} from '../collab/ben-palmer/interview.mjs';
+import {splitBeat,exchangeBeats,speaker,receiptLabels,topicLabels} from '../collab/ben-palmer/presentation.mjs';
+let checked=0;
+for(const persona of ['carts','fish']){const g=create();choosePersona(g,persona);check(g.current);for(const id of ['pay','hours','work','recruits','override','kit']){ask(g,id,'plain');check(g.current);if(g.phase==='callback'){recall(g,persona);check(g.current)}}for(const pair of [['pay','hours'],['ad','work']]){pair.forEach(x=>pin(g,x));challenge(g);check(g.current)}}
+function check(messages){for(const b of exchangeBeats(messages)){assert.ok(b.text.length<=125,b.text);assert.ok(['ben','brett','maya','luis'].includes(b.who));checked++}for(const m of messages){assert.equal(splitBeat(m.text).join(' '),m.text.replace(/\s+/g,' ').trim())}}
+assert.equal(speaker('BRETT · RECRUITER'),'brett');assert.equal(speaker('RON'),'ben');for(const r of Object.values(receiptLabels))assert.ok(r[1].length<25&&r[2].length<20);for(const t of Object.values(topicLabels))assert.ok(t.split(' ').length<=2);assert.equal(exchangeBeats([{who:'RON',text:'Original long question'}],{topic:'pay',style:'plain'})[0].text,'What if I make no sales?');console.log('PASS:',checked,'dialogue beats; readable length limits, full transcript preservation and compact UI labels.');
