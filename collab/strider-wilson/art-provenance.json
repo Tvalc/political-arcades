@@ -1,0 +1,21 @@
+{
+  "project": "Blessed & Unbothered",
+  "creator": "Political Arcades / Tony Valcarcel",
+  "status": "Independent fictional collaboration prototype; email draft awaiting Tony's review",
+  "sourceReference": "Strider Wilson official website portrait, https://www.striderwilson.com/",
+  "inspiration": "https://www.youtube.com/watch?v=DraaPbsYmJI",
+  "makkoRoot": "https://www.makko.ai/studio/collection/51cf3146-389c-4d47-99f7-e159374cb97c",
+  "subcollections": {
+    "01 Strider - Likeness and Performance": "4dbcedb8-bc16-46bc-9e05-ee451f0148c5",
+    "02 Blessed Arena - Environment": "95942ce3-861a-414c-ac5e-0021e4bcb237"
+  },
+  "assets": {
+    "strider.webp": {"tool": "Makko GPT Image 2.5", "reference": "Official creator portrait", "processing": "Green screen removal, crop, constant output size"},
+    "arena.webp": {"tool": "Makko GPT Image 2.5", "type": "Opaque portrait arena, no generated lettering", "source": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/51cf3146-389c-4d47-99f7-e159374cb97c_2/asset-gen-07049b39-4e71-403d-9d9a-f4b08d0313a5-0_0.webp"},
+    "walk.webp": {"tool": "Makko Veo 3.1 Full", "animationId": "e7763026-90fe-4f8e-8842-3479672038d8", "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/4dbcedb8-bc16-46bc-9e05-ee451f0148c5/videos/1792517491798_animation.mp4", "frames": 66, "fps": 24},
+    "bless.webp": {"tool": "Makko Veo 3.1 Full", "animationId": "d4cdd818-c925-42a4-881b-e938ae4faec0", "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/4dbcedb8-bc16-46bc-9e05-ee451f0148c5/videos/1792517574538_animation.mp4", "frames": 96, "fps": 24},
+    "usher.webp": {"tool": "Makko", "reuse": "Existing Political Arcades neutral official-walk.webp from Good Liars prototype", "frames": 96, "fps": 24}
+  },
+  "motionProcessing": "Native generated motion, chroma key, constant scale across each action, horizontal upper-body root stabilization and common foot baseline. No individual frame resizing. No generated gameplay footage.",
+  "fiction": "Original fictional venue, dialogue and gameplay. No Strider involvement or endorsement implied. No real event, church or company is alleged to have committed misconduct."
+}

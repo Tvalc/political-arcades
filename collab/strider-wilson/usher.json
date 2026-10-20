@@ -1,0 +1,17 @@
+{
+  "frames": 96,
+  "sourceFrames": 96,
+  "fps": 24,
+  "cols": 10,
+  "size": 256,
+  "baseline": 242,
+  "bodyHeight": 228,
+  "sharedBounds": [
+    3,
+    3,
+    606,
+    912
+  ],
+  "method": "Makko transparent frames; single action-wide bounds, scale and baseline",
+  "trim": null
+}
