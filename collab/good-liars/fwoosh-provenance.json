@@ -15,5 +15,54 @@
     "film": "32bce8bd-91fa-46d4-a38c-032c8eada434",
     "officialWalk": "70358d31-3b08-4b39-afa1-7aca864b8ed9"
   },
-  "emailSent": false
+  "emailSent": false,
+  "reusedCast": {
+    "repository": "https://github.com/Tvalc/capitol-crashers",
+    "commit": "1870a46f331ae638696dd68afaa637095b546d56",
+    "animations": [
+      {
+        "key": "trump",
+        "name": "Donald Trump",
+        "source": "assets/sprites/chibi/donald_trump_run",
+        "frames": 12
+      },
+      {
+        "key": "vance",
+        "name": "JD Vance",
+        "source": "assets/sprites/chibi/jd_vance_run",
+        "frames": 12
+      },
+      {
+        "key": "cruz",
+        "name": "Ted Cruz",
+        "source": "assets/sprites/chibi/ted_cruz_run",
+        "frames": 12
+      },
+      {
+        "key": "greene",
+        "name": "Marjorie Greene",
+        "source": "assets/sprites/chibi/marjorie_greene_run",
+        "frames": 12
+      },
+      {
+        "key": "rogers",
+        "name": "Mike Rogers",
+        "source": "qa-rogers25/assets/sprites/chibi/mike_rogers_run",
+        "frames": 11
+      },
+      {
+        "key": "bongino",
+        "name": "Dan Bongino",
+        "source": "assets/sprites/chibi/bongino_run",
+        "frames": 12
+      },
+      {
+        "key": "ice",
+        "name": "ICE Bro",
+        "source": "assets/sprites/chibi/ice_bro_run",
+        "frames": 12
+      }
+    ],
+    "processing": "Existing run frames repacked with their source anchors and playback rates, fixed action-wide scale"
+  }
 }
