@@ -4,7 +4,7 @@ Strider,
 
 I'm a huge fan of your stuff. The fake Joel Osteen arena infiltration is such a good bit. Walking into a place with that much confidence and letting everyone else fill in the blanks felt like a game waiting to happen.
 
-I made a quick prototype called Blessed & Unbothered. You bluff your way through three checkpoints, dodge suspicious ushers, and throw out a blessing when someone starts asking questions. The goal is to get all the way to the stage without an invitation.
+I made a quick prototype called Blessed & Unbothered. You walk up to the staff, pick a cover story, and sell it with absurd confidence. They start vouching for you, an usher personally escorts you, and suddenly you’re being introduced on stage. Then someone you already fooled calls back to check your story.
 
 You can play it on your phone here and see the animated character experiments:
 https://politicalarcades.com/collab/strider-wilson/
