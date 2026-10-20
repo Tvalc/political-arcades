@@ -1,0 +1,19 @@
+{
+  "adaptedFrom": "https://github.com/Tvalc/fwoosh",
+  "sourceCommit": "86740a7f0189b9686789e8d03b12ac914c335f70",
+  "reused": "Fixed step 1/120, headings, burst charge/queue, acceleration and deceleration, boundary bounce; adapted js/constants.js, js/input.js:lungeDir and js/sim.js player section",
+  "changed": "Trophy attention and footage banking; no Fwoosh story, city or save state imported",
+  "saveKey": "good-liars-fwoosh-best-v1",
+  "MakkoCollections": {
+    "Jason": "7fd1e76c-2706-4d92-ba4e-78b6caf22899",
+    "Davram": "533f6866-983a-4b47-a542-def5a4dac567",
+    "Rally": "5ea1007b-d6a7-4902-94f7-6bca6a6b86a4"
+  },
+  "animations": {
+    "run": "e51ee2d0-2653-4722-894f-49d2f29fe6c5",
+    "handoff": "b804c779-8306-4c52-a7e6-95b8df2ca615",
+    "film": "32bce8bd-91fa-46d4-a38c-032c8eada434",
+    "officialWalk": "70358d31-3b08-4b39-afa1-7aca864b8ed9"
+  },
+  "emailSent": false
+}
