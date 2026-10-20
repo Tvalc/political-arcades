@@ -64,5 +64,36 @@
       }
     ],
     "processing": "Existing run frames repacked with their source anchors and playback rates, fixed action-wide scale"
+  },
+  "bovinoEncounter": {
+    "assets": [
+      {
+        "key": "bovino",
+        "name": "Four Bovinos",
+        "source": "assets/sprites/chibi/bovino_walk",
+        "frames": 6
+      },
+      {
+        "key": "bovino-change",
+        "name": "Coat split",
+        "source": "assets/sprites/chibi/bovino_change",
+        "frames": 4
+      },
+      {
+        "key": "bovino-mini",
+        "name": "Little Bovino",
+        "source": "assets/sprites/chibi/bovino_mini_walk",
+        "frames": 6
+      },
+      {
+        "key": "bongino",
+        "name": "ICE-style Bongino",
+        "source": "assets/sprites/chibi/ice_bro_run",
+        "frames": 12
+      }
+    ],
+    "behavior": "Coat opens on catch, splits once into four animated trophy carriers; one encounter clip",
+    "bonginoAppearance": "ICE Bro run asset, as requested; trenchcoat variant replaced",
+    "trophyProp": "Cup cropped from Makko Davram run frame 1"
   }
 }
