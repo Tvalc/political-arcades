@@ -1,0 +1,18 @@
+{
+  "frames": 96,
+  "fps": 24,
+  "cols": 10,
+  "size": 384,
+  "baseline": 365,
+  "ranges": {
+    "idle": [
+      0,
+      95
+    ],
+    "walk": [
+      12,
+      86
+    ]
+  },
+  "method": "HD Makko native motion; constant action scale; root translation stabilization only, no frame resizing"
+}

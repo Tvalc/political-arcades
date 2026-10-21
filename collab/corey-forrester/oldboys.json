@@ -1,0 +1,42 @@
+{
+  "frames": 96,
+  "fps": 24,
+  "cols": 10,
+  "size": 384,
+  "baseline": 365,
+  "ranges": {
+    "idle": [
+      0,
+      18
+    ],
+    "stalk": [
+      0,
+      18
+    ],
+    "wind": [
+      19,
+      30
+    ],
+    "charge": [
+      30,
+      58
+    ],
+    "recover": [
+      64,
+      95
+    ],
+    "stunned": [
+      64,
+      95
+    ],
+    "down": [
+      64,
+      95
+    ],
+    "hurt": [
+      58,
+      77
+    ]
+  },
+  "method": "HD Makko native motion; constant action scale; root translation stabilization only, no frame resizing"
+}

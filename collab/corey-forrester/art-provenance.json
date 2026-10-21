@@ -18,8 +18,19 @@
     "coreyAnimation": "2de83619-6a63-41bd-89d0-e7439bc2d762",
     "heelAnimation": "d9de3178-3c63-4ce4-9630-fa4e3eda05d0",
     "coreyVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792597980184_animation.mp4",
-    "heelVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792598307769_animation.mp4"
+    "heelVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792598307769_animation.mp4",
+    "footworkAnimation": "2f2a5484-c5d0-4ac3-9ffb-7b3bf28b090f",
+    "oldboysAnimation": "52a81c50-461b-4c33-8ec8-17a5b2312695",
+    "goalpostAnimation": "bec8f758-f4af-4457-9071-ffea29166476",
+    "goalpostVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792600497979_animation.mp4",
+    "footworkVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792599955661_animation.mp4",
+    "oldboysVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792600219456_animation.mp4"
   },
-  "processing": "Native 24fps, 96 frames each, chroma key, constant scale and fixed feet baseline. Actions assigned after contact-sheet inspection. Three bouts currently share one fictional heel animation set.",
-  "emailSent": false
+  "processing": "Native 24fps HD 384px sprites, chroma key, constant scale and fixed feet baseline. Three distinct animated fictional heels. Makko ring separated into fabric, rear and foreground rope/turnbuckle layers. Makko cannon and sun keyed from prop sheet.",
+  "emailSent": false,
+  "polishSources": {
+    "oldboys-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_4/asset-gen-2dde5dc2-7ce7-4112-879c-0cebe3c493ee-0_0.webp",
+    "goalpost-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_5/asset-gen-141012a0-8983-4aee-8211-518a6c8d2c1f-0_0.webp",
+    "ring-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_6/asset-gen-1b424f0d-eaa3-4b8f-8042-c97b04b08140-0_0.webp"
+  }
 }
