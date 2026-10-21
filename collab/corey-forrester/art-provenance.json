@@ -26,11 +26,195 @@
     "footworkVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792599955661_animation.mp4",
     "oldboysVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792600219456_animation.mp4"
   },
-  "processing": "Native 24fps HD 384px sprites, chroma key, constant scale and fixed feet baseline. Three distinct animated fictional heels. Makko ring separated into fabric, rear and foreground rope/turnbuckle layers. Makko cannon and sun keyed from prop sheet.",
+  "processing": "Dedicated native 24fps Makko actions edited separately into per-character atlases, fixed head scale across clips, grounded feet, native MP4 previews. One heel atlas uses a wider tile to preserve its outstretched hand. Heroes and one active heel loaded at a time.",
   "emailSent": false,
   "polishSources": {
     "oldboys-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_4/asset-gen-2dde5dc2-7ce7-4112-879c-0cebe3c493ee-0_0.webp",
     "goalpost-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_5/asset-gen-141012a0-8983-4aee-8211-518a6c8d2c1f-0_0.webp",
     "ring-concept": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/generated/9110148d-51ee-401e-82e2-946d66cc36ee_6/asset-gen-1b424f0d-eaa3-4b8f-8042-c97b04b08140-0_0.webp"
+  },
+  "dedicatedMotion": {
+    "acceptedCount": 28,
+    "generatedCount": 29,
+    "clips": [
+      {
+        "key": "corey-idle",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609921605_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/1580f843-714d-4717-9045-23990da832b9",
+        "accepted": true
+      },
+      {
+        "key": "corey-attack",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609923043_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/ae6c2418-f3cb-41be-979d-7f1b952e98a6",
+        "accepted": true
+      },
+      {
+        "key": "corey-grapple",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609912153_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/901fe2ce-40dd-4edf-8820-d13fae23ece4",
+        "accepted": true
+      },
+      {
+        "key": "corey-victory",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609907531_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/ccf9d1c4-6c71-4114-b103-ea8c354cddda",
+        "accepted": true
+      },
+      {
+        "key": "purple-idle",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792609931926_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "corey-dodge",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609971213_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/6cacb9b5-7f64-4628-b609-f0aa5ed45315",
+        "accepted": true
+      },
+      {
+        "key": "corey-hurt",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609948469_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/23fac81f-84ec-43a5-ba19-45fb73050bbf",
+        "accepted": true
+      },
+      {
+        "key": "corey-walk",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792609978086_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/bf1e0c6b-6395-4c96-8dba-d93933ac4c32",
+        "accepted": false
+      },
+      {
+        "key": "purple-walk",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610064468_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "purple-wind",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610121553_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "purple-charge",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610108972_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "purple-collision",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610095106_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "purple-stagger",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610096256_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "purple-down",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610115722_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-idle",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610122376_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-walk",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610158718_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-wind",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610240156_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-charge",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610281484_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-collision",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610262068_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-stagger",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610279401_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "oldboys-down",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610293072_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "goalpost-walk",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610289944_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "goalpost-wind",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610328701_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "goalpost-collision",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610410727_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "goalpost-idle",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610431882_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      },
+      {
+        "key": "goalpost-stagger",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610452860_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/96842d9b-5287-41c8-870f-e55399ada97d/animation/d4f62561-145e-4831-b823-44efa24bc5b5",
+        "accepted": true
+      },
+      {
+        "key": "goalpost-down",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610459948_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/96842d9b-5287-41c8-870f-e55399ada97d/animation/5413f4da-a023-47b4-874e-5d9760a1a103",
+        "accepted": true
+      },
+      {
+        "key": "corey-walk-retry",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792610442334_animation.mp4",
+        "animationDetail": "https://www.makko.ai/studio/collection/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/animation/56a2a0b5-f3e7-4776-b8db-cd745085dc08",
+        "accepted": true
+      },
+      {
+        "key": "goalpost-charge",
+        "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792610482111_animation.mp4",
+        "animationDetail": null,
+        "accepted": true
+      }
+    ],
+    "rejection": "First Corey walk had inadequate alternating leg motion. Replaced with dedicated running cycle.",
+    "timing": "Strike contact at 0.34 seconds, attack recovery 0.66 seconds; separate wind, charge, collision, stagger and held defeat states.",
+    "normalization": "One constant scale per clip using hat/hair landmark width from the approved idle identity. Torso-root translation and fixed ground plane. No per-frame resizing.",
+    "review": "Native-frame contact sheets inspected for all 28 accepted clips; sprite boundaries checked; full-match browser and engine QA."
   }
 }
