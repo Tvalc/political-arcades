@@ -1,0 +1,42 @@
+POLITICAL ARCADES: RELEASE AND SEARCH CHECKLIST
+
+Primary destinations
+- Original music: /watch/<song>/ (one stable URL per finished video).
+- Games: /games/<game>/ for explanations; link onward to the playable game.
+- Real clips: a sourced Greatest Hits page when there is useful original context.
+
+Search targets (intent hypotheses, not measured keyword volumes)
+- Political Arcades; free political browser games; political satire games.
+- James Talarico country song; Jon Ossoff music video; Zohran Mamdani song.
+- Specific speaker + policy/quote represented by a sourced clip page.
+Do not create empty candidate pages or unrelated news bait.
+
+For each release
+1. Publish the finished video, a clear poster, descriptive title and source/credits.
+2. Update VideoObject and video-sitemap.xml with the actual published media URL.
+   uploadDate must come from publication history, not today's rebuild time.
+3. Add human-checked captions/transcript when available; never substitute invented
+   words or a song draft for the released performance.
+4. Prepare three distinct short cuts: strongest joke, strongest real quote, and
+   most visually striking payoff. Each should make sense without the long cut.
+5. Link to the exact watch page, not the home page. Example:
+   https://politicalarcades.com/watch/name-the-day/?utm_source=youtube&utm_medium=organic_social&utm_campaign=name_the_day&utm_content=phone_refusal
+   Use youtube, instagram, tiktok or bluesky as appropriate. No personal data in tags.
+6. Share only with the user's authorization. Pitch relevant creators/newsletters
+   with a specific clip, original source and a reason their audience would care.
+7. Offer the related game or next video on the destination page. Newsletter is optional.
+
+Measurement
+- Search Console: indexed URLs, video indexing, impressions, queries, clicks.
+- Bing Webmaster Tools: sitemap acceptance, indexed URLs and crawl errors.
+- Platform analytics: short retention, outbound clicks, long-video retention.
+- Existing consent-based site analytics: game_started, game_finished, return_visit.
+- UTM links are prepared for attribution; do not claim a working attribution funnel
+  until campaign dimensions and video-start events are verified in the dashboard.
+- Review after 7 and 28 days; compare releases, not tiny day-to-day search samples.
+
+Account status at audit, 2026-10-21
+Google property verified; sitemap.xml accepted; report showed 1 indexed page,
+3 impressions, 0 clicks and 0 discovered videos. New metadata requires recrawling.
+Bing verification tag exists, but dashboard returned a service error; account
+verification and indexing are not confirmed by the presence of a tag alone.

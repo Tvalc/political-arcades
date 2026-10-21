@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://politicalarcades.com/watch/name-the-day/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://politicalarcades.com/media/name-the-day-poster.jpg</video:thumbnail_loc>
+      <video:title>Name the Day — James Talarico Country Music Video</video:title>
+      <video:description>A Talarico-centered country music video with Texas settings and political cartoon storytelling.</video:description>
+      <video:content_loc>https://politicalarcades.com/media/name-the-day-v37.mp4</video:content_loc>
+      <video:publication_date>2026-10-19T21:27:30-07:00</video:publication_date>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://politicalarcades.com/watch/freeze-the-rent/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://politicalarcades.com/media/freeze-the-rent-poster.jpg</video:thumbnail_loc>
+      <video:title>Freeze the Rent — Zohran Mamdani Political Music Video</video:title>
+      <video:description>An original political music video that turns a rent slogan into an arcade-world performance.</video:description>
+      <video:content_loc>https://politicalarcades.com/media/freeze-the-rent.mp4</video:content_loc>
+      <video:publication_date>2026-10-19T21:27:30-07:00</video:publication_date>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://politicalarcades.com/watch/answer-the-question/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://politicalarcades.com/media/answer-the-question-poster.jpg</video:thumbnail_loc>
+      <video:title>Answer the Question — Jon Ossoff Political Music Video</video:title>
+      <video:description>Jon Ossoff asks. Mike Collins answers. Original debate footage, documented posts and animated satire follow the question down a winding road.</video:description>
+      <video:content_loc>https://politicalarcades.com/media/answer-the-question-v15.mp4</video:content_loc>
+      <video:publication_date>2026-10-20T10:39:12-07:00</video:publication_date>
+    </video:video>
+  </url>
+</urlset>
