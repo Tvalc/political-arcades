@@ -3,3 +3,4 @@ Allow: /
 Disallow: /mockups/
 
 Sitemap: https://politicalarcades.com/sitemap.xml
+Sitemap: https://politicalarcades.com/video-sitemap.xml
