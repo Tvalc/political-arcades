@@ -1,0 +1,25 @@
+{
+  "title": "The Whole Stable",
+  "inspiration": {
+    "publisher": "E Pluribus Unum",
+    "url": "https://www.youtube.com/watch?v=ex2mNcEkAqg",
+    "review": "Auto-caption transcript inspected; source joke treats racism as a wrestling heel and calls out its whole stable. New game dialogue and fictional opponents are original."
+  },
+  "officialPortrait": "https://www.coreyryanforrester.com/",
+  "booking": {
+    "name": "Valentijn Sloot",
+    "email": "vsloot@gersh.com",
+    "source": "https://www.coreyryanforrester.com/"
+  },
+  "makko": {
+    "root": "9110148d-51ee-401e-82e2-946d66cc36ee",
+    "coreyCollection": "e87a3c2c-edf5-4cf7-9216-539dfd8f7007",
+    "heelCollection": "96842d9b-5287-41c8-870f-e55399ada97d",
+    "coreyAnimation": "2de83619-6a63-41bd-89d0-e7439bc2d762",
+    "heelAnimation": "d9de3178-3c63-4ce4-9630-fa4e3eda05d0",
+    "coreyVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/e87a3c2c-edf5-4cf7-9216-539dfd8f7007/videos/1792597980184_animation.mp4",
+    "heelVideo": "https://api.makko.ai/storage/v1/object/public/animation-frames/96842d9b-5287-41c8-870f-e55399ada97d/videos/1792598307769_animation.mp4"
+  },
+  "processing": "Native 24fps, 96 frames each, chroma key, constant scale and fixed feet baseline. Actions assigned after contact-sheet inspection. Three bouts currently share one fictional heel animation set.",
+  "emailSent": false
+}
