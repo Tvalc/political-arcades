@@ -1,0 +1,29 @@
+{
+  "size": 256,
+  "baseline": 244,
+  "cols": 8,
+  "actions": {
+    "idle": {
+      "lo": 0,
+      "hi": 47,
+      "duration": 2,
+      "loop": true,
+      "nativeFrames": [
+        8,
+        55
+      ]
+    },
+    "explain": {
+      "lo": 48,
+      "hi": 119,
+      "duration": 3,
+      "loop": true,
+      "nativeFrames": [
+        0,
+        71
+      ]
+    }
+  },
+  "method": "Dedicated native 24fps Makko performances; one fixed scale per clip from initial body; horizontal torso-root stabilization; fixed ground plane; no per-frame resizing",
+  "frames": 120
+}

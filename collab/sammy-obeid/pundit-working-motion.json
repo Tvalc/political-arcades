@@ -1,0 +1,39 @@
+{
+  "size": 256,
+  "baseline": 244,
+  "cols": 8,
+  "actions": {
+    "talk": {
+      "lo": 0,
+      "hi": 71,
+      "duration": 3,
+      "loop": true,
+      "nativeFrames": [
+        0,
+        71
+      ]
+    },
+    "panic": {
+      "lo": 72,
+      "hi": 119,
+      "duration": 2,
+      "loop": true,
+      "nativeFrames": [
+        8,
+        55
+      ]
+    },
+    "meltdown": {
+      "lo": 120,
+      "hi": 215,
+      "duration": 4,
+      "loop": false,
+      "nativeFrames": [
+        0,
+        95
+      ]
+    }
+  },
+  "method": "Dedicated native 24fps Makko performances; one fixed scale per clip from initial body; horizontal torso-root stabilization; fixed ground plane; no per-frame resizing",
+  "frames": 216
+}
