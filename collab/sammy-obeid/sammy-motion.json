@@ -1,0 +1,70 @@
+{
+  "size": 192,
+  "width": 192,
+  "baseline": 182,
+  "cols": 10,
+  "actions": {
+    "idle": {
+      "lo": 0,
+      "hi": 39,
+      "duration": 1.667,
+      "loop": true,
+      "sourceFrames": [
+        0,
+        39
+      ]
+    },
+    "walk": {
+      "lo": 40,
+      "hi": 71,
+      "duration": 1.333,
+      "loop": true,
+      "sourceFrames": [
+        8,
+        39
+      ]
+    },
+    "spray": {
+      "lo": 72,
+      "hi": 119,
+      "duration": 2,
+      "loop": true,
+      "sourceFrames": [
+        24,
+        71
+      ]
+    },
+    "hurt": {
+      "lo": 120,
+      "hi": 145,
+      "duration": 0.5,
+      "loop": false,
+      "sourceFrames": [
+        18,
+        43
+      ]
+    },
+    "victory": {
+      "lo": 146,
+      "hi": 217,
+      "duration": 2.6,
+      "loop": false,
+      "sourceFrames": [
+        0,
+        71
+      ]
+    },
+    "defeat": {
+      "lo": 218,
+      "hi": 289,
+      "duration": 2.2,
+      "loop": false,
+      "sourceFrames": [
+        0,
+        71
+      ]
+    }
+  },
+  "method": "Native 24fps dedicated Makko action performances. Constant scale per clip from initial upright body, torso-only horizontal root stabilization, fixed source ground plane; no per-frame size changes.",
+  "frames": 290
+}

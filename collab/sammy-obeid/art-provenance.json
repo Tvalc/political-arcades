@@ -1,0 +1,79 @@
+{
+  "title": "A's Fire, B's Fire",
+  "creator": "Sammy Obeid",
+  "status": "Independent fan prototype for Tony's review. No email sent.",
+  "premise": {
+    "source": "https://www.nhpr.org/2024-08-14/former-math-teacher-turned-stand-up-comic-weaves-the-war-in-gaza-into-his-act",
+    "publisher": "NPR, Leila Fadel, August 14, 2024; carried by NHPR",
+    "research": "Read the interview transcript and the stand-up excerpt. Did not claim to watch the full stand-up special. Sammy moves from the Pythagorean theorem to putting out A's and B's fires and calling for a cease-fire. His original joke addresses the war in Gaza. The chalkboard game is our fictional adaptation.",
+    "additionalContext": "https://www.pbs.org/video/humor-pain-1752611299/",
+    "originalWork": "Game rules, code, new dialogue, HUD, scoring, water management, level design and procedural water/impact effects. No Sammy voice recording or synthetic imitation."
+  },
+  "reference": {
+    "page": "https://sammyko.com/pages/about-us",
+    "image": "https://sammyko.com/cdn/shop/files/dc8cf259-8b84-4141-ae36-c40c506684d3_1813621_TABLET_LANDSCAPE_3_2.jpg?v=1690638765&width=1500",
+    "master": "https://api.makko.ai/storage/v1/object/public/collection-node-images/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/1101cff6-9d32-4f6c-9c51-373cfb82cb83/concept_1792691014996_1792691015005.webp",
+    "treatment": "Recognizable quiff, eyebrows, olive complexion, beard, gray hoodie, salmon shirt. Chibi 2D cartoon with brass hose nozzle."
+  },
+  "makko": {
+    "rootCollection": "d6f0340e-4d34-49ce-91c8-510d2c43b33d",
+    "characterSubcollection": "1101cff6-9d32-4f6c-9c51-373cfb82cb83",
+    "worldSubcollection": "522c5c28-d71e-40ce-83f8-325e4fb60a2a",
+    "model": "Veo 3.1 Full, 4 seconds, 1080p, native 24fps",
+    "animations": {
+      "idle": {
+        "id": "baf952c7-1d43-475a-b4b2-551092774083",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691406633_animation.mp4"
+      },
+      "walk": {
+        "id": "31ecf9d5-3270-40cb-8dc7-ab6e19a6e7c4",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691342257_animation.mp4"
+      },
+      "spray": {
+        "id": "579ff7d3-e565-4473-bd21-16b1d3b279c0",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691562200_animation.mp4"
+      },
+      "hurt": {
+        "id": "7ca42232-4987-4a2b-a764-1cf454efd24d",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691563103_animation.mp4"
+      },
+      "victory": {
+        "id": "b42149a1-6e28-43d8-8b3f-87bdd630aef1",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691674358_animation.mp4"
+      },
+      "defeat": {
+        "id": "fbb3c298-021a-40ae-8e15-5fee6d001f9e",
+        "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/1101cff6-9d32-4f6c-9c51-373cfb82cb83/videos/1792691816498_animation.mp4"
+      }
+    },
+    "background": "https://api.makko.ai/storage/v1/object/public/image-assets/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/background/Chalkboard_Theater_-_Opaque_Base_1792691231099.webp",
+    "props": "https://api.makko.ai/storage/v1/object/public/image-assets/e7eb8cac-6b98-43ce-ba67-dd2ed0947b87/prop/Chalkboard_Theater_-_Eraser_Tap_Flame_Bell_1792691493701.png",
+    "processing": "Dedicated action clips keyed and despilled locally. Baked blue water removed from the spray clip, so the game draws only one aimed stream. Constant scale per action, horizontal torso-root stabilization, fixed ground plane. Native frames retained in MP4 review previews. No CSS still-image wobble used as character animation.",
+    "fireEffect": {
+      "source": "https://api.makko.ai/storage/v1/object/public/animation-frames/522c5c28-d71e-40ce-83f8-325e4fb60a2a/videos/1792692209884_animation.mp4",
+      "frames": 96,
+      "fps": 24,
+      "method": "Native Makko flame performance, one scale, green key and fixed base. Not a CSS transformation of a still.",
+      "id": "78ad3e2d-cc9b-4890-9398-46cb7704701e"
+    },
+    "creditsSpent": 867,
+    "balanceAfter": 121
+  },
+  "contact": {
+    "route": "KP Comedy public agency inbox, not Sammy's direct email",
+    "email": "booking@kpcomedy.com",
+    "sources": [
+      "https://www.kpcomedy.com/sammy-obeid.html",
+      "https://www.kpcomedy.com/uploads/1/1/2/6/112638185/kirkland-catalog-2022-23-web.pdf"
+    ],
+    "alternative": "https://sammyko.com/pages/booking",
+    "emailSent": false
+  },
+  "validation": [
+    "Deterministic simulation: 30, 60 and 120fps all clear three lessons",
+    "Water depletion/refill, burst, fire damage, invulnerability, idle loss and deadline tests",
+    "Automated browser playthrough using production renderer: 4004 points, 16 extinguished fires, no console errors",
+    "Browser idle-loss path reaches game over",
+    "All six character action atlases checked: zero frames clipped at tile edges"
+  ]
+}
