@@ -56,8 +56,7 @@
       "method": "Native Makko flame performance, one scale, green key and fixed base. Not a CSS transformation of a still.",
       "id": "78ad3e2d-cc9b-4890-9398-46cb7704701e"
     },
-    "creditsSpent": 867,
-    "balanceAfter": 121
+    "creditsSpent": 867
   },
   "contact": {
     "route": "KP Comedy public agency inbox, not Sammy's direct email",
@@ -74,6 +73,8 @@
     "Water depletion/refill, burst, fire damage, invulnerability, idle loss and deadline tests",
     "Automated browser playthrough using production renderer: 4004 points, 16 extinguished fires, no console errors",
     "Browser idle-loss path reaches game over",
-    "All six character action atlases checked: zero frames clipped at tile edges"
+    "All six character action atlases checked: zero frames clipped at tile edges",
+    "Small phone 360x640: result, controls and review gallery fit without horizontal overflow",
+    "Native gallery playback confirmed: 4-second MP4, playing, readyState 4"
   ]
 }
