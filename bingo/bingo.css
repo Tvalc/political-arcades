@@ -1,0 +1,113 @@
+@font-face { font-family: Bungee; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/bungee-400.woff2") format("woff2"); }
+@font-face { font-family: "Share Tech Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/share-tech-mono-400.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/source-sans-3-600.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/source-sans-3-700.woff2") format("woff2"); }
+
+:root {
+  --ink: #f6f1e4;
+  --night: #101c30;
+  --panel: #101c30e6;
+  --gold: #ffc83d;
+  --red: #e5383b;
+  --teal: #2ec4b6;
+  --sq: #fdf6e3;
+  --sq-ink: #1b2233;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+/* Game and results stay out of sight until the script opens them, even where `hidden` is ignored. */
+#game:not(.shown), #end-screen:not(.shown) { display: none !important; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  background: var(--night) url("../art/chibi/rally.webp") center top / cover fixed;
+  font: 600 16px/1.45 "Source Sans 3", system-ui, sans-serif;
+}
+a { color: var(--gold); }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #0b1424ee; }
+.brand { font-family: Bungee, sans-serif; font-size: 22px; color: var(--ink); text-decoration: none; }
+.brand span, h1 span { color: var(--red); }
+.brand-side { font-family: "Share Tech Mono", monospace; }
+
+.stage { max-width: 640px; margin: 0 auto; padding: 16px; }
+.panel { background: var(--panel); padding: 22px 20px; border: 3px solid var(--gold); border-radius: 14px; text-align: center; }
+h1 { font-family: Bungee, sans-serif; font-weight: 400; font-size: clamp(38px, 10vw, 64px); line-height: 1; margin: 6px 0; }
+.kicker { font-family: "Share Tech Mono", monospace; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin: 0 0 12px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0; }
+
+button {
+  font: 700 16px "Source Sans 3", sans-serif;
+  min-height: 48px; padding: 12px 20px; border: 0; border-radius: 10px; cursor: pointer;
+  background: var(--gold); color: #251a0b; box-shadow: 0 4px 0 #a5780b;
+  transition: transform .1s, filter .15s;
+}
+button:hover { filter: brightness(1.08); }
+button:active { transform: translateY(2px); box-shadow: 0 2px 0 #a5780b; }
+button.alt { background: var(--teal); box-shadow: 0 4px 0 #1b7d74; color: #08201d; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+.board { text-align: left; margin-top: 14px; background: #0b1424cc; border-radius: 10px; padding: 12px 16px; }
+.board h2 { font-family: Bungee, sans-serif; font-weight: 400; font-size: 18px; margin: 0 0 6px; color: var(--gold); }
+.board small { font-family: "Share Tech Mono", monospace; font-size: 12px; color: var(--ink); opacity: .75; margin-left: 6px; }
+.board ol { margin: 0; padding-left: 26px; font-family: "Share Tech Mono", monospace; font-size: 18px; }
+.board li { padding: 2px 0; }
+.board li span { display: inline-block; width: 4.5ch; letter-spacing: .1em; }
+.board li.empty { list-style: none; margin-left: -26px; opacity: .75; font-size: 15px; }
+
+.game { position: relative; background: var(--panel); border: 3px solid var(--gold); border-radius: 14px; padding: 12px; }
+.hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 10px; }
+.hud div { background: #0b1424; border-radius: 8px; padding: 4px; }
+.hud span { display: block; font-family: "Share Tech Mono", monospace; font-size: 12px; opacity: .8; text-transform: uppercase; }
+.hud strong { font-family: Bungee, sans-serif; font-weight: 400; font-size: 22px; }
+
+.caller { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.caller img { width: 56px; height: 56px; border-radius: 50%; background: var(--red); border: 3px solid var(--gold); flex: none; }
+.ball-wrap { flex: 1; min-width: 0; }
+.ball {
+  margin: 0; min-height: 52px; display: flex; align-items: center; justify-content: center; text-align: center;
+  background: var(--red); color: #fff; border-radius: 26px; padding: 6px 14px;
+  font-family: Bungee, sans-serif; font-size: clamp(15px, 4.4vw, 22px); line-height: 1.1;
+}
+.ball.drop { animation: drop .28s ease-out; }
+@keyframes drop { from { transform: translateY(-14px) scale(.85); opacity: .2; } to { transform: none; opacity: 1; } }
+.fuse { height: 6px; background: #0b1424; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.fuse i { display: block; height: 100%; background: var(--gold); transform-origin: left; }
+.live-note { margin: 0 0 10px; text-align: center; }
+
+.card { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.sq {
+  aspect-ratio: 1; min-height: 0; padding: 3px; border-radius: 8px;
+  background: var(--sq); color: var(--sq-ink); box-shadow: 0 3px 0 #b9ad8e;
+  font: 700 clamp(9px, 2.5vw, 13px)/1.1 "Source Sans 3", sans-serif; text-transform: uppercase;
+  overflow-wrap: anywhere; position: relative;
+}
+.sq.free { background: var(--gold); }
+.sq.dab::after {
+  content: ""; position: absolute; inset: 12%; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff6b6b, var(--red) 70%); opacity: .82; mix-blend-mode: multiply;
+}
+.sq.free.dab::after { background: radial-gradient(circle at 35% 35%, #ffb347, #e07a00 70%); }
+.sq.shake { animation: shake .3s; }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.game-actions { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+
+.pop { position: absolute; pointer-events: none; transform: translate(-50%, -100%); opacity: 0; font-family: Bungee, sans-serif; font-size: 22px; text-shadow: 0 2px 0 #000; }
+.pop.show { animation: pop .65s ease-out forwards; }
+.pop.good { color: var(--gold); }
+.pop.bad { color: #ff8a8a; }
+.pop.bingo { color: var(--gold); font-size: clamp(36px, 11vw, 64px); animation-duration: 1.4s; }
+@keyframes pop { 0% { opacity: 0; margin-top: 8px; } 20% { opacity: 1; } 100% { opacity: 0; margin-top: -30px; } }
+.hero { position: absolute; right: 6px; bottom: 60px; background-repeat: no-repeat; pointer-events: none; opacity: 0; transition: opacity .15s; }
+.hero.show { opacity: 1; }
+
+.big-score { font-family: Bungee, sans-serif; font-size: 22px; margin: 4px 0; }
+.big-score strong { font-weight: 400; font-size: 44px; color: var(--gold); display: block; }
+#initials-form { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; margin: 12px 0 4px; }
+#initials-form label { width: 100%; }
+#initials { width: 5.5ch; font: 400 28px "Share Tech Mono", monospace; text-align: center; letter-spacing: .2em; text-transform: uppercase; padding: 6px; border-radius: 8px; border: 2px solid var(--gold); background: #0b1424; color: var(--ink); }
+.board-status { min-height: 1.4em; margin: 6px 0; }
+
+.site-foot { background: #101c30e8; margin-top: 28px; padding: 16px; font-size: 14px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .ball.drop, .pop.show, .sq.shake { animation: none; } .pop.show { opacity: 1; } }

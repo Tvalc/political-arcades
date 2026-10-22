@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAGA Bingo</title>
+  <link rel="canonical" href="https://politicalarcades.com/bingo/" />
+  <meta name="description" content="MAGA Bingo is a Political Arcades debate-night game. Dab the buzzwords on your card before the next one drops, then post your score to the leaderboard." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Political Arcades" />
+  <meta property="og:title" content="MAGA Bingo: Debate Night" />
+  <meta property="og:description" content="Dab the buzzwords before the next one drops. How fast can you fill a row?" />
+  <meta property="og:url" content="https://politicalarcades.com/bingo/" />
+  <meta property="og:image" content="https://politicalarcades.com/bingo/assets/share.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A MAGA Bingo card with buzzword squares and a cartoon basketball player celebrating." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="bingo.css?v=2" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4762698707947194" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">MAGA <span>BINGO</span></a>
+    <a class="brand-side" href="../">Political Arcades</a>
+  </header>
+
+  <main class="stage">
+    <section class="panel" id="title-screen" aria-labelledby="title-head">
+      <h1 id="title-head">MAGA <span>BINGO</span></h1>
+      <p class="kicker">Debate Night Edition</p>
+      <p>The doctor called it: tonight you'll hear MAGA buzzword bingo. Buzzwords drop one at a time. Dab the square before the next one lands. Dab the wrong one and you lose points.</p>
+      <div class="actions">
+        <button type="button" id="play-arcade">Play for a high score</button>
+        <button type="button" id="play-live" class="alt">Play along with the debate</button>
+      </div>
+      <section class="board" aria-labelledby="board-head-title">
+        <h2 id="board-head-title">High scores <small id="board-scope">this device</small></h2>
+        <ol id="board-title"></ol>
+      </section>
+    </section>
+
+    <section class="game" id="game" hidden aria-label="Bingo card">
+      <div class="hud">
+        <div><span>Score</span><strong id="score">0</strong></div>
+        <div><span>Combo</span><strong id="combo">x1</strong></div>
+        <div><span>Time</span><strong id="time">75</strong></div>
+      </div>
+      <div class="caller" id="caller">
+        <img src="assets/sayed-face.webp" alt="" width="64" height="64" />
+        <div class="ball-wrap">
+          <p class="ball" id="ball" aria-live="assertive">Get ready</p>
+          <div class="fuse"><i id="fuse"></i></div>
+        </div>
+      </div>
+      <p class="live-note" id="live-note" hidden>Live mode: dab a square when you hear it in the debate. No clock, no score. Just bragging rights.</p>
+      <div class="card" id="card" role="grid" aria-label="Your bingo card"></div>
+      <div class="game-actions">
+        <button type="button" id="quit" class="alt">Quit</button>
+        <button type="button" id="new-card" class="alt" hidden>New card</button>
+      </div>
+      <div class="pop" id="pop" aria-hidden="true"></div>
+      <div class="hero" id="hero" aria-hidden="true"></div>
+    </section>
+
+    <section class="panel" id="end-screen" hidden aria-labelledby="end-head">
+      <h1 id="end-head">Game over</h1>
+      <p class="big-score"><strong id="final-score">0</strong> points</p>
+      <p id="final-stats"></p>
+      <form id="initials-form" autocomplete="off">
+        <label for="initials">Enter your initials</label>
+        <input id="initials" maxlength="3" pattern="[A-Za-z]{3}" required inputmode="text" autocapitalize="characters" spellcheck="false" />
+        <button type="submit">Save score</button>
+      </form>
+      <p class="board-status" id="board-status" role="status"></p>
+      <section class="board" aria-labelledby="board-head-end">
+        <h2 id="board-head-end">High scores <small id="board-scope-end">this device</small></h2>
+        <ol id="board-end"></ol>
+      </section>
+      <div class="actions">
+        <button type="button" id="share">Share my score</button>
+        <button type="button" id="again" class="alt">Play again</button>
+        <button type="button" id="to-title" class="alt">Main menu</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <p>MAGA Bingo is an unofficial cartoon from <a href="../">Political Arcades</a>. It is not authorized by Abdul El-Sayed, Mike Rogers, or any candidate or candidate's committee. Buzzwords are satire.</p>
+  </footer>
+  <noscript><p class="panel">MAGA Bingo needs JavaScript. Open this page in a regular browser to play.</p></noscript>
+  <script src="board.js?v=2"></script>
+  <script src="bingo.js?v=2"></script>
+</body>
+</html>
