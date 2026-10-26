@@ -1,0 +1,260 @@
+{
+  "character": "Tony Valcarcel / The Arcade Dad",
+  "updated": "2026-10-26",
+  "reference": "Existing Makko plain-navy-beanie v2, superseding Google-logo notes. Source photo is private and not copied to this review.",
+  "collection": "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a",
+  "model": "Makko Veo 3.1 Full,4 seconds,1080p,24fps",
+  "actions": [
+    {
+      "key": "wave",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/85c51532-981e-4620-b9d0-c921139f3983"
+      ],
+      "prompt": "TONY HOST / WAVE. Use ONLY the exact selected plain-navy-beanie Tony reference. Preserve stocky chibi body, large round thin silver glasses, full bushy salt-and-pepper beard, white American-flag shirt with TWO printed politician portraits, burgundy harem pants, black flip-flops. No beanie logos. Polished flat 2D cel cartoon, same identity and scale throughout. Friendly greeting to viewer: raise right hand, wave twice from the wrist with coherent fingers, then lower it and return to relaxed smile. No talking, walking or bouncing. Single full-body character centered with feet planted; both feet and hands in frame with generous margin. Fixed camera, flat solid chroma green background throughout, no shadows, scenery, lettering, accessories or extra people. No 3D/clay/plastic rendering. Natural smooth restrained motion. Silent; no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031690908_animation.mp4",
+      "animationId": "85c51532-981e-4620-b9d0-c921139f3983",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.9219858156028369,
+      "clippedFrames": [],
+      "preview": "wave-preview.mp4",
+      "alphaWebm": "wave-alpha.webm",
+      "alphaProres": "wave-alpha.mov"
+    },
+    {
+      "key": "react",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/8053ed0e-6c1e-43ce-9dcc-db1ff23c0035"
+      ],
+      "prompt": "TONY HOST / REACT. Use ONLY the exact selected plain-navy-beanie Tony reference. Preserve stocky chibi body, large round thin silver glasses, full bushy salt-and-pepper beard, white American-flag shirt with TWO printed politician portraits, burgundy harem pants, black flip-flops. No beanie logos. Polished flat 2D cel cartoon, same identity and scale throughout. Skeptical double-take: one eyebrow rises, look briefly to his right with lips closed, then a tiny incredulous head tilt and small open-palm shrug, finish with a knowing smirk. No talking, no shaking, no props. Single full-body character centered with feet planted; both feet and hands in frame with generous margin. Fixed camera, flat solid chroma green background throughout, no shadows, scenery, lettering, accessories or extra people. No 3D/clay/plastic rendering. Natural smooth restrained motion. Silent; no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031738884_animation.mp4",
+      "animationId": "8053ed0e-6c1e-43ce-9dcc-db1ff23c0035",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.8167539267015707,
+      "clippedFrames": [],
+      "preview": "react-preview.mp4",
+      "alphaWebm": "react-alpha.webm",
+      "alphaProres": "react-alpha.mov"
+    },
+    {
+      "key": "laugh",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/28e354c9-5e0e-49aa-acd9-65b9d353ae8f"
+      ],
+      "prompt": "TONY HOST / LAUGH. Use ONLY the exact selected plain-navy-beanie Tony reference. Preserve stocky chibi body, large round thin silver glasses, full bushy salt-and-pepper beard, white American-flag shirt with TWO printed politician portraits, burgundy harem pants, black flip-flops. No beanie logos. Polished flat 2D cel cartoon, same identity and scale throughout. A surprised amused grin grows into one warm chuckle: eyes narrow, mouth opens, shoulders lift slightly once, one hand rests briefly on belly, then settle back to a friendly smile. Restrained human comic timing, no gyrating or repeated bouncing. Single full-body character centered with feet planted; both feet and hands in frame with generous margin. Fixed camera, flat solid chroma green background throughout, no shadows, scenery, lettering, accessories or extra people. No 3D/clay/plastic rendering. Natural smooth restrained motion. Silent; no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031686163_animation.mp4",
+      "animationId": "28e354c9-5e0e-49aa-acd9-65b9d353ae8f",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.8996539792387543,
+      "clippedFrames": [],
+      "preview": "laugh-preview.mp4",
+      "alphaWebm": "laugh-alpha.webm",
+      "alphaProres": "laugh-alpha.mov"
+    },
+    {
+      "key": "point",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/3c9bd96c-4266-484d-a629-f89e9a812da1"
+      ],
+      "prompt": "TONY HOST / POINT. Use ONLY the exact selected plain-navy-beanie Tony reference. Preserve stocky chibi body, large round thin silver glasses, full bushy salt-and-pepper beard, white American-flag shirt with TWO printed politician portraits, burgundy harem pants, black flip-flops. No beanie logos. Polished flat 2D cel cartoon, same identity and scale throughout. From relaxed stance raise right hand and point clearly at empty space on his right, glance that way, hold the point for one second, then lower hand and smile back toward camera. No talking; a useful website callout gesture. Single full-body character centered with feet planted; both feet and hands in frame with generous margin. Fixed camera, flat solid chroma green background throughout, no shadows, scenery, lettering, accessories or extra people. No 3D/clay/plastic rendering. Natural smooth restrained motion. Silent; no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031714785_animation.mp4",
+      "animationId": "3c9bd96c-4266-484d-a629-f89e9a812da1",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.790273556231003,
+      "clippedFrames": [],
+      "preview": "point-preview.mp4",
+      "alphaWebm": "point-alpha.webm",
+      "alphaProres": "point-alpha.mov"
+    },
+    {
+      "key": "explain",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/3b98df05-a765-4144-9320-f1f70ff0847e"
+      ],
+      "prompt": "TONY HOST / EXPLAIN. Use ONLY the exact selected plain-navy-beanie Tony reference. Preserve stocky chibi body, large round thin silver glasses, full bushy salt-and-pepper beard, white American-flag shirt with TWO printed politician portraits, burgundy harem pants, black flip-flops. No beanie logos. Polished flat 2D cel cartoon, same identity and scale throughout. Gentle conversational speaking mouth shapes and two restrained open-palm explanatory gestures, right hand presents empty space to his right. Friendly confident delivery with small eyebrow changes. Begin and end arms relaxed. No invented objects. Single full-body character centered with feet planted; both feet and hands in frame with generous margin. Fixed camera, flat solid chroma green background throughout, no shadows, scenery, lettering, accessories or extra people. No 3D/clay/plastic rendering. Natural smooth restrained motion. Silent; no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031742397_animation.mp4",
+      "animationId": "3b98df05-a765-4144-9320-f1f70ff0847e",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.8091286307053942,
+      "clippedFrames": [],
+      "preview": "explain-preview.mp4",
+      "alphaWebm": "explain-alpha.webm",
+      "alphaProres": "explain-alpha.mov"
+    },
+    {
+      "key": "idle",
+      "links": [
+        "https://www.makko.ai/studio/collection/3e230a25-9f0a-47c1-abac-94d9d67ec46a/animation/04511a8f-6811-4f1f-bb60-a10376002ada"
+      ],
+      "prompt": "TONY HOST / IDLE LISTEN. Animate ONLY the exact plain-navy-beanie Tony from the selected reference. Preserve broad stocky body, huge round silver glasses, full gray beard, white flag-and-two-portraits shirt, burgundy harem trousers and flip-flops. One full-body character centered, locked camera, feet planted, generous margin. Arms lowered comfortably, warm closed-mouth half-smile. Subtle breathing, one natural blink, tiny attentive eyebrow raise, small restrained nod, return exactly to relaxed opening pose. Seamless calm idle loop. No talking, no walking, no body bouncing, no size change, no 3D/clay look. Flat solid chroma green background throughout, no shadows, props, text or added logos. Silent, no voice or music.",
+      "url": "https://api.makko.ai/storage/v1/object/public/animation-frames/3e230a25-9f0a-47c1-abac-94d9d67ec46a/videos/1793031623195_animation.mp4",
+      "animationId": "04511a8f-6811-4f1f-bb60-a10376002ada",
+      "frames": 96,
+      "fps": 24,
+      "canvas": [
+        1080,
+        1080
+      ],
+      "fixedScale": 0.8450704225352113,
+      "clippedFrames": [],
+      "preview": "idle-preview.mp4",
+      "alphaWebm": "idle-alpha.webm",
+      "alphaProres": "idle-alpha.mov"
+    }
+  ],
+  "processing": "Native frames keyed, fixed scale per entire clip, centered to median bounding box and a common ground plane. No per-frame scale changes.1080 square transparent ProRes4444 andVP9 WebM.720 square opaqueMP4 review.",
+  "validation": [
+    {
+      "file": "outputs\\tony-host\\wave-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 58941582,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\wave-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 1797428,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\wave-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 494912,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "outputs\\tony-host\\react-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 60470513,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\react-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 1843699,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\react-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 526433,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "outputs\\tony-host\\laugh-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 56260505,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\laugh-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 1387345,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\laugh-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 426984,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "outputs\\tony-host\\point-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 60083066,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\point-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 1444287,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\point-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 424073,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "outputs\\tony-host\\explain-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 60695822,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\explain-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 1956458,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\explain-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 542997,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "outputs\\tony-host\\idle-alpha.mov",
+      "duration": "4.000000",
+      "bytes": 58367517,
+      "codec": "prores",
+      "pixelFormat": "yuva444p12le"
+    },
+    {
+      "file": "outputs\\tony-host\\idle-alpha.webm",
+      "duration": "4.000000",
+      "bytes": 2551737,
+      "codec": "vp9",
+      "pixelFormat": "yuv420p"
+    },
+    {
+      "file": "work\\walter-site\\collab\\tony-host\\idle-preview.mp4",
+      "duration": "4.000000",
+      "bytes": 658681,
+      "codec": "h264",
+      "pixelFormat": "yuv420p"
+    }
+  ],
+  "voice": "None. Generic talking animation, not lip-synced.",
+  "publication": "Character review only. No social post, email or promotional video published."
+}

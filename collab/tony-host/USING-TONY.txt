@@ -1,0 +1,16 @@
+TONY HOST KIT — VIDEO EDITING
+
+Use *-alpha.mov (ProRes 4444) for editing with transparency. Place it on a video layer above the footage. These are 1080 x 1080, native 24fps character exports; the canvas gives gestures room. Do not stretch width/height independently.
+Use *-alpha.webm for web compositing where VP9 alpha is supported. If an app displays a solid black background, use the ProRes file instead; alpha support differs between decoders.
+Use *-preview.mp4 only to review movement. Its green-gray studio background is baked in.
+
+idle: Between lines, listening or holding beside footage. Inspect the seam before looping; source performance does not guarantee a perfect cycle.
+explain: Short conversational host passages. Generic mouth movement, not synchronized lip sync.
+point: Website/game callout. Leave room in the actual direction of the gesture; do not mirror the entire clip because the shirt print would reverse.
+laugh: Punchline reaction. Short acting beat, not an idle loop.
+react: Skeptical shrug/double take. Cut back to idle after the reaction.
+wave: Hello/goodbye. Let the hand lower before cutting if the shot allows.
+
+Narration is separate. No recording or voice clone is in this kit. Build around recorded Tony narration, then use a dedicated lip-sync shot if tight synchronization is needed. Preserve source videos and manifest when starting a new edit.
+
+IDENTITY: Latest plain navy beanie (no logo), round silver glasses, bushy gray beard, broad stocky body, white flag/dual-portrait shirt, burgundy harem trousers, flip-flops. Do not regenerate from text alone. Use the saved Makko reference.
