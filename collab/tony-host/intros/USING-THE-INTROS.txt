@@ -1,0 +1,8 @@
+TONY INTRO INSERTS / V1
+8-second full intro,4.3-second reminder.1920x1080,24fps. Neutral Tony branding.
+Use the *-alpha-voiced.mov above your opening footage in the editor. It includes transparent ProRes4444 picture plus the approved ElevenLabs Tony narration, padded to the same duration. Do not attach a second copy of the voice track.
+Use *-alpha.webm plus the separate voice MP3 for web/browser compositing, or a silent overlay when you already have narration. VP9 transparency support varies by app; use the MOV in editors.
+The *-preview.mp4 has an opaque navy background and narration. It can serve as a standalone short intro, but the transparent insert is intended to run OVER actual opening footage so viewers see the result immediately.
+No music. Optional SRT subtitles accompany each specific voice track. Character acting is native Makko motion; it is not tight phoneme lip sync.
+Do not add an endcard here. These are opening inserts; the final episode gets its normal endcard at the end.
+Voice recovered from Find missing chats, approved Tony profile and exact production settings. Read edit-plan.json for timing and original source takes.

@@ -1,0 +1,15 @@
+1
+00:00:00,000 --> 00:00:00,960
+Hey, I'm Tony.
+
+2
+00:00:01,060 --> 00:00:02,400
+Hit like and subscribe.
+
+3
+00:00:02,500 --> 00:00:06,240
+And leave a comment: where are you watching from, and what are you building?
+
+4
+00:00:06,280 --> 00:00:07,280
+Let's get into it.
