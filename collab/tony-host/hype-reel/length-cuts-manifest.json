@@ -1,0 +1,458 @@
+{
+  "30": {
+    "duration": 30,
+    "shots": [
+      {
+        "key": "cc",
+        "title": "CAPITOL CRASHERS",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\assets-for-astra\\brand\\gameplay-capitol-crashers-8s.mp4",
+        "source_in": 0,
+        "duration": 4,
+        "output_in": 0,
+        "kind": "gameplay"
+      },
+      {
+        "key": "vote",
+        "title": "VOTE",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\vote_mamdani.mp4",
+        "source_in": 23,
+        "duration": 4,
+        "output_in": 4,
+        "kind": "gameplay"
+      },
+      {
+        "key": "crew",
+        "title": "POTHOLE PARTY",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\pothole_b.mp4",
+        "source_in": 36,
+        "duration": 3,
+        "output_in": 8,
+        "kind": "gameplay"
+      },
+      {
+        "key": "stack",
+        "title": "HOUSING STACK",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-08\\you-know-what-adstoaid-and-politicalarcades\\outputs\\social-week1\\housing-first-row-vertical-v2.mp4",
+        "source_in": 8,
+        "duration": 4,
+        "output_in": 11,
+        "kind": "gameplay"
+      },
+      {
+        "key": "city",
+        "title": "YOUR CITY",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 2,
+        "output_in": 15,
+        "kind": "still"
+      },
+      {
+        "key": "comic",
+        "title": "COMICS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\art\\comic\\p26.webp",
+        "source_in": 0,
+        "duration": 2,
+        "output_in": 17,
+        "kind": "still"
+      },
+      {
+        "key": "room",
+        "title": "ORIGINAL MUSIC VIDEOS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\music-video-integration\\room-to-breathe-approved-rogers-v98.mp4",
+        "source_in": 138.5,
+        "duration": 3,
+        "output_in": 19,
+        "kind": "music"
+      },
+      {
+        "key": "host",
+        "title": "COME PLAY SOMETHING",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 3,
+        "output_in": 22,
+        "kind": "host"
+      }
+    ],
+    "voice": [
+      {
+        "name": "hook",
+        "start": 0.15,
+        "end": 2.79,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\hook.mp3"
+      },
+      {
+        "name": "games",
+        "start": 4.15,
+        "end": 8.31,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\games.mp3"
+      },
+      {
+        "name": "city",
+        "start": 11.2,
+        "end": 14.56,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city.mp3"
+      },
+      {
+        "name": "short2",
+        "start": 17.1,
+        "end": 21.26,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\short2.mp3"
+      },
+      {
+        "name": "tony",
+        "start": 22.1,
+        "end": 24.98,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\tony.mp3"
+      },
+      {
+        "name": "cta",
+        "start": 25.15,
+        "end": 28.03,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\cta.mp3"
+      }
+    ],
+    "endcard_start": 25,
+    "audio_peak": 0.5531585812568665,
+    "clipped_samples": 0
+  },
+  "60": {
+    "duration": 60,
+    "shots": [
+      {
+        "key": "cc",
+        "title": "CAPITOL CRASHERS",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\assets-for-astra\\brand\\gameplay-capitol-crashers-8s.mp4",
+        "source_in": 0,
+        "duration": 6,
+        "output_in": 0,
+        "kind": "gameplay"
+      },
+      {
+        "key": "vote",
+        "title": "VOTE",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\vote_mamdani.mp4",
+        "source_in": 23,
+        "duration": 7,
+        "output_in": 6,
+        "kind": "gameplay"
+      },
+      {
+        "key": "crew",
+        "title": "POTHOLE PARTY",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\pothole_b.mp4",
+        "source_in": 36,
+        "duration": 7,
+        "output_in": 13,
+        "kind": "gameplay"
+      },
+      {
+        "key": "stack",
+        "title": "HOUSING STACK",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-08\\you-know-what-adstoaid-and-politicalarcades\\outputs\\social-week1\\housing-first-row-vertical-v2.mp4",
+        "source_in": 5,
+        "duration": 6,
+        "output_in": 20,
+        "kind": "gameplay"
+      },
+      {
+        "key": "city",
+        "title": "YOUR CITY",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 5,
+        "output_in": 26,
+        "kind": "still"
+      },
+      {
+        "key": "comic",
+        "title": "COMICS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\art\\comic\\p26.webp",
+        "source_in": 0,
+        "duration": 4,
+        "output_in": 31,
+        "kind": "still"
+      },
+      {
+        "key": "room",
+        "title": "ORIGINAL MUSIC VIDEOS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\music-video-integration\\room-to-breathe-approved-rogers-v98.mp4",
+        "source_in": 138.5,
+        "duration": 6,
+        "output_in": 35,
+        "kind": "music"
+      },
+      {
+        "key": "name",
+        "title": "NAME THE DAY",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\media\\name-the-day-v37.mp4",
+        "source_in": 26,
+        "duration": 4,
+        "output_in": 41,
+        "kind": "music"
+      },
+      {
+        "key": "freeze",
+        "title": "FREEZE THE RENT",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\media\\freeze-the-rent.mp4",
+        "source_in": 88,
+        "duration": 5,
+        "output_in": 45,
+        "kind": "music"
+      },
+      {
+        "key": "host",
+        "title": "COME PLAY SOMETHING",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 5,
+        "output_in": 50,
+        "kind": "host"
+      }
+    ],
+    "voice": [
+      {
+        "name": "hook",
+        "start": 0.15,
+        "end": 2.79,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\hook.mp3"
+      },
+      {
+        "name": "games",
+        "start": 6.15,
+        "end": 10.31,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\games.mp3"
+      },
+      {
+        "name": "crew",
+        "start": 13.2,
+        "end": 17.12,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\crew.mp3"
+      },
+      {
+        "name": "stack",
+        "start": 20.2,
+        "end": 24.44,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\stack.mp3"
+      },
+      {
+        "name": "build",
+        "start": 26.1,
+        "end": 30.18,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\build.mp3"
+      },
+      {
+        "name": "comics",
+        "start": 31.1,
+        "end": 32.86,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\comics.mp3"
+      },
+      {
+        "name": "music",
+        "start": 35.2,
+        "end": 40.0,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\music.mp3"
+      },
+      {
+        "name": "tony",
+        "start": 50.15,
+        "end": 53.03,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\tony.mp3"
+      },
+      {
+        "name": "cta",
+        "start": 55.15,
+        "end": 58.03,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\cta.mp3"
+      }
+    ],
+    "endcard_start": 55,
+    "audio_peak": 0.5588942170143127,
+    "clipped_samples": 0
+  },
+  "90": {
+    "duration": 90,
+    "shots": [
+      {
+        "key": "cc",
+        "title": "CAPITOL CRASHERS",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\assets-for-astra\\brand\\gameplay-capitol-crashers-8s.mp4",
+        "source_in": 0,
+        "duration": 8,
+        "output_in": 0,
+        "kind": "gameplay"
+      },
+      {
+        "key": "vote",
+        "title": "VOTE",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\vote_mamdani.mp4",
+        "source_in": 23,
+        "duration": 10,
+        "output_in": 8,
+        "kind": "gameplay"
+      },
+      {
+        "key": "crew",
+        "title": "POTHOLE PARTY",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\pothole_b.mp4",
+        "source_in": 36,
+        "duration": 10,
+        "output_in": 18,
+        "kind": "gameplay"
+      },
+      {
+        "key": "stack",
+        "title": "HOUSING STACK",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-08\\you-know-what-adstoaid-and-politicalarcades\\outputs\\social-week1\\housing-first-row-vertical-v2.mp4",
+        "source_in": 5,
+        "duration": 8,
+        "output_in": 28,
+        "kind": "gameplay"
+      },
+      {
+        "key": "city",
+        "title": "YOUR CITY",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 6,
+        "output_in": 36,
+        "kind": "still"
+      },
+      {
+        "key": "comic",
+        "title": "COMICS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\art\\comic\\p26.webp",
+        "source_in": 0,
+        "duration": 5,
+        "output_in": 42,
+        "kind": "still"
+      },
+      {
+        "key": "room",
+        "title": "ORIGINAL MUSIC VIDEOS",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\music-video-integration\\room-to-breathe-approved-rogers-v98.mp4",
+        "source_in": 138.5,
+        "duration": 8,
+        "output_in": 47,
+        "kind": "music"
+      },
+      {
+        "key": "name",
+        "title": "NAME THE DAY",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\media\\name-the-day-v37.mp4",
+        "source_in": 26,
+        "duration": 7,
+        "output_in": 55,
+        "kind": "music"
+      },
+      {
+        "key": "freeze",
+        "title": "FREEZE THE RENT",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\work\\walter-site\\media\\freeze-the-rent.mp4",
+        "source_in": 88,
+        "duration": 7,
+        "output_in": 62,
+        "kind": "music"
+      },
+      {
+        "key": "cc2",
+        "title": "CAPITOL CRASHERS",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\cc_sayed.mp4",
+        "source_in": 35,
+        "duration": 6,
+        "output_in": 69,
+        "kind": "gameplay"
+      },
+      {
+        "key": "vote2",
+        "title": "VOTE",
+        "source": "C:\\Users\\19415\\Videos\\political-arcades-mv\\shorts\\_build\\rec\\vote_sayed.mp4",
+        "source_in": 27,
+        "duration": 5,
+        "output_in": 75,
+        "kind": "gameplay"
+      },
+      {
+        "key": "host",
+        "title": "COME PLAY SOMETHING",
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\city-scene.png",
+        "source_in": 0,
+        "duration": 5,
+        "output_in": 80,
+        "kind": "host"
+      }
+    ],
+    "voice": [
+      {
+        "name": "hook",
+        "start": 0.15,
+        "end": 2.79,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\hook.mp3"
+      },
+      {
+        "name": "fight",
+        "start": 4.0,
+        "end": 7.36,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\fight.mp3"
+      },
+      {
+        "name": "hoops",
+        "start": 8.2,
+        "end": 10.68,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\hoops.mp3"
+      },
+      {
+        "name": "crew",
+        "start": 18.2,
+        "end": 22.12,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\crew.mp3"
+      },
+      {
+        "name": "stack",
+        "start": 28.2,
+        "end": 32.44,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\stack.mp3"
+      },
+      {
+        "name": "build",
+        "start": 36.1,
+        "end": 40.18,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\build.mp3"
+      },
+      {
+        "name": "comics",
+        "start": 42.1,
+        "end": 43.86,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\comics.mp3"
+      },
+      {
+        "name": "music",
+        "start": 47.2,
+        "end": 52.0,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\music.mp3"
+      },
+      {
+        "name": "return",
+        "start": 69.2,
+        "end": 73.36,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-hype-reel\\voice\\return.mp3"
+      },
+      {
+        "name": "tony",
+        "start": 80.15,
+        "end": 83.03,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\tony.mp3"
+      },
+      {
+        "name": "cta",
+        "start": 85.15,
+        "end": 88.03,
+        "source": "C:\\Users\\19415\\Documents\\Codex\\2026-10-09\\i-hav\\outputs\\political-arcades-trailer\\cta.mp3"
+      }
+    ],
+    "endcard_start": 85,
+    "audio_peak": 0.5602909922599792,
+    "clipped_samples": 0
+  }
+}
