@@ -11,7 +11,7 @@ const plan=document.createElement('section');plan.className='city-run-plan';plan
 const art=document.createElement('img');art.alt='';art.width=68;art.height=68;
 const copy=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('p'),earnedLine=document.createElement('p'),progress=document.createElement('progress'),link=document.createElement('a');
 progress.max=1;earnedLine.className='city-run-earned';earnedLine.setAttribute('role','status');copy.append(title,detail,progress,earnedLine);link.dataset.cityCta='';plan.append(art,copy,link);
-const main=document.querySelector('main')||document.querySelector('iframe');if(main)main.before(plan);else document.body.append(plan);
+const main=document.querySelector('main')||document.querySelector('iframe');if(main?.matches('iframe'))main.after(plan);else if(main)main.before(plan);else document.body.append(plan);
 // The result screen gets the same receipt as the page, including Housing Stack.
 for(const host of document.querySelectorAll('#overlay .overlay-card,.mobile-result'))if(!host.querySelector('[data-city-receipt]')){const receipt=document.createElement('div');receipt.className='city-receipt';const text=document.createElement('p'),back=document.createElement('a');text.dataset.cityReceipt='';back.dataset.cityCta='';receipt.append(text,back);host.append(receipt);}
 
